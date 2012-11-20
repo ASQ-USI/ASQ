@@ -20,6 +20,10 @@
 *.tar
 *.zip
 
+# Node.js #
+###########
+node_modules/
+
 # IDE Files #
 #############
 *.komodoproject

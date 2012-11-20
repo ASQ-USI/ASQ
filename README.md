@@ -17,21 +17,21 @@ This was an idea from Max.
 
 Technologies Used
 -----------------
-- [node.js][node]
-- [express.js][express]
-- [embeddded js (ejs)][ejs] (to confirm)
-- [Passport.js][passport] (to confirm)
-- [impress.js][impress] (to confirm)
+- [node.js][1]
+- [express.js][2]
+- [embeddded js (ejs)][3] (to confirm)
+- [Passport.js][4] (to confirm)
+- [impress.js][5] (to confirm)
 
 Browser Support
 ---------------
 
 Currently we will focus on supporting Google Chrome and Chromium.
 We might support Firefox in the future but this will not be a priority.  
-Please note that browser support depends also on [impress.js][impress].
+Please note that browser support depends also on [impress.js][5].
 
-[node]: http://nodejs.org/
-[express]: http://expressjs.com/
-[ejs]: http://embeddedjs.com/
-[passport]: http://passportjs.org/
-[impress]: https://github.com/bartaz/impress.js/
+[1]: http://nodejs.org/                     "node.js"
+[2]: http://expressjs.com/                  "express.js"
+[3]: http://embeddedjs.com/                 "ejs"
+[4]: http://passportjs.org/                 "Passport.js"
+[5]: https://github.com/bartaz/impress.js/  "impress.js"
