@@ -22,10 +22,10 @@
 
 # IDE Files #
 #############
-*.komodoproject #komodo
-.komodotools    #komodo
-.metadata       #eclipse/aptana
-.project        #eclipse/aptana
+*.komodoproject
+.komodotools
+.metadata
+.project
 
 # Logs and databases #
 ######################
