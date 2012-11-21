@@ -15,23 +15,50 @@ given.
 The three initials: A, S, Q reorganized give ASQ.
 This was an idea from Max.
 
+About This Project
+------------------
+
+This project is part of the group project from the
+[Faculty of Informatics](http://www.inf.usi.ch/)
+of the [Università della Svizzera italian](http://www.usi.ch/en/index.htm)
+for the course [Software Atelier III: Web 2.0 technologies](http://www.inf.usi.ch/presentazione-studiare/container_education_utilities/orario_corsi/corso?id=985)
+by [Prof. Cesare Pautasso](http://www.inf.usi.ch/faculty/pautasso/).
+
+The group project is one of the key aspect of this course and consist of building
+a web 2.0 application in a group of 3 or 4 students.
+
+The Teaching Assistant (TA) assigned to this project is Vassilis Triglianos.
+
+**PLEASE NOTE**  
+This project is open-source but for the time being we will not allowed external
+participations as this project is part of a graded evaluation.
+
+Authors
+-------
+
+* [Jacques DAFFLON](http://atelier.inf.usi.ch/~dafflonj/)
+* [Margarita GRINVALD](http://atelier.inf.usi.ch/~grinvalm/)
+* [Max VON BÜLOW](http://www.people.usi.ch/vonbum/index.html)
+
 Technologies Used
 -----------------
-- [node.js][node]
-- [express.js][express]
-- [embeddded js (ejs)][ejs] (to confirm)
-- [Passport.js][passport] (to confirm)
-- [impress.js][impress] (to confirm)
+- [node.js][1]
+- [express.js][2]
+- [MongoDB][3] (to confirm)
+- [embeddded js (ejs)][4] (to confirm)
+- [Passport.js][5] (to confirm)
+- [impress.js][6] (to confirm)
 
 Browser Support
 ---------------
 
 Currently we will focus on supporting Google Chrome and Chromium.
 We might support Firefox in the future but this will not be a priority.  
-Please note that browser support depends also on [impress.js][impress].
+Please note that browser support depends also on [impress.js][5].
 
-[node]: http://nodejs.org/
-[express]: http://expressjs.com/
-[ejs]: http://embeddedjs.com/
-[passport]: http://passportjs.org/
-[impress]: https://github.com/bartaz/impress.js/
+[1]: http://nodejs.org/                     "node.js"
+[2]: http://expressjs.com/                  "express.js"
+[3]: http://www.mongodb.org/                "MongoDB"
+[4]: http://embeddedjs.com/                 "ejs"
+[5]: http://passportjs.org/                 "Passport.js"
+[6]: https://github.com/bartaz/impress.js/  "impress.js"
