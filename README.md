@@ -12,7 +12,7 @@ ASQ stands for Answer, Slide, Question.
 It is the core concept of this app, where you have a **S**lide followed by a
 **Q**uestion where you submit your answer and finaly the correct **A**nswer is
 given.
-The three initials: A, S, Q reorganized give ASQ.
+The three initials: S, Q, A reorganized give ASQ.
 This was an idea from Max.
 
 About This Project
