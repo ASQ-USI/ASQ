@@ -30,7 +30,7 @@ a web 2.0 application in a group of 3 or 4 students.
 The Teaching Assistant (TA) assigned to this project is Vassilis Triglianos.
 
 **PLEASE NOTE**  
-This project is open-source but for the time being we will not allowed external
+This project is open-source but for the time being we will not allow external
 participations as this project is part of a graded evaluation.
 
 Authors
