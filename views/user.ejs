@@ -1,57 +1,197 @@
+<html>
+  <head>
+    <title>ASQ - Home</title>
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="css/style.css" rel="stylesheet" media="screen">
+  </head>
+  
+    
+   
+
 <% if (!user) { %>
-	<h2>Please log in or signup.</h2>
-	<form action="/user" method="post">
-                      <div>
-                      <label>Username:</label>
-                      <input type="text" name="username"/><br/>
-                      </div>
-                      <div>
-                      <label>Password:</label>
-                      <input type="password" name="password"/>
-                      </div>
-                      <div>
-                      <input type="submit" value="Submit"/>
-                      </div>
-              </form>
-              Or signup
-              <form action="/login" method="post">
-                      <div>
-                      <label>Username:</label>
-                      <input type="text" name="username"/><br/>
-                      </div>
-                      <div>
-                      <label>Password:</label>
-                      <input type="password" name="password"/>
-                      </div>
-                      <div>
-                      <input type="submit" value="Submit"/>
-                      </div>
-              </form>
-        
+	<body class="dark-bg">
+   <div id="wrapper">
+	
+			<div id="login-box">
+					<img src="images/logo-big.png" />
+                                        <form class="form-horizontal" action="/user" method="post">
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">Username</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="username" placeholder=""/><br/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password </span>
+                                                        <input type="password" name="password" class="span2" id="prependedInput" type="password" placeholder=""/>
+							
+						</div>
+					</div>
+					
+					<button type="submit" class="btn">Log in</button>
+					</form>
+					<form class="form-horizontal" action="/signup" method="post">
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">Username</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder=""/><br/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password </span>
+                                                        <input type="password" name="signuppassword" class="span2" id="prependedInput" type="password" placeholder=""/>
+							
+						</div>
+					</div>
+					
+					<button type="submit" class="btn">Sign up</button>
+					</form>
+				</div>	
+		
+		</div>
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="js/bootstrap.min.js"></script><div id="wrapper">
+	
+			
+      	
 <% } else { %>
 	
-	
-	<h2>This is your profile page, <%= user.name %>.</h2>
-	<br><br>
-	<table>
-		<tr><td>
-			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure></td>
-		<td>
-			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
-		</td>
-		<td>
-			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
-		</td>
-		</tr>
-		<tr><td>
-			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure></td>
-		<td>
-			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
-		</td>
-		<td>
-			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
-		</td>
-		</tr>
-	</div>
+	<body class="dark-bg">
+		
+		<div id="top-bg">
+			<div class="container">
+				
+		  			<ul class="nav nav-pills">
+					  <li class="active">
+					    <a href="#">Home</a>
+					  </li>
+					  <li><a href="#">...</a></li>
+					  <li><a href="#">...</a></li>
+					</ul>
+		  		
+				
+			</div>
+		</div>
+		
+		<div class="container">
+			<p>&nbsp;</p>
+			
+			<div class="navbar ">
+		  		
+			</div>
+			
+			<p>&nbsp;</p>
+			
+			<div class="row presentation-group" >
+				<div class="span12  head">
+					<h2 class="pull-left">Programming Fundamentals I</h2>
+					<a class="pull-right statistics"><i class="icon-trash icon-white"> </i> Delete Slideshow </a>
+					<a class="pull-right statistics"><i class="icon-signal icon-white"> </i> Show Statistics </a>
+				</div>
+		
+					
+				<div class="span3 presentation-thumb">
+					<div class="info">
+						<h4>Here comes a title</h4>
+						<p>21.10.2012</p>		
+					</div>
+
+					<div class="buttons">
+						<a href="#" class="btn">Start presentation</a>
+						<a href="#" class="btn">Show statistics</a>
+						<a href="#" class="btn">Edit Presentation</a>
+					</div>
+				</div>
+				
+					<div class="span3 presentation-thumb">
+					<h4>Here comes another title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a great title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb-add">
+					<h4>+</h4>
+					<p>&nbsp;</p>
+					<p><i>Add presentation</i></p>
+				</div>
+			
+			</div>
+			
+			<p>&nbsp;</p><p>&nbsp;</p>
+			
+			<div class="row presentation-group" >
+				<div class="span12  head">
+					<h2 class="pull-left">Advanced Programming</h2>
+					<a class="pull-right statistics"><i class="icon-trash icon-white"> </i> Delete Slideshow </a>
+					<a class="pull-right statistics"><i class="icon-signal icon-white"> </i> Show Statistics </a>
+				</div>
+		
+					
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+				
+					<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+				<div class="span3 presentation-thumb">
+					<h4>Here comes a title</h4>
+					<p>21.10.2012</p>
+				</div>
+					
+				<div class="span3 presentation-thumb-add">
+					<h4>+</h4>
+					<p>&nbsp;</p>
+					<p><i>Add presentation</i></p>
+				</div>
+			
+			</div>
+			
+		</div>
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 	
 <% } %>
+
+</body>
+</html>

@@ -1,37 +1,110 @@
+<html>
+  <head>
+    <title>ASQ - Home</title>
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="css/style.css" rel="stylesheet" media="screen">
+  </head>
+  
+    
+   
+    
 <% if (!user) { %>
-	<h2>Welcome! Please log in.</h2>
-        <% if (message) { %>
-              <p><%= message %></p>
-              <% } %>
-              <form action="/user" method="post">
-                      <div>
-                      <label>Username:</label>
-                      <input type="text" name="username"/><br/>
-                      </div>
-                      <div>
-                      <label>Password:</label>
-                      <input type="password" name="password"/>
-                      </div>
-                      <div>
-                      <input type="submit" value="Submit"/>
-                      </div>
-              </form>
-              Or signup
-              <form action="/signup" method="post">
-                      <div>
-                      <label>Username:</label>
-                      <input type="text" name="signupusername"/><br/>
-                      </div>
-                      <div>
-                      <label>Password:</label>
-                      <input type="password" name="signuppassword"/>
-                      </div>
-                      <div>
-                      <input type="submit" value="Submit"/>
-                      </div>
-              </form>
-        
-        
+         <body class="dark-bg">
+   <div id="wrapper">
+	
+			<div id="login-box">
+					<img src="images/logo-big.png" />
+                                        <form class="form-horizontal" action="/user" method="post">
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">Username</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="username" placeholder=""/><br/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password </span>
+                                                        <input type="password" name="password" class="span2" id="prependedInput" type="password" placeholder=""/>
+							
+						</div>
+					</div>
+					
+					<button type="submit" class="btn">Log in</button>
+					</form>
+					<form class="form-horizontal" action="/signup" method="post">
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">Username</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder=""/><br/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password </span>
+                                                        <input type="password" name="signuppassword" class="span2" id="prependedInput" type="password" placeholder=""/>
+							
+						</div>
+					</div>
+					
+					<button type="submit" class="btn">Sign up</button>
+					</form>
+				</div>	
+		
+		</div>
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="js/bootstrap.min.js"></script><div id="wrapper">
+	
+			
+      	
 <% } else { %>
-	<h2>Well, what u want me to show here, <%= user.name %>?</h2>
+<body>
+	<div id="top">
+			<div class="container" >
+				
+				
+				<div id="banner" class="row">
+					<img src="images/logo-big.png" width="262px" height="91px" />
+					<p>Interactive presentations based on node.js and impress.js</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<h3>Available presentations</h3>
+			<br />
+			<table class="table table-striped">
+				<thead>
+					<th>Name</th>
+					<th>Course</th>
+					<th>Teacher</th>
+				</thead>
+				<tr>
+					<td>My Sample Presentation</td>
+					<td>A Sample Course</td>
+					<td>Prof. A Sample</td>
+				</tr>
+				<tr>
+					<td>My Sample Presentation</td>
+					<td>A Sample Course</td>
+					<td>Prof. A Sample</td>
+				</tr>
+				<tr>
+					<td>My Sample Presentation</td>
+					<td>A Sample Course</td>
+					<td>Prof. A Sample</td>
+				</tr>
+			</table>
+		</div>
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 <% } %>
+  </body>
+
+</html>
