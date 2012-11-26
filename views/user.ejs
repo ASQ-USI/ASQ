@@ -1,9 +1,6 @@
 <% if (!user) { %>
-	<h2>Welcome! Please log in.</h2>
-        <% if (message) { %>
-              <p><%= message %></p>
-              <% } %>
-              <form action="/user" method="post">
+	<h2>You have to log in or signup.</h2>
+	<form action="/user" method="post">
                       <div>
                       <label>Username:</label>
                       <input type="text" name="username"/><br/>
@@ -31,7 +28,32 @@
                       </div>
               </form>
         
-        
 <% } else { %>
-	<h2>Well, what u want me to show here, <%= user.name %>?</h2>
+	
+	<% if (message) { %>
+              <p><%= message %></p>
+              <% } %>	
+	<h2>This is your profile page, <%= user.name %>.</h2>
+	<br><br>
+	<table>
+		<tr><td>
+			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure></td>
+		<td>
+			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
+		</td>
+		<td>
+			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
+		</td>
+		</tr>
+		<tr><td>
+			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure></td>
+		<td>
+			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
+		</td>
+		<td>
+			<figure><img src="thumb.png"></img><figcaption>Start - Edit</figcaption></figure>
+		</td>
+		</tr>
+	</div>
+	
 <% } %>
