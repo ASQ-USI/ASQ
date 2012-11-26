@@ -1,0 +1,168 @@
+body{
+	
+	background-color: #F9F9F9;
+}
+#top{
+	background-image: url(../img/pattern5.jpg);
+	background-repeat: repeat;
+	background-color: #000000;
+}
+#login{
+	margin: 20px 0 0 0;
+	text-align: right;
+}
+#login span{
+	font-size: 16px;
+	color: #EFEFEF;
+	margin: 0 5px 0 5px;
+}
+
+#banner{
+	height: 420px;
+	width: 920px;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+
+	background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 61%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,0.1)), color-stop(61%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Opera 12+ */
+	background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* IE10+ */
+	background: radial-gradient(ellipse at center,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1affffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+#banner img{
+	display: block;
+	margin: 0 auto 20px auto;
+} 
+
+#banner p{
+	font-family: Georgia, sans-serif;
+	color: #CDCDCD;
+	font-style: italic;
+	font-size: 16px;
+	text-align: center;
+	display: block;
+	font-weight: 300;
+	letter-spacing: 1px;
+}
+
+#logo p{
+	width: 80px;
+	height: 80px;
+	border: solid 5px #FFFFFF;
+	text-align: center;
+	vertical-align: middle;
+	display: table-cell;
+	color: #FFF;
+	font-size: 60px;
+	box-shadow: 0px 3px 6px #000;
+	box-shadow:inset 0px 3px 6px #000;
+	text-shadow: 0px 3px 6px #000;
+	position: relative;
+}
+
+
+/* ----- Login ----- */
+
+.dark-bg{
+	background-image: url(../img/pattern5.jpg);
+	background-repeat: repeat;
+	background-color: #000000;
+}
+#login-box{
+	position:absolute; 
+	top:40%; 
+	left: 50%;
+	height: 240px; 
+	margin-top:-120px; /* negative half of the height */
+	margin-left:-131px;
+	width: 262px;
+}
+#login-box img{
+	display: block;
+	margin: 0 auto 40px auto;
+}
+#login-box .form-horizontal{
+	width:217px;
+	margin: 0 auto 0 auto;
+}
+#login-box form label{
+	color: #FFF;
+}
+
+
+/* ----- My Presentations ----- */
+.presentation-group h2{
+	font-size: 20px;
+	color: #FFFFFF;
+	font-weight: normal;
+	margin: 0;
+}
+.presentation-group .statistics{
+	color: #FFF;
+	font-size: 15px;
+	margin-top: 10px;
+	margin-left: 20px;
+}
+.presentation-group .presentation-thumb{
+	width: 220px;
+	height: 165px;
+	box-shadow: 0 3px 6px #000;
+	background-color: #EFEFEF;
+	text-align: center;
+	margin-top: 20px;
+	display: block;
+}
+.presentation-group .presentation-thumb:hover{
+	box-shadow: inset 3px 3px 0px #6666CC,inset -3px -3px 0px #6666CC;
+	background-color: #FFF;
+}
+.presentation-group .presentation-thumb:hover .buttons{ 
+	display: block;
+}
+.presentation-thumb .info{
+	float: left;
+	width: 100%;
+	height: 100%;
+}
+.presentation-thumb .buttons{
+	display: none;
+	position: relative;
+	top: -100%;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	float: left;
+	background-color: rgba(50,50,50,0.5);
+}
+.presentation-thumb a:first-child{
+	margin: 25px 0 5px 0;
+}
+
+.presentation-thumb a{
+	margin: 5px 0 5px 0;
+}
+.presentation-group .presentation-thumb h4{
+	margin-top: 60px;
+	
+}
+.presentation-group .presentation-thumb-add{
+	width: 220px;
+	height: 165px;
+	box-shadow: inset 0 0px 6px #000;
+	background-color: rgba(0,0,0,0.2);
+	text-align: center;
+	margin-top: 20px;
+}
+.presentation-group .presentation-thumb-add h4{
+	margin-top: 60px;
+	font-size: 50px;
+}
+.presentation-group .head{
+	border-bottom: 1px solid #000;
+	box-shadow:  0 1px 0 #333;
+	margin-bottom: 20px;
+}
