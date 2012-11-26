@@ -108,12 +108,6 @@ app.post('/user', passport.authenticate('local', { failureRedirect: '/', failure
   });
 
 
-   /*      
-  passport.authenticate('local', { failureRedirect: '/', failureFlash: true }),
-  function(req, res) {
-    res.redirect('/user');
-  });*/
-
 app.get('/images/:path', authentication.get);
 
 app.get('/logout', function(req, res){
