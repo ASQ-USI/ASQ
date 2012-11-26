@@ -7,6 +7,11 @@ body{
 	background-repeat: repeat;
 	background-color: #000000;
 }
+#top-bg{
+	background-image: url(../img/pattern5-light.jpg);
+	background-repeat: repeat;
+	background-color: #FFF;
+}
 #login{
 	margin: 20px 0 0 0;
 	text-align: right;
