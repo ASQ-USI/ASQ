@@ -1,5 +1,4 @@
 body{
-	
 	background-color: #F9F9F9;
 }
 #top{
@@ -7,11 +6,7 @@ body{
 	background-repeat: repeat;
 	background-color: #000000;
 }
-#top-bg{
-	background-image: url(../img/pattern5-light.jpg);
-	background-repeat: repeat;
-	background-color: #FFF;
-}
+
 #login{
 	margin: 20px 0 0 0;
 	text-align: right;
@@ -100,6 +95,30 @@ body{
 
 
 /* ----- My Presentations ----- */
+#top-bg{
+	background-image: url(../img/pattern5-light.jpg);
+	background-repeat: repeat;
+	padding: 15px 0 0 0;
+	margin-bottom: 30px;
+}
+#top-bg img{
+	padding: 0 0 15px 0;
+	display: block;
+}
+#menu ul{
+	margin: 10px 0 0 0;
+}
+#menu li{
+	font-size: 16px;
+	display: inline;
+	margin: 0 15px 0 0;
+	padding: 0;
+	list-style: none;
+}
+#menu li a{
+	cursor: hand;
+	color: #333;
+}
 .presentation-group h2{
 	font-size: 20px;
 	color: #FFFFFF;
@@ -142,6 +161,9 @@ body{
 	height: 100%;
 	float: left;
 	background-color: rgba(50,50,50,0.5);
+}
+.presentation-thumb .buttons a{
+	width: 150px;
 }
 .presentation-thumb a:first-child{
 	margin: 25px 0 5px 0;
