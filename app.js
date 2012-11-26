@@ -19,7 +19,7 @@ app.configure(function() {
     app.use(app.router);
     app.use(require('stylus').middleware(__dirname + '/public'));
     //app.use(express.static(__dirname + '/public'))
-    app.use(express.static(path.join(__dirname, '/public/slides/')));
+    app.use(express.static(path.join(__dirname, '/public/')));
 });
 
 app.configure('development', function(){
@@ -28,6 +28,7 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/live', routes.live);
+app.get('/live/', app.configure(function() {app.use(express.static(path.join(__dirname, '/slides/example/')))}));
 app.get('/admin', routes.admin);
 app.get('/js/:id', function(req, res) {
     res.sendfile('./js/' + req.params.id);
