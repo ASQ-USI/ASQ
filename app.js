@@ -1,10 +1,10 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , routes = require('./routes')
-  , io = require('socket.io');
+  , routes = require('./routes');
 
 var app = express();
+
 
 app.configure(function() {
     app.set('port', process.env.PORT || 3000);
@@ -34,11 +34,26 @@ app.get('/js/:id', function(req, res) {
     res.sendfile('./js/' + req.params.id);
 });
 
-//app.get('/css/:id', function(req, res) {
-//    console.log('GET /css/' + req.params.id);
-//    res.sendfile('./public/presentations/example/css/' + req.params.id);
-//});
-
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
+});
+
+var io = require('socket.io').listen(server);
+
+var currentSlide = 0;
+io.sockets.on('connection', function(socket){
+    socket.on('viewer', function(event) {
+        socket.join('viewers');
+        socket.emit('goto', {slide:currentSlide});
+        io.sockets.in('admins').emit('new', {});
+    });
+
+    socket.on('admin', function(event) {
+        socket.join('admins');
+    });
+
+    socket.on('goto', function(event) {
+        currentSlide = event.slide;
+        io.sockets.in('viewers').emit('goto', event);
+    });
 });

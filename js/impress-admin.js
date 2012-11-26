@@ -283,6 +283,14 @@
             }
         };
         
+        // Custom Event called at the same time as StepLeave but gives the next
+        // step.
+        var onStepGoto = function (step) {
+            if (lastEntered !== step) {
+                triggerEvent(step, "impress:stepgoto");
+            }
+        };
+
         // `onStepLeave` is called whenever the step element is left
         // but the event is triggered only if the step is the same as
         // last entered step.
@@ -483,6 +491,7 @@
             
             // trigger leave of currently active element (if it's not the same step again)
             if (activeStep && activeStep !== el) {
+                onStepGoto(el);
                 onStepLeave(activeStep);
             }
             

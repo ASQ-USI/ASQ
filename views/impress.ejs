@@ -6,12 +6,17 @@
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,600italic,700italic,300,400,800" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <script src="/socket.io/socket.io.js"></script>
 
 </head>
 
 <body>
     <% include ../slides/example/index %>
-    <script src="js/impress.js"></script>
-    <script>impress().init();</script>
+    <script src="js/impress-<%= mode %>.js"></script>
+    <script src="js/<%= mode %>.js"></script>
+    <script>
+        impress().init();
+        connect();
+    </script>
 </body>
 </html>

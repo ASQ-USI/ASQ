@@ -3,5 +3,9 @@ exports.index = function(req, res) {
 }
 
 exports.live = function(req, res) {
-    res.render('impress', {title: 'example', script:'viewer'})
+    res.render('impress', {title: 'example', mode:'viewer'})
+}
+
+exports.admin = function(req, res) {
+    res.render('impress', {title: 'example', mode:'admin'})
 }
