@@ -1,5 +1,8 @@
 <% if (!user) { %>
-	<h2>You have to log in or signup.</h2>
+<% if (message) { %>
+              <p><%= message %></p>
+              <% } %>	
+	<h2>Please log in or signup.</h2>
 	<form action="/user" method="post">
                       <div>
                       <label>Username:</label>
@@ -30,9 +33,7 @@
         
 <% } else { %>
 	
-	<% if (message) { %>
-              <p><%= message %></p>
-              <% } %>	
+	
 	<h2>This is your profile page, <%= user.name %>.</h2>
 	<br><br>
 	<table>

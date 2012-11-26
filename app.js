@@ -49,7 +49,6 @@ passport.use(new LocalStrategy(
     // asynchronous verification, for effect...
     process.nextTick(function () {
     User= db.model('Users', schemas.users);
-    console.log(username);
     var out =User.findOne({ name: username }, function (err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
@@ -59,8 +58,6 @@ passport.use(new LocalStrategy(
     });
   }
 ));
-
-
 
 var app = express();
 
@@ -99,14 +96,23 @@ app.get('/', function(req, res){
 app.get('/user', function(req,res) {
     res.render('user', { user: req.user, message: req.flash('error') });
 });
+/*
 
-app.post('/user', 
-  passport.authenticate('local', { failureRedirect: '/', failureFlash: true }),
-  function(req, res) {
+
+app.post('/login', authentication.signup );
+*/
+app.post('/signup', authentication.signup);
+
+app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true }) ,function(req, res) {
     res.redirect('/user');
   });
 
-app.post('/login', authentication.signup );
+
+   /*      
+  passport.authenticate('local', { failureRedirect: '/', failureFlash: true }),
+  function(req, res) {
+    res.redirect('/user');
+  });*/
 
 app.get('/images/:path', authentication.get);
 
