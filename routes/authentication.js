@@ -9,7 +9,7 @@ exports.getsingle=function(req, res) {
 
 exports.signup=function(req, res) {
 	if (req.body.signupusername) {
-		console.log('tried to sign up eh');
+		
 	}
 	console.log('got here');
 	var users= db.model('Users', schemas.users);

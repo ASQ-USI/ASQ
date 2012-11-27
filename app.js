@@ -93,20 +93,15 @@ app.get('/', function(req, res){
   res.render('index', { user: req.user, message: req.flash('error') });
 });
 
-app.get('/user', function(req,res) {
+app.get('/user', ensureAuthenticated, function(req,res) {
     res.render('user', { user: req.user, message: req.flash('error') });
 });
-/*
 
-
-app.post('/login', authentication.signup );
-*/
 app.post('/signup', authentication.signup);
 
 app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true }) ,function(req, res) {
     res.redirect('/user');
   });
-
 
 app.get('/images/:path', authentication.get);
 
@@ -122,7 +117,7 @@ app.get('/logout', function(req, res){
 //   login page.
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
+  res.redirect('/')
 }
 
 http.createServer(app).listen(app.get('port'), function(){

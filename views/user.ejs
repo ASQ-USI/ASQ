@@ -6,64 +6,7 @@
 		<link href="css/style.css" rel="stylesheet" media="screen">
   </head>
   
-    
-   
 
-<% if (!user) { %>
-	<body class="dark-bg">
-   <div id="wrapper">
-	
-			<div id="login-box">
-					<img src="images/logo-big.png" />
-                                        <form class="form-horizontal" action="/user" method="post">
-					
-					<div class="control-group">
-						<div class="input-prepend">
-							<span class="add-on">Username</span>
-                                                        <input class="span2" id="prependedInput"  type="text" name="username" placeholder=""/><br/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<div class="input-prepend">
-							<span class="add-on"> Password </span>
-                                                        <input type="password" name="password" class="span2" id="prependedInput" type="password" placeholder=""/>
-							
-						</div>
-					</div>
-					
-					<button type="submit" class="btn">Log in</button>
-					</form>
-					<form class="form-horizontal" action="/signup" method="post">
-					
-					<div class="control-group">
-						<div class="input-prepend">
-							<span class="add-on">Username</span>
-                                                        <input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder=""/><br/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<div class="input-prepend">
-							<span class="add-on"> Password </span>
-                                                        <input type="password" name="signuppassword" class="span2" id="prependedInput" type="password" placeholder=""/>
-							
-						</div>
-					</div>
-					
-					<button type="submit" class="btn">Sign up</button>
-					</form>
-				</div>	
-		
-		</div>
-
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="js/bootstrap.min.js"></script><div id="wrapper">
-	
-			
-      	
-<% } else { %>
-	
 	<body class="dark-bg">
 		
 		<div id="top-bg">
@@ -191,7 +134,6 @@
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 	
-<% } %>
 
 </body>
 </html>
