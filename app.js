@@ -89,8 +89,8 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', function(req, res){
-  res.render('index', { user: req.user, message: req.flash('error') });
+app.get('/', ensureAuthenticated, function(req, res){
+  res.render('logged');
 });
 
 app.get('/user', ensureAuthenticated, function(req,res) {
@@ -98,8 +98,11 @@ app.get('/user', ensureAuthenticated, function(req,res) {
 });
 
 app.post('/signup', authentication.signup);
+app.get('/signup', function(req, res){
+  res.redirect('/');
+});
 
-app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true }) ,function(req, res) {
+app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
     res.redirect('/user');
   });
 
@@ -117,7 +120,7 @@ app.get('/logout', function(req, res){
 //   login page.
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/')
+  res.render('index', { error: req.flash('error') });
 }
 
 http.createServer(app).listen(app.get('port'), function(){

@@ -9,14 +9,11 @@ exports.getsingle=function(req, res) {
 
 exports.signup=function(req, res) {
 	if (req.body.signupusername) {
-		
 	}
-	console.log('got here');
 	var users= db.model('Users', schemas.users);
 	var id=0;
 	users.find({}, function(err, found) {
 		id=found.length;
-		console.log(found.length);
 		var newUser= new users({
 			name: req.body.signupusername,
 			password: req.body.signuppassword,
@@ -26,11 +23,7 @@ exports.signup=function(req, res) {
 	
 	
 		newUser.save();
-		res.render('user', { user: null, message: 'Registration successfull' });
+		res.render('registered');
 	});
-	
-}
-
-exports.user= function(req, res) {
 	
 }

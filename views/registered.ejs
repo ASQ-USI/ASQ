@@ -7,19 +7,14 @@
   </head>
 
          <body class="dark-bg">
-          
-          
    <div id="wrapper">
 	
 			<div id="login-box">
 					<img src="images/logo-big.png" />
-                                        <% if (error !== undefined && error != ""){ %>
-                                        <div class="presentation-group">
-                                          <h2 class="flash"><%= error %></h2>
-                                        </div>
-                                        <br>
-                                         
-                                        <% } %>
+					<div class="presentation-group">
+					<h2 class="pull-left">Registration successfull.</h2>
+					</div>
+					<br><br><br>
                                         <form class="form-horizontal" action="/user" method="post">
 					
 					<div class="control-group">
@@ -39,26 +34,7 @@
 					
 					<button type="submit" class="btn">Log in</button>
 					</form>
-                                        <br><br>
-					<form class="form-horizontal" action="/signup" method="post">
-					
-					<div class="control-group">
-						<div class="input-prepend">
-							<span class="add-on">Username</span>
-                                                        <input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder=""/><br/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<div class="input-prepend">
-							<span class="add-on"> Password </span>
-                                                        <input type="password" name="signuppassword" class="span2" id="prependedInput" type="password" placeholder=""/>
-							
-						</div>
-					</div>
-					
-					<button type="submit" class="btn">Sign up</button>
-					</form>
+                                        
 				</div>	
 		
 		</div>

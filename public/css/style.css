@@ -1,5 +1,4 @@
 body{
-	
 	background-color: #F9F9F9;
 }
 #top{
@@ -7,19 +6,30 @@ body{
 	background-repeat: repeat;
 	background-color: #000000;
 }
-#top-bg{
-	background-image: url(../images/pattern5-light.jpg);
-	background-repeat: repeat;
-	background-color: #FFF;
-}
+
 #login{
 	margin: 20px 0 0 0;
 	text-align: right;
 }
+
+
 #login span{
 	font-size: 16px;
 	color: #EFEFEF;
 	margin: 0 5px 0 5px;
+}
+
+#logout{
+	margin: 10px 0 0 0;
+	text-align: right;
+}
+
+#logout span {
+	font-size: 16px;
+	margin: 0 15px 0 0;
+	padding: 0;
+	cursor: hand;
+	color: #333;
 }
 
 #banner{
@@ -70,6 +80,8 @@ body{
 }
 
 
+
+
 /* ----- Login ----- */
 
 .dark-bg{
@@ -98,9 +110,36 @@ body{
 	color: #FFF;
 }
 
+#login-box .span2{
+	height:30px;
+}
 
 
 /* ----- My Presentations ----- */
+#top-bg{
+	background-image: url(../images/pattern5-light.jpg);
+	background-repeat: repeat;
+	padding: 15px 0 0 0;
+	margin-bottom: 30px;
+}
+#top-bg img{
+	padding: 0 0 15px 0;
+	display: block;
+}
+#menu ul{
+	margin: 10px 0 0 0;
+}
+#menu li{
+	font-size: 16px;
+	display: inline;
+	margin: 0 15px 0 0;
+	padding: 0;
+	list-style: none;
+}
+#menu li a{
+	cursor: hand;
+	color: #333;
+}
 .presentation-group h2{
 	font-size: 20px;
 	color: #FFFFFF;
@@ -144,6 +183,9 @@ body{
 	float: left;
 	background-color: rgba(50,50,50,0.5);
 }
+.presentation-thumb .buttons a{
+	width: 150px;
+}
 .presentation-thumb a:first-child{
 	margin: 25px 0 5px 0;
 }
@@ -153,7 +195,7 @@ body{
 }
 .presentation-group .presentation-thumb h4{
 	margin-top: 60px;
-	
+
 }
 .presentation-group .presentation-thumb-add{
 	width: 220px;
