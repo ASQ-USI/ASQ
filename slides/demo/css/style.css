@@ -85,7 +85,7 @@ body {
     font-family: 'PT Sans', sans-serif;
     min-height: 740px;
 
-   	background-image: url(/img/pattern5.jpg);
+   	background-image: url(../img/pattern5.jpg);
 	background-repeat: repeat;
 
     /*ackground: rgb(215, 215, 215);
