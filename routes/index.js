@@ -7,5 +7,5 @@ exports.live = function(req, res) {
 }
 
 exports.admin = function(req, res) {
-    res.render('impress', {title: 'example', mode:'admin'})
+    res.render('impress', {title: 'demo', mode:'admin'})
 }

@@ -28,7 +28,7 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/live', routes.live);
-app.get('/live/', app.configure(function() {app.use(express.static(path.join(__dirname, '/slides/example/')))}));
+app.get('/live/', app.configure(function() {app.use(express.static(path.join(__dirname, '/slides/demo/')))}));
 app.get('/admin', routes.admin);
 app.get('/js/:id', function(req, res) {
     res.sendfile('./js/' + req.params.id);
