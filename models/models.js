@@ -6,7 +6,6 @@ var Schema = mongoose.Schema,
 
 
 exports.users = new Schema({
-	id : {type: String},
 	name: { type: String},
 	password: { type: String}
 });

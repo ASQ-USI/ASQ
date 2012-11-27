@@ -11,7 +11,7 @@ var express = require('express')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
-  , authentication = require('./routes/authentication');
+  , registration = require('./routes/registration');
   
 
 
@@ -35,8 +35,6 @@ passport.deserializeUser(function(id, done) {
         }
       })
     });
-
-
 
 // Use the LocalStrategy within Passport.
 //   Strategies in passport require a `verify` function, which accept
@@ -77,9 +75,12 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.cookieParser('your secret here'));
   app.use(express.session());
-  app.use(passport.initialize());
+  
+  //necessary initialization for passport plugin
+  app.use(passport.initialize()); 
   app.use(flash());
   app.use(passport.session());
+  
   app.use(app.router);
   app.use(require('stylus').middleware(__dirname + '/public'));
   app.use(express.static(path.join(__dirname, 'public')));
@@ -89,29 +90,38 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
+//Main page
 app.get('/', ensureAuthenticated, function(req, res){
   res.render('logged');
 });
 
-app.get('/user', ensureAuthenticated, function(req,res) {
-    res.render('user', { user: req.user, message: req.flash('error') });
-});
-
-app.post('/signup', authentication.signup);
+//Someone types /signup URL, which has no meaning. He gots redirected.
 app.get('/signup', function(req, res){
   res.redirect('/');
 });
 
+//Registration happened. 
+app.post('/signup', registration.signup);
+
+//Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
+app.get('/user', ensureAuthenticated, function(req,res) {
+    res.render('user', { user: req.user, message: req.flash('error') });
+});
+
+//Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
 app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
     res.redirect('/user');
   });
 
-app.get('/images/:path', authentication.get);
-
+//The user logs out, and get redirected
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+
+//Serving static files
+app.get('/images/:path', registration.get);
+
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
