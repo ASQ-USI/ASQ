@@ -214,3 +214,18 @@ body{
 	box-shadow:  0 1px 0 #333;
 	margin-bottom: 20px;
 }
+
+
+.option {  
+color: #666;   
+font-family: Helvetica, Arial, sans-serif;   
+font-weight: bold;   
+font-size: 16px;
+margin-right: 20px;
+vertical-align: none;
+}  
+
+label {   
+color: #003333;   
+font-weight: bold;   
+}  
