@@ -80,7 +80,7 @@ app.configure(function() {
     app.use(passport.session());
     app.use(app.router);
     app.use(require('stylus').middleware(__dirname + '/public/'));
-    app.use(express.static(path.join(__dirname, '/public/images')));
+    app.use(express.static(path.join(__dirname, '/public/')));
 });
 
 app.configure('development', function(){
@@ -93,32 +93,37 @@ app.get('/', ensureAuthenticated, function(req, res){
   res.render('logged');
 });
 
-app.get('/img/:file', function(req, res) {
-    console.log('###BEGIN');
-    console.log(req);
-    console.log('###END');
-});
-app.get('/live', routes.live);
-app.get('/live/*', function(req, res) {
-    console.log('this is called')
-    console.log(req.params);
-    res.sendfile('./slides/demo/' + req.params[0]);
-});
-app.get('/admin', routes.admin);
-
-//Someone types /signup URL, which has no meaning. He gots redirected.
-app.get('/signup', function(req, res){
-  res.redirect('/');
-});
-
 /**
    @description Prevent to serve included js files with presentations.
 
    This will serve a custom verion of impress.js and the appropriate websocket
    module.
  */
-app.get('/js/:id', function(req, res) {
-    res.sendfile('./js/' + req.params.id);
+app.get('/:whatever/js/*', function(req, res) {
+    res.sendfile('./js/' + req.params[0]);
+});
+
+app.get('/live/', routes.live);
+app.get('/live', function(req, res) {
+    console.log('redirect');
+    res.redirect(301, '/live/');
+});
+app.get('/live/*', function(req, res) {
+    console.log('this is called')
+    res.sendfile('./slides/demo/' + req.params[0]);
+});
+
+app.get('/admin/', routes.admin);
+app.get('/admin', function(require, res) {
+    res.redirect(301, '/admin/');
+});
+app.get('/admin/*', function(req, res) {
+    res.sendfile('./slides/demo/' + req.params[0]);
+});
+
+//Someone types /signup URL, which has no meaning. He gots redirected.
+app.get('/signup', function(req, res){
+  res.redirect('/');
 });
 
 //Registration happened. 

@@ -5,7 +5,7 @@
 
 /** Connect back to the server with a websocket */
 var connect = function() {
-    var socket = io.connect("http://10.61.105.11:3000");
+    var socket = io.connect("http://localhost:3000");
     socket.on('connect', function(event) {
         socket.emit('viewer', {});
 
