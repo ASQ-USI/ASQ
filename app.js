@@ -70,7 +70,7 @@ app.configure(function() {
     app.set('view engine', 'ejs');
     app.use(express.favicon());
     app.use(express.logger('dev'));
-    app.use(express.bodyParser({uploadDir: './public/images'}));
+    app.use(express.bodyParser({uploadDir: './slides/'}));
     app.use(express.methodOverride());
     app.use(express.cookieParser('your secret here'));
     app.use(express.session());
@@ -79,7 +79,7 @@ app.configure(function() {
     app.use(flash());
     app.use(passport.session());
     app.use(app.router);
-    app.use(require('stylus').middleware(__dirname + '/public/images'));
+    app.use(require('stylus').middleware(__dirname + '/public/'));
     app.use(express.static(path.join(__dirname, '/public/images')));
 });
 
@@ -92,8 +92,18 @@ app.configure('development', function(){
 app.get('/', ensureAuthenticated, function(req, res){
   res.render('logged');
 });
+
+app.get('/img/:file', function(req, res) {
+    console.log('###BEGIN');
+    console.log(req);
+    console.log('###END');
+});
 app.get('/live', routes.live);
-app.get('/live/', app.configure(function() {app.use(express.static(path.join(__dirname, '/slides/demo/')))}));
+app.get('/live/*', function(req, res) {
+    console.log('this is called')
+    console.log(req.params);
+    res.sendfile('./slides/demo/' + req.params[0]);
+});
 app.get('/admin', routes.admin);
 
 //Someone types /signup URL, which has no meaning. He gots redirected.
