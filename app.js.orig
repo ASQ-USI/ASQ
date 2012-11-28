@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
     @fileoverview app main file, for initialisation of the server
     @author Jacques Dafflon jacques.dafflon@gmail.com
@@ -7,6 +8,34 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , routes = require('./routes');
+
+var app = express();
+
+/** Configure express */
+app.configure(function() {
+    app.set('port', process.env.PORT || 3000);
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'ejs');
+    app.use(express.favicon());
+    app.use(express.logger('dev'));
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(express.cookieParser('your secret here'));
+    app.use(express.session());
+    app.use(app.router);
+    app.use(require('stylus').middleware(__dirname + '/public'));
+    app.use(express.static(path.join(__dirname, '/public/')));
+=======
+
+/**
+ * Module dependencies.
+ */
+
+var express = require('express')
+  , routes = require('./routes')
+  , hello = require('./routes/helloWorld')  
+  , http = require('http')
+  , path = require('path')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -58,20 +87,6 @@ passport.use(new LocalStrategy(
 
 var app = express();
 
-/** Configure express */
-app.configure(function() {
-    app.set('port', process.env.PORT || 3000);
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'ejs');
-    app.use(express.favicon());
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(express.cookieParser('your secret here'));
-    app.use(express.session());
-    app.use(app.router);
-    app.use(require('stylus').middleware(__dirname + '/public'));
-    app.use(express.static(path.join(__dirname, '/public/')));
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
 db = mongoose.createConnection('localhost', 'test');
@@ -97,26 +112,20 @@ app.configure(function(){
   app.use(app.router);
   app.use(require('stylus').middleware(__dirname + '/public'));
   app.use(express.static(path.join(__dirname, 'public')));
+>>>>>>> feat-user-auth-test
 });
 
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-//Main page
-app.get('/', ensureAuthenticated, function(req, res){
-  res.render('logged');
-});
+<<<<<<< HEAD
 /** Routing */
 app.get('/', routes.index);
 app.get('/live', routes.live);
 app.get('/live/', app.configure(function() {app.use(express.static(path.join(__dirname, '/slides/demo/')))}));
 app.get('/admin', routes.admin);
 
-//Someone types /signup URL, which has no meaning. He gots redirected.
-app.get('/signup', function(req, res){
-  res.redirect('/');
-});
 /**
    @description Prevent to serve included js files with presentations.
 
@@ -125,30 +134,13 @@ app.get('/signup', function(req, res){
  */
 app.get('/js/:id', function(req, res) {
     res.sendfile('./js/' + req.params.id);
-//Registration happened. 
-app.post('/signup', registration.signup);
-
-//Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
-app.get('/user', ensureAuthenticated, function(req,res) {
-    res.render('user', { user: req.user, message: req.flash('error') });
 });
 
-//Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
-app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
-    res.redirect('/user');
-  });
-
-//The user logs out, and get redirected
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
 /** HTTP Server */
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
 
-//Serving static files
-app.get('/images/:path', registration.get);
 /**
    @description  Require socket.io (websocket wrapper) and listen to the server.
    This needs to be requierd at this point since we need the server to already
@@ -169,15 +161,6 @@ io.sockets.on('connection', function(socket){
         io.sockets.in('admins').emit('new', {});
     });
 
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.render('index', { error: req.flash('error') });
-}
     /** @function Handle connection from admin. */
     socket.on('admin', function(event) {
         socket.join('admins');
@@ -195,3 +178,51 @@ function ensureAuthenticated(req, res, next) {
         io.sockets.in('viewers').emit('goto', event);
     });
 });
+=======
+//Main page
+app.get('/', ensureAuthenticated, function(req, res){
+  res.render('logged');
+});
+
+//Someone types /signup URL, which has no meaning. He gots redirected.
+app.get('/signup', function(req, res){
+  res.redirect('/');
+});
+
+//Registration happened. 
+app.post('/signup', registration.signup);
+
+//Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
+app.get('/user', ensureAuthenticated, function(req,res) {
+    res.render('user', { user: req.user, message: req.flash('error') });
+});
+
+//Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
+app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
+    res.redirect('/user');
+  });
+
+//The user logs out, and get redirected
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+//Serving static files
+app.get('/images/:path', registration.get);
+
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.render('index', { error: req.flash('error') });
+}
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log("Express server listening on port " + app.get('port'));
+});
+>>>>>>> feat-user-auth-test

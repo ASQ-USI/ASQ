@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <title>ASQ - Home</title>
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="css/style.css" rel="stylesheet" media="screen">
+                  
+                  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+                  
+                  <script type="text/javascript">  
+                  $(document).ready(function()  
+                  {  
+                      $('.signup').hide();  
+                      $('#signup').click(function()  
+                      {  
+                      $('.login').slideUp('slow');  
+                      $('.signup').slideDown('slow');  
+                      });  
+                      $('#login').click(function()  
+                      {  
+                          $('.signup').slideUp('slow');  
+                          $('.login').slideDown('slow');  
+                      });   
+                  });  
+</script> 
+  </head>
+
+         <body class="dark-bg">
+          
+          
+          
+          
+   <div id="wrapper">
+	
+			<div id="login-box">
+					<img src="images/logo-big.png" />
+                                        <% if (error !== undefined && error != ""){ %>
+                                        <div class="presentation-group">
+                                          <h2 class="flash"><%= error %></h2>
+                                        </div>
+                                        <br>
+                                         
+                                        <% } %>
+                                        
+                                        <form name="myform">  
+                                        <input type="radio" name="option" id="login" checked="checked"> <span class="option">Login</span>  
+                                        <input type="radio" name="option" id="signup"> <span class="option">Sign up</span>  
+                                       </form> 
+
+                                        <div class="login">
+                                          <form name="ÓloginÓ" class="form-horizontal" action="/user" method="post">
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">Username</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="username" placeholder=""/><br/>
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password </span>
+                                                        <input type="password" name="password" class="span2" id="prependedInput" type="password" placeholder=""/>
+							
+						</div>
+					</div>
+					
+					<button type="submit" class="btn">Log in</button>
+					</form>
+                                        </div>
+          
+                                      <div class="signup">
+                                        <form name="ÓsignupÓ" class="form-horizontal" action="/signup" method="post">
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">Username</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder=""/><br/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password </span>
+                                                        <input type="password" name="signuppassword" class="span2" id="prependedInput" type="password" placeholder=""/>
+							
+						</div>
+					</div>
+					
+					<button type="submit" class="btn">Sign up</button>
+					</form>
+                                      </div>	
+		
+                    </div>
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="js/bootstrap.min.js"></script><div id="wrapper">
+                
+  </body>
+
+</html>
