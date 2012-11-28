@@ -6,7 +6,7 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , routes = require('./routes');
+  , routes = require('./routes')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -58,6 +58,11 @@ passport.use(new LocalStrategy(
 
 var app = express();
 
+// mongoose, db, and schemas are global
+mongoose = require('mongoose');
+db = mongoose.createConnection('localhost', 'test');
+schemas = require('./models/models.js');
+
 /** Configure express */
 app.configure(function() {
     app.set('port', process.env.PORT || 3000);
@@ -65,50 +70,28 @@ app.configure(function() {
     app.set('view engine', 'ejs');
     app.use(express.favicon());
     app.use(express.logger('dev'));
-    app.use(express.bodyParser());
+    app.use(express.bodyParser({uploadDir: './public/images'}));
     app.use(express.methodOverride());
     app.use(express.cookieParser('your secret here'));
     app.use(express.session());
+    //necessary initialization for passport plugin
+    app.use(passport.initialize());
+    app.use(flash());
+    app.use(passport.session());
     app.use(app.router);
-    app.use(require('stylus').middleware(__dirname + '/public'));
-    app.use(express.static(path.join(__dirname, '/public/')));
-// mongoose, db, and schemas are global
-mongoose = require('mongoose');
-db = mongoose.createConnection('localhost', 'test');
-schemas = require('./models/models.js');
-
-
-app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser({uploadDir: './public/images/'}));
-  app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
-  app.use(express.session());
-  
-  //necessary initialization for passport plugin
-  app.use(passport.initialize()); 
-  app.use(flash());
-  app.use(passport.session());
-  
-  app.use(app.router);
-  app.use(require('stylus').middleware(__dirname + '/public'));
-  app.use(express.static(path.join(__dirname, 'public')));
+    app.use(require('stylus').middleware(__dirname + '/public/images'));
+    app.use(express.static(path.join(__dirname, '/public/images')));
 });
 
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-//Main page
+
+/** Routing */
 app.get('/', ensureAuthenticated, function(req, res){
   res.render('logged');
 });
-/** Routing */
-app.get('/', routes.index);
 app.get('/live', routes.live);
 app.get('/live/', app.configure(function() {app.use(express.static(path.join(__dirname, '/slides/demo/')))}));
 app.get('/admin', routes.admin);
@@ -117,6 +100,7 @@ app.get('/admin', routes.admin);
 app.get('/signup', function(req, res){
   res.redirect('/');
 });
+
 /**
    @description Prevent to serve included js files with presentations.
 
@@ -125,6 +109,8 @@ app.get('/signup', function(req, res){
  */
 app.get('/js/:id', function(req, res) {
     res.sendfile('./js/' + req.params.id);
+});
+
 //Registration happened. 
 app.post('/signup', registration.signup);
 
@@ -136,19 +122,35 @@ app.get('/user', ensureAuthenticated, function(req,res) {
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
 app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
     res.redirect('/user');
-  });
+});
 
 //The user logs out, and get redirected
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
+});
+
+//Serving static files
+app.get('/images/:path', registration.get);
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.render('index', { error: req.flash('error') });
+}
+
+
 /** HTTP Server */
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
 
-//Serving static files
-app.get('/images/:path', registration.get);
 /**
    @description  Require socket.io (websocket wrapper) and listen to the server.
    This needs to be requierd at this point since we need the server to already
@@ -168,16 +170,6 @@ io.sockets.on('connection', function(socket){
         socket.emit('goto', {slide:currentSlide});
         io.sockets.in('admins').emit('new', {});
     });
-
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.render('index', { error: req.flash('error') });
-}
     /** @function Handle connection from admin. */
     socket.on('admin', function(event) {
         socket.join('admins');

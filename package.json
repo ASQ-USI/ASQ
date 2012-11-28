@@ -12,28 +12,13 @@
         "stylus" : "0.x",
         "ejs" : "0.8.x",
         "path" : "0.4.x",
-        "socket.io" : "0.9.x"
+        "socket.io" : "0.9.x",
+        "connect-flash": "0.1.x",
+        "passport": "0.1.x",
+        "passport-local": "0.1.x"
     },
     "engines" : {
         "node" : "0.8.x",
         "npm" : "1.1.X"
     }
-}  "name": "hello-world",
-  "description": "hello world test app",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-    "express": "3.x",
-    "path": "0.4.x",
-    "http": "0.0.x",
-    "connect-flash": "0.1.x",
-    "passport": "0.1.x",
-    "passport-local": "0.1.x",
-  },
-  "engines" : {
-    "node" : "0.8.x",
-    "npm" : "1.1.X"
-  }
-
 }
-
