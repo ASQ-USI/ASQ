@@ -8,15 +8,32 @@
     <title><%= title %></title>
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
+    <script src="js/bootsrap.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
 </head>
 
 <body class="impress-not-supported">
     <% include ../slides/demo/index %>
+    <div id="screen" class="modal hide fade">
+        <div class="modal-header"><h3><%= title %></h3></div>
+        <div class="modal-body">
+            <form>
+                <fieldset>
+                    <legend>Join the presentation</legend>
+                    <label>Enter your name:</label>
+                    <input type="text" placeholder="Your name...">
+                </fieldset>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">Join in</button>
+        </div>
+    </div>
     <script src="js/impress-<%= mode %>.js"></script>
     <script src="js/<%= mode %>.js"></script>
     <script>
+        $('#screen').modal('show');
         impress().init();
         connect();
     </script>
