@@ -126,6 +126,8 @@ app.get('/signup', function(req, res){
   res.redirect('/');
 });
 
+app.get('/checkusername/:username', registration.checkusername);
+
 //Registration happened. 
 app.post('/signup', registration.signup);
 
@@ -157,7 +159,8 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.render('index', { error: req.flash('error') });
+    res.render('index', { message: req.flash('error'), fromsignup:'false' });
+
 }
 
 

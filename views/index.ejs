@@ -6,11 +6,12 @@
 		<link href="css/style.css" rel="stylesheet" media="screen">
                   
                   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-                  
+                  <script src="js/ajax.js"></script>
                   <script type="text/javascript">  
                   $(document).ready(function()  
-                  {  
-                      $('.signup').hide();  
+                  {
+                    <% if (fromsignup !== undefined && fromsignup == "true"){ %>
+                     $('.login').hide(); 
                       $('#signup').click(function()  
                       {  
                       $('.login').slideUp('slow');  
@@ -21,7 +22,25 @@
                           $('.signup').slideUp('slow');  
                           $('.login').slideDown('slow');  
                       });   
-                  });  
+                    <% } %>
+                    <% if (fromsignup !== undefined && fromsignup == "false"){ %>
+                     $('.signup').hide(); 
+                      $('#signup').click(function()  
+                      {  
+                      $('.login').slideUp('slow');  
+                      $('.signup').slideDown('slow');  
+                      });  
+                      $('#login').click(function()  
+                      {  
+                          $('.signup').slideUp('slow');  
+                          $('.login').slideDown('slow');  
+                      });   
+                    <% } %>
+                    
+                    
+                    
+                      
+                  }); 
 </script> 
   </head>
 
