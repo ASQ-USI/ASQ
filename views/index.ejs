@@ -40,8 +40,12 @@
                     
                     
                       
-                  }); 
-</script> 
+                  });
+                  
+    
+</script>
+                
+
   </head>
 
          <body class="dark-bg">
@@ -53,17 +57,28 @@
 	
 			<div id="login-box">
 					<img src="img/logo-big.png" />
-                                        <% if (error !== undefined && error != ""){ %>
+                                        <% if (message !== undefined && message != ""){ %>
+                                        
                                         <div class="presentation-group">
-                                          <h2 class="flash"><%= error %></h2>
+                                          <h2 class="flash"><%= message %></h2>
                                         </div>
                                         <br>
                                          
                                         <% } %>
+                                        <form name="myform">
+                                        <% if (fromsignup !== undefined && fromsignup != "false"){ %>
                                         
-                                        <form name="myform">  
-                                        <input type="radio" name="option" id="login" checked="checked"> <span class="option">Login</span>  
+                                           <input type="radio" name="option" id="login"> <span class="option">Login</span>  
+                                        <input type="radio" name="option" id="signup" checked="checked"  > <span class="option">Sign up</span>  
+                                      
+                                        <% } %>
+                                        <% if (fromsignup !== undefined && fromsignup != "true"){ %>
+                                        
+                                          <input type="radio" name="option" id="login" checked="checked"> <span class="option">Login</span>  
                                         <input type="radio" name="option" id="signup"> <span class="option">Sign up</span>  
+                                        <% } %>
+                                          
+                                       
                                        </form> 
 
                                         <div class="login">
@@ -92,17 +107,27 @@
 					<div class="control-group">
 						<div class="input-prepend">
 							<span class="add-on">Username</span>
-                                                        <input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder=""/><br/>
+                                                        <input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder="" onkeyup="checkUsername(this)"/>
 						</div>
+                                                <label id="checkuser"></label>
+                                                <br/>
 					</div>
 					
 					<div class="control-group">
 						<div class="input-prepend">
 							<span class="add-on"> Password </span>
-                                                        <input type="password" name="signuppassword" class="span2" id="prependedInput" type="password" placeholder=""/>
+                                                        <input type="text" name="signuppassword" class="span2" id="prependedInput"  placeholder=""/>
 							
 						</div>
 					</div>
+                                        <div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password confirm</span>
+                                                        <input type="text" name="signuppasswordconfirm" class="span2" id="prependedInput"  placeholder=""/>
+							
+						</div>
+					</div>
+                                        
 					
 					<button type="submit" class="btn">Sign up</button>
 					</form>
