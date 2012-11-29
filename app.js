@@ -6,6 +6,8 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
+  //, connect = require("connect")
+  , slashes = require("connect-slashes")
   , routes = require('./routes')
   , flash = require('connect-flash')
   , passport = require('passport')
@@ -25,7 +27,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-    var User = db.model('Users', schemas.userSchema);
+    var User = db.model('User', schemas.userSchema);
     var out = User.findOne({ id: id }, function (err, user) {
         if (user) {
             done(err, user);
@@ -45,7 +47,7 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-    var User = db.model('Users', schemas.userSchema);
+    var User = db.model('User', schemas.userSchema);
     var out = User.findOne({ name: username }, function (err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
@@ -60,7 +62,7 @@ var app = express();
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection('localhost', 'test');
+db = mongoose.createConnection('localhost', 'asq');
 schemas = require('./models/models.js');
 
 /** Configure express */
@@ -81,6 +83,8 @@ app.configure(function() {
     app.use(app.router);
     app.use(require('stylus').middleware(__dirname + '/public/'));
     app.use(express.static(path.join(__dirname, '/public/')));
+    //used to append slashes at the end of a url (MUST BE after static)
+    app.use(slashes());
 });
 
 app.configure('development', function(){
@@ -104,25 +108,16 @@ app.get('/:whatever/js/*', function(req, res) {
 });
 
 app.get('/live/', routes.live);
-app.get('/live', function(req, res) {
-    res.redirect(301, '/live/');
-});
 app.get('/live/*', function(req, res) {
-    console.log('this is called')
     res.sendfile('./slides/demo/' + req.params[0]);
 });
 
-//app.get('/admin/', routes.admin);
 app.get('/admin/',  ensureAuthenticated, routes.admin);
-
-app.get('/admin', function(require, res) {
-    res.redirect(301, '/admin/');
-});
 app.get('/admin/*', function(req, res) {
     res.sendfile('./slides/demo/' + req.params[0]);
 });
 
-//Someone types /signup URL, which has no meaning. He gots redirected.
+//Someone types /signup URL, which has no meaning. He is redirected.
 app.get('/signup', function(req, res){
   res.redirect('/');
 });

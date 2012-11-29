@@ -13,14 +13,14 @@ exports.userSchema = new Schema({
 
 });
 
-exports.slidesSchema = new Schema({
-	title: { type: Sting },
+exports.slideshowSchema = new Schema({
+	title: { type: String },
 	owner: { type: ObjectId },
 	questions: {type: Array, default: []}
 });
 
 exports.slidesSchema.virtual('path').get(function() {
-	return './slides' + this._id;
+	return './slides/demo/'// + this._id;
 });
 
 exports.sessionSchema = new Schema({
