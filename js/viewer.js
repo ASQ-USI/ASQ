@@ -16,5 +16,9 @@ var connect = function() {
         socket.on('goto', function(event) {
             impress().goto(event.slide);
         });
+
+        socket.on('impress:start', function(event) {
+            $('#welcomeScreen').modal('hide');
+        });
     });
 }

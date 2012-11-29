@@ -21,9 +21,11 @@
 
 <body class="impress-not-supported">
 
-    <% if (true) { %>
-      <%  include ./slidesWelcome %>
-    <% }%>
+    <% if (mode === 'admin') { %>
+        <%  include slidesWelcome %>
+    <% } else {%>
+        <% include slidesWait %>
+    <% } %>
     <!-- <div id="welcomeScreen" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-header"><h3><%= title %></h3></div>
         <div class="modal-body">

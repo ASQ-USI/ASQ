@@ -25,7 +25,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-    User = db.model('Users', schemas.users);
+    var User = db.model('Users', schemas.userSchema);
     var out = User.findOne({ id: id }, function (err, user) {
         if (user) {
             done(err, user);
@@ -45,8 +45,8 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-    User= db.model('Users', schemas.users);
-    var out =User.findOne({ name: username }, function (err, user) {
+    var User = db.model('Users', schemas.userSchema);
+    var out = User.findOne({ name: username }, function (err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
         if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
@@ -202,4 +202,8 @@ io.sockets.on('connection', function(socket){
         currentSlide = event.slide;
         io.sockets.in('viewers').emit('goto', event);
     });
+
+    socket.on('impress:start', function(event) {
+        io.sockets.in('viewers').emit('impress:start', event);
+    })
 });

@@ -6,8 +6,8 @@ exports.getsingle=function(req, res) {
 
 //User is added to the database, and page is redirected to confirm the registration
 exports.signup=function(req, res) {
-	var users= db.model('Users', schemas.users);
-	var newUser= new users({
+	var user = db.model('Users', schemas.userSchema);
+	var newUser = new user({
 		name: req.body.signupusername,
 		password: req.body.signuppassword,
 	}

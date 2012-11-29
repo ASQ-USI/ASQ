@@ -23,7 +23,15 @@ var connect = function() {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:stepgoto", function(event) {
-        console.log('going to ' + event.target.id);
         socket.emit('goto', {slide:event.target.id});
+    });
+
+    /**
+      Handle impress:stepgoto event
+      sSend a socket event to notify which slide to go to.
+     */
+    document.addEventListener("impress:start", function(event) {
+        console.log('going to ' + event.target.id);
+        socket.emit('impress:start', {});
     });
 }
