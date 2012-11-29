@@ -101,13 +101,13 @@ body {
 /*
     Now let's bring some text styles back ...
 */
-b, strong { font-weight: bold }
+step b, step trong { font-weight: bold }
 i, em { font-style: italic }
 
 /*
     ... and give links a nice look.
 */
-a {
+step a {
     color: inherit;
     text-decoration: none;
     padding: 0 0.1em;
@@ -122,8 +122,8 @@ a {
     transition:         0.5s;
 }
 
-a:hover,
-a:focus {
+step a:hover,
+step a:focus {
     background: rgba(255,255,255,1);
     text-shadow: -1px -1px 2px rgba(100,100,100,0.5);
 }
@@ -686,7 +686,7 @@ a:focus {
 
     So use it wisely ... or don't use at all.
 */
-.impress-enabled          { pointer-events: none }
+.impress-enabled          { pointer-events: auto }
 .impress-enabled #impress { pointer-events: auto }
 
 /*

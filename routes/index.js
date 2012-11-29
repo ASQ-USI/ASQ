@@ -9,13 +9,12 @@ var ejs = require('ejs');
 
 exports.index = function(req, res){
   res.render('index', { title: 'Express' });
-};/** Renders the slideshow for viewers */
-exports.live = function(req, res) {
-    //ejs.filters
-    res.render('impress', {title: 'demo', mode:'viewer'})
+};/** Renders the slideshow for admins */
+exports.admin = function(req, res) {
+    res.render('slides', {title: 'demo', mode:'admin', host:'test', port:'3000', user:'jacques', pass:'HG23WX'})
 }
 
-/** Renders the slideshow for admin(s) */
-exports.admin = function(req, res) {
-    res.render('impress', {title: 'demo', mode:'admin'})
+/** Renders the slideshow for viewers */
+exports.live = function(req, res) {
+    res.render('slides', {title: 'demo', mode:'viewer'})
 }

@@ -105,7 +105,6 @@ app.get('/:whatever/js/*', function(req, res) {
 
 app.get('/live/', routes.live);
 app.get('/live', function(req, res) {
-    console.log('redirect');
     res.redirect(301, '/live/');
 });
 app.get('/live/*', function(req, res) {
@@ -113,7 +112,9 @@ app.get('/live/*', function(req, res) {
     res.sendfile('./slides/demo/' + req.params[0]);
 });
 
-app.get('/admin/', routes.admin);
+//app.get('/admin/', routes.admin);
+app.get('/admin/',  ensureAuthenticated, routes.admin);
+
 app.get('/admin', function(require, res) {
     res.redirect(301, '/admin/');
 });

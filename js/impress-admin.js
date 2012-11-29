@@ -225,6 +225,7 @@
         if (!impressSupported) {
             return {
                 init: empty,
+                start: empty,
                 goto: empty,
                 prev: empty,
                 next: empty
@@ -261,6 +262,7 @@
         var canvas = document.createElement("div");
         
         var initialized = false;
+        var started = false;
         
         // STEP EVENTS
         //
@@ -410,6 +412,12 @@
             triggerEvent(root, "impress:init", { api: roots[ "impress-root-" + rootId ] });
         };
         
+        var start = function() {
+            if (!initialized || started) return;
+            triggerEvent(root, "impress:start", { api: roots[ "impress-root-" + rootId ] });
+            started = true;
+        };
+
         // `getStep` is a helper function that returns a step element defined by parameter.
         // If a number is given, step with index given by the number is returned, if a string
         // is given step element with such id is returned, if DOM element is given it is returned
@@ -642,6 +650,7 @@
         // store and return API for given impress.js root element
         return (roots[ "impress-root-" + rootId ] = {
             init: init,
+            start: start,
             goto: goto,
             next: next,
             prev: prev
@@ -679,7 +688,7 @@
     };
     
     // wait for impress.js to be initialized
-    document.addEventListener("impress:init", function (event) {
+    document.addEventListener("impress:start", function (event) {
         // Getting API from event data.
         // So you don't event need to know what is the id of the root element
         // or anything. `impress:init` event data gives you everything you 
@@ -687,14 +696,14 @@
         var api = event.detail.api;
         
         // KEYBOARD NAVIGATION HANDLERS
-        
+
         // Prevent default keydown action when one of supported key is pressed.
         document.addEventListener("keydown", function ( event ) {
             if ( event.keyCode === 9 || ( event.keyCode >= 32 && event.keyCode <= 34 ) || (event.keyCode >= 37 && event.keyCode <= 40) ) {
                 event.preventDefault();
             }
         }, false);
-        
+
         // Trigger impress action (next or prev) on keyup.
         
         // Supported keys are:
@@ -789,13 +798,13 @@
                 }
             }
         }, false);
-        
+
         // rescale presentation when window is resized
         window.addEventListener("resize", throttle(function () {
             // force going to active step again, to trigger rescaling
             api.goto( document.querySelector(".active"), 500 );
         }, 250), false);
-        
+
     }, false);
         
 })(document, window);
