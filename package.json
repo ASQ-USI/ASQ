@@ -15,7 +15,8 @@
         "socket.io" : "0.9.x",
         "connect-flash": "0.1.x",
         "passport": "0.1.x",
-        "passport-local": "0.1.x"
+        "passport-local": "0.1.x",
+        "mongoose": "3.4.x"
     },
     "engines" : {
         "node" : "0.8.x",
