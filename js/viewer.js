@@ -4,8 +4,8 @@
 */
 
 /** Connect back to the server with a websocket */
-var connect = function() {
-    var socket = io.connect("http://localhost:3000");
+var connect = function(host, port) {
+    var socket = io.connect('http://' + host + ':' + port);
     socket.on('connect', function(event) {
         socket.emit('viewer', {});
 

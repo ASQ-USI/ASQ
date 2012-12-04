@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=1024" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title><%= title %></title>
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
-    <link rel="stylesheet" href="css/style.css" />
-
+    <% links.forEach(function(link){ %>
+        <% stylesheet(link) -%>
+    <% }); %>
     <!-- Bootstrap -->
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -41,14 +41,14 @@
             <button class="btn btn-primary">Join in</button>
         </div>
     </div> -->
-    <% include ../slides/demo/index %>
+    <%- partial(path) %>
     <script src="js/impress-<%= mode %>.js"></script>
     <script src="js/<%= mode %>.js"></script>
     <script>
         window.onload = function() {
         impress().init();
         $('#welcomeScreen').modal('show');
-        connect();
+        connect(host, port);
         }
     </script>
 </body>

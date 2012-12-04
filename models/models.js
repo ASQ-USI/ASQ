@@ -16,11 +16,12 @@ exports.userSchema = new Schema({
 exports.slideshowSchema = new Schema({
 	title: { type: String },
 	owner: { type: ObjectId },
-	questions: {type: Array, default: []}
+	questions: {type: Array, default: []},
+	links: {type: Array, default: []}
 });
 
-exports.slidesSchema.virtual('path').get(function() {
-	return './slides/demo/'// + this._id;
+exports.slideshowSchema.virtual('path').get(function() {
+	return './slides/demo/';// + this._id;
 });
 
 exports.sessionSchema = new Schema({

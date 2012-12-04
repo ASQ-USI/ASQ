@@ -23,6 +23,7 @@
 # Node.js #
 ###########
 node_modules/
+slides/
 
 # IDE Files #
 #############

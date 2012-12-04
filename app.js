@@ -6,7 +6,7 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  //, connect = require("connect")
+  , engine = require('ejs-locals')
   , slashes = require("connect-slashes")
   , routes = require('./routes')
   , flash = require('connect-flash')
@@ -23,12 +23,12 @@ var express = require('express')
 //   the user by ID when deserializing.
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
     var User = db.model('User', schemas.userSchema);
-    var out = User.findOne({ id: id }, function (err, user) {
+    var out = User.findById(id, function (err, user) {
         if (user) {
             done(err, user);
         } else {
@@ -58,7 +58,9 @@ passport.use(new LocalStrategy(
   }
 ));
 
-var app = express();
+app = express();
+app.engine('ejs', engine);
+
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
@@ -116,6 +118,9 @@ app.get('/admin/',  ensureAuthenticated, routes.admin);
 app.get('/admin/*', function(req, res) {
     res.sendfile('./slides/demo/' + req.params[0]);
 });
+
+app.post('/upload', ensureAuthenticated, routes.upload);
+app.get('/upload', ensureAuthenticated, routes.showUpload);
 
 //Someone types /signup URL, which has no meaning. He is redirected.
 app.get('/signup', function(req, res){

@@ -11,6 +11,7 @@
         "express" : "3.x",
         "stylus" : "0.x",
         "ejs" : "0.8.x",
+        "ejs-locals" : "1.0.x",
         "path" : "0.4.x",
         "socket.io" : "0.9.x",
         "connect-flash": "0.1.x",
@@ -18,7 +19,7 @@
         "passport-local" : "0.1.x",
 	"connect-slashes" : "0.0.x",
 	"mongoose" : "3.4.x",
-	"connect" : "2.7.x"
+        "unzip" : "0.1.x"
     },
     "engines" : {
         "node" : "0.8.x",
