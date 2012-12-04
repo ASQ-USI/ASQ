@@ -14,10 +14,10 @@
                   $(document).ready(function()  
                   {
                     <% if (fromsignup !== undefined && fromsignup == "true"){ %>
-                     $('.login').hide(); 
+                     $('.slidinglogin').hide(); 
                       $('#signup').click(function()  
                       {  
-                      $('.login').slideUp('slow');  
+                      $('.slidinglogin').slideUp('slow');  
                       $('.signup').slideDown('slow');  
                       });  
                       $('#login').click(function()  
@@ -30,13 +30,13 @@
                      $('.signup').hide(); 
                       $('#signup').click(function()  
                       {  
-                      $('.login').slideUp('slow');  
+                      $('.slidinglogin').slideUp('slow');  
                       $('.signup').slideDown('slow');  
                       });  
                       $('#login').click(function()  
                       {  
                           $('.signup').slideUp('slow');  
-                          $('.login').slideDown('slow');  
+                          $('.slidinglogin').slideDown('slow');  
                       });   
                     <% } %>
                     
@@ -85,7 +85,7 @@
                                        
                                        </form> 
 
-                                        <div class="loginboxmy">
+                                        <div class="slidinglogin">
                                           <form name="ÓloginÓ" class="form-horizontal" action="/user" method="post">
 					<div class="control-group">
 						<div class="input-prepend">
