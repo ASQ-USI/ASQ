@@ -16,6 +16,12 @@ exports.signup=function(req, res) {
 	    res.render('index', { message: "Credentials must be only alphanumeric, between 3 and 10 characters", fromsignup:'true' });
 	    return;
 	}
+	var myRegxp = /\S+@\S+\.\S+/;
+	if(myRegxp.test(req.body.signupemail) == false)
+	{
+	    res.render('index', { message: "Please insert a valid email adress", fromsignup:'true' });
+	    return;
+	}
 	if (req.body.signuppassword!=req.body.signuppasswordconfirm) {
 		res.render('index', {message: "The two passwords are not matching", fromsignup:'true' });
 		return;
@@ -23,13 +29,14 @@ exports.signup=function(req, res) {
 
 
 	var users= db.model('Users', schemas.users);
-	var out =User.findOne({ name: req.body.signupusername }, function (err, user) {
+	var out =users.findOne({ name: req.body.signupusername }, function (err, user) {
         if (user) {
 		res.render('index', {message: "Username already taken", fromsignup:'true'  });
 	} else {
 		var newUser= new users({
 		name: req.body.signupusername,
 		password: req.body.signuppassword,
+		email: req.body.signupemail
 	}
 	);
 		newUser.save();

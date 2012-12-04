@@ -1,5 +1,6 @@
 <html>
   <head>
+    <base href="http://localhost:3000/">
     <title>ASQ - Home</title>
 		<!-- Bootstrap -->
 		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -41,6 +42,7 @@
                     
                       
                   });
+                 
                   
     
 </script>
@@ -112,18 +114,26 @@
                                                 <label id="checkuser"></label>
                                                 <br/>
 					</div>
+                                        <div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">email</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="signupemail" placeholder="" />
+						</div>
+                                                
+                                                <br/>
+					</div>
 					
 					<div class="control-group">
 						<div class="input-prepend">
 							<span class="add-on"> Password </span>
-                                                        <input type="text" name="signuppassword" class="span2" id="prependedInput"  placeholder=""/>
+                                                        <input type="password" name="signuppassword" class="span2" id="prependedInput"  placeholder=""/>
 							
 						</div>
 					</div>
                                         <div class="control-group">
 						<div class="input-prepend">
 							<span class="add-on"> Password confirm</span>
-                                                        <input type="text" name="signuppasswordconfirm" class="span2" id="prependedInput"  placeholder=""/>
+                                                        <input type="password" name="signuppasswordconfirm" class="span2" id="prependedInput"  placeholder=""/>
 							
 						</div>
 					</div>

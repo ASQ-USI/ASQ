@@ -133,11 +133,22 @@ app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user', ensureAuthenticated, function(req,res) {
-    res.render('user', { user: req.user, message: req.flash('error') });
+    console.log(req);
+    res.redirect('user/'+req.user.username);
 });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
 app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
+    res.redirect('/user/'+req.body.username);
+});
+
+//Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
+app.get('/user/:username', ensureAuthenticated, function(req,res) {
+    res.render('user', { user: req.user, message: req.flash('error') });
+});
+
+//Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
+app.post('/user/:username', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
     res.redirect('/user');
 });
 

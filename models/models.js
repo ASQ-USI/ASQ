@@ -7,5 +7,6 @@ var Schema = mongoose.Schema,
 
 exports.users = new Schema({
 	name: { type: String},
-	password: { type: String}
+	password: { type: String},
+	email: {type:String}
 });
