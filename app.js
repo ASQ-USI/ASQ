@@ -26,7 +26,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
     User = db.model('Users', schemas.users);
-    var out = User.findOne({ id: id }, function (err, user) {
+    var out = User.findById(id , function (err, user) {
         if (user) {
             done(err, user);
         } else {
@@ -133,8 +133,7 @@ app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user', ensureAuthenticated, function(req,res) {
-    console.log(req);
-    res.redirect('user/'+req.user.username);
+    res.redirect('user/'+req.user.name);
 });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
@@ -144,7 +143,12 @@ app.post('/user', passport.authenticate('local', { failureRedirect: '/', failure
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user/:username', ensureAuthenticated, function(req,res) {
-    res.render('user', { user: req.user, message: req.flash('error') });
+    if (req.params.username==req.user.name) {
+        res.render('user', { user: req.user, message: req.flash('error') });
+    } else {
+        res.redirect('user/'+req.user.name);
+    }
+    
 });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
