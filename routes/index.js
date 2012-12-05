@@ -18,14 +18,16 @@ exports.index = function(req, res){
 
 /** Renders the slideshow for admins */
 exports.admin = function(req, res) {
-    //console.log(req);
-    console.log(path.relative(app.get('views'), 'slides/demo/'));
     //var wantedUser = req.params.user;
     //getCurrentSlides(wantedUser, function (err, user) {
-        res.render('slides', {title: 'demo', mode:'admin',
-                              host:'localhost', port:'3000',
+        res.render('slides', {title: 'Milestone 2', mode:'admin',
+                              host:'asq.inf.unisi.ch', port:'3000',
                               user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
-                              path: path.relative(app.get('views'), 'slides/demo/')
+                              path: path.relative(app.get('views'), 'slides/demo/index.html'),
+                              links: [
+                                "http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic",
+                                "css/impress-demo.css"
+                              ]
                              });
     //});
 }
@@ -34,10 +36,14 @@ exports.admin = function(req, res) {
 exports.live = function(req, res) {
     //var wantedUser = req.params.user;
     //getCurrentSlides(wantedUser, function (err, user) {
-        res.render('slides', {title: 'demo', mode:'viewer',
-                              host:'localhost', port:'3000',
+        res.render('slides', {title: 'Milestone 2', mode:'viewer',
+                              host:'asq.inf.unisi.ch', port:'3000',
                               user: req.params.user, pass:'To Implement',
-                              path: path.relative(app.get('views'), 'slides/demo/')
+                              path: path.relative(app.get('views'), 'slides/demo/index.html'),
+                              links: [
+                                "http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic",
+                                "css/impress-demo.css"
+                              ]
                              });
     //});
 }

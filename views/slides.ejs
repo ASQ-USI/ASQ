@@ -8,11 +8,12 @@
     <title><%= title %></title>
     <% links.forEach(function(link){ %>
         <% stylesheet(link) -%>
-    <% }); %>
+        <%- stylesheets %>
+    <% }) %>
     <!-- Bootstrap -->
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Websockets -->
     <script src="/socket.io/socket.io.js"></script>
@@ -48,7 +49,7 @@
         window.onload = function() {
         impress().init();
         $('#welcomeScreen').modal('show');
-        connect(host, port);
+        connect(<%='\'' + host + '\''%>, <%=port %>);
         }
     </script>
 </body>

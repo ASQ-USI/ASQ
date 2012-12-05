@@ -109,8 +109,12 @@ app.get('/:whatever/js/*', function(req, res) {
     res.sendfile('./js/' + req.params[0]);
 });
 
-app.get('/live/', routes.live);
-app.get('/live/*', function(req, res) {
+app.get('/live/:user/js/*', function(req, res) {
+    res.sendfile('./js/' + req.params[0]);
+});
+
+app.get('/live/:user/', routes.live);
+app.get('/live/:user/*', function(req, res) {
     res.sendfile('./slides/demo/' + req.params[0]);
 });
 
