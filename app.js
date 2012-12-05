@@ -26,7 +26,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
     User = db.model('Users', schemas.users);
-    var out = User.findOne({ id: id }, function (err, user) {
+    var out = User.findById(id , function (err, user) {
         if (user) {
             done(err, user);
         } else {
@@ -133,8 +133,7 @@ app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user', ensureAuthenticated, function(req,res) {
-    console.log(req);
-    res.redirect('user/'+req.user.username);
+    res.redirect('user/'+req.user.name);
 });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
@@ -144,7 +143,12 @@ app.post('/user', passport.authenticate('local', { failureRedirect: '/', failure
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user/:username', ensureAuthenticated, function(req,res) {
-    res.render('user', { user: req.user, message: req.flash('error') });
+    if (req.params.username==req.user.name) {
+        res.render('user', { user: req.user, message: req.flash('error') });
+    } else {
+        res.redirect('user/'+req.user.name);
+    }
+    
 });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
@@ -160,6 +164,27 @@ app.get('/logout', function(req, res){
 
 //Serving static files
 app.get('/images/:path', registration.get);
+
+app.get('/statistics', ensureAuthenticated, function (req,res) {
+    res.render('statistics');
+});
+
+app.get('/edit', ensureAuthenticated, function (req,res) {
+    res.render('edit');
+});
+
+app.get('/editimages', ensureAuthenticated, function (req,res) {
+    res.render('editimages');
+});
+
+app.get('/editstyle', ensureAuthenticated, function (req,res) {
+    res.render('editstyle');
+});
+app.get('/edithtml', ensureAuthenticated, function (req,res) {
+    res.render('edithtml');
+});
+
+app.get('/render', ensureAuthenticated, registration.parsequestion);
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
