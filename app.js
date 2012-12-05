@@ -165,6 +165,25 @@ app.get('/logout', function(req, res){
 //Serving static files
 app.get('/images/:path', registration.get);
 
+app.get('/statistics', ensureAuthenticated, function (req,res) {
+    res.render('statistics');
+});
+
+app.get('/edit', ensureAuthenticated, function (req,res) {
+    res.render('edit');
+});
+
+app.get('/editimages', ensureAuthenticated, function (req,res) {
+    res.render('editimages');
+});
+
+app.get('/editstyle', ensureAuthenticated, function (req,res) {
+    res.render('editstyle');
+});
+app.get('/edithtml', ensureAuthenticated, function (req,res) {
+    res.render('edithtml');
+});
+
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
