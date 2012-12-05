@@ -50,21 +50,50 @@ exports.upload = function(req, res) {
     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
     var newSlideshow = new Slideshow({
                                     title:req.files.upload.name,
-                                    owner: req.user.name
+                                    owner: req.user._id
                                     });
-    fs.mkdir('slides/' + newSlideshow._id, function(err) {
+    var path = 'slides/' + newSlideshow._id;
+    fs.mkdir(path, function(err) {
         if (err) throw err;
         fs.createReadStream(req.files.upload.path)
             .on('close', function(){
-                /*  This where we have to:
-                 *  1. Process index.[html|ejs]
-                 *  2. Process assets.json
-                 *  3. Procses questions.json
-                 *  4. Save the Slides entry in the db
-                 *  5. Redirect to user page
-                 * ALSO, for some reason, this is called a twice, after some time, for some reason...
-                 */
-                console.log('done');
+                //Process index.html if none, delete everything notify user
+                fs.rename(path + '/index.html', path + '/index.ejs', function(err) {
+                    if (err) throw err; //Must handle ENOENT
+                    //Process assets.json if none, delete everything notify user
+                    //What if the file is very large and overflows...?
+                    fs.readFile(path + '/assets.json', function(err, file) {
+                        if (err) throw err; //Must handle ENOENT
+                        var assets = JSON.parse(file);
+                        newSlideshow.title = assets.title;
+                        newSlideshow.links = assets.links || [];
+                        //Process questions.json if none, skip.
+                        //What if the file is very large and overflows...?
+                        fs.readFile(path + '/questions.json', function(err, file2){
+                            if (err) throw err; //Must handle ENOENT
+                            var questions = JSON.parse(file2);
+                            newSlideshow.questions = questions || [];
+                            //Save the Slideshow entry in the db
+                            newSlideshow.save(function(err) {
+                                if (err) throw err;
+                                //Delete zip archive
+                                fs.unlink(req.files.upload.path, function(err) {
+                                    if (err) throw err;
+                                    //Delete assets.json
+                                    fs.unlink(path + '/assets.json', function(err) {
+                                        if (err) throw err;
+                                        //Delete questions.json
+                                        fs.unlink(path + '/questions.json', function(err) {
+                                            if (err) throw err;
+                                            //Redirect to user page, with success.
+                                            res.redirect('/user'); // Must add notifications
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
             })
             .pipe(unzip.Extract({ path:'slides/' + newSlideshow._id }));
     });
