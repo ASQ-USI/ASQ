@@ -20,7 +20,6 @@
 				$('#myModal').modal('show');
 				<% } %>
 				$('.create').click(function() {
-					console.log("hee");
 					$('#signup').submit();
 				})
 			});
@@ -94,7 +93,7 @@
 					
 					
 					
-					<form class="form-horizontal" action="/signup" method="post">
+					<form id="signup" class="form-horizontal" action="/signup" method="post">
 						<div class="control-group" id="groupUsername">
 							<label class="control-label" for="inputUsername">Username</label>
 					    	<div class="controls">
@@ -132,50 +131,7 @@
 					  
 					</form>
 					
-					
-					
-					<form id="signup" class="form-horizontal" action="/signup" method="post">
 
-						<div class="control-group">
-							<div class="input-prepend">
-								<span class="add-on">Username</span>
-
-								<input class="span2" id="prependedInput"  type="text" name="signupusername" placeholder="" onkeyup="checkUsername(this)"/>
-							</div>
-							<span id ="checkuser" class="help-inline"></span>
-							<br/>
-						</div>
-						<div class="control-group">
-							<div class="input-prepend">
-								<span class="add-on">email</span>
-								<input class="span2" id="prependedInput"  type="text" name="signupemail" placeholder="" />
-							</div>
-
-							<br/>
-						</div>
-
-						<div class="control-group">
-							<div class="input-prepend">
-								<span class="add-on"> Password </span>
-								<input type="password" name="signuppassword" class="span2" id="prependedInput"  placeholder=""/>
-
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="input-prepend">
-								<span class="add-on"> Password confirm</span>
-								<input type="password" name="signuppasswordconfirm" class="span2" id="prependedInput"  placeholder=""/>
-								
-							</div>
-						</div>
-
-					</form>
-					
-					
-					
-					
-					
-					
 				</div>
 				<div class="modal-footer">
 					<button class="btn" data-dismiss="modal" aria-hidden="true">
