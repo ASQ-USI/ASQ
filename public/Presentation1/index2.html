@@ -28,17 +28,22 @@
    			color: white;
    		}
    		h1{
-   			font-size: 50px;
+   			font-size: 42px;
    			margin-bottom: 20px;
    			font-weight: bold;
    		}
-   		p,li{
+   		p{
    			font-size: 34px;
    		}
    		li{
    			text-align: left;
    			list-style: disc;
-   			margin-bottom: 20px
+   			margin-bottom: 20px;
+   			font-size: 30px;
+   		}
+   		ul{
+   			padding-left: 30px;
+   			padding-bottom: 20px;
    		}
     </style>
 </head>
@@ -52,62 +57,61 @@
 	<div id="impress">
 		
 		<div id="1" class="step"  data-x="-1024" data-y="0">
-	       <!--- <img src="../img/logo-big.png" />
-	        <p style="font-size: 28px; color: #999">Interactive presentations based on node.js and impress.js</p>/--->
-	        <img src="img/apple-cinema-display2.png"  height="700px"/>
+	       <img src="img/logo-big.png" />
+	       <p>Previously on "ASQ"...</p>
+	        
 	   </div> 
 	   
 	   	<div id="2" class="step"  data-x="0" data-y="0">
-	    	<h1>What is ASQ?</h1>
-	    	<p>This web app allows to broadcast a slideshow synchronously to multiple clients. <br /> ASQ allows the lecturer to give questions to the students and recive their answers in real-time.</p>   
+	   	<h1>Decisions have been made <br />on our roadmap</h1>
+	    	<ul>
+	    		<li>UI for frontend and backend (Max)</li>
+	    		<li>User authentification (Marga)</li>
+	    		<li>Synchronous presentation playback (Jacques)</li>
+	    		<li>URL routing (Marga)</li>
+	    		<li>Question types: Multi-choice and text (Jacques and Marga)</li>
+	    		<li>Basic statistics with visualizations (Max) </li>
+	    	</ul>
 		</div>
 		
 	   	<div id="2b" class="step"  data-x="1024" data-y="0"> 
-			 <img src="img/asq.png"/>
+			<h1>What we have been doing last week </h1>
+	    	<p style="text-align: left">Jacques</p>
+	    	<ul>
+	    		<li>improved websockets</li>
+	    		<li>started with slideshow upload and database schema</li>
+	    	</ul>
 		</div>
 				
 		<div id="3" class="step"  data-x="2048" data-y="0">
-	    	<h1>Workflow</h1>
+	    	<h1>What we have been doing last week </h1>
+	    	
+	    	<p style="text-align: left">Magarita</p>	
 	    	<ul>
-	    		<li>Daily meetings with the TA (Vassilis)</li>
-	    		<li>Code and Wiki on GitHub</li>
-	    		<li>Seperated branch for each feature</li>
-	    		<li>EtherPad for discussions</li>
-	    	</ul>   
+	    		<li>started parsing of questions as JSON</li>
+	    		<li> bug fixing</li>
+	    	</ul>
+	    	
 		</div>
 		
 		<div id="3b" class="step"  data-x="3072" data-y="0">
-	    	<h1>Database model </h1>
-	    	<img src="img/ASQ_DB_model_1.png" style="background-color: #FFF; border: 10px solid white;"/>  
+	    	<h1>What we have been doing last week </h1>
+	    	<p style="text-align: left">Max</p>
+	    	<ul>
+	    		<li>improved & extended user interface</li>
+	    		<li>reviewed JS chart tools</li>
+	    	</ul>  
 		</div>
 	   
 	   	<div id="4" class="step"  data-x="4096" data-y="0">
-	    	<h1>Currently... </h1>
-	    	<ul>
-	    		<li>Max is working on User Interface</li>
-	    		<li>Magarita is working on User Authentification</li>
-	    		<li>Jacques is working on Slideshow rendering &amp; synchronisation</li>
-	    	</ul>   
-		</div>
-		
-		<div id="5" class="step"  data-x="5120" data-y="0">
-	    	<h1>Challenges</h1>
-	    	<ul>
-	    		<li>Developing different question types (more than multiple choice)</li>
-	    		<li>Storing, sending and rendering questions and answers</li>
-	    		<li>Database structures</li>
-	    		<li>User authentification and security</li>
-	    		<li>URL structure and routing</li>
-	    	</ul>  
-	    </div> 
-	    <div id="6" class="step"  data-x="6144" data-y="0">
-	    	<h1>Demo of user interface</h1>
-	    	<img src="img/apple-cinema-display.png"  height="700px"/>  
+	    	<h1>Demo</h1>
+	    	<img src="img/apple-cinema-display.png"  height="700px"/>   
+
 		</div>
 	   
 	</div>
 	
-	<script src="js/impress.js"></script>
+	<script src="../js/impress.js"></script>
 	<script>impress().init();</script>
 
 </body>

@@ -100,7 +100,7 @@ exports.parsequestion=function(req,res) {
 		'</h1>';
 
 	for (var i=0;i<questions[0].options.length;i++) {
-		response+='<input type="radio" name="option'+i+'" value="option'+i+'"><span>'+questions[0].options[i].text+'</span><br>'
+		response+='<input type="checkbox" name="option'+i+'" value="option'+i+'"><span>'+questions[0].options[i].text+'</span><br>'
 	}
 	response+='</form></div></body></html>';
 
