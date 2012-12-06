@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "name" : "ASQ",
     "version" : "0.1.0",
     "author" : "Jacques DAFFLON <jacques.dafflon@gmail.com>, Margarita GRINVALD <margarita.grinvald@usi.ch>, Max VON BUELOW",
@@ -12,32 +11,23 @@
         "express" : "3.x",
         "stylus" : "0.x",
         "ejs" : "0.8.x",
+        "ejs-locals" : "1.0.x",
         "path" : "0.4.x",
-        "socket.io" : "0.9.x"
+        "socket.io" : "0.9.x",
+        "connect-flash": "0.1.x",
+        "passport": "0.1.x",
+<<<<<<< HEAD
+        "passport-local": "0.1.x",
+        "mongoose": "3.4.x"
+=======
+        "passport-local" : "0.1.x",
+	"connect-slashes" : "0.0.x",
+	"mongoose" : "3.4.x",
+        "unzip" : "0.1.x"
+>>>>>>> 8fed13b988691123f673dca8bcf1f4e711a7e311
     },
     "engines" : {
         "node" : "0.8.x",
         "npm" : "1.1.X"
     }
 }
-=======
-  "name": "hello-world",
-  "description": "hello world test app",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-    "express": "3.x",
-    "path": "0.4.x",
-    "http": "0.0.x",
-    "connect-flash": "0.1.x",
-    "passport": "0.1.x",
-    "passport-local": "0.1.x",
-  },
-  "engines" : {
-    "node" : "0.8.x",
-    "npm" : "1.1.X"
-  }
-
-}
-
->>>>>>> feat-user-auth-test

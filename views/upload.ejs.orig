@@ -1,0 +1,70 @@
+<<<<<<< HEAD
+=======
+<!DOCTYPE html>
+>>>>>>> feat-marga-new-stuff
+<html>
+  <head>
+    <title>ASQ - Home</title>
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="css/style.css" rel="stylesheet" media="screen">
+<<<<<<< HEAD
+                  
+                  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+  </head>
+
+         <body class="dark-bg">
+          
+          
+          
+          
+   <div id="wrapper">
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+      <input type="file" name="upload" size="40" maxlength="100000">
+      <input type="submit" name="submit" value="Upload">
+    </form>
+   </div>
+=======
+  </head>
+
+         <body class="dark-bg">
+   <div id="wrapper">
+	
+			<div id="login-box">
+					<img src="images/logo-big.png" />
+					<div class="presentation-group">
+					<h2 class="pull-left">Registration successfull.</h2>
+					</div>
+					<br><br><br>
+                                        <form class="form-horizontal" action="/user" method="post">
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on">Username</span>
+                                                        <input class="span2" id="prependedInput"  type="text" name="username" placeholder=""/><br/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<div class="input-prepend">
+							<span class="add-on"> Password </span>
+                                                        <input type="password" name="password" class="span2" id="prependedInput" type="password" placeholder=""/>
+							
+						</div>
+					</div>
+					
+					<button type="submit" class="btn">Log in</button>
+					</form>
+                                        
+				</div>	
+		
+		</div>
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="js/bootstrap.min.js"></script><div id="wrapper">
+                
+>>>>>>> feat-marga-new-stuff
+  </body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title><%= title %></title>
+    <% links.forEach(function(link){ %>
+        <% stylesheet(link) -%>
+        <%- stylesheets %>
+    <% }) %>
+    <!-- Bootstrap -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Websockets -->
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body class="impress-not-supported">
+
+    <% if (mode === 'admin') { %>
+        <%  include slidesWelcome %>
+    <% } else {%>
+        <% include slidesWait %>
+    <% } %>
+    <!-- <div id="welcomeScreen" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-header"><h3><%= title %></h3></div>
+        <div class="modal-body">
+            <form>
+                <fieldset>
+                    <legend>Join the presentation</legend>
+                    <label>Enter your name:</label>
+                    <input type="text" placeholder="Your name..." >
+                </fieldset>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">Join in</button>
+        </div>
+    </div> -->
+    <%- partial(path) %>
+    <script src="/js/impress-<%= mode %>.js"></script>
+    <script src="/js/<%= mode %>.js"></script>
+    <script>
+        window.onload = function() {
+        impress().init();
+        $('#welcomeScreen').modal('show');
+        connect(<%='\'' + host + '\''%>, <%=port %>);
+        }
+    </script>
+</body>
+</html>

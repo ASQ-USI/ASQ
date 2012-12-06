@@ -1,0 +1,11 @@
+ <div id="welcomeScreen" class="modal hide fade" style="pointer-events: auto;">
+    <div class="modal-header"><h1 style="text-align: center;"><%= title %></h1></div>
+    <div class="modal-body">
+        <!-- <h3>Join the show!</h3> -->
+        <h2 style="text-align: center;"><a href="http://<%= host %>:<%= port %>/live/<%= user %>/">http://<%= host %>:<%= port %>/live/<%= user %>/</a></h2>
+        <h2 style="text-align: center;">Passphrase: <span class="text-info" ><strong><%= pass %></strong></span></h2>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary"  data-dismiss="modal" onclick="impress().start()" >Join in</button>
+    </div>
+ </div>

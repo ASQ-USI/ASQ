@@ -6,6 +6,8 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
+  , engine = require('ejs-locals')
+  , slashes = require("connect-slashes")
   , routes = require('./routes')
   , flash = require('connect-flash')
   , passport = require('passport')
@@ -21,12 +23,12 @@ var express = require('express')
 //   the user by ID when deserializing.
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-    User = db.model('Users', schemas.users);
-    var out = User.findOne({ id: id }, function (err, user) {
+    var User = db.model('User', schemas.userSchema);
+    var out = User.findById(id, function (err, user) {
         if (user) {
             done(err, user);
         } else {
@@ -45,8 +47,8 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-    User= db.model('Users', schemas.users);
-    var out =User.findOne({ name: username }, function (err, user) {
+    var User = db.model('User', schemas.userSchema);
+    var out = User.findOne({ name: username }, function (err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
         if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
@@ -56,11 +58,12 @@ passport.use(new LocalStrategy(
   }
 ));
 
-var app = express();
+app = express();
+app.engine('ejs', engine);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection('localhost', 'test');
+db = mongoose.createConnection('localhost', 'asq');
 schemas = require('./models/models.js');
 
 /** Configure express */
@@ -80,7 +83,9 @@ app.configure(function() {
     app.use(passport.session());
     app.use(app.router);
     app.use(require('stylus').middleware(__dirname + '/public/'));
-    app.use(express.static(path.join(__dirname, '/public/images')));
+    app.use(express.static(path.join(__dirname, '/public/')));
+    //used to append slashes at the end of a url (MUST BE after static)
+    app.use(slashes());
 });
 
 app.configure('development', function(){
@@ -93,44 +98,65 @@ app.get('/', ensureAuthenticated, function(req, res){
   res.render('logged');
 });
 
-app.get('/img/:file', function(req, res) {
-    console.log('###BEGIN');
-    console.log(req);
-    console.log('###END');
-});
-app.get('/live', routes.live);
-app.get('/live/*', function(req, res) {
-    console.log('this is called')
-    console.log(req.params);
-    res.sendfile('./slides/demo/' + req.params[0]);
-});
-app.get('/admin', routes.admin);
-
-//Someone types /signup URL, which has no meaning. He gots redirected.
-app.get('/signup', function(req, res){
-  res.redirect('/');
-});
-
 /**
    @description Prevent to serve included js files with presentations.
 
    This will serve a custom verion of impress.js and the appropriate websocket
    module.
  */
-app.get('/js/:id', function(req, res) {
-    res.sendfile('./js/' + req.params.id);
+//app.get('/:whatever/js/*', function(req, res) {
+//    res.sendfile('./js/' + req.params[0]);
+//});
+//
+//app.get('/live/:user/js/*', function(req, res) {
+//    res.sendfile('./js/' + req.params[0]);
+//});
+
+app.get('/live/:user/', routes.live);
+app.get('/live/:user/*', function(req, res) {
+    res.sendfile('./slides/demo/' + req.params[0]);
 });
+
+app.get('/admin/',  ensureAuthenticated, routes.admin);
+app.get('/admin/*', function(req, res) {
+    res.sendfile('./slides/demo/' + req.params[0]);
+});
+
+app.post('/upload', ensureAuthenticated, routes.upload);
+app.get('/upload', ensureAuthenticated, routes.showUpload);
+
+//Someone types /signup URL, which has no meaning. He is redirected.
+app.get('/signup', function(req, res){
+  res.redirect('/');
+});
+
+app.get('/checkusername/:username', registration.checkusername);
 
 //Registration happened. 
 app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user', ensureAuthenticated, function(req,res) {
-    res.render('user', { user: req.user, message: req.flash('error') });
+    res.redirect('user/'+req.user.name);
 });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
 app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
+    res.redirect('/user/'+req.body.username);
+});
+
+//Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
+app.get('/user/:username', ensureAuthenticated, function(req,res) {
+    if (req.params.username==req.user.name) {
+        res.render('user', { user: req.user, message: req.flash('error') });
+    } else {
+        res.redirect('user/'+req.user.name);
+    }
+    
+});
+
+//Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
+app.post('/user/:username', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
     res.redirect('/user');
 });
 
@@ -143,6 +169,27 @@ app.get('/logout', function(req, res){
 //Serving static files
 app.get('/images/:path', registration.get);
 
+app.get('/statistics', ensureAuthenticated, function (req,res) {
+    res.render('statistics');
+});
+
+app.get('/edit', ensureAuthenticated, function (req,res) {
+    res.render('edit');
+});
+
+app.get('/editimages', ensureAuthenticated, function (req,res) {
+    res.render('editimages');
+});
+
+app.get('/editstyle', ensureAuthenticated, function (req,res) {
+    res.render('editstyle');
+});
+app.get('/edithtml', ensureAuthenticated, function (req,res) {
+    res.render('edithtml');
+});
+
+app.get('/render', ensureAuthenticated, registration.parsequestion);
+
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
@@ -152,7 +199,8 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.render('index', { error: req.flash('error') });
+    res.render('index', { message: req.flash('error'), fromsignup:'false' });
+
 }
 
 
@@ -168,6 +216,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
  */
 var io = require('socket.io').listen(server);
 var currentSlide = 0;
+var started = false;
 /**
    @description  Configure socket server
    @todo Handle disconnect, authentification and multiple sessions
@@ -177,6 +226,9 @@ io.sockets.on('connection', function(socket){
     /** @function Handle connection from viewer. */
     socket.on('viewer', function(event) {
         socket.join('viewers');
+        if (started) {
+            socket.emit('impress:start', {});
+        }
         socket.emit('goto', {slide:currentSlide});
         io.sockets.in('admins').emit('new', {});
     });
@@ -196,4 +248,9 @@ io.sockets.on('connection', function(socket){
         currentSlide = event.slide;
         io.sockets.in('viewers').emit('goto', event);
     });
+
+    socket.on('impress:start', function(event) {
+        started = true;
+        io.sockets.in('viewers').emit('impress:start', event);
+    })
 });

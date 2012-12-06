@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>impress.js | presentation tool based on the power of CSS3 transforms and transitions in modern browsers | by Bartek Szopka @bartaz</title>
+    
+    <meta name="description" content="impress.js is a presentation tool based on the power of CSS3 transforms and transitions in modern browsers and inspired by the idea behind prezi.com." />
+    <meta name="author" content="Bartek Szopka" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+    <link href="css/impress-demo.css" rel="stylesheet" />
+    
+    <link rel="shortcut icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    
+    <style type="text/css">
+    	div{
+    		
+    		width: 1024px;
+    		
+    		display: table-cell;
+    		text-align: center;
+    		vertical-align: middle;
+    	}
+   		h1,h2,h3,li,p{
+   			color: white;
+   		}
+   		h1{
+   			font-size: 50px;
+   			margin-bottom: 20px;
+   			font-weight: bold;
+   		}
+   		p,li{
+   			font-size: 34px;
+   		}
+   		li{
+   			text-align: left;
+   			list-style: disc;
+   			margin-bottom: 20px
+   		}
+    </style>
+</head>
+<body class="impress-not-supported">
+	
+	<div class="fallback-message">
+	    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+	    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+	</div>
+	
+	<div id="impress">
+		
+		<div id="1" class="step"  data-x="-1024" data-y="0">
+	       <!--- <img src="../img/logo-big.png" />
+	        <p style="font-size: 28px; color: #999">Interactive presentations based on node.js and impress.js</p>/--->
+	        <img src="img/apple-cinema-display2.png"  height="700px"/>
+	   </div> 
+	   
+	   	<div id="2" class="step"  data-x="0" data-y="0">
+	    	<h1>What is ASQ?</h1>
+	    	<p>This web app allows to broadcast a slideshow synchronously to multiple clients. <br /> ASQ allows the lecturer to give questions to the students and recive their answers in real-time.</p>   
+		</div>
+		
+	   	<div id="2b" class="step"  data-x="1024" data-y="0"> 
+			 <img src="img/asq.png"/>
+		</div>
+				
+		<div id="3" class="step"  data-x="2048" data-y="0">
+	    	<h1>Workflow</h1>
+	    	<ul>
+	    		<li>Daily meetings with the TA (Vassilis)</li>
+	    		<li>Code and Wiki on GitHub</li>
+	    		<li>Seperated branch for each feature</li>
+	    		<li>EtherPad for discussions</li>
+	    	</ul>   
+		</div>
+		
+		<div id="3b" class="step"  data-x="3072" data-y="0">
+	    	<h1>Database model </h1>
+	    	<img src="img/ASQ_DB_model_1.png" style="background-color: #FFF; border: 10px solid white;"/>  
+		</div>
+	   
+	   	<div id="4" class="step"  data-x="4096" data-y="0">
+	    	<h1>Currently... </h1>
+	    	<ul>
+	    		<li>Max is working on User Interface</li>
+	    		<li>Magarita is working on User Authentification</li>
+	    		<li>Jacques is working on Slideshow rendering &amp; synchronisation</li>
+	    	</ul>   
+		</div>
+		
+		<div id="5" class="step"  data-x="5120" data-y="0">
+	    	<h1>Challenges</h1>
+	    	<ul>
+	    		<li>Developing different question types (more than multiple choice)</li>
+	    		<li>Storing, sending and rendering questions and answers</li>
+	    		<li>Database structures</li>
+	    		<li>User authentification and security</li>
+	    		<li>URL structure and routing</li>
+	    	</ul>  
+	    </div> 
+	    <div id="6" class="step"  data-x="6144" data-y="0">
+	    	<h1>Demo of user interface</h1>
+	    	<img src="img/apple-cinema-display.png"  height="700px"/>  
+		</div>
+	   
+	</div>
+	
+	<script src="js/impress.js"></script>
+	<script>impress().init();</script>
+
+</body>
+</html>
