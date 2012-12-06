@@ -105,13 +105,13 @@ app.get('/', ensureAuthenticated, function(req, res){
    This will serve a custom verion of impress.js and the appropriate websocket
    module.
  */
-app.get('/:whatever/js/*', function(req, res) {
-    res.sendfile('./js/' + req.params[0]);
-});
-
-app.get('/live/:user/js/*', function(req, res) {
-    res.sendfile('./js/' + req.params[0]);
-});
+//app.get('/:whatever/js/*', function(req, res) {
+//    res.sendfile('./js/' + req.params[0]);
+//});
+//
+//app.get('/live/:user/js/*', function(req, res) {
+//    res.sendfile('./js/' + req.params[0]);
+//});
 
 app.get('/live/:user/', routes.live);
 app.get('/live/:user/*', function(req, res) {
