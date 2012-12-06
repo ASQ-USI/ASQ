@@ -19,7 +19,7 @@
         "passport-local" : "0.1.x",
 	"connect-slashes" : "0.0.x",
 	"mongoose" : "3.4.x",
-        "unzip" : "0.1.x"
+        "unzip" : "0.1.x",
     },
     "engines" : {
         "node" : "0.8.x",

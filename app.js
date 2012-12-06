@@ -178,6 +178,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
  */
 var io = require('socket.io').listen(server);
 var currentSlide = 0;
+var started = false;
 /**
    @description  Configure socket server
    @todo Handle disconnect, authentification and multiple sessions
@@ -187,6 +188,9 @@ io.sockets.on('connection', function(socket){
     /** @function Handle connection from viewer. */
     socket.on('viewer', function(event) {
         socket.join('viewers');
+        if (started) {
+            socket.emit('impress:start', {});
+        }
         socket.emit('goto', {slide:currentSlide});
         io.sockets.in('admins').emit('new', {});
     });
@@ -208,6 +212,7 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('impress:start', function(event) {
+        started = true;
         io.sockets.in('viewers').emit('impress:start', event);
     })
 });

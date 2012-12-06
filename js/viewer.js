@@ -4,6 +4,7 @@
 */
 
 /** Connect back to the server with a websocket */
+var started = false;
 var connect = function(host, port) {
     var socket = io.connect('http://' + host + ':' + port);
     socket.on('connect', function(event) {
@@ -18,7 +19,10 @@ var connect = function(host, port) {
         });
 
         socket.on('impress:start', function(event) {
+            if (!started) {
             $('#welcomeScreen').modal('hide');
+            started = true;
+        }
         });
     });
 }

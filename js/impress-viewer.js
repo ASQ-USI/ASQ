@@ -612,16 +612,16 @@
                 window.location.hash = lastHash = "#/" + event.target.id;
             }, false);
             
-            window.addEventListener("hashchange", function () {
-                // When the step is entered hash in the location is updated
-                // (just few lines above from here), so the hash change is 
-                // triggered and we would call `goto` again on the same element.
-                //
-                // To avoid this we store last entered hash and compare.
-                if (window.location.hash !== lastHash) {
-                    goto( getElementFromHash() );
-                }
-            }, false);
+            //window.addEventListener("hashchange", function () {
+            //    // When the step is entered hash in the location is updated
+            //    // (just few lines above from here), so the hash change is
+            //    // triggered and we would call `goto` again on the same element.
+            //    //
+            //    // To avoid this we store last entered hash and compare.
+            //    if (window.location.hash !== lastHash) {
+            //        goto( getElementFromHash() );
+            //    }
+            //}, false);
             
             // START 
             // by selecting step defined in url or first step of the presentation

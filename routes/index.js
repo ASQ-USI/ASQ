@@ -21,7 +21,7 @@ exports.admin = function(req, res) {
     //var wantedUser = req.params.user;
     //getCurrentSlides(wantedUser, function (err, user) {
         res.render('slides', {title: 'Milestone 2', mode:'admin',
-                              host:'asq.inf.unisi.ch', port:'3000',
+                              host:'localhost', port:'3000',
                               user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
                               path: path.relative(app.get('views'), 'slides/demo/index.html'),
                               links: [
@@ -37,7 +37,7 @@ exports.live = function(req, res) {
     //var wantedUser = req.params.user;
     //getCurrentSlides(wantedUser, function (err, user) {
         res.render('slides', {title: 'Milestone 2', mode:'viewer',
-                              host:'asq.inf.unisi.ch', port:'3000',
+                              host:'localhost', port:'3000',
                               user: req.params.user, pass:'To Implement',
                               path: path.relative(app.get('views'), 'slides/demo/index.html'),
                               links: [
@@ -62,38 +62,43 @@ exports.upload = function(req, res) {
     fs.mkdir(path, function(err) {
         if (err) throw err;
         fs.createReadStream(req.files.upload.path)
+            /*
+             *  Read questions -> del file
+             *    -> if missing, skip
+             *  Read assets -> del file
+             *    -> if missing: STOP and clean
+             *        --> save db entry
+             *  Check exist index.html
+             *    -> if missing: STOP and clean
+             *
+             *  --> Redirect to user and notify
+             */
             .on('close', function(){
-                //Process index.html if none, delete everything notify user
-                fs.rename(path + '/index.html', path + '/index.ejs', function(err) {
+                fs.readFile(path + '/assets.json', function(err, file) {
                     if (err) throw err; //Must handle ENOENT
-                    //Process assets.json if none, delete everything notify user
+                    var assets = JSON.parse(file);
+                    newSlideshow.title = assets.title;
+                    newSlideshow.links = assets.links || [];
+                    //Process questions.json if none, skip.
                     //What if the file is very large and overflows...?
-                    fs.readFile(path + '/assets.json', function(err, file) {
+                    fs.readFile(path + '/questions.json', function(err, file2){
                         if (err) throw err; //Must handle ENOENT
-                        var assets = JSON.parse(file);
-                        newSlideshow.title = assets.title;
-                        newSlideshow.links = assets.links || [];
-                        //Process questions.json if none, skip.
-                        //What if the file is very large and overflows...?
-                        fs.readFile(path + '/questions.json', function(err, file2){
-                            if (err) throw err; //Must handle ENOENT
-                            var questions = JSON.parse(file2);
-                            newSlideshow.questions = questions || [];
-                            //Save the Slideshow entry in the db
-                            newSlideshow.save(function(err) {
+                        var questions = JSON.parse(file2);
+                        newSlideshow.questions = questions || [];
+                        //Save the Slideshow entry in the db
+                        newSlideshow.save(function(err) {
+                            if (err) throw err;
+                            //Delete zip archive
+                            fs.unlink(req.files.upload.path, function(err) {
                                 if (err) throw err;
-                                //Delete zip archive
-                                fs.unlink(req.files.upload.path, function(err) {
+                                //Delete assets.json
+                                fs.unlink(path + '/assets.json', function(err) {
                                     if (err) throw err;
-                                    //Delete assets.json
-                                    fs.unlink(path + '/assets.json', function(err) {
+                                    //Delete questions.json
+                                    fs.unlink(path + '/questions.json', function(err) {
                                         if (err) throw err;
-                                        //Delete questions.json
-                                        fs.unlink(path + '/questions.json', function(err) {
-                                            if (err) throw err;
-                                            //Redirect to user page, with success.
-                                            res.redirect('/user'); // Must add notifications
-                                        });
+                                        //Redirect to user page, with success.
+                                        res.redirect('/user'); // Must add notifications
                                     });
                                 });
                             });
