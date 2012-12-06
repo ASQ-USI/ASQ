@@ -24,6 +24,7 @@ function checkUsername(input) {
                     }
                 }
             }
+            checkAllOk();
             xhr.send(null);
             return false;
     } else {
