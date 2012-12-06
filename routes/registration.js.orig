@@ -7,6 +7,10 @@ exports.getsingle=function(req, res) {
 
 //User is added to the database, and page is redirected to confirm the registration
 exports.signup=function(req, res) {
+<<<<<<< HEAD
+	var user = db.model('User', schemas.userSchema);
+	var newUser = new user({
+=======
 	if (req.body.signupusername=="" || req.body.signuppassword=="") {
 		res.render('index', {message: "Missing credentials", fromsignup:'true' });
 		return;
@@ -29,12 +33,13 @@ exports.signup=function(req, res) {
 	}
 
 
-	var users= db.model('User', schemas.userSchema);
+	var users= db.model('Users', schemas.users);
 	var out =users.findOne({ name: req.body.signupusername }, function (err, user) {
         if (user) {
 		res.render('index', {message: "Username already taken", fromsignup:'true'  });
 	} else {
 		var newUser= new users({
+>>>>>>> feat-marga-new-stuff
 		name: req.body.signupusername,
 		password: req.body.signuppassword,
 		email: req.body.signupemail
@@ -55,7 +60,7 @@ function loadJSON(filePath){
 }
 
 exports.checkusername=function(req,res) {
-	User= db.model('User', schemas.userSchema);
+	User= db.model('Users', schemas.users);
 	var response='0';
 	var out =User.findOne({ name: req.params.username }, function (err, user) {
         if (user) {

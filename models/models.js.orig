@@ -5,10 +5,10 @@ var Schema = mongoose.Schema,
 
 
 
+<<<<<<< HEAD
 exports.userSchema = new Schema({
 	name: { type: String, unique:true },
 	password: { type: String },
-	email: {type:String},
 	slides: { type: Array, default: []},
 	current: {type: ObjectId, default: null}
 
@@ -32,3 +32,12 @@ exports.sessionSchema = new Schema({
 	date: {type: Date, default: Date.now },
 	viewers: {type: Array, default: []}
 })
+=======
+exports.users = new Schema({
+	name: { type: String},
+	password: { type: String},
+	email: {type:String}
+});
+
+
+>>>>>>> feat-marga-new-stuff

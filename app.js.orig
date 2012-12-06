@@ -27,8 +27,13 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
+<<<<<<< HEAD
     var User = db.model('User', schemas.userSchema);
     var out = User.findById(id, function (err, user) {
+=======
+    User = db.model('Users', schemas.users);
+    var out = User.findById(id , function (err, user) {
+>>>>>>> feat-marga-new-stuff
         if (user) {
             done(err, user);
         } else {
@@ -60,6 +65,7 @@ passport.use(new LocalStrategy(
 
 app = express();
 app.engine('ejs', engine);
+
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
