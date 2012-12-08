@@ -10,7 +10,13 @@ var schemas = require('../models/models.js')
   , ejs = require('ejs')
   , path = require('path')
   , fs = require('fs')
-  , unzip = require('unzip');
+  , unzip = require('unzip')
+  , pfs = require('promised-io/fs')
+  , promise = require('promised-io/promise')
+  , when = promise.when
+  , seq = promise.seq
+  , all = promise.all
+  , wrench = require('wrench');
 
 exports.index = function(req, res){
     res.render('index', { title: 'Express' });
@@ -58,53 +64,85 @@ exports.upload = function(req, res) {
                                     title:req.files.upload.name,
                                     owner: req.user._id
                                     });
-    var path = 'slides/' + newSlideshow._id;
-    fs.mkdir(path, function(err) {
-        if (err) throw err;
+    var folderPath = 'slides/' + newSlideshow._id;
+    pfs.mkdir(folderPath).then(function() {
         fs.createReadStream(req.files.upload.path)
-            /*
-             *  Read questions -> del file
-             *    -> if missing, skip
-             *  Read assets -> del file
-             *    -> if missing: STOP and clean
-             *        --> save db entry
-             *  Check exist index.html
-             *    -> if missing: STOP and clean
-             *
-             *  --> Redirect to user and notify
-             */
-            .on('close', function(){
-                fs.readFile(path + '/assets.json', function(err, file) {
-                    if (err) throw err; //Must handle ENOENT
-                    var assets = JSON.parse(file);
-                    newSlideshow.title = assets.title;
-                    newSlideshow.links = assets.links || [];
-                    //Process questions.json if none, skip.
-                    //What if the file is very large and overflows...?
-                    fs.readFile(path + '/questions.json', function(err, file2){
-                        if (err) throw err; //Must handle ENOENT
-                        var questions = JSON.parse(file2);
+
+            .on('close', function() {
+                var index = pfs.exists(folderPath + '/index.html').then(
+                    //Why the FUCK are the success and error handlers inversed here?
+                    function() {
+                        console.log('error: index.html');
+                        reject(new Error('index.html is missing!'));
+                        return false;
+                    },
+                    function() {
+                        console.log(folderPath + '/index.html')
+                        console.log('index.html ok');
+                        return true;
+                    }
+                );
+                var assets = pfs.readFile(folderPath + '/assets.json').then(
+                    function(file) {
+                        console.log('assets ok');
+                        var assets = JSON.parse(file);
+                        newSlideshow.title = assets.title;
+                        newSlideshow.links = assets.links || [];
+                        console.log(assets);
+                        return true;
+                    },
+                    function() {
+                        console.log('error: assets.json');
+                        return false;
+                    }
+                )
+                var questions = pfs.readFile(folderPath + '/questions.json').then(
+                    function(file) {
+                        console.log('questions ok');
+                        var questions = JSON.parse(file);
                         newSlideshow.questions = questions || [];
-                        //Save the Slideshow entry in the db
-                        newSlideshow.save(function(err) {
-                            if (err) throw err;
-                            //Delete zip archive
-                            fs.unlink(req.files.upload.path, function(err) {
-                                if (err) throw err;
-                                //Delete assets.json
-                                fs.unlink(path + '/assets.json', function(err) {
-                                    if (err) throw err;
-                                    //Delete questions.json
-                                    fs.unlink(path + '/questions.json', function(err) {
-                                        if (err) throw err;
-                                        //Redirect to user page, with success.
-                                        res.redirect('/user'); // Must add notifications
-                                    });
-                                });
-                            });
+                        console.log(questions);
+                        return true;
+                    },
+                    function() {
+                        console.log('error: questions.json');
+                        newSlideshow.questions = [];
+                        return false;
+                    }
+                )
+                var group = all(index, assets, questions);
+                var done = when(group,
+                    function(result) {
+                        console.log('index result is ' + result[0]);
+                        console.log('assets result is ' + result[1]);
+                        console.log('questions result is ' + result[2]);
+                        console.log('all ok');
+                        seq([
+                            function() {
+                                newSlideshow.save();
+                            },
+                            function() {
+                                if (result[1]) pfs.unlink(folderPath + '/assets.json');
+                            },
+                            function() {
+                                if (result[2]) pfs.unlink(folderPath + '/questions.json');
+                            },
+                            function(){
+                                pfs.unlink(req.files.upload.path).then(res.redirect('/user'));
+                            }]);
+                    },
+                    function() {
+                        console.log('something went wrong');
+                        //TODO: Find a module to remove the (not empty) directory
+                        //with the invalid slides without throwing an error becasue
+                        //it deleted what it was suppose to delete... FUCK!
+                        //or that does not delete everything as wrench-js used
+                        //below... FUCK as well
+                        wrench.rmdirRecursive(folderPath, function(err){
+                            if(err) throw err;
+                            pfs.unlink(req.files.upload.path).then(res.redirect('/'));
                         });
                     });
-                });
             })
             .pipe(unzip.Extract({ path:'slides/' + newSlideshow._id }));
     });
