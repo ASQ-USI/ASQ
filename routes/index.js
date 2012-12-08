@@ -138,13 +138,43 @@ exports.upload = function(req, res) {
                         //it deleted what it was suppose to delete... FUCK!
                         //or that does not delete everything as wrench-js used
                         //below... FUCK as well
-                        wrench.rmdirRecursive(folderPath, function(err){
+                        wrench.rmdirRecursive('slides/50c39296bb6b7c244e000001', function(err){
                             if(err) throw err;
                             pfs.unlink(req.files.upload.path).then(res.redirect('/'));
                         });
                     });
             })
             .pipe(unzip.Extract({ path:'slides/' + newSlideshow._id }));
+    });
+}
+
+exports.start = function(req, res) {
+    var slidesId = req.params.id;
+    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+    Slideshow.findById(slidesId, function(err, slides) {
+        if (err || slides === null) {
+            //Slides id is wrong
+            console.log('Slides id is wrong');
+            console.log(err);
+            res.redirect(302, '/user');
+            return;
+        }
+        if (String(slides.owner) !== String(req.user._id)) {
+            //Not allowed to present those slides...
+            console.log('ownership problem...')
+            console.log('owner: ' + slides.owner);
+            console.log('user: ' + req.user._id);
+            res.redirect(302, '/user');
+            return;
+        }
+        var Session = db.model('Session', schemas.sessionSchema);
+        var newSession = new Session();
+        newSession.presenter = req.user._id;
+        newSession.slides = slides._id;
+        newSession.save(function(err) {
+            if (err) throw err;
+            res.redirect(302, '/admin');
+        });
     });
 }
 

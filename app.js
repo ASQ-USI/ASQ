@@ -7,7 +7,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , engine = require('ejs-locals')
-  , slashes = require("connect-slashes")
+  , slashes = require('connect-slashes')
   , routes = require('./routes')
   , flash = require('connect-flash')
   , passport = require('passport')
@@ -98,19 +98,7 @@ app.get('/', ensureAuthenticated, function(req, res){
   res.render('logged');
 });
 
-/**
-   @description Prevent to serve included js files with presentations.
-
-   This will serve a custom verion of impress.js and the appropriate websocket
-   module.
- */
-//app.get('/:whatever/js/*', function(req, res) {
-//    res.sendfile('./js/' + req.params[0]);
-//});
-//
-//app.get('/live/:user/js/*', function(req, res) {
-//    res.sendfile('./js/' + req.params[0]);
-//});
+app.get('/start/:id', ensureAuthenticated, routes.start);
 
 app.get('/live/:user/', routes.live);
 app.get('/live/:user/*', function(req, res) {
