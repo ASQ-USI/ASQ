@@ -73,6 +73,8 @@ function ensureAuthenticated(req, res, next) {
 
 app = express();
 app.engine('ejs', engine);
+// Global variable: hostname which we want to advertise for connection.
+appHost = 'localhost';
 
 
 // mongoose, db, and schemas are global
@@ -112,18 +114,20 @@ app.get('/', ensureAuthenticated, function(req, res){
   res.render('logged');
 });
 
-app.get('/start/:id', ensureAuthenticated, routes.start);
+/** Initialize a new session with slides matching the id */
+app.get('/start/:id', ensureAuthenticated, routes.slides.start);
 
-app.get('/live/:user/', routes.live);
-app.get('/live/:user/*', function(req, res) {
-    res.sendfile('./slides/demo/' + req.params[0]);
-});
+/** Join the session of user */
+app.get('/live/:user/', routes.slides.live);
+app.get('/live/:user/*', routes.slides.liveStatic);
 
-app.get('/admin/',  ensureAuthenticated, routes.admin);
-app.get('/admin/*', ensureAuthenticated, routes.adminStatic);
+/** Control your current session (if any) */
+app.get('/admin/',  ensureAuthenticated, routes.slides.admin);
+app.get('/admin/*', ensureAuthenticated, routes.slides.adminStatic);
 
-app.post('/upload', ensureAuthenticated, routes.upload);
-app.get('/upload/', ensureAuthenticated, routes.showUpload);
+/** Upload new slides */
+app.post('/upload', ensureAuthenticated, routes.upload.post);
+app.get('/upload/', ensureAuthenticated, routes.upload.show);
 
 //Someone types /signup URL, which has no meaning. He is redirected.
 app.get('/signup/', function(req, res){
