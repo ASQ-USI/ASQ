@@ -22,7 +22,7 @@ exports.slideshowSchema = new Schema({
 });
 
 exports.slideshowSchema.virtual('path').get(function() {
-	return './slides/demo/';// + this._id;
+	return './slides/' + this._id + '/';
 });
 
 exports.sessionSchema = new Schema({

@@ -24,18 +24,23 @@ exports.index = function(req, res){
 
 /** Renders the slideshow for admins */
 exports.admin = function(req, res) {
-    //var wantedUser = req.params.user;
-    //getCurrentSlides(wantedUser, function (err, user) {
-        res.render('slides', {title: 'Milestone 2', mode:'admin',
+    var userId = req.user._id;
+    slideshowFromUserId(userId, function(err, slideshow) {
+        if (err) throw err;
+         res.render('slides', {title: slideshow.title, mode:'admin',
                               host:'localhost', port:'3000',
                               user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
-                              path: path.relative(app.get('views'), 'slides/demo/index.html'),
-                              links: [
-                                "http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic",
-                                "css/impress-demo.css"
-                              ]
+                              path: path.relative(app.get('views'), slideshow.path + 'index.html'),
+                              links: slideshow.links
                              });
-    //});
+    });
+}
+
+exports.adminStatic = function(req, res) {
+    var userId = req.user._id;
+    slideshowFromUserId(userId, function(err, slideshow) {
+        res.sendfile(slideshow.path + req.params[0]);
+    });
 }
 
 /** Renders the slideshow for viewers */
@@ -127,8 +132,11 @@ exports.upload = function(req, res) {
                             function() {
                                 if (result[2]) pfs.unlink(folderPath + '/questions.json');
                             },
-                            function(){
-                                pfs.unlink(req.files.upload.path).then(res.redirect('/user'));
+                            function() {
+                                var User = db.model('User', schemas.userSchema);
+                                User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }, function(err, user) {
+                                    pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
+                                });
                             }]);
                     },
                     function() {
@@ -156,7 +164,7 @@ exports.start = function(req, res) {
             //Slides id is wrong
             console.log('Slides id is wrong');
             console.log(err);
-            res.redirect(302, '/user');
+            res.redirect(302, '/user/' + req.user.name + '/');
             return;
         }
         if (String(slides.owner) !== String(req.user._id)) {
@@ -164,7 +172,7 @@ exports.start = function(req, res) {
             console.log('ownership problem...')
             console.log('owner: ' + slides.owner);
             console.log('user: ' + req.user._id);
-            res.redirect(302, '/user');
+            res.redirect(302, '/user/' + req.user.name + '/');
             return;
         }
         var Session = db.model('Session', schemas.sessionSchema);
@@ -173,8 +181,32 @@ exports.start = function(req, res) {
         newSession.slides = slides._id;
         newSession.save(function(err) {
             if (err) throw err;
-            res.redirect(302, '/admin');
+            var User = db.model('User', schemas.userSchema);
+            User.findByIdAndUpdate(req.user._id, {current: newSession._id}, function(err, user) {
+                res.redirect(302, '/admin');
+            });
+
         });
+    });
+}
+
+var slideshowFromUserId = function(userId, callback) {
+    var User = db.model('User', schemas.userSchema);
+    User.findById(userId, function(err, user) {
+        if (err) callback(err);
+        if (user.current !== null) {
+            var Session = db.model('Session', schemas.sessionSchema);
+            Session.findById(user.current, function(err, session) {
+                if (err) callback(err);
+                console.log(session);
+                var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+                Slideshow.findById(session.slides, function(err, slides) {
+                    if (err) callback(err);
+                    console.log(slides);
+                    callback(null, slides);
+                });
+            });
+        }
     });
 }
 
