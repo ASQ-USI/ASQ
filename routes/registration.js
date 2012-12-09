@@ -107,3 +107,27 @@ exports.parsequestion=function(req,res) {
 	
 	res.send(200,response);
 }
+
+exports.addquestion=function(req,res) {
+	question = new Object();
+	question.questionText = req.body.questionText;
+	question.questionType = req.body.questionType;
+	question.afterslide = req.body.afterslide;
+	question.options=[];
+	question.correct=[];
+	for (var i=0; i<256; i++) {
+		if (req.param('option'+i)) {
+			question.options[i-1]=req.param('option'+i);
+			if (req.param('checkbox'+i)) {
+				question.correct.push(i-1);
+			}
+		}
+	}
+	
+	fs.writeFile("slides/example/question3.json",JSON.stringify(question));
+
+	
+	
+}
+
+

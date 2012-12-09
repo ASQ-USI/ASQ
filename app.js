@@ -142,15 +142,15 @@ app.get('/user', ensureAuthenticated, function(req,res) {
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
 app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
-    res.redirect('/user/'+req.body.username);
+    res.redirect('/user/'+req.body.username+"/");
 });
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
-app.get('/user/:username', ensureAuthenticated, function(req,res) {
+app.get('/user/:username/', ensureAuthenticated, function(req,res) {
     if (req.params.username==req.user.name) {
         res.render('user', { user: req.user, message: req.flash('error') });
     } else {
-        res.redirect('user/'+req.user.name);
+        res.redirect('user/'+req.user.name+'/');
     }
     
 });
@@ -159,6 +159,16 @@ app.get('/user/:username', ensureAuthenticated, function(req,res) {
 app.post('/user/:username', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
     res.redirect('/user');
 });
+app.get('/user/:username/edit/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/"+req.params.username+"/edit")
+});
+
+app.get('/user/:username/edit', ensureAuthenticated, function (req,res) {
+    res.render('edit');
+});
+
+
+app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
 
 //The user logs out, and get redirected
 app.get('/logout', function(req, res){
@@ -173,9 +183,7 @@ app.get('/statistics', ensureAuthenticated, function (req,res) {
     res.render('statistics');
 });
 
-app.get('/edit', ensureAuthenticated, function (req,res) {
-    res.render('edit');
-});
+
 
 app.get('/editimages', ensureAuthenticated, function (req,res) {
     res.render('editimages');
@@ -199,7 +207,12 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.render('index', { message: req.flash('error'), fromsignup:'false' });
+    if (req.url=="/") {
+        res.render('index', { message: req.flash('error'), fromsignup:'false' });
+    } else {
+        res.redirect("/");
+    }
+    
 
 }
 
