@@ -10,11 +10,11 @@ var schemas = require('../models/models.js')
   , all = promise.all
   , wrench = require('wrench');
 
-exports.show = function(require, res) {
+module.exports.show = function(require, res) {
     res.render('upload');
 }
 
-exports.post = function(req, res) {
+module.exports.post = function(req, res) {
     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
     var newSlideshow = new Slideshow({
                                     title:req.files.upload.name,
