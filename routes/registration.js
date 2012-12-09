@@ -114,18 +114,50 @@ exports.addquestion=function(req,res) {
 	question.questionType = req.body.questionType;
 	question.afterslide = req.body.afterslide;
 	question.options=[];
-	question.correct=[];
+	var optionDB=db.model('Option', schemas.optionSchema);
+	var optionsDB=[];
 	for (var i=0; i<256; i++) {
 		if (req.param('option'+i)) {
-			question.options[i-1]=req.param('option'+i);
+			
+			question.options[i-1]= new Object( {
+				optionText:req.param('option'+i),
+				correct:"no"
+			});
 			if (req.param('checkbox'+i)) {
-				question.correct.push(i-1);
+				question.options[i-1].correct="yes";
 			}
-		}
+			var newOptionDB=new optionDB( {
+				optionText: question.options[i-1].optionText,
+				correct: question.options[i-1].correct
+			});
+			optionsDB.push(newOptionDB);
+			} else {
+				if (i>0) {
+					break;
+				}
+			}
+			
+				
+			
+		
 	}
 	
-	fs.writeFile("slides/example/question3.json",JSON.stringify(question));
-
+	
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var newQuestion=new questionDB({
+		questionText:question.questionText,
+		questionType: question.questionType,
+		afterslide: question.afterslide,
+		answeroptions: optionsDB
+	});
+	newQuestion.save();
+	var questionstring=JSON.stringify(question);
+	console.log(questionstring);
+	fs.writeFile("slides/example/question3.json", questionstring, function(err) {
+		if(err) {
+		    console.log(err);
+		} 
+	    }); 
 	
 	
 }

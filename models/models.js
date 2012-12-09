@@ -14,6 +14,20 @@ exports.userSchema = new Schema({
 
 });
 
+var optionSchema= new Schema( {
+	optionText: {type: String},
+	correct: {type: String}
+});
+
+exports.optionSchema= optionSchema;
+
+exports.questionSchema=new Schema({
+	questionText: {type: String},
+	questionType: {type: String},
+	afterslide: {type: String},
+	answeroptions: [optionSchema]
+});
+
 exports.slideshowSchema = new Schema({
 	title: { type: String },
 	owner: { type: ObjectId },
