@@ -31,6 +31,7 @@
 					
 				});
 				$('#addQuestionForm').attr('action',"edit"+window.location.search);
+				$('.delete').attr('href', "delete"+window.location.search+"&"+$('.delete').attr('href'))
 				
 			});
 			
@@ -77,13 +78,13 @@
 						  <tbody>
 						    <% for (var i=0;i<arrayquestions.length;i++) { %>
 						    <tr>
-							<td></td>
+							<td><%=(i+1)%></td>
 							<td><%=arrayquestions[i].questionText %></td>
 						      <td><%=arrayquestions[i].questionType %></td>
 						      <td><%=arrayquestions[i].afterslide %></td>
 						      <td>
 						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
-						      	<a href="delete?id=<%=arrayquestions[i]._id %>"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
+						      	<a class ="delete" href="quest=<%=arrayquestions[i]._id %>"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
 						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
 						      </td>
 							
