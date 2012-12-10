@@ -19,7 +19,7 @@
 				<% if (fromsignup !== undefined && fromsignup != "false"){ %>
 				$('#myModal').modal('show');
 				<% } %>
-				$('.create').click(function() {
+				$('#createAccount').click(function() {
 					$('#signup').submit();
 				})
 			});
@@ -137,7 +137,7 @@
 					<button class="btn" data-dismiss="modal" aria-hidden="true">
 						Close
 					</button>
-					<button class="btn btn-primary create" id="createAccount" >
+					<button class="btn btn-primary" id="createAccount" >
 						Create Account
 					</button>
 				</div>

@@ -6,13 +6,15 @@ var path = require('path')
 /** Renders the slideshow for admins */
 module.exports.admin = function(req, res) {
     var userId = req.user._id;
-    slideshowFromUserId(userId, function(err, slideshow) {
+    sessionFromUserId(userId, function(err, session) {
         if (err) throw err;
+        var slideshow = session.slideshow;
          res.render('slides', {title: slideshow.title, mode:'admin',
                               host: appHost, port: app.get('port'),
                               user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
                               path: path.relative(app.get('views'), slideshow.path + 'index.html'),
-                              links: slideshow.links
+                              links: slideshow.links,
+                              id: session.id
                              });
     });
 }
@@ -20,21 +22,23 @@ module.exports.admin = function(req, res) {
 /** Serve slideshow files for admin **/
 module.exports.adminStatic = function(req, res) {
     var userId = req.user._id;
-    slideshowFromUserId(userId, function(err, slideshow) {
-        res.sendfile(slideshow.path + req.params[0]);
+    sessionFromUserId(userId, function(err, session) {
+        res.sendfile(session.slideshow.path + req.params[0]);
     });
 }
 
 /** Renders the slideshow for viewers */
 module.exports.live = function(req, res) {
     var userName = req.params.user;
-    slideshowFromUserName(userName, function (err, slideshow) {
+    sessionFromUserName(userName, function (err, session) {
         if (err) throw err;
+        var slideshow = session.slideshow
         res.render('slides', {title: slideshow.title, mode:'viewer',
                               host:appHost, port: app.get('port'),
                               user: req.params.user,
                               path: path.relative(app.get('views'), slideshow.path + 'index.html'),
-                              links: slideshow.links
+                              links: slideshow.links,
+                              id: session.id
                              });
     });
 }
@@ -42,8 +46,8 @@ module.exports.live = function(req, res) {
 /** Serve slideshow files for viewers **/
 module.exports.liveStatic = function(req, res) {
     var userName = req.params.user;
-    slideshowFromUserName(userName, function(err, slideshow) {
-        res.sendfile(slideshow.path + req.params[0]);
+    sessionFromUserName(userName, function(err, session) {
+        res.sendfile(session.slideshow.path + req.params[0]);
     });
 }
 
@@ -84,7 +88,7 @@ module.exports.start = function(req, res) {
 }
 
 /** Given a userId, find it's current session **/
-var slideshowFromUserId = function(userId, callback) {
+var sessionFromUserId = function(userId, callback) {
     var User = db.model('User', schemas.userSchema);
     User.findById(userId, function(err, user) {
         if (err) callback(err);
@@ -94,9 +98,9 @@ var slideshowFromUserId = function(userId, callback) {
                 if (err) callback(err);
                 console.log(session);
                 var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-                Slideshow.findById(session.slides, function(err, slides) {
+                Slideshow.findById(session.slides, function(err, slideshow) {
                     if (err) callback(err);
-                    callback(null, slides);
+                    callback(null, {id: session._id, slideshow:slideshow});
                 });
             });
         }
@@ -104,7 +108,7 @@ var slideshowFromUserId = function(userId, callback) {
 }
 
 /** Given a userName, find it's current session **/
-var slideshowFromUserName = function(userName, callback) {
+var sessionFromUserName = function(userName, callback) {
     var User = db.model('User', schemas.userSchema);
     console.log('user');
     console.log(userName);
@@ -116,9 +120,9 @@ var slideshowFromUserName = function(userName, callback) {
             Session.findById(user.current, function(err, session) {
                 if (err) callback(err);
                 var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-                Slideshow.findById(session.slides, function(err, slides) {
+                Slideshow.findById(session.slides, function(err, slideshow) {
                     if (err) callback(err);
-                    callback(null, slides);
+                    callback(null, {id: session._id, slideshow:slideshow});
                 });
             });
         }

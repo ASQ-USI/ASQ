@@ -13,24 +13,7 @@
 	<body>
 		
 		<!---   top menu --->
-		<div id="menu">
-			<div class="container">
-				<div class="row">
-					<div class="span8">
-						
-						<ul class="pull-left">
-							<li><a>All Presentations</a></li>
-							<li><a>Upload Presentation</a></li>
-							<li><a>Settings</a></li>
-						</ul>
-					</div>			
-					<div class="span4">
-						<img src="/img/logo-small.png" />
-						<p class="pull-right">Welcome Max!  | <a href="#">Logout</a></p>
-					</div>
-		  		</div>
-			</div>
-		</div>
+		<% include menu %>
 		
 		
 		<!---   Content area   --->
@@ -45,200 +28,34 @@
 					<a class="pull-right controls"><i class="icon-signal icon-white"> </i> Show Statistics </a>
 				</div>
 		
-				<!---   Thumbnail   --->	
+				
+				<% for (var i=0;i<arrayslides.length;i++) { %>
 				<div class="span3 thumb">
 					<div class="info">
-						<h4>What is ASQ</h4>
+						<h4><%=arrayslides[i].title%></h4>
 						<p>21.10.2012</p>		
 					</div>
 
 					<div class="buttons">
 						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
 						<a href="/statistics" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="/edit" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
+						<a href="edit?id=<%=arrayslides[i]%>" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
 					</div>
 				</div>
+						    
+						<% } %>
 				
-				<!---   Thumbnail   --->	
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---  Add Presentation thumbnail   --->					
-				<div class="span3 thumb-add">
+				<a href="upload">		
+				<div class="span3 thumb-add" >
 					<h4>+</h4>
 					<p>&nbsp;</p>
 					<p><i>Add presentation</i></p>
 				</div>
+				</a>
 			
 			</div>
 			
-						<div class="row group" >
-				
-				<!---   Seperating Headline   --->
-				<div class="span12  headline">
-					<h2 class="pull-left">Programming Fundamentals I</h2>
-					<a class="pull-right controls"><i class="icon-trash icon-white"> </i> Delete Slideshow </a>
-					<a class="pull-right controls"><i class="icon-signal icon-white"> </i> Show Statistics </a>
-				</div>
-		
-				<!---   Thumbnail   --->	
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>What is ASQ</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="Presentation1/index.html" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="statistics.html" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->	
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---  Add Presentation thumbnail   --->					
-				<div class="span3 thumb-add">
-					<h4>+</h4>
-					<p>&nbsp;</p>
-					<p><i>Add presentation</i></p>
-				</div>
-			
-			</div>
+						
 			
 		</div>
 

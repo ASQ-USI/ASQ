@@ -5,6 +5,7 @@
 
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session) {
+    var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
     socket.on('connect', function(event) {
         socket.emit('admin', {session:session});
@@ -17,9 +18,29 @@ var connect = function(host, port, session) {
             console.log('New viewer connected');
         });
 
+        socket.on('impress:start', function(event) {
+            if (!started) {
+            $('#welcomeScreen').modal('hide');
+            started = true;
+        }
+        });
+
         socket.on('goto', function(event) {
             impress().goto(event.slide);
         });
+
+        socket.on('question', function(event) {
+            showQuestion(event.question);
+        });
+
+        socket.on('answer', function(event) {
+            showAnswer(event.answer);
+        });
+
+        socket.on('hide', function(event) {
+            $('#popAnswer').modal('hide');
+        });
+
     });
 
     /**
@@ -38,4 +59,14 @@ var connect = function(host, port, session) {
         console.log('going to ' + event.target.id);
         socket.emit('impress:start', {session:session});
     });
+
+    document.addEventListener('asq:answer', function(event) {
+        socket.emit('show:answer', {session:session});
+    });
+
+    document.addEventListener('asq:close', function(event) {
+        socket.emit('goto', {session:session});
+    });
+
+
 }

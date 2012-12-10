@@ -21,7 +21,7 @@
 				$('#addQuestion').click(function() {
 					$('#addQuestionForm').submit();
 				});
-				
+
 				$('#addOption').click(function() {
 					var noptions=$("[class='option']").length+1;
 					var optionsstring='<div class="controls-row">'+
@@ -30,7 +30,6 @@
 					$('#options').append(optionsstring);
 					
 				});
-				$('#addQuestionForm').attr('action',"edit"+window.location.search);
 				
 			});
 			
@@ -45,7 +44,28 @@
 	<body>
 		
 		<!---   top menu --->
+<<<<<<< HEAD
+		<div id="menu">
+			<div class="container">
+				<div class="row">
+					<div class="span8">
+						
+						<ul class="pull-left">
+							<li><a href="mypresentations.html">All Presentations</a></li>
+							<li><a>Upload Presentation</a></li>
+							<li><a>Settings</a></li>
+						</ul>
+					</div>			
+					<div class="span4">
+						<img src="/img/logo-small.png" />
+						<p class="pull-right">Welcome Max!  | <a href="logout">Logout</a></p>
+					</div>
+		  		</div>
+			</div>
+		</div>
+=======
 		<% include menu %>
+>>>>>>> 5daca4b7957de8a4e65f33e8e84a894c6d7a4fef
 		
 		
 		<!---   Content area   --->
@@ -75,20 +95,39 @@
 						    </tr>
 						  </thead>
 						  <tbody>
-						    <% for (var i=0;i<arrayquestions.length;i++) { %>
 						    <tr>
-							<td></td>
-							<td><%=arrayquestions[i].questionText %></td>
-						      <td><%=arrayquestions[i].questionType %></td>
-						      <td><%=arrayquestions[i].afterslide %></td>
+						      <td>1</td>
+						      <td><a href="/render" >USI is the university of?</a></td>
+						      <td>Multiple choice</td>
+						      <td>5</td>
 						      <td>
 						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
-						      	<a href="delete?id=<%=arrayquestions[i]._id %>"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
+						      	<a href="#"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
 						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
 						      </td>
-							
 						    </tr>
-						<% } %>
+						    <tr>
+						      <td>2</td>
+						      <td><a href="#">Lugano is located in?</a></td>
+						      <td>Multiple choice</td>
+						      <td>7</td>
+						      <td>
+						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
+						      	<a href="#"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
+						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
+						      </td>
+						    </tr>
+						    <tr>
+						      <td>3</td>
+						      <td><a href="#">What is 3+5 ?</a></td>
+						      <td>Numeric answer</td>
+						      <td>10</td>
+						      <td>
+						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
+						      	<a href="#"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
+						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
+						      </td>
+						    </tr>
 						  </tbody>
 						</table>
 						<a href="#" data-toggle="modal" data-target="#myModal" class="span12" style="text-align: center; color: white"><i class="icon-plus-sign icon-white"></i> Add question </a>
@@ -107,7 +146,7 @@
 	    <h3 id="myModalLabel">Add or edit question</h3>
 	  </div>
 	  <div class="modal-body">
-	    <form class="form-horizontal"  id="addQuestionForm" method="post">
+	    <form class="form-horizontal" action="edit" id="addQuestionForm" method="post">
 		  <div class="control-group">
 		    <label class="control-label" for="inputQuestion">Question text:</label>
 		    <div class="controls">

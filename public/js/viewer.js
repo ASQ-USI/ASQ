@@ -3,6 +3,9 @@
     @author Jacques Dafflon jacques.dafflon@gmail.com
 */
 
+// Save current question id;
+var questionId = null;
+
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session) {
     var started = false;
@@ -17,6 +20,19 @@ var connect = function(host, port, session) {
             }
         });
 
+        socket.on('question', function(event) {
+            questionId = event.question._id;
+            showQuestion(event.question);
+        });
+
+        socket.on('answer', function(event) {
+            showAnswer(event.answer);
+        });
+
+        socket.on('hide', function(event) {
+            $('#popAnswer').modal('hide');
+        });
+
         /**
           Handle socket event 'goto'
           Uses impress.js API to go to the specified slide in the event.
@@ -24,5 +40,9 @@ var connect = function(host, port, session) {
         socket.on('goto', function(event) {
             impress().goto(event.slide);
         });
+    });
+
+    document.addEventListener('asq:submit', function(event) {
+        socket.emit('submit', {session:session, data: event.data});
     });
 }

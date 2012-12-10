@@ -68,15 +68,19 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.render('index', { message: req.flash('error'), fromsignup:'false' });
-    return true; //Just to remove warnings...
+    if (req.url=="/") {
+        res.render('index', { message: req.flash('error'), fromsignup:'false' });
+    } else {
+        res.redirect("/");
+    }
+    
+
 }
 
 app = express();
 app.engine('ejs', engine);
 // Global variable: hostname which we want to advertise for connection.
 appHost = 'localhost';
-
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
@@ -127,8 +131,8 @@ app.get('/admin/',  ensureAuthenticated, routes.slides.admin);
 app.get('/admin/*', ensureAuthenticated, routes.slides.adminStatic);
 
 /** Upload new slides */
-app.post('/upload', ensureAuthenticated, routes.upload.post);
-app.get('/upload/', ensureAuthenticated, routes.upload.show);
+app.post('/user/:username/upload', ensureAuthenticated, routes.upload.post);
+app.get('/user/:username/upload', ensureAuthenticated, routes.upload.show);
 
 //Someone types /signup URL, which has no meaning. He is redirected.
 app.get('/signup/', function(req, res){
@@ -147,23 +151,22 @@ app.get('/user/', ensureAuthenticated, function(req,res) {
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
 app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
-    res.redirect('/user/'+req.body.username);
+    res.redirect('/user/'+req.body.username+"/");
 });
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
-app.get('/user/:username/', ensureAuthenticated, function(req,res) {
-    if (req.params.username==req.user.name) {
-        res.render('user', { user: req.user, message: req.flash('error') });
-    } else {
-        res.redirect('/user/'+req.user.name + '/');
-    }
-    
+app.get('/user/:username/', ensureAuthenticated, registration.renderuser);
+
+
+app.get('/user/:username/edit/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/"+req.params.username+"/edit")
 });
 
-//Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
-app.post('/user/:username/', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
-    res.redirect('/user/');
-});
+app.get('/user/:username/edit', ensureAuthenticated,registration.editslideshow);
+
+app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
+
+app.get('/user/:username/delete', ensureAuthenticated, registration.deletequestion);
 
 //The user logs out, and get redirected
 app.get('/logout/', function(req, res){
@@ -178,9 +181,6 @@ app.get('/statistics/', ensureAuthenticated, function (req,res) {
     res.render('statistics');
 });
 
-app.get('/edit/', ensureAuthenticated, function (req,res) {
-    res.render('edit');
-});
 
 app.get('/editimages/', ensureAuthenticated, function (req,res) {
     res.render('editimages');

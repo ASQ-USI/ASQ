@@ -22,6 +22,10 @@ module.exports.post = function(req, res) {
                                     });
     var folderPath = './slides/' + newSlideshow._id;
     pfs.mkdir(folderPath).then(function() {
+<<<<<<< HEAD
+=======
+        
+>>>>>>> e80afa4f7819665e887f44722b2f6fd3eb9d37b0
         fs.createReadStream(req.files.upload.path)
             .on('close', function() {
                 var index = pfs.exists(folderPath + '/index.html').then(
@@ -84,7 +88,7 @@ module.exports.post = function(req, res) {
                             },
                             function() {
                                 var User = db.model('User', schemas.userSchema);
-                                User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }, function(err, user) {
+                                User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow } }, function(err, user) {
                                     pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
                                 });
                             }]);
