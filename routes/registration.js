@@ -95,19 +95,23 @@ exports.deletequestion=function(req,res) {
 		var out =users.findById(req.user._id, function (err, user) {
 		if (user) {
 			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-			slideshowDB.findById(user.slides, function(err, slideshow) {
+			slideshowDB.findById(req.query.id, function(err, slideshow) {
 				for (var i=0;i<slideshow.questions.length;i++) {
-					if (slideshow.questions[i]._id==req.query.id) {
-						slideshow.questions.slice(i,i);
+					if (slideshow.questions[i]._id==req.query.quest) {
+						slideshow.questions.splice( i, 1 );
+						slideshow.save();
+						
 					}
 				}
 				
 			});
 			
-		} 
+			
+		}
+		res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 		});
 		
-	res.redirect('/user/'+req.user.name + '/edit?id='+user.slides);
+	
 	
 	
 	
@@ -226,8 +230,18 @@ exports.renderuser=function(req,res) {
 		var users= db.model('User', schemas.userSchema);
 		var out =users.findById(req.user._id, function (err, user) {
 		if (user) {
-			console.log(user.slides);
-			res.render('user', {arrayslides: user.slides});
+			slides=[];
+			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+			for (var i=0;i<user.slides.length;i++) {
+				slideshowDB.findById(user.slides[i], function(err, slideshow) {
+					console.log(slides);
+					slides.push(slideshow);
+					if (i==user.slides.length) {
+						res.render('user', {arrayslides: slides});
+					}
+				});
+			}
+			
 		} 
 		});
     } else {
