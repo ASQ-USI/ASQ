@@ -82,29 +82,11 @@ function preload(jsonFile) {
 
 
 exports.parsequestion=function(req,res) {
-	question=preload(loadJSON('slides/example/question1.json'));
+	question=preload(loadJSON('slides/example/question2.json'));
 	console.log(question);
-	var response='<!doctype html><head><link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />'+
-	'<link href="css/impress-demo.css" rel="stylesheet" /><link rel="shortcut icon" href="favicon.png" /><link rel="apple-touch-icon" href="apple-touch-icon.png" />'+
-	'<style type="text/css">'+
-	'h1,h2,h3,li,span{'+
-	'color: white;}'+
-	'h1{'+
-	'font-size: 50px;margin-bottom: 20px;font-weight: bold;}'+
-   	'span,li{'+
-	'font-size: 20px;}'+
-    '</style>'+
-	'</head><body class="impress-not-supported"><div id="impress"><div id="1" class="step"  data-x="-1024" data-y="0">'+
-	        '<h1>'+question.questionText+
-		'</h1>';
-
-	for (var i=0;i<question.options.length;i++) {
-		response+='<input type="checkbox" name="option'+i+'" value="option'+i+'"><span>'+question.options[i].optionText+'</span><br>'
-	}
-	response+='</form></div></body></html>';
-
 	
-	res.send(200,response);
+	res.render('questionTemplate',{questionObj: question});
+	
 }
 
 exports.addquestion=function(req,res) {

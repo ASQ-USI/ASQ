@@ -32,6 +32,7 @@ exports.questionSchema=questionSchema;
 
 var slideshowSchema= new Schema({
 	title: { type: String },
+	course: { type: String, default: "General" },
 	owner: { type: ObjectId },
 	questions: [questionSchema],
 	links: {type: Array, default: []}
