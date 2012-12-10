@@ -207,12 +207,7 @@ exports.editslideshow=function(req,res) {
 						}
 					}
 					);
-					//Here for debug purposes
-					
-					
-					
-					
-					 
+
 				}
 			
 				
@@ -234,7 +229,6 @@ exports.renderuser=function(req,res) {
 			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 			for (var i=0;i<user.slides.length;i++) {
 				slideshowDB.findById(user.slides[i], function(err, slideshow) {
-					console.log(slides);
 					slides.push(slideshow);
 					if (i==user.slides.length) {
 						res.render('user', {arrayslides: slides});
