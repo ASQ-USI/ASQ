@@ -109,6 +109,18 @@ exports.parsequestion=function(req,res) {
 }
 
 exports.addquestion=function(req,res) {
+	/**
+	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+	var newslideShow= new slideshowDB( {
+		title: "About Javascript",
+		questions:[]
+	});
+	newslideShow.save();
+	console.log(newslideShow._id);
+	**/
+	
+	
+	
 	question = new Object();
 	question.questionText = req.body.questionText;
 	question.questionType = req.body.questionType;
@@ -151,13 +163,79 @@ exports.addquestion=function(req,res) {
 		answeroptions: optionsDB
 	});
 	newQuestion.save();
+	
+	var nquestion=0;
+	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+	slideshowDB.findById('50c5b03c253791cd04000003', function(err, slideshow) {
+		if (err) {
+			console.log(err);
+		} else {
+			if (slideshow) {
+				nquestion=slideshow.questions.length;
+				slideshow.questions.push(newQuestion);
+				slideshow.save();
+			}
+			
+		}
+	}
+		);
+	
 	var questionstring=JSON.stringify(question);
-	console.log(questionstring);
-	fs.writeFile("slides/example/question3.json", questionstring, function(err) {
+	fs.writeFile("slides/example/question"+(nquestion+1)+".json", questionstring, function(err) {
 		if(err) {
 		    console.log(err);
 		} 
 	    }); 
+	
+}
+
+exports.editslideshow=function(req,res) {
+	var users= db.model('User', schemas.userSchema);
+	var out =users.findById(req.user._id, function (err, user) {
+		if (err) {
+			console.log(err);
+		} else {
+			if (user) {
+		
+				var slideshowbelongs=false;
+				for (var i=0; i<user.slides.length;i++) {
+					if (user.slides[i]._id==req.query.id) {
+						slideshowbelongs=true;
+						
+					}
+				}
+				//Set for now to true because no user has any slideshow for now
+				slideshowbelongs=true;
+				if (!slideshowbelongs) {
+					res.redirect("/");
+				} else {
+					var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+					slideshowDB.findById('50c5b03c253791cd04000003', function(err, slideshow) {
+						if (err) {
+							console.log(err);
+						} else {
+							if (slideshow) {
+								//Should be moved here
+								res.render('edit', {arrayquestions: slideshow.questions});
+							}
+							
+						}
+					}
+					);
+					//Here for debug purposes
+					
+					
+					
+					
+					 
+				}
+			
+				
+			}
+		}
+         
+	});
+		
 	
 	
 }

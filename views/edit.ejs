@@ -21,7 +21,7 @@
 				$('#addQuestion').click(function() {
 					$('#addQuestionForm').submit();
 				});
-
+				
 				$('#addOption').click(function() {
 					var noptions=$("[class='option']").length+1;
 					var optionsstring='<div class="controls-row">'+
@@ -74,39 +74,20 @@
 						    </tr>
 						  </thead>
 						  <tbody>
+						    <% for (var i=0;i<arrayquestions.length;i++) { %>
 						    <tr>
-						      <td>1</td>
-						      <td><a href="/render" >USI is the university of?</a></td>
-						      <td>Multiple choice</td>
-						      <td>5</td>
+							<td><%=(i+1) %></td>
+							<td><%=arrayquestions[i].questionText %></td>
+						      <td><%=arrayquestions[i].questionType %></td>
+						      <td><%=arrayquestions[i].afterslide %></td>
 						      <td>
 						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
 						      	<a href="#"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
 						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
 						      </td>
+							
 						    </tr>
-						    <tr>
-						      <td>2</td>
-						      <td><a href="#">Lugano is located in?</a></td>
-						      <td>Multiple choice</td>
-						      <td>7</td>
-						      <td>
-						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
-						      	<a href="#"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
-						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
-						      </td>
-						    </tr>
-						    <tr>
-						      <td>3</td>
-						      <td><a href="#">What is 3+5 ?</a></td>
-						      <td>Numeric answer</td>
-						      <td>10</td>
-						      <td>
-						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
-						      	<a href="#"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
-						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
-						      </td>
-						    </tr>
+						<% } %>
 						  </tbody>
 						</table>
 						<a href="#" data-toggle="modal" data-target="#myModal" class="span12" style="text-align: center; color: white"><i class="icon-plus-sign icon-white"></i> Add question </a>

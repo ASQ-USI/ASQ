@@ -21,17 +21,19 @@ var optionSchema= new Schema( {
 
 exports.optionSchema= optionSchema;
 
-exports.questionSchema=new Schema({
+var questionSchema=new Schema({
 	questionText: {type: String},
 	questionType: {type: String},
 	afterslide: {type: String},
 	answeroptions: [optionSchema]
 });
 
+exports.questionSchema=questionSchema;
+
 exports.slideshowSchema = new Schema({
 	title: { type: String },
 	owner: { type: ObjectId },
-	questions: {type: Array, default: []},
+	questions: [questionSchema],
 	links: {type: Array, default: []}
 });
 

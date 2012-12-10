@@ -163,12 +163,11 @@ app.get('/user/:username/edit/', ensureAuthenticated, function (req,res) {
     res.redirect("/user/"+req.params.username+"/edit")
 });
 
-app.get('/user/:username/edit', ensureAuthenticated, function (req,res) {
-    res.render('edit');
-});
-
+app.get('/user/:username/edit', ensureAuthenticated,registration.editslideshow);
 
 app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
+
+
 
 //The user logs out, and get redirected
 app.get('/logout', function(req, res){
