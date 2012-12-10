@@ -17,6 +17,7 @@
         "connect-flash": "0.1.x",
         "passport": "0.1.x",
         "passport-local" : "0.1.x",
+        "passport.socketio" : "0.0.x",
         "connect" : "2.7.x",
 	"connect-slashes" : "0.0.x",
 	"mongoose" : "3.4.x",

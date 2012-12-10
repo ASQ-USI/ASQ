@@ -6,7 +6,7 @@
 /** Connect back to the server with a websocket */
 var started = false;
 var connect = function(host, port) {
-    var socket = io.connect('http://' + host + ':' + port);
+    var socket = io.connect('http://' + host + ':' + port + '/folo');
     socket.on('connect', function(event) {
         socket.emit('viewer', {});
 
