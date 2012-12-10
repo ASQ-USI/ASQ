@@ -20,7 +20,7 @@ module.exports.post = function(req, res) {
                                     title:req.files.upload.name,
                                     owner: req.user._id
                                     });
-    var folderPath = 'slides/' + newSlideshow._id;
+    var folderPath = './slides/' + newSlideshow._id;
     pfs.mkdir(folderPath).then(function() {
         fs.createReadStream(req.files.upload.path)
             .on('close', function() {
@@ -96,7 +96,7 @@ module.exports.post = function(req, res) {
                         //it deleted what it was suppose to delete... FUCK!
                         //or that does not delete everything as wrench-js used
                         //below... FUCK as well
-                        wrench.rmdirRecursive('slides/50c39296bb6b7c244e000001', function(err){
+                        wrench.rmdirRecursive(folderPath, function(err){
                             if(err) throw err;
                             pfs.unlink(req.files.upload.path).then(res.redirect('/'));
                         });

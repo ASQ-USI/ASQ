@@ -67,8 +67,13 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.render('index', { message: req.flash('error'), fromsignup:'false' });
-    return true; //Just to remove warnings...
+    if (req.url=="/") {
+        res.render('index', { message: req.flash('error'), fromsignup:'false' });
+    } else {
+        res.redirect("/");
+    }
+    
+
 }
 
 app = express();
