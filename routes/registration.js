@@ -85,7 +85,15 @@ exports.parsequestion=function(req,res) {
 	question=preload(loadJSON('slides/example/question2.json'));
 	console.log(question);
 	
-	res.render('questionTemplate',{questionObj: question});
+	res.render('questionTemplate',{questionObj: question, mode:'viewer'});
+	
+}
+
+exports.sendanswer=function(req,res) {
+	question=preload(loadJSON('slides/example/question2.json'));
+	console.log(question);
+	
+	res.render('answerTemplate',{questionObj: question, mode:'viewer'});
 	
 }
 
