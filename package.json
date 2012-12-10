@@ -17,9 +17,12 @@
         "connect-flash": "0.1.x",
         "passport": "0.1.x",
         "passport-local" : "0.1.x",
+        "connect" : "2.7.x",
 	"connect-slashes" : "0.0.x",
 	"mongoose" : "3.4.x",
-        "unzip" : "0.1.x"
+        "unzip" : "0.1.x",
+        "promised-io" : "0.3.x",
+        "wrench" :"1.4.x"
     },
     "engines" : {
         "node" : "0.8.x",
