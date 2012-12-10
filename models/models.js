@@ -41,10 +41,18 @@ exports.slideshowSchema.virtual('path').get(function() {
 	return './slides/demo/';// + this._id;
 });
 
+var answerSchema = new Schema({
+	question: {type: ObjectId} 
+
+})
+
+exports.answerSchema = answerSchema;
+
 exports.sessionSchema = new Schema({
 	presenter: { type: ObjectId },
 	slides: { type: ObjectId },
 	activeSlide: { type: String, default: '0' },
 	date: {type: Date, default: Date.now },
-	viewers: {type: Array, default: []}
+	viewers: {type: Array, default: []},
+	answers:[answerSchema]
 })
