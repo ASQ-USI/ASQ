@@ -49,10 +49,7 @@ exports.signup=function(req, res) {
 
 
 
-function loadJSON(filePath){
-	var file = fs.readFileSync(filePath, 'utf8');
-	return JSON.parse(file);
-}
+
 
 exports.checkusername=function(req,res) {
 	User= db.model('User', schemas.userSchema);
@@ -65,26 +62,28 @@ exports.checkusername=function(req,res) {
 });
 }
 
+function loadJSON(filePath){
+	var file = fs.readFileSync(filePath, 'utf8');
+	return JSON.parse(file);
+}
 
-function preload(jsonFile, n) {
+function preload(jsonFile) {
+	var question = new Object({
+		questionText:jsonFile.questionText,
+		questionType: jsonFile.questionType,
+		afterslide: jsonFile.afterslide,
+		options: jsonFile.options
+	});
+	return question;
 	
-	var questions = [];
-	var question;
-	for (var i = 0; i < n; i++) {
-		question = new Object();
-		question.text = jsonFile[i].text;
-		question.options = jsonFile[i].options;
-		question.correct = jsonFile[i].correct;
-		question.id = i;
-		questions[i] = question;
-	}
-	
-	return questions;
 
 }
 
+
+
 exports.parsequestion=function(req,res) {
-	questions=preload(loadJSON('question.json'),1);
+	question=preload(loadJSON('slides/example/question1.json'));
+	console.log(question);
 	var response='<!doctype html><head><link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />'+
 	'<link href="css/impress-demo.css" rel="stylesheet" /><link rel="shortcut icon" href="favicon.png" /><link rel="apple-touch-icon" href="apple-touch-icon.png" />'+
 	'<style type="text/css">'+
@@ -96,11 +95,11 @@ exports.parsequestion=function(req,res) {
 	'font-size: 20px;}'+
     '</style>'+
 	'</head><body class="impress-not-supported"><div id="impress"><div id="1" class="step"  data-x="-1024" data-y="0">'+
-	        '<h1>'+questions[0].text+
+	        '<h1>'+question.questionText+
 		'</h1>';
 
-	for (var i=0;i<questions[0].options.length;i++) {
-		response+='<input type="checkbox" name="option'+i+'" value="option'+i+'"><span>'+questions[0].options[i].text+'</span><br>'
+	for (var i=0;i<question.options.length;i++) {
+		response+='<input type="checkbox" name="option'+i+'" value="option'+i+'"><span>'+question.options[i].optionText+'</span><br>'
 	}
 	response+='</form></div></body></html>';
 
@@ -148,13 +147,9 @@ exports.addquestion=function(req,res) {
 					break;
 				}
 			}
-			
-				
-			
-		
+
 	}
-	
-	
+
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var newQuestion=new questionDB({
 		questionText:question.questionText,
@@ -204,13 +199,11 @@ exports.editslideshow=function(req,res) {
 						
 					}
 				}
-				//Set for now to true because no user has any slideshow for now
-				slideshowbelongs=true;
 				if (!slideshowbelongs) {
 					res.redirect("/");
 				} else {
 					var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-					slideshowDB.findById('50c5b03c253791cd04000003', function(err, slideshow) {
+					slideshowDB.findById(req.query.id, function(err, slideshow) {
 						if (err) {
 							console.log(err);
 						} else {
@@ -238,6 +231,19 @@ exports.editslideshow=function(req,res) {
 		
 	
 	
+}
+
+exports.renderuser=function(req,res) {
+	if (req.params.username==req.user.name) {
+		var users= db.model('User', schemas.userSchema);
+		var out =users.findById(req.user._id, function (err, user) {
+		if (user) {
+			res.render('user', {arrayslides: user.slides});
+		} 
+		});
+    } else {
+        res.redirect('/user/'+req.user.name + '/');
+    }
 }
 
 

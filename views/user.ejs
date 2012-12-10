@@ -28,91 +28,24 @@
 					<a class="pull-right controls"><i class="icon-signal icon-white"> </i> Show Statistics </a>
 				</div>
 		
-				<!---   Thumbnail   --->	
+				
+				<% for (var i=0;i<arrayslides.length;i++) { %>
 				<div class="span3 thumb">
 					<div class="info">
-						<h4>What is ASQ</h4>
+						<h4><%=arrayslides[i].title%></h4>
 						<p>21.10.2012</p>		
 					</div>
 
 					<div class="buttons">
 						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
 						<a href="/statistics" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="edit?id=50c5b03c253791cd04000003" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
+						<a href="edit?id=<%=arrayslides[i]._id %>" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
 					</div>
 				</div>
+						    
+						<% } %>
 				
-				<!---   Thumbnail   --->	
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---   Thumbnail   --->		
-				<div class="span3 thumb">
-					<div class="info">
-						<h4>Here comes a title</h4>
-						<p>21.10.2012</p>		
-					</div>
-
-					<div class="buttons">
-						<a href="#" class="btn btn-primary"><i class="icon-play icon-white"> </i> Start Presentation</a>
-						<a href="#" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-						<a href="#" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-					</div>
-				</div>
-				
-				<!---  Add Presentation thumbnail   --->					
+									
 				<div class="span3 thumb-add">
 					<h4>+</h4>
 					<p>&nbsp;</p>

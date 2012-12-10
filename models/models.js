@@ -9,7 +9,7 @@ exports.userSchema = new Schema({
 	name: { type: String, unique:true },
 	password: { type: String },
 	email: {type:String},
-	slides: { type: Array, default: []},
+	slides: [slideshowSchema],
 	current: {type: ObjectId, default: null}
 
 });
@@ -30,15 +30,17 @@ var questionSchema=new Schema({
 
 exports.questionSchema=questionSchema;
 
-exports.slideshowSchema = new Schema({
+var slideshowSchema= new Schema({
 	title: { type: String },
 	owner: { type: ObjectId },
 	questions: [questionSchema],
 	links: {type: Array, default: []}
 });
 
+exports.slideshowSchema = slideshowSchema; 
+
 exports.slideshowSchema.virtual('path').get(function() {
-	return './slides/demo/';// + this._id;
+	return './slides/' + this._id + '/';
 });
 
 var answerSchema = new Schema({
