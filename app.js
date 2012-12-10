@@ -12,7 +12,8 @@ var express = require('express')
   , flash = require('connect-flash')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
-  , registration = require('./routes/registration');
+  , registration = require('./routes/registration')
+  , socketio = require('socket.io');
   
 
 

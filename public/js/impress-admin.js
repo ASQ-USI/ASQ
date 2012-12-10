@@ -434,6 +434,14 @@
         // used to reset timeout for `impress:stepenter` event
         var stepEnterTimeout = null;
         
+        var emitGoto = function( el, duration ) {
+            // trigger leave of currently active element (if it's not the same step again)
+            if (activeStep && activeStep !== el) {
+                onStepGoto(el);
+                onStepLeave(activeStep);
+            }
+        }
+
         // `goto` API function that moves to step given with `el` parameter (by index, id or element),
         // with a transition `duration` optionally given as second parameter.
         var goto = function ( el, duration ) {
@@ -497,11 +505,11 @@
             
             var targetScale = target.scale * windowScale;
             
-            // trigger leave of currently active element (if it's not the same step again)
-            if (activeStep && activeStep !== el) {
-                onStepGoto(el);
-                onStepLeave(activeStep);
-            }
+            //// trigger leave of currently active element (if it's not the same step again)
+            //if (activeStep && activeStep !== el) {
+            //    onStepGoto(el);
+            //    onStepLeave(activeStep);
+            //}
             
             // Now we alter transforms of `root` and `canvas` to trigger transitions.
             //
@@ -570,7 +578,8 @@
             var prev = steps.indexOf( activeStep ) - 1;
             prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
             
-            return goto(prev);
+            return emitGoto(prev);
+            //return goto(prev);
         };
         
         // `next` API function goes to next step (in document order)
@@ -578,7 +587,8 @@
             var next = steps.indexOf( activeStep ) + 1;
             next = next < steps.length ? steps[ next ] : steps[ 0 ];
             
-            return goto(next);
+            return emitGoto(next);
+            //return goto(next);
         };
         
         // Adding some useful classes to step elements.
@@ -636,7 +646,8 @@
                 //
                 // To avoid this we store last entered hash and compare.
                 if (window.location.hash !== lastHash) {
-                    goto( getElementFromHash() );
+                    emitGoto( getElementFromHash() );
+                    //goto( getElementFromHash() );
                 }
             }, false);
             

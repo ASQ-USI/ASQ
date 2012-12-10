@@ -24,6 +24,7 @@
 ###########
 node_modules/
 slides/
+*.orig
 
 # IDE Files #
 #############

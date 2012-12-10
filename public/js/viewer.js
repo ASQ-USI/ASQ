@@ -4,11 +4,18 @@
 */
 
 /** Connect back to the server with a websocket */
-var started = false;
-var connect = function(host, port) {
+var connect = function(host, port, session) {
+    var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/folo');
     socket.on('connect', function(event) {
-        socket.emit('viewer', {});
+        socket.emit('viewer', {session:session});
+
+        socket.on('impress:start', function(event) {
+            if (!started) {
+                $('#welcomeScreen').modal('hide');
+                started = true;
+            }
+        });
 
         /**
           Handle socket event 'goto'
@@ -16,13 +23,6 @@ var connect = function(host, port) {
          */
         socket.on('goto', function(event) {
             impress().goto(event.slide);
-        });
-
-        socket.on('impress:start', function(event) {
-            if (!started) {
-            $('#welcomeScreen').modal('hide');
-            started = true;
-        }
         });
     });
 }

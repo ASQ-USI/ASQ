@@ -4,10 +4,10 @@
 */
 
 /** Connect back to the server with a websocket */
-var connect = function(host, port) {
-    var socket = io.connect('http://' + host + ':' + port);
+var connect = function(host, port, session) {
+    var socket = io.connect('http://' + host + ':' + port + '/ctrl');
     socket.on('connect', function(event) {
-        socket.emit('admin', {});
+        socket.emit('admin', {session:session});
 
         /**
           Handle socket event 'new'
@@ -16,6 +16,10 @@ var connect = function(host, port) {
         socket.on('new', function(event){
             console.log('New viewer connected');
         });
+
+        socket.on('goto', function(event) {
+            impress().goto(event.slide);
+        });
     });
 
     /**
@@ -23,7 +27,7 @@ var connect = function(host, port) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:stepgoto", function(event) {
-        socket.emit('goto', {slide:event.target.id});
+        socket.emit('goto', {slide:event.target.id, session:session});
     });
 
     /**
@@ -32,6 +36,6 @@ var connect = function(host, port) {
      */
     document.addEventListener("impress:start", function(event) {
         console.log('going to ' + event.target.id);
-        socket.emit('impress:start', {});
+        socket.emit('impress:start', {session:session});
     });
 }
