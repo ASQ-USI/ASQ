@@ -107,39 +107,49 @@ exports.parsequestion=function(req,res) {
 	res.send(200,response);
 }
 
+exports.deletequestion=function(req,res) {
+	
+	var users= db.model('User', schemas.userSchema);
+		var out =users.findById(req.user._id, function (err, user) {
+		if (user) {
+			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+			slideshowDB.findById(user.slides, function(err, slideshow) {
+				for (var i=0;i<slideshow.questions.length;i++) {
+					if (slideshow.questions[i]._id==req.query.id) {
+						slideshow.questions.slice(i,i);
+					}
+				}
+				
+			});
+			
+		} 
+		});
+		
+	res.redirect('/user/'+req.user.name + '/edit?id='+user.slides);
+	
+	
+	
+	
+}
+
 exports.addquestion=function(req,res) {
-	/**
-	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-	var newslideShow= new slideshowDB( {
-		title: "About Javascript",
-		questions:[]
-	});
-	newslideShow.save();
-	console.log(newslideShow._id);
-	**/
 	
-	
-	
-	question = new Object();
-	question.questionText = req.body.questionText;
-	question.questionType = req.body.questionType;
-	question.afterslide = req.body.afterslide;
-	question.options=[];
+	options=[];
 	var optionDB=db.model('Option', schemas.optionSchema);
 	var optionsDB=[];
 	for (var i=0; i<256; i++) {
 		if (req.param('option'+i)) {
 			
-			question.options[i-1]= new Object( {
+			options[i-1]= new Object( {
 				optionText:req.param('option'+i),
 				correct:"no"
 			});
 			if (req.param('checkbox'+i)) {
-				question.options[i-1].correct="yes";
+				options[i-1].correct="yes";
 			}
 			var newOptionDB=new optionDB( {
-				optionText: question.options[i-1].optionText,
-				correct: question.options[i-1].correct
+				optionText: options[i-1].optionText,
+				correct: options[i-1].correct
 			});
 			optionsDB.push(newOptionDB);
 			} else {
@@ -149,19 +159,18 @@ exports.addquestion=function(req,res) {
 			}
 
 	}
-
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var newQuestion=new questionDB({
-		questionText:question.questionText,
-		questionType: question.questionType,
-		afterslide: question.afterslide,
+		questionText:req.body.questionText,
+		questionType: req.body.questionType,
+		afterslide: req.body.afterslide,
 		answeroptions: optionsDB
 	});
 	newQuestion.save();
 	
 	var nquestion=0;
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-	slideshowDB.findById('50c5b03c253791cd04000003', function(err, slideshow) {
+	slideshowDB.findById(req.query.id, function(err, slideshow) {
 		if (err) {
 			console.log(err);
 		} else {
@@ -174,13 +183,8 @@ exports.addquestion=function(req,res) {
 		}
 	}
 		);
+	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 	
-	var questionstring=JSON.stringify(question);
-	fs.writeFile("slides/example/question"+(nquestion+1)+".json", questionstring, function(err) {
-		if(err) {
-		    console.log(err);
-		} 
-	    }); 
 	
 }
 
@@ -194,7 +198,7 @@ exports.editslideshow=function(req,res) {
 		
 				var slideshowbelongs=false;
 				for (var i=0; i<user.slides.length;i++) {
-					if (user.slides[i]._id==req.query.id) {
+					if (user.slides[i]==req.query.id) {
 						slideshowbelongs=true;
 						
 					}
@@ -240,6 +244,7 @@ exports.renderuser=function(req,res) {
 		var users= db.model('User', schemas.userSchema);
 		var out =users.findById(req.user._id, function (err, user) {
 		if (user) {
+			console.log(user.slides);
 			res.render('user', {arrayslides: user.slides});
 		} 
 		});

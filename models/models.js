@@ -9,7 +9,7 @@ exports.userSchema = new Schema({
 	name: { type: String, unique:true },
 	password: { type: String },
 	email: {type:String},
-	slides: [slideshowSchema],
+	slides: {type: [ObjectId], default: []},
 	current: {type: ObjectId, default: null}
 
 });

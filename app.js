@@ -165,7 +165,7 @@ app.get('/user/:username/edit', ensureAuthenticated,registration.editslideshow);
 
 app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
 
-
+app.get('/user/:username/delete', ensureAuthenticated, registration.deletequestion);
 
 //The user logs out, and get redirected
 app.get('/logout/', function(req, res){
