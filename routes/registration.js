@@ -249,6 +249,9 @@ exports.renderuser=function(req,res) {
 					}
 				});
 			}
+			if (user.slides.length==0) {
+				res.render('user', {arrayslides: slides});
+			}
 			
 		} 
 		});
