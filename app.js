@@ -193,6 +193,7 @@ app.get('/edithtml/', ensureAuthenticated, function (req,res) {
 });
 
 app.get('/render', ensureAuthenticated, registration.parsequestion);
+app.get('/render2', ensureAuthenticated, registration.sendanswer);
 
 
 /** HTTP Server */

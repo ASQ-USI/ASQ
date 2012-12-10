@@ -53,12 +53,11 @@
 				
 			
 		</div>
-	
-<!---	
+		
 	    <script>
         window.onload = function() {
         	$('#quest').modal('show');
         }
     </script>
 	</body>
-</html> --->
+</html>
