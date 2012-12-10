@@ -200,7 +200,7 @@ exports.editslideshow=function(req,res) {
 					}
 				}
 				if (!slideshowbelongs) {
-					res.redirect("/");
+					res.redirect("/user");
 				} else {
 					var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 					slideshowDB.findById(req.query.id, function(err, slideshow) {
@@ -210,6 +210,8 @@ exports.editslideshow=function(req,res) {
 							if (slideshow) {
 								//Should be moved here
 								res.render('edit', {arrayquestions: slideshow.questions});
+							} else {
+								res.redirect("/user");
 							}
 							
 						}

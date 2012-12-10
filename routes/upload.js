@@ -22,6 +22,7 @@ module.exports.post = function(req, res) {
                                     });
     var folderPath = './slides/' + newSlideshow._id;
     pfs.mkdir(folderPath).then(function() {
+        
         fs.createReadStream(req.files.upload.path)
             .on('close', function() {
                 var index = pfs.exists(folderPath + '/index.html').then(
