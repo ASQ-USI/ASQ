@@ -44,8 +44,11 @@ exports.slideshowSchema.virtual('path').get(function() {
 });
 
 var answerSchema = new Schema({
-	question: {type: ObjectId} 
-
+	question: {type: ObjectId}, 
+		answers: [{
+		user: ObjectId, 
+		content: {type: Array, default: []} 
+	}]
 })
 
 exports.answerSchema = answerSchema;
@@ -56,5 +59,5 @@ exports.sessionSchema = new Schema({
 	activeSlide: { type: String, default: '0' },
 	date: {type: Date, default: Date.now },
 	viewers: {type: Array, default: []},
-	answers:[answerSchema]
+	answers: [answerSchema]
 })
