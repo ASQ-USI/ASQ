@@ -147,13 +147,9 @@ exports.addquestion=function(req,res) {
 					break;
 				}
 			}
-			
-				
-			
-		
+
 	}
-	
-	
+
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var newQuestion=new questionDB({
 		questionText:question.questionText,
@@ -203,13 +199,11 @@ exports.editslideshow=function(req,res) {
 						
 					}
 				}
-				//Set for now to true because no user has any slideshow for now
-				slideshowbelongs=true;
 				if (!slideshowbelongs) {
 					res.redirect("/");
 				} else {
 					var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-					slideshowDB.findById('50c5b03c253791cd04000003', function(err, slideshow) {
+					slideshowDB.findById(req.query.id, function(err, slideshow) {
 						if (err) {
 							console.log(err);
 						} else {
@@ -237,6 +231,19 @@ exports.editslideshow=function(req,res) {
 		
 	
 	
+}
+
+exports.renderuser=function(req,res) {
+	if (req.params.username==req.user.name) {
+		var users= db.model('User', schemas.userSchema);
+		var out =users.findById(req.user._id, function (err, user) {
+		if (user) {
+			res.render('user', {arrayslides: user.slides});
+		} 
+		});
+    } else {
+        res.redirect('/user/'+req.user.name + '/');
+    }
 }
 
 

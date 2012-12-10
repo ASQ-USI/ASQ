@@ -84,7 +84,7 @@ module.exports.post = function(req, res) {
                             },
                             function() {
                                 var User = db.model('User', schemas.userSchema);
-                                User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }, function(err, user) {
+                                User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow } }, function(err, user) {
                                     pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
                                 });
                             }]);
