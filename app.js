@@ -119,7 +119,7 @@ app.get('/', ensureAuthenticated, function(req, res){
 });
 
 /** Initialize a new session with slides matching the id */
-app.get('/start/:id', ensureAuthenticated, routes.slides.start);
+app.get('/user/:username/start/:id', ensureAuthenticated, routes.slides.start);
 
 /** Join the session of user */
 app.get('/live/:user/', routes.slides.live);
