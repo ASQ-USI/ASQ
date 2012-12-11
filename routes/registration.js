@@ -270,7 +270,7 @@ exports.renderuser=function(req,res) {
 			for (var i=0;i<user.slides.length;i++) {
 				slideshowDB.findById(user.slides[i], function(err, slideshow) {
 					slides.push(slideshow);
-					if (i==user.slides.length) {
+					if (slides.length==user.slides.length) {
 						res.render('user', {arrayslides: slides});
 					}
 				});
