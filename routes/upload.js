@@ -55,7 +55,7 @@ module.exports.post = function(req, res) {
                     function(file) {
                         console.log('questions ok');
                         var questions = JSON.parse(file);
-                        newSlideshow.questions = questions || [];
+                        //newSlideshow.questions = questions || [];
                         console.log(questions);
                         return true;
                     },

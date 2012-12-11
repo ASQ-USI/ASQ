@@ -107,11 +107,16 @@ exports.deletequestion=function(req,res) {
 			slideshowDB.findById(req.query.id, function(err, slideshow) {
 				for (var i=0;i<slideshow.questions.length;i++) {
 					// Jacques: modified
-					if (String(slideshow.questions[i])==req.query.id) {
-						slideshow.questions.slice(i,i);
+					console.log(slideshow.questions[i]);
+					console.log(req.query.quest);
+
+					if (String(slideshow.questions[i])==String(req.query.quest)) {
+						slideshow.questions.slice(i,1);
+						slideshow.save();
+
 					}
 				}
-                slideshow.save();
+
 				
 			});
 			
@@ -161,7 +166,7 @@ exports.addquestion=function(req,res) {
 		afterslide: req.body.afterslide,
 		answeroptions: optionsDB
 	});
-	newQuestion.save();
+
 	
 	var nquestion=0;
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
@@ -173,6 +178,7 @@ exports.addquestion=function(req,res) {
 				nquestion=slideshow.questions.length;
 				slideshow.questions.push(newQuestion._id);
 				slideshow.save();
+				newQuestion.save();
 			}
 			
 		}
@@ -258,5 +264,3 @@ exports.renderuser=function(req,res) {
         res.redirect('/user/'+req.user.name + '/');
     }
 }
-
-
