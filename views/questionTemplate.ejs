@@ -1,4 +1,4 @@
-<!--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>ASQ - My Presentations</title>
@@ -11,7 +11,7 @@
 		<script src="/js/bootstrap.min.js"></script>
 	</head>
 	<body>
-	--->
+	
 		<div class="modal hide fade" id="quest">
 			<div class="modal-header">
 				<h3><%= questionObj.questionText %></h3>
@@ -41,7 +41,8 @@
 					
 					<!--- Button for admin --->
 					<% if(mode === 'admin'){ %>
-						<a href="#" class="btn btn-success">Show answers</a>
+						<!--<a href="#" class="btn btn-success">Show answers</a>-->
+						<p class="muted pull-right">Please use arrow key to continue.</p>
 					
 					<!--- Button for viewer --->
 					<% } else if(mode ==="viewer"){ %>
@@ -54,11 +55,11 @@
 			
 		</div>
 	
-<!---	
+	
 	    <script>
         window.onload = function() {
         	$('#quest').modal('show');
         }
     </script>
 	</body>
-</html> --->
+</html>

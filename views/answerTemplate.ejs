@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>ASQ - My Presentations</title>
+		
+		<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+		<link rel="stylesheet/less" type="text/css" href="/css/backend.less">
+		<script src="/js/less-1.3.1.min.js" type="text/javascript"></script>
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		
+		
+		<script type="text/javascript">
+	      google.load("visualization", "1", {packages:["corechart"]});
+	      google.setOnLoadCallback(drawChart);
+
+	     function drawChart() {
+	        
+	         var q1= google.visualization.arrayToDataTable([
+	          ['USI is the university of?',  'Number of answers'],
+	          ['A) Lugano', 32],
+	          ['b) Luzern',  1],
+	          ['C) Bern',  2],
+	          ['D) Rome',  0],  
+	        ]);
+	        var q1correct= google.visualization.arrayToDataTable([
+	          ['Correct answers',  'Number of answers'],
+	          ['Correct', 32],
+	          ['Wrong',  3],
+	        ]);
+	       	var q1partici = google.visualization.arrayToDataTable([
+	          ['Participation',  'Number of answers'],
+	          ['Answer', 35],
+	          ['No Answer',  0],
+	        ]);
+	        
+	
+	        var options = {
+	          animation: {duration: 100},
+	          isStacked: true,
+	          backgroundColor: '#222325',
+	          vAxis : {baselineColor: '#999', gridlines: {color: '#666'}, textStyle: {color: "#CCC"}},
+	          title: 'Answers per Question',
+	          titleTextStyle: {color: 'white'},
+	          legend: {textStyle: {color: '#999'}},
+	          hAxis: {textStyle: {color: '#999'}, allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50}
+	         }
+	        
+	        var options2 = {
+	          animation: {duration: 1000},
+	          backgroundColor: '#222325',
+	          vAxis : {baselineColor: '#999', gridlines: {color: '#666'}, textStyle: {color: "#CCC"}},
+	          titleTextStyle: {color: 'white'},
+	          hAxis: {textStyle: {color: '#999'}, allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
+	          legend: {textStyle: {color: '#999'}}
+	        };
+	        
+	        var options3 = {
+	        	 backgroundColor: '#222325',
+	        	 titleTextStyle: {color: 'white'},
+      		    title: 'Correct vs. Wrong'
+     	   };
+     	    var options4 = {
+     	    	 backgroundColor: '#222325',
+     	    	 titleTextStyle: {color: 'white'},
+      		    title: 'Participation'
+     	   };
+
+	
+	        var chart2 = new google.visualization.ColumnChart(document.getElementById('q1'));
+	        chart2.draw(q1, options2);
+	        
+	        var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
+        	chart3.draw(q1correct, options3);
+        	
+        	var chart4 = new google.visualization.PieChart(document.getElementById('Q1Partici'));
+        	chart4.draw(q1partici, options4);
+
+	      }
+    </script>
+		
+	</head>
+	<body>
+	
+		<div class="modal hide fade" id="quest">
+			<div class="modal-header">
+				
+				<!--- Button for admin --->
+				<% if(mode === 'admin'){ %>
+					<h3>Statistics for</h3>
+				
+				<!--- Button for viewer --->
+				<% } else if(mode ==="viewer"){ %>
+					<h3>Your answer for</h3>
+				<% } %>
+				
+				<h4>"<%= questionObj.questionText %>"</h4>
+			</div>
+			<div class="modal-body">
+				
+				<% for(opt in questionObj.options){ %>
+						<label class="checkbox" >
+					      	<input type="checkbox" disabled class="text-success">
+					      	<i class="icon-ok"> </i> 
+					      	<%= questionObj.options[opt].optionText %>
+				      	</label>
+				<% } %>	
+				
+				
+				
+				<form>
+				<fieldset>
+				<!--- Multiple choice question --->
+				<% if(questionObj.questionType == "Multiple choice"){ %>
+					<span class="help-block">Please select all correct answers.</span>	
+					<% for(opt in questionObj.options){ %>	
+						<label class="checkbox">
+				      	<input type="checkbox"><%= questionObj.options[opt].optionText %></label>
+					<% } %>	
+				
+				<!--- Text input questions ---->
+				<%} else if(questionObj.questionType == "Text input"){ %>	
+					<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>	
+					<input type="text" placeholder="Your solution...">
+				<% } %>
+				</fieldset>
+				</form>
+			
+			</div>
+				<div class="modal-footer">
+					
+					<!--- Button for admin --->
+					<% if(mode === 'admin'){ %>
+						<a href="#" class="btn btn-success">Show answers</a>
+					
+					<!--- Button for viewer --->
+					<% } else if(mode ==="viewer"){ %>
+						<a href="#" class="btn btn-primary">Send answer</a>
+					<% } %>
+					
+				</div>
+					
+				
+			
+		</div>
+		
+	    <script>
+        window.onload = function() {
+        	$('#quest').modal('show');
+        }
+    </script>
+	</body>
+</html>
