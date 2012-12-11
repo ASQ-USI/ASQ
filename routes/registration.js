@@ -82,10 +82,17 @@ function preload(jsonFile) {
 
 
 exports.parsequestion=function(req,res) {
-	question=preload(loadJSON('slides/example/question2.json'));
-	console.log(question);
+	var questionDB= db.model('Question', schemas.questionSchema);
+	questionDB.find({},function(err,question) {
 	
-	res.render('questionTemplate',{questionObj: question, mode:'admin'});
+		
+	//question=preload(loadJSON('slides/example/question2.json'));
+	console.log(question[0]);
+	
+	res.render('questionTemplate',{questionObj: question[0], mode:'admin'});
+	});
+	
+
 	
 }
 
@@ -132,6 +139,7 @@ exports.addquestion=function(req,res) {
 	var optionDB=db.model('Option', schemas.optionSchema);
 	var optionsDB=[];
 	for (var i=0; i<256; i++) {
+		console.log(i);
 		if (req.param('option'+i)) {
 			
 			options[i-1]= new Object( {
@@ -179,6 +187,30 @@ exports.addquestion=function(req,res) {
 		);
 	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 	
+	var answerDB = db.model('Answer', schemas.answerSchema);
+	var testanswer = [];
+	for(var i = 0; i<20; i++){
+		var testans = {user: "test", content: [true, false, false, false]};
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<5; i++){
+		var testans = {user: "test", content: [false, true, false, false]};
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<3; i++){
+		var testans = {user: "test", content: [false, false, true, false]};
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<10; i++){
+		var testans = {user: "test", content: [false, false, false, true]};
+		testanswer.push(testans)
+	}
+	var newanswer = new answerDB({
+		question: newQuestion._id,
+		answers : testanswer
+	}
+	);
+	newanswer.save();
 	
 }
 
