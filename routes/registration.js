@@ -82,29 +82,20 @@ function preload(jsonFile) {
 
 
 exports.parsequestion=function(req,res) {
+	question=preload(loadJSON('slides/example/question2.json'));
+	console.log(question);
+	
+	res.render('questionTemplate',{questionObj: question, mode:'admin'});
+	
+}
+
+exports.sendanswer=function(req,res) {
 	question=preload(loadJSON('slides/example/question1.json'));
 	console.log(question);
-	var response='<!doctype html><head><link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />'+
-	'<link href="css/impress-demo.css" rel="stylesheet" /><link rel="shortcut icon" href="favicon.png" /><link rel="apple-touch-icon" href="apple-touch-icon.png" />'+
-	'<style type="text/css">'+
-	'h1,h2,h3,li,span{'+
-	'color: white;}'+
-	'h1{'+
-	'font-size: 50px;margin-bottom: 20px;font-weight: bold;}'+
-   	'span,li{'+
-	'font-size: 20px;}'+
-    '</style>'+
-	'</head><body class="impress-not-supported"><div id="impress"><div id="1" class="step"  data-x="-1024" data-y="0">'+
-	        '<h1>'+question.questionText+
-		'</h1>';
-
-	for (var i=0;i<question.options.length;i++) {
-		response+='<input type="checkbox" name="option'+i+'" value="option'+i+'"><span>'+question.options[i].optionText+'</span><br>'
-	}
-	response+='</form></div></body></html>';
-
 	
-	res.send(200,response);
+	
+	res.render('answerTemplate',{questionObj: question, mode:'admin'});
+	
 }
 
 exports.deletequestion=function(req,res) {
@@ -113,20 +104,23 @@ exports.deletequestion=function(req,res) {
 		var out =users.findById(req.user._id, function (err, user) {
 		if (user) {
 			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-			slideshowDB.findById(user.slides, function(err, slideshow) {
+			slideshowDB.findById(req.query.id, function(err, slideshow) {
 				for (var i=0;i<slideshow.questions.length;i++) {
 					// Jacques: modified
 					if (String(slideshow.questions[i])==req.query.id) {
 						slideshow.questions.slice(i,i);
 					}
 				}
-
+                slideshow.save();
+				
 			});
 			
-		} 
+			
+		}
+		res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 		});
-
-	res.redirect('/user/'+req.user.name + '/edit?id='+user.slides);
+		
+	
 	
 	
 	
@@ -226,12 +220,7 @@ exports.editslideshow=function(req,res) {
 						}
 					}
 					);
-					//Here for debug purposes
-					
-					
-					
-					
-					 
+
 				}
 			
 				
@@ -249,11 +238,25 @@ exports.renderuser=function(req,res) {
 		var users= db.model('User', schemas.userSchema);
 		var out =users.findById(req.user._id, function (err, user) {
 		if (user) {
-			console.log(user.slides);
-			res.render('user', {arrayslides: user.slides});
+			slides=[];
+			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+			for (var i=0;i<user.slides.length;i++) {
+				slideshowDB.findById(user.slides[i], function(err, slideshow) {
+					slides.push(slideshow);
+					if (i==user.slides.length) {
+						res.render('user', {arrayslides: slides});
+					}
+				});
+			}
+			if (user.slides.length==0) {
+				res.render('user', {arrayslides: slides});
+			}
+			
 		} 
 		});
     } else {
         res.redirect('/user/'+req.user.name + '/');
     }
 }
+
+

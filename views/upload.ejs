@@ -18,22 +18,33 @@
 		
 		<!---   Content area   --->
 		<div class="container" id="content">
+          
+          <div class="row">
+          	<!---   Seperating Headline   --->
+			<div class="span12  headline">
+				<h2 class="pull-left">Upload new presentation</h2>
+			</div>
+          
+ 			<div class="span12">
+		    	<form method="POST" action="upload/" enctype="multipart/form-data" class="form-inline">
+			    	<input id="lefile" type="file" name="upload" size="40" maxlength="100000" style="display:none">
+					<div class="input-append">
+						<input id="photoCover" class="input-large" type="text">
+						<a class="btn" onclick="$('input[id=lefile]').click();">Browse</a>
+					</div>
+					<button type="submit" class="btn btn-primary">Upload</button>
+		    	</form>	
+	    	</div>
+	    </div>	
+ 
+	</div>
 
-         <body class="dark-bg">
-          
-          
-          
-          
-   <div id="wrapper">
-    <form method="POST" action="upload/" enctype="multipart/form-data">
-      <input type="file" name="upload" size="40" maxlength="100000">
-      <input type="submit" name="submit" value="Upload">
-    		</form>
-				
-
-		</div>
-
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script>
+	$('input[id=lefile]').change(function() {
+		   $('#photoCover').val($(this).val());
+		});
+	</script>
 	</body>
 </html>

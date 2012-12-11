@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>ASQ - My Presentations</title>
+		
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+		<link rel="stylesheet/less" type="text/css" href="/css/backend.less">
+		<script src="/js/less-1.3.1.min.js" type="text/javascript"></script>
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+	
+		<div class="modal hide fade" id="quest">
+			<div class="modal-header">
+				<h3><%= questionObj.questionText %></h3>
+			</div>
+			<div class="modal-body">
+				
+				<form>
+				<fieldset>
+				<!--- Multiple choice question --->
+				<% if(questionObj.questionType == "Multiple choice"){ %>
+					<span class="help-block">Please select all correct answers.</span>	
+					<% for(opt in questionObj.options){ %>	
+						<label class="checkbox">
+				      	<input type="checkbox"><%= questionObj.options[opt].optionText %></label>
+					<% } %>	
+				
+				<!--- Text input questions ---->
+				<%} else if(questionObj.questionType == "Text input"){ %>	
+					<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>	
+					<input type="text" placeholder="Your solution...">
+				<% } %>
+				</fieldset>
+				</form>
+			
+			</div>
+				<div class="modal-footer">
+					
+					<!--- Button for admin --->
+					<% if(mode === 'admin'){ %>
+						<!--<a href="#" class="btn btn-success">Show answers</a>-->
+						<p class="muted pull-right">Please use arrow key to continue.</p>
+					
+					<!--- Button for viewer --->
+					<% } else if(mode ==="viewer"){ %>
+						<a href="#" class="btn btn-primary">Send answer</a>
+					<% } %>
+					
+				</div>
+					
+				
+			
+		</div>
+	
+	
+	    <script>
+        window.onload = function() {
+        	$('#quest').modal('show');
+        }
+    </script>
+	</body>
+</html>

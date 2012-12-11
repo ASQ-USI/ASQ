@@ -16,6 +16,7 @@ exports.userSchema = new Schema({
 
 exports.slideshowSchema = new Schema({
 	title: { type: String },
+	course: { type: String, default: "General" },
 	owner: { type: ObjectId },
 	questions: [ObjectId],
 	links: {type: Array, default: []}

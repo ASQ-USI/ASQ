@@ -19,6 +19,10 @@
     <!-- Websockets -->
     <script src="/socket.io/socket.io.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    
+    <% if (mode === 'admin') { %>
+    	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <% } %>
 
 </head>
 
@@ -29,21 +33,7 @@
     <% } else {%>
         <% include slidesWait %>
     <% } %>
-    <!-- <div id="welcomeScreen" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-header"><h3><%= title %></h3></div>
-        <div class="modal-body">
-            <form>
-                <fieldset>
-                    <legend>Join the presentation</legend>
-                    <label>Enter your name:</label>
-                    <input type="text" placeholder="Your name..." >
-                </fieldset>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary">Join in</button>
-        </div>
-    </div> -->
+   
     <%- partial(path) %>
     <script src="/js/impress-<%= mode %>.js"></script>
     <script src="/js/<%= mode %>.js"></script>

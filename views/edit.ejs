@@ -31,6 +31,7 @@
 					
 				});
 				$('#addQuestionForm').attr('action',"edit"+window.location.search);
+				$('.delete').attr('href', "delete"+window.location.search+"&"+$('.delete').attr('href'))
 				
 			});
 			
@@ -77,13 +78,13 @@
 						  <tbody>
 						    <% for (var i=0;i<arrayquestions.length;i++) { %>
 						    <tr>
-							<td></td>
+							<td><%=(i+1)%></td>
 							<td><%=arrayquestions[i].questionText %></td>
 						      <td><%=arrayquestions[i].questionType %></td>
 						      <td><%=arrayquestions[i].afterslide %></td>
 						      <td>
 						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
-						      	<a href="delete?id=<%=arrayquestions[i]._id %>"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
+						      	<a class ="delete" href="quest=<%=arrayquestions[i]._id %>"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
 						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
 						      </td>
 							
@@ -137,8 +138,9 @@
 		    <div class="controls" id="options">
 			    <div class="controls-row">
 			      <input type="text" id="inputOption1" class="option" name="option1">
+				<i id="addOption" class="icon-plus-sign"></i>
 			      <label class="checkbox"><input type="checkbox" name=checkbox1> Correct</label>
-			      <i id="addOption" class="icon-plus-sign"></i>
+			      
 			    </div>
 			    
 			    
