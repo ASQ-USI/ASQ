@@ -25,7 +25,7 @@ var questionSchema=new Schema({
 	questionText: {type: String},
 	questionType: {type: String},
 	afterslide: {type: String},
-	answeroptions: [optionSchema]
+	answeroptions: [ObjectId]
 });
 
 exports.questionSchema=questionSchema;
@@ -34,7 +34,7 @@ var slideshowSchema= new Schema({
 	title: { type: String },
 	course: { type: String, default: "General" },
 	owner: { type: ObjectId },
-	questions: [questionSchema],
+	questions: [ObjectId],
 	links: {type: Array, default: []}
 });
 

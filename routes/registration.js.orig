@@ -84,6 +84,29 @@ function preload(jsonFile) {
 exports.parsequestion=function(req,res) {
 	var questionDB= db.model('Question', schemas.questionSchema);
 	questionDB.find({},function(err,question) {
+<<<<<<< HEAD
+		console.log(question[0]);
+		res.render('questionTemplate',{questionObj: question[0], mode:'admin'});
+	});
+}
+
+exports.sendanswer=function(req,res) {
+	
+	getQuestionStats("50c7738315ed6e214a000009");
+	var answerDB= db.model('Answer', schemas.answerSchema);
+	var questionDB= db.model('Question', schemas.questionSchema);
+	answerDB.find({},function(err,answer) {
+		questionDB.find({},function(err,question) {
+			
+			res.render('answerTemplate-admin',{questionObj: question[0], answerObj: answer[0], mode:'viewer'});
+		});
+	});
+}
+
+function getQuestionStats(questionId){
+	var answerDB= db.model('Answer', schemas.answerSchema);
+	var questionDB= db.model('Question', schemas.questionSchema);
+=======
 	
 		
 	//question=preload(loadJSON('slides/example/question2.json'));
@@ -106,9 +129,11 @@ exports.parsequestion=function(req,res) {
 
 }
 
-function getQuestionStats(questionId){
-	var answerDB= db.model('Answer', schemas.answerSchema);
-	var questionDB= db.model('Question', schemas.questionSchema);
+exports.sendanswer=function(req,res) {
+	question=preload(loadJSON('slides/example/question1.json'));
+	console.log(question);
+	res.render('answerTemplate',{questionObj: question, mode:'admin'});
+>>>>>>> 324fcae06385ea759a1e68e60317642b33ceb72d
 	
 	questionDB.findById(questionId, function(err,question) {
 		answerDB.find({question: questionId},function(err,answer) {
@@ -211,9 +236,10 @@ exports.addquestion=function(req,res) {
 			}
 			
 		}
-	}
-		);
-	
+<<<<<<< HEAD
+	});
+		
+		
 	var answerDB = db.model('Answer', schemas.answerSchema);
 	var testanswer = [];
 	for(var i = 0; i<20; i++){
@@ -230,6 +256,35 @@ exports.addquestion=function(req,res) {
 	}
 	for(var i = 0; i<10; i++){
 		var testans = {content: [false, false, false, true]};
+=======
+	}
+		);
+	
+	var answerDB = db.model('Answer', schemas.answerSchema);
+	var testanswer = [];
+	for(var i = 0; i<20; i++){
+		var testans= new Object( {
+			content: [true,false,false,false]
+		});
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<5; i++){
+		var testans= new Object( {
+			content: [false,false,true,false]
+		});
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<3; i++){
+		var testans= new Object( {
+			content: [false,true,false,false]
+		});
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<10; i++){
+		var testans= new Object( {
+			content: [false,false,false,true]
+		});
+>>>>>>> 324fcae06385ea759a1e68e60317642b33ceb72d
 		testanswer.push(testans)
 	}
 	var newanswer = new answerDB({
@@ -238,7 +293,12 @@ exports.addquestion=function(req,res) {
 		answers : testanswer
 	}
 	);
+<<<<<<< HEAD
+	newanswer.save();	
+		
+=======
 	newanswer.save();
+>>>>>>> 324fcae06385ea759a1e68e60317642b33ceb72d
 	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 	
 	
