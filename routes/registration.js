@@ -87,9 +87,22 @@ exports.parsequestion=function(req,res) {
 	
 		
 	//question=preload(loadJSON('slides/example/question2.json'));
-	console.log(question[0]);
+	options=[];
+	var optionDB= db.model('Option', schemas.optionSchema);
 	
-	res.render('questionTemplate',{questionObj: question[0], mode:'admin'});
+	for (var i=0;i<question[0].answeroptions.length;i++) {
+		optionDB.findById(question[0].answeroptions[i], function(err, option) {
+			options.push(option);
+			if (options.length==question[0].answeroptions.length) {
+				res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+			}
+	});
+	}
+	if (question[0].answeroptions.length==0) {
+		res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+	}
+	
+	
 	});
 	
 
@@ -150,7 +163,6 @@ exports.addquestion=function(req,res) {
 	newQuestion.save();
 	
 	var optionDB=db.model('Option', schemas.optionSchema);
-	var optionsDB=[];
 	for (var i=0; i<256; i++) {
 		if (req.param('option'+i)) {
 			var newOptionDB=new optionDB( {
@@ -159,7 +171,8 @@ exports.addquestion=function(req,res) {
 			if (req.param('checkbox'+i)) {
 				newOptionDB.correct="yes";
 			}
-			newQuestion.answeroptions.push(newOptionDB);
+			newOptionDB.save()
+			newQuestion.answeroptions.push(newOptionDB._id);
 			newQuestion.save();
 			} else {
 				if (i>0) {

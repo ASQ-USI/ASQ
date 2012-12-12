@@ -66,13 +66,13 @@ module.exports.post = function(req, res) {
                             newSlideshow.questions.push(newQuestion._id);
                             
                             var optionDB=db.model('Option', schemas.optionSchema);
-                            var optionsDB=[];
                             for (var j=0;j< questions[i].options.length;j++) {
-                                optionsDB[j]=new optionDB( {
+                                newOptionDB=new optionDB( {
                                     optionText: questions[i].options[j].optionText,
                                     correct: questions[i].options[j].correct
                                 });
-                                newQuestion.answeroptions.push(optionsDB[j]._id);
+                                newOptionDB.save();
+                                newQuestion.answeroptions.push(newOptionDB._id);
                                 newQuestion.save();
                                 
                             }
