@@ -248,11 +248,7 @@ exports.renderuser=function(req,res) {
 			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 			slideshowDB.find({ _id: { $in : user.slides } }, function(err, slides) {
 				if (err) throw err;
-				console.log(slides);
-				console.log(req.query.alert);
-				console.log(req.query.type);
-				var type = req.query.type
-				if (!type.match(/(succes|error|info)/g)) type =''
+				var type = req.query.type && /(succes|error|info)/g.test(req.query.type) ? 'alert-' + req.query.type : '';
 				res.render('user', {arrayslides: slides, alert: req.query.alert, type:type});
 			});
 			

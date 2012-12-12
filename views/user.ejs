@@ -20,7 +20,14 @@
 		<div class="container" id="content">
 
 			<div class="row group" >
-				
+
+				<!-- Show notification fo user feedback based on query alert and type-->
+				<% if (alert) { %>
+					<div class="alert <%= type %>">
+						<%= alert %>
+					</div>
+				<% } %>
+
 				<!---   Seperating Headline   --->
 				<div class="span12  headline">
 					<h2 class="pull-left">General course</h2>
