@@ -246,17 +246,15 @@ exports.renderuser=function(req,res) {
 		if (user) {
 			slides=[];
 			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-			for (var i=0;i<user.slides.length;i++) {
-				slideshowDB.findById(user.slides[i], function(err, slideshow) {
-					slides.push(slideshow);
-					if (i==user.slides.length) {
-						res.render('user', {arrayslides: slides});
-					}
-				});
-			}
-			if (user.slides.length==0) {
-				res.render('user', {arrayslides: slides});
-			}
+			slideshowDB.find({ _id: { $in : user.slides } }, function(err, slides) {
+				if (err) throw err;
+				console.log(slides);
+				console.log(req.query.alert);
+				console.log(req.query.type);
+				var type = req.query.type
+				if (!type.match(/(succes|error|info)/g)) type =''
+				res.render('user', {arrayslides: slides, alert: req.query.alert, type:type});
+			});
 			
 		} 
 		});
