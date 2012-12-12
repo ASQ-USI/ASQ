@@ -46,7 +46,7 @@ exports.slideshowSchema.virtual('path').get(function() {
 
 var answerSchema = new Schema({
 	question: {type: ObjectId}, 
-		answers: [{
+	answers: [{
 		user: ObjectId, 
 		content: {type: Array, default: []} 
 	}]

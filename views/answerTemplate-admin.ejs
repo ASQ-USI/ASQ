@@ -86,47 +86,36 @@
 	
 		<div class="modal hide fade" id="quest">
 			<div class="modal-header">
-				
-				<!--- Button for admin --->
-				<% if(mode === 'admin'){ %>
-					<h3>Statistics for</h3>
-				
-				<!--- Button for viewer --->
+				<h3>Statistics for</h3>
+				<h4>"<%= questionObj.questionText %>"</h4>
+			</div>
+			
+			<div class="modal-body">
+			
+				<h3>Statistics for</h3>
+				<!--- Multiple choice question --->
+				<% if(questionObj.questionType == "Multiple choice"){ %>	
+					<% for(opt in questionObj.options){ %>
+						<label class="checkbox" >
+					      	<input type="checkbox" disabled class="text-success">
+					      	<% if(questionObj.options[opt].correct == "yes") { %>
+					      		<i class="icon-ok"> </i> 
+					      	<% } else {%>
+					      		<i class="icon-remove"> </i> 
+					      	<% } %>
+					      	
+					      	<%= questionObj.options[opt].optionText %>
+				      	</label>
 				<% } else if(mode ==="viewer"){ %>
 					<h3>Your answer for</h3>
 				<% } %>
-				
-				<h4>"<%= questionObj.questionText %>"</h4>
-			</div>
-			<div class="modal-body">
-				
-				<% for(opt in questionObj.options){ %>
-						<label class="checkbox" >
-					      	<input type="checkbox" disabled class="text-success">
-					      	<i class="icon-ok"> </i> 
-					      	<%= questionObj.options[opt].optionText %>
-				      	</label>
-				<% } %>	
-				
-				
-				
-				<form>
-				<fieldset>
-				<!--- Multiple choice question --->
-				<% if(questionObj.questionType == "Multiple choice"){ %>
-					<span class="help-block">Please select all correct answers.</span>	
-					<% for(opt in questionObj.options){ %>	
-						<label class="checkbox">
-				      	<input type="checkbox"><%= questionObj.options[opt].optionText %></label>
-					<% } %>	
 				
 				<!--- Text input questions ---->
 				<%} else if(questionObj.questionType == "Text input"){ %>	
 					<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>	
 					<input type="text" placeholder="Your solution...">
 				<% } %>
-				</fieldset>
-				</form>
+
 			
 			</div>
 				<div class="modal-footer">
