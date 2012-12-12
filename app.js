@@ -122,6 +122,9 @@ app.get('/', ensureAuthenticated, function(req, res){
 /** Initialize a new session with slides matching the id */
 app.get('/start/:id', ensureAuthenticated, routes.slides.start);
 
+/** Stop a user current session **/
+app.get('/user/:username/stop', ensureAuthenticated, routes.slides.stop);
+
 /** Join the session of user */
 app.get('/live/:user/', routes.slides.live);
 app.get('/live/:user/*', routes.slides.liveStatic);

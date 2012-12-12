@@ -20,9 +20,10 @@ var connect = function(host, port, session) {
 
         socket.on('impress:start', function(event) {
             if (!started) {
-            $('#welcomeScreen').modal('hide');
-            started = true;
-        }
+                console.log('started');
+                $('#welcomeScreen').modal('hide');
+                started = true;
+            }
         });
 
         socket.on('goto', function(event) {

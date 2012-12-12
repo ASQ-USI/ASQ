@@ -36,7 +36,8 @@ exports.sessionSchema = new Schema({
 	viewers: {type: Array, default: []},
 	answers: {type: [ObjectId], default:[]}, //AnswerSchema
 	showingQuestion: {type: Boolean, default: false},
-	showingAnswer: {type: Boolean, default: false}
+	showingAnswer: {type: Boolean, default: false},
+	started: {type: Boolean, default: false}
 });
 
 exports.sessionSchema.virtual('nextQuestion').get(function() {

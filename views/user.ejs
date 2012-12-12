@@ -28,6 +28,13 @@
 					</div>
 				<% } %>
 
+				<% if (session) { %>
+					<div class="alert">
+						You have a live session running. Do you want to <a href="/admin">see it</a>?
+						<a href="stop/" class="btn btn-mini btn-danger pull-right" type="button">Stop session</a>
+					</div>
+				<% } %>
+
 				<!---   Seperating Headline   --->
 				<div class="span12  headline">
 					<h2 class="pull-left">General course</h2>
