@@ -196,8 +196,8 @@ app.get('/edithtml/', ensureAuthenticated, function (req,res) {
     res.render('edithtml');
 });
 
-app.get('/render', ensureAuthenticated, registration.parsequestion);
-app.get('/render2', ensureAuthenticated, registration.sendanswer);
+app.get('/render/', ensureAuthenticated, registration.parsequestion);
+app.get('/render2/', ensureAuthenticated, registration.sendanswer);
 
 
 /** HTTP Server */

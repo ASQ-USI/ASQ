@@ -87,22 +87,20 @@ exports.parsequestion=function(req,res) {
 	
 		
 	//question=preload(loadJSON('slides/example/question2.json'));
-	options=[];
-	var optionDB= db.model('Option', schemas.optionSchema);
-	
-	for (var i=0;i<question[0].answeroptions.length;i++) {
-		optionDB.findById(question[0].answeroptions[i], function(err, option) {
-			options.push(option);
-			if (options.length==question[0].answeroptions.length) {
-				res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
-			}
-	});
-	}
-	if (question[0].answeroptions.length==0) {
-		res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
-	}
+		var optionDB= db.model('Option', schemas.optionSchema);
+		optionDB.find({ _id: { $in: question[0].answeroptions }}, function(err, options) {
+			if (err) throw err;
+			res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+		});
 	
 	});
+
+}
+
+exports.sendanswer=function(req,res) {
+	question=preload(loadJSON('slides/example/question1.json'));
+	console.log(question);
+	res.render('answerTemplate',{questionObj: question, mode:'admin'});
 
 }
 
