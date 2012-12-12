@@ -55,30 +55,41 @@ module.exports.post = function(req, res) {
                     function(file) {
                         console.log('questions ok');
                         var questions = JSON.parse(file);
+                        
+                        //HERE SEARCH THE BUG
                         for (var i=0; i<questions.length;i++) {
+                            //FOR EACH QUESTION IN THE JSON WE CREATE A DB ENTRY, FILL IN WITH JSON INFO ABOUT IT
                              var questionDB= db.model('Question', schemas.questionSchema);
                              var newQuestion=new questionDB({
                                     questionText:questions[i].questionText,
                                     questionType: questions[i].questionType,
                                     afterslide: questions[i].afterslide
                             });
-                            newQuestion.save();
+                             //WE ADD THE QUESTION TO THE SLIDESHOW
                             newSlideshow.questions.push(newQuestion._id);
-                            
-                            var optionDB=db.model('Option', schemas.optionSchema);
-                            for (var j=0;j< questions[i].options.length;j++) {
+                            //WE SAVE THE ENTRY IN THE DB
+                            newQuestion.save();
+                             //FOR THE DIFFERENT OPTIONS SPECIFIED IN THE JSON FOR A QUESTION
+                             for (var j=0;j< questions[i].options.length;j++) {
+                                var optionDB=db.model('Option', schemas.optionSchema);
+                                //WE CREATE A NEW ENTRY FOR THAT OPTION
                                 newOptionDB=new optionDB( {
                                     optionText: questions[i].options[j].optionText,
                                     correct: questions[i].options[j].correct
                                 });
+                                //WE SAVE THAT ENTRY IN THE DB OF THE OPTIONS
                                 newOptionDB.save();
+                                //WE ADD THAT OPTION TO THE LIST OF THE OPTIONS OF A QUESTION
                                 newQuestion.answeroptions.push(newOptionDB._id);
-                                newQuestion.save();
                                 
+                                //THE PROBLEM IS THAT THESE TWO ARE DIFFERENT
+                                console.log(newOptionDB._id);
+                                console.log(newQuestion.answeroptions);
                             }
                             
-                           
-                        }
+                            }
+                            
+                            
                         
                         return true;
                     },
