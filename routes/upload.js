@@ -55,8 +55,31 @@ module.exports.post = function(req, res) {
                     function(file) {
                         console.log('questions ok');
                         var questions = JSON.parse(file);
-                        newSlideshow.questions = questions || [];
-                        console.log(questions);
+                        for (var i=0; i<questions.length;i++) {
+                             var questionDB= db.model('Question', schemas.questionSchema);
+                             var newQuestion=new questionDB({
+                                    questionText:questions[i].questionText,
+                                    questionType: questions[i].questionType,
+                                    afterslide: questions[i].afterslide
+                            });
+                            newQuestion.save();
+                            newSlideshow.questions.push(newQuestion._id);
+                            
+                            var optionDB=db.model('Option', schemas.optionSchema);
+                            var optionsDB=[];
+                            for (var j=0;j< questions[i].options.length;j++) {
+                                optionsDB[j]=new optionDB( {
+                                    optionText: questions[i].options[j].optionText,
+                                    correct: questions[i].options[j].correct
+                                });
+                                newQuestion.answeroptions.push(optionsDB[j]._id);
+                                newQuestion.save();
+                                
+                            }
+                            
+                           
+                        }
+                        
                         return true;
                     },
                     function() {
