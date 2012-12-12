@@ -102,11 +102,8 @@ exports.parsequestion=function(req,res) {
 		res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
 	}
 	
-	
 	});
-	
 
-	
 }
 
 exports.sendanswer=function(req,res) {
@@ -268,12 +265,13 @@ exports.editslideshow=function(req,res) {
 									questionDB.findById(slideshow.questions[i], function(err, question) {
 										questions.push(question);
 										if (questions.length==slideshow.questions.length) {
-											res.render('edit', {arrayquestions: questions});
+											
+											res.render('edit', {arrayquestions: questions, username: req.user.name});
 										}
 									});
 								}
 								if (slideshow.questions.length==0) {
-									res.render('edit', {arrayquestions: questions});
+									res.render('edit', {arrayquestions: questions, username: req.user.name});
 								}
 								
 							} else {
@@ -307,12 +305,12 @@ exports.renderuser=function(req,res) {
 				slideshowDB.findById(user.slides[i], function(err, slideshow) {
 					slides.push(slideshow);
 					if (slides.length==user.slides.length) {
-						res.render('user', {arrayslides: slides});
+						res.render('user', {arrayslides: slides, username: req.user.name});
 					}
 				});
 			}
 			if (user.slides.length==0) {
-				res.render('user', {arrayslides: slides});
+				res.render('user', {arrayslides: slides, username: req.user.name});
 			}
 			
 		} 

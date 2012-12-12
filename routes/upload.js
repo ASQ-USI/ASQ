@@ -10,8 +10,8 @@ var schemas = require('../models/models.js')
   , all = promise.all
   , wrench = require('wrench');
 
-module.exports.show = function(require, res) {
-    res.render('upload');
+module.exports.show = function(req, res) {
+    res.render('upload', {username: req.user.name});
 }
 
 module.exports.post = function(req, res) {
