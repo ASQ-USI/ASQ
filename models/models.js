@@ -48,7 +48,7 @@ exports.slideshowSchema.set('toJSON', { virtuals: true });
 
 var answerSchema = new Schema({
 	question: {type: ObjectId}, 
-		answers: [{
+	answers: [{
 		user: ObjectId, 
 		content: {type: Array, default: []} 
 	}]
