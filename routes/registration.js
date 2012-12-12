@@ -230,8 +230,8 @@ exports.addquestion=function(req,res) {
 		testanswer.push(testans)
 	}
 	var newanswer = new answerDB({
-		question: "50c7738315ed6e214a000009",
-		//question: newQuestion._id,
+		//question: "50c7738315ed6e214a000009",
+		question: newQuestion._id,
 		answers : testanswer
 	}
 	);
