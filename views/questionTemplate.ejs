@@ -23,9 +23,9 @@
 				<!--- Multiple choice question --->
 				<% if(questionObj.questionType == "Multiple choice"){ %>
 					<span class="help-block">Please select all correct answers.</span>	
-					<% for(opt in questionObj.options){ %>	
+					<% for (var i=0;i<arrayoptions.length;i++) { %>
 						<label class="checkbox">
-				      	<input type="checkbox"><%= questionObj.options[opt].optionText %></label>
+				      	<input type="checkbox"><%= arrayoptions[i].optionText %></label>
 					<% } %>	
 				
 				<!--- Text input questions ---->
@@ -41,8 +41,8 @@
 					
 					<!--- Button for admin --->
 					<% if(mode === 'admin'){ %>
-						<!--<a href="#" class="btn btn-success">Show answers</a>-->
-						<p class="muted pull-right">Please use arrow key to continue.</p>
+						<a href="#" class="btn btn-success">Show answers</a>
+						<!--<p class="muted pull-right">Please use arrow key to continue.</p>-->
 					
 					<!--- Button for viewer --->
 					<% } else if(mode ==="viewer"){ %>

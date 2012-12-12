@@ -82,18 +82,33 @@ function preload(jsonFile) {
 
 
 exports.parsequestion=function(req,res) {
-	question=preload(loadJSON('slides/example/question2.json'));
-	console.log(question);
+	var questionDB= db.model('Question', schemas.questionSchema);
+	questionDB.find({},function(err,question) {
 	
-	res.render('questionTemplate',{questionObj: question, mode:'admin'});
+		
+	//question=preload(loadJSON('slides/example/question2.json'));
+	options=[];
+	var optionDB= db.model('Option', schemas.optionSchema);
 	
+	for (var i=0;i<question[0].answeroptions.length;i++) {
+		optionDB.findById(question[0].answeroptions[i], function(err, option) {
+			options.push(option);
+			if (options.length==question[0].answeroptions.length) {
+				res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+			}
+	});
+	}
+	if (question[0].answeroptions.length==0) {
+		res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+	}
+	
+	});
+
 }
 
 exports.sendanswer=function(req,res) {
 	question=preload(loadJSON('slides/example/question1.json'));
 	console.log(question);
-	
-	
 	res.render('answerTemplate',{questionObj: question, mode:'admin'});
 	
 }
@@ -103,20 +118,21 @@ exports.deletequestion=function(req,res) {
 	var users= db.model('User', schemas.userSchema);
 		var out =users.findById(req.user._id, function (err, user) {
 		if (user) {
+			var questionDB= db.model('Question', schemas.questionSchema);
+			questionDB.remove({_id: req.query.quest}, function(err, question) {
+				if (err) {
+					console.log(err);
+				}
+			});
 			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 			slideshowDB.findById(req.query.id, function(err, slideshow) {
 				for (var i=0;i<slideshow.questions.length;i++) {
-					// Jacques: modified
-					console.log(slideshow.questions[i]);
-					console.log(req.query.quest);
-
-					if (String(slideshow.questions[i])==String(req.query.quest)) {
-						slideshow.questions.slice(i,1);
+					if (slideshow.questions[i]==req.query.quest) {
+						slideshow.questions.splice( i, 1 );
 						slideshow.save();
-
+						
 					}
 				}
-
 				
 			});
 			
@@ -134,24 +150,27 @@ exports.deletequestion=function(req,res) {
 
 exports.addquestion=function(req,res) {
 	
-	options=[];
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var newQuestion=new questionDB({
+		questionText:req.body.questionText,
+		questionType: req.body.questionType,
+		afterslide: req.body.afterslide
+		//answeroptions: optionsDB
+	});
+	newQuestion.save();
+	
 	var optionDB=db.model('Option', schemas.optionSchema);
-	var optionsDB=[];
 	for (var i=0; i<256; i++) {
 		if (req.param('option'+i)) {
-			
-			options[i-1]= new Object( {
-				optionText:req.param('option'+i),
-				correct:"no"
+			var newOptionDB=new optionDB( {
+				optionText: req.param('option'+i),
 			});
 			if (req.param('checkbox'+i)) {
-				options[i-1].correct="yes";
+				newOptionDB.correct="yes";
 			}
-			var newOptionDB=new optionDB( {
-				optionText: options[i-1].optionText,
-				correct: options[i-1].correct
-			});
-			optionsDB.push(newOptionDB);
+			newOptionDB.save()
+			newQuestion.answeroptions.push(newOptionDB._id);
+			newQuestion.save();
 			} else {
 				if (i>0) {
 					break;
@@ -159,14 +178,6 @@ exports.addquestion=function(req,res) {
 			}
 
 	}
-	var questionDB= db.model('Question', schemas.questionSchema);
-	var newQuestion=new questionDB({
-		questionText:req.body.questionText,
-		questionType: req.body.questionType,
-		afterslide: req.body.afterslide,
-		answeroptions: optionsDB
-	});
-
 	
 	var nquestion=0;
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
@@ -178,13 +189,46 @@ exports.addquestion=function(req,res) {
 				nquestion=slideshow.questions.length;
 				slideshow.questions.push(newQuestion._id);
 				slideshow.save();
-				newQuestion.save();
 			}
 			
 		}
 	}
 		);
+	
+	var answerDB = db.model('Answer', schemas.answerSchema);
+	var testanswer = [];
+	for(var i = 0; i<20; i++){
+		var testans= new Object( {
+			content: [true,false,false,false]
+		});
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<5; i++){
+		var testans= new Object( {
+			content: [false,false,true,false]
+		});
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<3; i++){
+		var testans= new Object( {
+			content: [false,true,false,false]
+		});
+		testanswer.push(testans)
+	}
+	for(var i = 0; i<10; i++){
+		var testans= new Object( {
+			content: [false,false,false,true]
+		});
+		testanswer.push(testans)
+	}
+	var newanswer = new answerDB({
+		question: newQuestion._id,
+		answers : testanswer
+	}
+	);
+	newanswer.save();
 	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
+	
 	
 	
 }
@@ -213,12 +257,22 @@ exports.editslideshow=function(req,res) {
 							console.log(err);
 						} else {
 							if (slideshow) {
-								// Jacques: Modified
-								var Question = db.model('Question', schemas.questionSchema);
-								Question.find({_id: { $in: slideshow.questions}}, function(err, questions) {
-									//Should be moved here
-									res.render('edit', {arrayquestions: questions});
-								});
+								
+								var questions=[];
+								var questionDB=db.model('Question', schemas.questionSchema);
+								for (var i=0;i<slideshow.questions.length;i++) {
+									questionDB.findById(slideshow.questions[i], function(err, question) {
+										questions.push(question);
+										if (questions.length==slideshow.questions.length) {
+											
+											res.render('edit', {arrayquestions: questions, username: req.user.name});
+										}
+									});
+								}
+								if (slideshow.questions.length==0) {
+									res.render('edit', {arrayquestions: questions, username: req.user.name});
+								}
+								
 							} else {
 								res.redirect("/user");
 							}
@@ -251,7 +305,7 @@ exports.renderuser=function(req,res) {
 				var type = req.query.type &&
 						   /(succes|error|info)/g.test(req.query.type) ?
 				           'alert-' + req.query.type : '';
-				res.render('user', {arrayslides: slides, alert: req.query.alert, type:type, session: user.current});
+				res.render('user', {arrayslides: slides, username: req.user.name, alert: req.query.alert, type:type, session: user.current});
 			});
 			
 		} 
