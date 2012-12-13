@@ -21,14 +21,8 @@ var optionSchema= new Schema( {
 
 exports.optionSchema= optionSchema;
 
-var questionSchema=new Schema({
-	questionText: {type: String},
-	questionType: {type: String},
-	afterslide: {type: String},
-	answeroptions: [ObjectId]
-});
 
-exports.questionSchema=questionSchema;
+
 
 var slideshowSchema= new Schema({
 	title: { type: String },
@@ -93,3 +87,28 @@ exports.answerSchema = new Schema({
 });
 
 
+exports.optionSchema = optionSchema;
+
+var questionSchema = new Schema({
+	questionText: {type: String},
+	questionType: {type: String},
+	afterslide: {type: String},
+	answeroptions: [{type: ObjectId, ref: 'Option'}]
+});
+
+
+questionSchema.methods.displayQuestion = function(callback) {
+	var that = this;
+	var Option = db.model('Option', optionSchema);
+	Option.find({_id: {$in: this.answeroptions}})
+	.select('optionText -_id')
+	.exec(function(err, options) {
+		console.log(options);
+		callback(err, {_id: that._id,
+					   questionText: that.questionText,
+					   questionType: that.questionType,
+					   answeroptions:options});
+	});
+}
+
+exports.questionSchema = questionSchema;

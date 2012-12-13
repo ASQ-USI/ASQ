@@ -46,4 +46,27 @@ var connect = function(host, port, session) {
     document.addEventListener('asq:submit', function(event) {
         socket.emit('asq:submit', {session:session, data: event.data});
     });
+    
+    
+}
+
+
+
+var showQuestion=function(question) {
+    $('#question').modal('show');
+    $('#questionText').html('<h3>'+question.questionText+'</h3>');
+    var optionsstring='';
+    if (question.questionType=="Multiple choice") {
+        optionsstring='<span class="help-block">Please select all correct answers.</span>';
+        for (var i=0;i<question.answeroptions.length;i++) {
+            optionsstring+='<label class="checkbox"><input type="checkbox">'+question.answeroptions[i].optionText+'</label>';
+        }
+        
+    } else {
+        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
+        optionsstring+='<input type="text" placeholder="Your solution...">';
+    }
+    
+    $('#answeroptions').html(optionsstring);
+			
 }
