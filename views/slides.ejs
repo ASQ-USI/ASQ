@@ -27,6 +27,14 @@
 </head>
 
 <body class="impress-not-supported">
+    
+    <div class="modal hide fade" id="quest">
+			<div id='questiontext' class="modal-header">
+				
+			</div>
+
+		</div>
+
 
     <% if (mode === 'admin') { %>
         <%  include slidesWelcome %>
@@ -41,6 +49,7 @@
         window.onload = function() {
         impress().init();
         $('#welcomeScreen').modal('show');
+	$('#quest').modal('show');
         connect(<%='\'' + host + '\''%>, <%=port %>, '<%= id %>');
         }
     </script>

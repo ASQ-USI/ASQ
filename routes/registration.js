@@ -251,6 +251,8 @@ exports.addquestion=function(req,res) {
 
 	}
 	
+	
+	
 	var nquestion=0;
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 	slideshowDB.findById(req.query.id, function(err, slideshow) {
