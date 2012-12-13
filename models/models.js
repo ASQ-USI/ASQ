@@ -58,7 +58,8 @@ var sessionSchema = new Schema({
 	answers: [answerSchema],
 	showingQuestion: {type: Boolean, default: false},
 	showingAnswer: {type: Boolean, default: false},
-	started: {type: Boolean, default: false}
+	started: {type: Boolean, default: false},
+	questionsDisplayed: {type: [ObjectId], ref: 'Question'}
 });
 
 sessionSchema.methods.question = function(callback) {
@@ -66,7 +67,7 @@ sessionSchema.methods.question = function(callback) {
 	var Slideshow = db.model('Slideshow', slideshowSchema);
 	Slideshow.findById(this.slides, function(err, slideshow) {
 		var Question = db.model('Question', questionSchema);
-		Question.findOne({_id: { $in: slideshow.questions },
+		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
 						afterslide: that.activeSlide},
 				        function(err, question) {;
 							callback(err, question);
