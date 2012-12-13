@@ -30,36 +30,30 @@
 <body class="impress-not-supported">
     
      <div id="question" class="modal hide fade" style="pointer-events: auto;">
-	
 	<div class="modal-header" id="questionText">
-				
-			</div>
-			<div class="modal-body">
-				
-				<form>
-				<fieldset>
-				
-				</fieldset>
-				</form>
-			
-			</div>
-				<div class="modal-footer">
+	</div>
+	<div class="modal-body">
+	    <form>
+		<fieldset id='answeroptions'>
+		</fieldset>
+	    </form>	
+	</div>
+	<div class="modal-footer">
+	    <!--- Button for admin --->
+	    <% if(mode === 'admin'){ %>
+		<button class="btn btn-primary" data-dismiss="modal" id ="showanswers" onclick="show()" >Show answers</button>					
+	    <!--- Button for viewer --->
+	    <% } else if(mode ==="viewer"){ %>
+		<button class="btn btn-primary" data-dismiss="modal" id ="sendanswers" onclick="send()" >Done</button>
+	    <% } %>
 					
-					<!--- Button for admin --->
-					<% if(mode === 'admin'){ %>
-						<button class="btn btn-primary" data-dismiss="modal" onclick="$('#quest').modal('hide');" >Show answers</button>					
-					<!--- Button for viewer --->
-					<% } else if(mode ==="viewer"){ %>
-						<a href="#" class="btn btn-primary">Send answer</a>
-					<% } %>
-					
-				</div>
-
+	</div>
     <div class="modal-footer">
         
     </div>
  </div>
-
+     
+     
 
     <% if (mode === 'admin') { %>
         <%  include slidesWelcome %>
@@ -77,6 +71,24 @@
 	
         connect(<%='\'' + host + '\''%>, <%=port %>, '<%= id %>');
         }
+	
+	var show=function() {
+	    $('#quest').modal('hide');
+	    impress().next();
+	}
+	
+	var send=function() {
+	    var myEvent = new CustomEvent("asq:submit", {
+	     data: {
+		 username: "davidwalsh"
+	     }
+	    });
+
+	document.dispatchEvent(myEvent);
+	    //$('#quest').modal('hide');
+	    //connect.submit();
+
+	}
     </script>
 </body>
 </html>

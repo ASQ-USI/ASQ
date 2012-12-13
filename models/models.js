@@ -14,13 +14,6 @@ exports.userSchema = new Schema({
 
 });
 
-var optionSchema= new Schema( {
-	optionText: {type: String},
-	correct: {type: String}
-});
-
-exports.optionSchema= optionSchema;
-
 var questionSchema=new Schema({
 	questionText: {type: String},
 	questionType: {type: String},
@@ -65,7 +58,8 @@ var sessionSchema = new Schema({
 	answers: [answerSchema],
 	showingQuestion: {type: Boolean, default: false},
 	showingAnswer: {type: Boolean, default: false},
-	started: {type: Boolean, default: false}
+	started: {type: Boolean, default: false},
+	questionsDisplayed: {type: [ObjectId], ref: 'Question'}
 });
 
 sessionSchema.methods.question = function(callback) {
@@ -73,7 +67,7 @@ sessionSchema.methods.question = function(callback) {
 	var Slideshow = db.model('Slideshow', slideshowSchema);
 	Slideshow.findById(this.slides, function(err, slideshow) {
 		var Question = db.model('Question', questionSchema);
-		Question.findOne({_id: { $in: slideshow.questions },
+		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
 						afterslide: that.activeSlide},
 				        function(err, question) {;
 							callback(err, question);
@@ -85,11 +79,34 @@ sessionSchema.set('toJSON', { virtuals: true });
 
 exports.sessionSchema = sessionSchema;
 
-exports.answerSchema = new Schema({
-	question: {type: ObjectId},
-	answers: [{ user: ObjectId,
-		    content: {type: Array, default: []}
-	}]
+var optionSchema = new Schema( {
+	optionText: {type: String},
+	correct: {type: Boolean, default: false}
 });
 
+exports.optionSchema = optionSchema;
 
+var questionSchema = new Schema({
+	questionText: {type: String},
+	questionType: {type: String},
+	afterslide: {type: String},
+	answeroptions: [{type: ObjectId, ref: 'Option'}]
+});
+
+questionSchema.methods.displayQuestion = function(answer, callback) {
+	answer = answer || false;
+	var that = this;
+	var Option = db.model('Option', optionSchema);
+	Option.find({_id: {$in: this.answeroptions}})
+	.select(answer ? {_id: 0, __v: 0} : {correct: 0, _id: 0, __v: 0})
+	.exec(function(err, options) {
+		if(err) console.log(err);
+		console.log(options);
+		callback(err, {_id: that._id,
+					   questionText: that.questionText,
+					   questionType: that.questionType,
+					   answeroptions:options});
+	});
+}
+
+exports.questionSchema = questionSchema;

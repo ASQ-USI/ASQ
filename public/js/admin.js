@@ -20,7 +20,6 @@ var connect = function(host, port, session) {
 
         socket.on('asq:start', function(event) {
             if (!started) {
-                console.log('started');
                 impress().start();
                 $('#welcomeScreen').modal('hide');
                 started = true;
@@ -37,7 +36,7 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:answer', function(event) {
-            showAnswer(event.answer);
+            showAnswer(event.question); //Question contains the answer.
         });
 
         socket.on('asq:hide-answer', function(event) {
@@ -51,7 +50,6 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:stepgoto", function(event) {
-        console.log('emitting goto');
         socket.emit('asq:goto', {slide:event.target.id, session:session});
     });
 
@@ -60,27 +58,43 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:start", function(event) {
-        console.log('going to ' + event.target.id);
         socket.emit('asq:start', {session:session});
-    });
-
-    document.addEventListener('asq:answer', function(event) {
-        socket.emit('asq:show-answer', {session:session});
     });
 
     document.addEventListener('asq:close', function(event) {
         socket.emit('asq:goto', {session:session});
     });
+}
 
+showQuestion = function(question){
+    console.log('showing question');
+    console.log(question);
+}
 
+showAnswer = function(question) { //Questions contains the answer.
+    console.log('showing answer');
+    console.log(question);
 }
 
 var showQuestion=function(question) {
-    console.log(question.questionText);
     $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
+    var optionsstring='';
+    if (question.questionType=="Multiple choice") {
+        optionsstring='<span class="help-block">Please select all correct answers.</span>';
+        for (var i=0;i<question.answeroptions.length;i++) {
+            optionsstring+='<label class="checkbox"><input type="checkbox">'+question.answeroptions[i].optionText+'</label>';
+        }
+        
+    } else {
+        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
+        optionsstring+='<input type="text" placeholder="Your solution...">';
+    }
     
-    
-    
-    
+    $('#answeroptions').html(optionsstring);
+			
 }
+
+var showAnswer=function(question) {
+};
+

@@ -436,11 +436,18 @@
         var stepEnterTimeout = null;
         
         var emitGoto = function( el, duration ) {
+            if ( !initialized || !(el = getStep(el)) ) {
+                // presentation not initialized or given element is not a step
+                return false;
+            }
+
             // trigger leave of currently active element (if it's not the same step again)
             if (activeStep && activeStep !== el) {
                 onStepGoto(el);
                 onStepLeave(activeStep);
             }
+
+            return el;
         }
 
         // `goto` API function that moves to step given with `el` parameter (by index, id or element),
@@ -771,9 +778,7 @@
                     target = document.getElementById( href.slice(1) );
                 }
             }
-            
             if ( api.emitGoto(target) ) {
-            //if ( api.goto(target) ) {
                 event.stopImmediatePropagation();
                 event.preventDefault();
             }
@@ -787,9 +792,7 @@
                     (target !== document.documentElement) ) {
                 target = target.parentNode;
             }
-            
             if ( api.emitGoto(target) ) {
-            //if ( api.goto(target) ) {
                 event.preventDefault();
             }
         }, false);
