@@ -11,9 +11,9 @@ var connect = function(host, port, session) {
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/folo');
     socket.on('connect', function(event) {
-        socket.emit('viewer', {session:session});
+        socket.emit('asq:viewer', {session:session});
 
-        socket.on('impress:start', function(event) {
+        socket.on('asq:start', function(event) {
             if (!started) {
                 console.log('started');
                 $('#welcomeScreen').modal('hide');
@@ -21,16 +21,16 @@ var connect = function(host, port, session) {
             }
         });
 
-        socket.on('question', function(event) {
+        socket.on('asq:question', function(event) {
             questionId = event.question._id;
             showQuestion(event.question);
         });
 
-        socket.on('answer', function(event) {
+        socket.on('asq:answer', function(event) {
             showAnswer(event.answer);
         });
 
-        socket.on('hide', function(event) {
+        socket.on('asq:hide-answer', function(event) {
             $('#popAnswer').modal('hide');
         });
 
@@ -38,12 +38,12 @@ var connect = function(host, port, session) {
           Handle socket event 'goto'
           Uses impress.js API to go to the specified slide in the event.
          */
-        socket.on('goto', function(event) {
+        socket.on('asq:goto', function(event) {
             impress().goto(event.slide);
         });
     });
 
     document.addEventListener('asq:submit', function(event) {
-        socket.emit('submit', {session:session, data: event.data});
+        socket.emit('asq:submit', {session:session, data: event.data});
     });
 }

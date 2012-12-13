@@ -119,7 +119,7 @@ module.exports.stop = function(req, res) {
     var User = db.model('User', schemas.userSchema);
     User.findByIdAndUpdate(req.user._id, {current: null}, function(err, user) {
         if (err) throw err;
-        console.log(user.current);
+        //console.log(user.current);
         res.redirect('/user/' + req.user.name +
         '/?alert=Your session was stopped. You have no session running&type=info');
     });
@@ -136,7 +136,7 @@ var sessionFromUserId = function(userId, callback) {
             var Session = db.model('Session', schemas.sessionSchema);
             Session.findById(user.current, function(err, session) {
                 if (err) callback(err);
-                console.log(session);
+                //console.log(session);
                 var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
                 Slideshow.findById(session.slides, function(err, slideshow) {
                     if (err) callback(err);
@@ -152,12 +152,12 @@ var sessionFromUserId = function(userId, callback) {
 /** Given a userName, find it's current session **/
 var sessionFromUserName = function(userName, callback) {
     var User = db.model('User', schemas.userSchema);
-    console.log('user');
-    console.log(userName);
+    //console.log('user');
+    //console.log(userName);
     User.findOne({ name: userName }, function(err, user) {
         if (err) callback(err);
-        console.log('user');
-        console.log(user);
+        //console.log('user');
+        //console.log(user);
         if (!user)
             callback(new Error('User does not exist'));
         else if (user.current) {
