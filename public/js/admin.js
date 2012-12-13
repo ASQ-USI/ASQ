@@ -21,6 +21,7 @@ var connect = function(host, port, session) {
         socket.on('impress:start', function(event) {
             if (!started) {
                 console.log('started');
+                impress().start();
                 $('#welcomeScreen').modal('hide');
                 started = true;
             }
@@ -49,6 +50,7 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:stepgoto", function(event) {
+        console.log('emitting goto');
         socket.emit('goto', {slide:event.target.id, session:session});
     });
 

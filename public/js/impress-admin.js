@@ -227,6 +227,7 @@
                 init: empty,
                 start: empty,
                 goto: empty,
+                emitGoto: empty,
                 prev: empty,
                 next: empty
             };
@@ -663,6 +664,7 @@
             init: init,
             start: start,
             goto: goto,
+            emitGoto: emitGoto,
             next: next,
             prev: prev
         });
@@ -770,7 +772,8 @@
                 }
             }
             
-            if ( api.goto(target) ) {
+            if ( api.emitGoto(target) ) {
+            //if ( api.goto(target) ) {
                 event.stopImmediatePropagation();
                 event.preventDefault();
             }
@@ -785,7 +788,8 @@
                 target = target.parentNode;
             }
             
-            if ( api.goto(target) ) {
+            if ( api.emitGoto(target) ) {
+            //if ( api.goto(target) ) {
                 event.preventDefault();
             }
         }, false);
