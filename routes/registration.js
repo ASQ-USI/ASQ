@@ -83,30 +83,74 @@ function preload(jsonFile) {
 
 exports.parsequestion=function(req,res) {
 	var questionDB= db.model('Question', schemas.questionSchema);
-	questionDB.find({},function(err,question) {
-	
-		
-	//question=preload(loadJSON('slides/example/question2.json'));
+	questionDB.findOne({},function(err,question) {
 		var optionDB= db.model('Option', schemas.optionSchema);
-		optionDB.find({ _id: { $in: question[0].answeroptions }}, function(err, options) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
 			if (err) throw err;
-			res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+			console.log(options)
+			res.render('questionTemplate',{questionObj: question, arrayoptions: options, mode:'admin'});
 		});
-	
 	});
 
 }
 
 exports.sendanswer=function(req,res) {
-	question=preload(loadJSON('slides/example/question1.json'));
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var optionDB= db.model('Option', schemas.optionSchema);
 	
-	getQuestionStats("50c9cd8774f7e23665000009");
+	questionDB.findById("50c9cd8774f7e23665000009",function(err,question) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			getQuestionStats("50c9cd8774f7e23665000009", function(err, stats) {
+				if (err) throw err;
+				res.render('answerTemplate-admin', {questionObj: question, arrayoptions: options} );
+			});
+		});	
+	});
+}
+
+
+exports.sendstats=function(req,res) {
+
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var optionDB= db.model('Option', schemas.optionSchema);
+	console.log("###### " + req.params.id)
+
 	
-	//res.render('answerTemplate',{questionObj: question, mode:'admin'});
+	questionDB.findById(req.params.id,function(err,question) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			if (err) throw err;
+			
+			getQuestionStats(req.params.id, function(err, stats) {
+			
+			var correct = [
+		      ['Correct answers', 'Number of answers'],
+		      ['Correct', stats.correct],
+		      ['Wrong', stats.wrong]
+			]
+			
+			var countedMcOptions = [
+				[question.questionText, "Number of answers"]
+			]
+			
+	
+			var equalAnswers = [
+				['Different answers', 'Number of answers']
+			]
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+			}
+
+			console.log(countedMcOptions);
+			res.send(200,{correct: correct,countedMcOptions: countedMcOptions, equalAnswers:equalAnswers});
+
+			});
+		});	
+	});
 
 }
 
-function getQuestionStats(questionId){
+function getQuestionStats(questionId, callback){
 	var answerDB= db.model('Answer', schemas.answerSchema);
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var optionDB= db.model('Option', schemas.optionSchema);
@@ -114,14 +158,14 @@ function getQuestionStats(questionId){
 	questionDB.findById(questionId, function(err,question) {
 		answerDB.findOne({question: questionId},function(err,answer) {
 			optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
-				if (err) throw err;
+				if (err) callback(err);
 	
 				var result = {
 					total:answer.answers.length,
 					correct: null,
 					wrong: null,
 					equalAnswers: null,
-					countetMcOptions: null,
+					countedMcOptions: null,
 				}
 			
 				//Get array of correct answers
@@ -133,9 +177,11 @@ function getQuestionStats(questionId){
 				result.equalAnswers = getEqualAnswers(answer);
 				
 				// Counting selectet options for multiple choice
-				result.countetMcOptions = getCoutedMCOptions(answer); 
+				result.countedMcOptions = getCountedMCOptions(answer,question); 
 			
 				console.log(result);
+				callback(null, result);
+
 		});
 	});
 });
@@ -205,7 +251,7 @@ function getEqualAnswers(answer) {
 
 
 
-function getCoutedMCOptions(answer) {
+function getCountedMCOptions(answer, question) {
 	var countetMcOptions = new Array();
 	if (question.questionType == "Multiple choice") {
 		//init array with 0
@@ -221,7 +267,7 @@ function getCoutedMCOptions(answer) {
 			}
 
 		}
-	}
+	}else{return null;}
 	return countetMcOptions;
 }
 
