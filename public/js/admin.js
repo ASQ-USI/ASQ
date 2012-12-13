@@ -33,6 +33,7 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:question', function(event) {
+            console.log(event.question);
             showQuestion(event.question);
         });
 
