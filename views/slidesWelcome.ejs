@@ -1,11 +1,27 @@
  <div id="welcomeScreen" class="modal hide fade" style="pointer-events: auto;">
-    <div class="modal-header"><h1 style="text-align: center;"><%= title %></h1></div>
+ 	
+    <div class="modal-header">
+		<div id="logocontainer">
+			<div class="lettercontaier" id="a">
+				<p class="front">A</p>
+			</div>
+			<div class="lettercontaier" id="s">
+				<p class="front">S</p>
+			</div>
+			<div class="lettercontaier" id="q">
+				<p  class="front">Q</p>
+			</div>
+		</div>
+    	
+    </div>
     <div class="modal-body">
         <!-- <h3>Join the show!</h3> -->
-        <h2 style="text-align: center;"><a href="http://<%= host %>:<%= port %>/live/<%= user %>/">http://<%= host %>:<%= port %>/live/<%= user %>/</a></h2>
-        <h2 style="text-align: center;">Passphrase: <span class="text-info" ><strong><%= pass %></strong></span></h2>
+        <h1 style="text-align: center;"><%= title %></h1>
+        <a><h2 style="text-align: center;">http://<%= host %>:<%= port %>/live/<%= user %>/</h2></a>
+        <h5 style="text-align: center;">Please open this link to follow the presentation</h5>
+        
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary"  data-dismiss="modal" onclick="impress().start()" >Join in</button>
+        <button class="btn btn-primary"  data-dismiss="modal" onclick="impress().start()" >Start presentation</button>
     </div>
  </div>

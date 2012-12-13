@@ -48,7 +48,7 @@
 						<div class="control-group">
 							<div class="input-prepend">
 								<span class="add-on">Username</span>
-								<input class="span2" id="prependedInput" type="text" name="username" placeholder=""/>
+								<input class="span2" id="prependedInput" type="text" name="username" placeholder="" autofocus="autofocus"/>
 								<br/>
 							</div>
 						</div>
@@ -94,7 +94,7 @@
 					
 					<form id="signup" class="form-horizontal" action="/signup" method="post">
 						<div class="control-group" id="groupUsername">
-							<label class="control-label" for="inputUsername">Username</label>
+							<label class="control-label" for="inputUsername" >Username</label>
 					    	<div class="controls">
 					     		<input type="text" id="inputUsername" placeholder="MyUsername" name="signupusername" onkeyup="checkUsername(this)">
 					     		<span class="help-inline" id="checkuser"> </span>
