@@ -80,7 +80,7 @@ function ensureAuthenticated(req, res, next) {
 app = express();
 app.engine('ejs', engine);
 // Global variable: hostname which we want to advertise for connection.
-appHost = 'asq.inf.unisi.ch';
+appHost = 'localhost';
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');

@@ -294,12 +294,8 @@ exports.addquestion=function(req,res) {
 			var newOptionDB=new optionDB( {
 				optionText: req.param('option'+i),
 			});
-			if (req.param('checkbox'+i)) {
-				newOptionDB.correct=true;
-			}
+			newOptionDB.correct = req.param('checkbox'+i) ? true : false;
 			newOptionDB.save()
-			
-			
 			newQuestion.answeroptions.push(newOptionDB._id);
 			newQuestion.save();
 			} else {
@@ -309,8 +305,6 @@ exports.addquestion=function(req,res) {
 			}
 
 	}
-	
-	
 	
 	var nquestion=0;
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);

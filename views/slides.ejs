@@ -52,7 +52,8 @@
         
     </div>
  </div>
-
+     
+     
 
     <% if (mode === 'admin') { %>
         <%  include slidesWelcome %>
@@ -70,11 +71,20 @@
 	
         connect(<%='\'' + host + '\''%>, <%=port %>, '<%= id %>');
         }
+	
 	var show=function() {
 	    $('#quest').modal('hide');
 	    impress().next();
 	}
+	
 	var send=function() {
+	    var myEvent = new CustomEvent("asq:submit", {
+	     data: {
+		 username: "davidwalsh"
+	     }
+	    });
+
+	document.dispatchEvent(myEvent);
 	    //$('#quest').modal('hide');
 	    //connect.submit();
 

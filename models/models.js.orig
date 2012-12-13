@@ -14,6 +14,7 @@ exports.userSchema = new Schema({
 
 });
 
+<<<<<<< HEAD
 var optionSchema= new Schema( {
 	optionText: {type: String},
 	correct: {type: String}
@@ -21,14 +22,16 @@ var optionSchema= new Schema( {
 
 exports.optionSchema= optionSchema;
 
+=======
 var questionSchema=new Schema({
 	questionText: {type: String},
 	questionType: {type: String},
 	afterslide: {type: String},
 	answeroptions: [ObjectId]
 });
+>>>>>>> feat-slideshow-handling
 
-exports.questionSchema=questionSchema;
+
 
 var slideshowSchema= new Schema({
 	title: { type: String },
@@ -85,6 +88,7 @@ sessionSchema.set('toJSON', { virtuals: true });
 
 exports.sessionSchema = sessionSchema;
 
+<<<<<<< HEAD
 exports.answerSchema = new Schema({
 	question: {type: ObjectId},
 	answers: [{ user: ObjectId,
@@ -92,13 +96,12 @@ exports.answerSchema = new Schema({
 	}]
 });
 
-<<<<<<< HEAD
-
 =======
 var optionSchema = new Schema( {
 	optionText: {type: String},
-	correct: {type: String}
+	correct: {type: Boolean, default: false}
 });
+>>>>>>> feat-slideshow-handling
 
 exports.optionSchema = optionSchema;
 
@@ -109,12 +112,19 @@ var questionSchema = new Schema({
 	answeroptions: [{type: ObjectId, ref: 'Option'}]
 });
 
+<<<<<<< HEAD
+
 questionSchema.methods.displayQuestion = function(callback) {
+=======
+questionSchema.methods.displayQuestion = function(answer, callback) {
+	answer = answer || false;
+>>>>>>> feat-slideshow-handling
 	var that = this;
 	var Option = db.model('Option', optionSchema);
 	Option.find({_id: {$in: this.answeroptions}})
-	.select('optionText -_id')
+	.select(answer ? {_id: 0, __v: 0} : {correct: 0, _id: 0, __v: 0})
 	.exec(function(err, options) {
+		if(err) console.log(err);
 		console.log(options);
 		callback(err, {_id: that._id,
 					   questionText: that.questionText,
@@ -124,4 +134,3 @@ questionSchema.methods.displayQuestion = function(callback) {
 }
 
 exports.questionSchema = questionSchema;
->>>>>>> feat-slideshow-handling

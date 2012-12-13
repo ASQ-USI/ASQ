@@ -42,9 +42,10 @@ var connect = function(host, port, session) {
             impress().goto(event.slide);
         });
     });
-
+    
     document.addEventListener('asq:submit', function(event) {
-        socket.emit('asq:submit', {session:session, data: event.data});
+        console.log("SUBMIT");
+        //socket.emit('asq:submit', {session:session, data: event.data});
     });
     
     
