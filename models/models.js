@@ -90,14 +90,4 @@ exports.answerSchema = new Schema({
 	}]
 });
 
-exports.optionSchema = new Schema( {
-	optionText: {type: String},
-	correct: {type: String}
-});
 
-exports.questionSchema = new Schema({
-	questionText: {type: String},
-	questionType: {type: String},
-	afterslide: {type: String},
-	answeroptions: [exports.optionSchema]
-});
