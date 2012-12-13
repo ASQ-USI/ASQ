@@ -100,7 +100,7 @@ exports.parsequestion=function(req,res) {
 exports.sendanswer=function(req,res) {
 	question=preload(loadJSON('slides/example/question1.json'));
 	
-	getQuestionStats("50c8eabccb7d50f25e000005");
+	getQuestionStats("50c9cd8774f7e23665000009");
 	
 	//res.render('answerTemplate',{questionObj: question, mode:'admin'});
 
@@ -113,74 +113,133 @@ function getQuestionStats(questionId){
 	
 	questionDB.findById(questionId, function(err,question) {
 		answerDB.findOne({question: questionId},function(err,answer) {
-	
-			var result = {
-				total:answer.answers.length,
-				correct: null,
-				wrong: null,
-				answers: [{ansContent: null, amount: null, correct: null}],
-				equalAnswers: [{ansContent: "null", count: null}]
-				}
-			
 			optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
 				if (err) throw err;
-				
-				console.log(question.answeroptions);
-				console.log(answerOptions);
-				
-			})
-			
-			
-			// Counting equal answers
-			var equalAnswers = new Array(); // [{ansContent: "Lugano", count: 3}]
-			
-			for(ans in answer.answers){
-				
-				//Chack all already grouped equal answers
-				for(exAns in equalAnswers){
-					
-					//Anwer already exists
-					if(answer.answers[ans].content === equalAnswers[exAns].ansContent){
-						equalAnswers[exAns].count++;
-					}
-					
-					//New answer
-					else{
-						equalAnswers.push({
-							ansContent: answer.answers[ans].content,
-							count: 1
-						})
-					}
-				
+	
+				var result = {
+					total:answer.answers.length,
+					correct: null,
+					wrong: null,
+					equalAnswers: null,
+					countetMcOptions: null,
 				}
-			}	
 			
-			
-			// Counting selectet options for multiple choice
-			var countetMcOptions; // [4,5,6,7]
-			if(question.questionType == "Multiple choice"){
-				//init array with 0
-				for(var i = 0; i < answer.answers[0].content.length; i++){
-					countetMcOptions.push(0);
-				}
+				//Get array of correct answers
+				var correctWrong = getCorrectAnswers(answer,answerOptions);
+				result.correct = correctWrong[0];
+				result.wrong = correctWrong[1];
 				
-				for(ans in answer.answers){
-					for(opts in answer.answers[ans].content){
-						if(answer.answers[ans].content[opts] == true)
-						countetMcOptions[opts]++;
-					}
-					
-				}
-			}
+				// Counting equal answers
+				result.equalAnswers = getEqualAnswers(answer);
+				
+				// Counting selectet options for multiple choice
+				result.countetMcOptions = getCoutedMCOptions(answer); 
 			
-			
-			console.log(answer.answers[0]);
-			console.log(question);
-			console.log(result);
-			
+				console.log(result);
 		});
 	});
+});
+}
 
+
+function getNumberOfAnswers(questionId){
+	answerDB.findOne({question: questionId},function(err,answer) {
+		return answer.answers.length();
+		
+	});
+}
+
+function getCorrectAnswers(answer, answerOptions) {
+	var correctAnswer = new Array();
+	for (ans in answerOptions) {
+		if (answerOptions[ans].correct == "true") {
+			correctAnswer.push('true');
+		} else if (answerOptions[ans].correct !== undefined) {
+			correctAnswer.push(answerOptions[ans].correct);
+		} else {
+			correctAnswer.push('false');
+		}
+
+	}
+	//console.log(correctAnswer);
+
+	//Check for correct answers
+	var correct = 0;
+	var wrong = 0;
+	for (var i = 0; i < answer.answers.length; i++) {
+
+		if (arrayEqual(answer.answers[i].content, correctAnswer)) {
+			correct++;
+		} else {
+			wrong++;
+		}
+	}
+	return [correct, wrong];
+}
+
+
+function getEqualAnswers(answer) {
+	var equalAnswers = new Array();
+
+	for (var i = 0; i < answer.answers.length; i++) {
+		var newAnswer = true;
+
+		//Chack all already grouped equal answers
+		for (exAns in equalAnswers) {
+			//Anwer already exists
+			if (arrayEqual(answer.answers[i].content, equalAnswers[exAns].ansContent)) {
+				equalAnswers[exAns].count++;
+				newAnswer = false;
+			}
+
+		}
+		if (newAnswer) {
+			equalAnswers.push({
+				ansContent : answer.answers[i].content,
+				count : 1
+			})
+		}
+	}
+	return equalAnswers;
+}
+
+
+
+function getCoutedMCOptions(answer) {
+	var countetMcOptions = new Array();
+	if (question.questionType == "Multiple choice") {
+		//init array with 0
+		for (var i = 0; i < answer.answers[0].content.length; i++) {
+			countetMcOptions.push(0);
+		}
+
+		for (var j = 0; j < answer.answers.length; j++) {
+			//console.log(answer.answers[j].content)
+			for (var k = 0; k < answer.answers[j].content.length; k++) {
+				if (answer.answers[j].content[k] == "true")
+					countetMcOptions[k]++;
+			}
+
+		}
+	}
+	return countetMcOptions;
+}
+
+
+
+function arrayEqual(array1, array2){
+	if(array1.length !== array2.length){
+		//console.log( "wrong length")
+		return false;
+	} else {
+		for(var i = 0; i <array1.length; i++){
+			if(array1[i] !== array2[i]){
+				//console.log( array1[i] + " - "+ array2[i])
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 exports.deletequestion=function(req,res) {
@@ -272,19 +331,19 @@ exports.addquestion=function(req,res) {
 	var answerDB = db.model('Answer', schemas.answerSchema);
 	var testanswer = [];
 	for(var i = 0; i<20; i++){
-		var testans = {content: [true, false, false, false]};
+		var testans = {content: ["true", "false", "false", "false"]};
 		testanswer.push(testans)
 	}
 	for(var i = 0; i<5; i++){
-		var testans = {content: [false, true, false, false]};
+		var testans = {content: ["false", "true", "false", "false"]};
 		testanswer.push(testans)
 	}
 	for(var i = 0; i<3; i++){
-		var testans = {content: [false, false, true, false]};
+		var testans = {content: ["false", "false", "true", "false"]};
 		testanswer.push(testans)
 	}
 	for(var i = 0; i<10; i++){
-		var testans = {content: [false, false, false, true]};
+		var testans = {content: ["false", "false", "false", "true"]};
 		testanswer.push(testans)
 	}
 	var newanswer = new answerDB({
