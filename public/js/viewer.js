@@ -53,6 +53,7 @@ var connect = function(host, port, session) {
 
 
 
+
 var showQuestion=function(question) {
     $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
@@ -71,3 +72,6 @@ var showQuestion=function(question) {
     $('#answeroptions').html(optionsstring);
 			
 }
+
+var showAnswer=function(question) {
+};
