@@ -24,16 +24,41 @@
     	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <% } %>
 
+    
 </head>
 
 <body class="impress-not-supported">
     
-    <div class="modal hide fade" id="quest">
-			<div id='questiontext' class="modal-header">
+     <div id="question" class="modal hide fade" style="pointer-events: auto;">
+	
+	<div class="modal-header" id="questionText">
 				
 			</div>
+			<div class="modal-body">
+				
+				<form>
+				<fieldset>
+				
+				</fieldset>
+				</form>
+			
+			</div>
+				<div class="modal-footer">
+					
+					<!--- Button for admin --->
+					<% if(mode === 'admin'){ %>
+						<button class="btn btn-primary" data-dismiss="modal" onclick="$('#quest').modal('hide');" >Show answers</button>					
+					<!--- Button for viewer --->
+					<% } else if(mode ==="viewer"){ %>
+						<a href="#" class="btn btn-primary">Send answer</a>
+					<% } %>
+					
+				</div>
 
-		</div>
+    <div class="modal-footer">
+        
+    </div>
+ </div>
 
 
     <% if (mode === 'admin') { %>
@@ -49,7 +74,7 @@
         window.onload = function() {
         impress().init();
         $('#welcomeScreen').modal('show');
-	$('#quest').modal('show');
+	
         connect(<%='\'' + host + '\''%>, <%=port %>, '<%= id %>');
         }
     </script>

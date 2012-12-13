@@ -27,7 +27,9 @@ var connect = function(host, port, session) {
         });
 
         socket.on('goto', function(event, question) {
-            showQuestion(question);
+            if (started) {
+                showQuestion(question);
+            }
             impress().goto(event.slide);
         });
 
@@ -74,7 +76,9 @@ var connect = function(host, port, session) {
 }
 
 var showQuestion=function(question) {
-    $('#quest').modal('show');
+    $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
+    
+    
     
 }
