@@ -28,6 +28,7 @@ var connect = function(host, port, session) {
 
         socket.on('asq:goto', function(event) {
             console.log('received goto');
+            console.log(event.slide);
             impress().goto(event.slide);
         });
 
@@ -58,7 +59,7 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:start", function(event) {
-        socket.emit('asq:start', {session:session});
+        socket.emit('asq:start', {session:session, slide:document.querySelector(".active").id});
     });
 
     document.addEventListener('asq:close', function(event) {
