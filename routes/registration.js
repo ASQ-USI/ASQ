@@ -181,9 +181,7 @@ exports.addquestion=function(req,res) {
 			var newOptionDB=new optionDB( {
 				optionText: req.param('option'+i),
 			});
-			if (req.param('checkbox'+i)) {
-				newOptionDB.correct="yes";
-			}
+			newOptionDB.correct = req.param('checkbox'+i) ? true : false;
 			newOptionDB.save()
 			newQuestion.answeroptions.push(newOptionDB._id);
 			newQuestion.save();

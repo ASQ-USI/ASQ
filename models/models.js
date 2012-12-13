@@ -14,13 +14,6 @@ exports.userSchema = new Schema({
 
 });
 
-var optionSchema= new Schema( {
-	optionText: {type: String},
-	correct: {type: String}
-});
-
-exports.optionSchema= optionSchema;
-
 var questionSchema=new Schema({
 	questionText: {type: String},
 	questionType: {type: String},
@@ -85,16 +78,9 @@ sessionSchema.set('toJSON', { virtuals: true });
 
 exports.sessionSchema = sessionSchema;
 
-exports.answerSchema = new Schema({
-	question: {type: ObjectId},
-	answers: [{ user: ObjectId,
-		    content: {type: Array, default: []}
-	}]
-});
-
 var optionSchema = new Schema( {
 	optionText: {type: String},
-	correct: {type: String}
+	correct: {type: Boolean, default: false}
 });
 
 exports.optionSchema = optionSchema;
@@ -106,12 +92,14 @@ var questionSchema = new Schema({
 	answeroptions: [{type: ObjectId, ref: 'Option'}]
 });
 
-questionSchema.methods.displayQuestion = function(callback) {
+questionSchema.methods.displayQuestion = function(answer, callback) {
+	answer = answer || false;
 	var that = this;
 	var Option = db.model('Option', optionSchema);
 	Option.find({_id: {$in: this.answeroptions}})
-	.select('optionText -_id')
+	.select(answer ? {_id: 0, __v: 0} : {correct: 0, _id: 0, __v: 0})
 	.exec(function(err, options) {
+		if(err) console.log(err);
 		console.log(options);
 		callback(err, {_id: that._id,
 					   questionText: that.questionText,

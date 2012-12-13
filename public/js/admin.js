@@ -20,7 +20,6 @@ var connect = function(host, port, session) {
 
         socket.on('asq:start', function(event) {
             if (!started) {
-                console.log('started');
                 impress().start();
                 $('#welcomeScreen').modal('hide');
                 started = true;
@@ -33,12 +32,11 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:question', function(event) {
-            console.log(event.question);
             showQuestion(event.question);
         });
 
         socket.on('asq:answer', function(event) {
-            showAnswer(event.answer);
+            showAnswer(event.question); //Question contains the answer.
         });
 
         socket.on('asq:hide-answer', function(event) {
@@ -52,7 +50,6 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:stepgoto", function(event) {
-        console.log('emitting goto');
         socket.emit('asq:goto', {slide:event.target.id, session:session});
     });
 
@@ -61,17 +58,20 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:start", function(event) {
-        console.log('going to ' + event.target.id);
         socket.emit('asq:start', {session:session});
-    });
-
-    document.addEventListener('asq:answer', function(event) {
-        socket.emit('asq:show-answer', {session:session});
     });
 
     document.addEventListener('asq:close', function(event) {
         socket.emit('asq:goto', {session:session});
     });
+}
 
+showQuestion = function(question){
+    console.log('showing question');
+    console.log(question);
+}
 
+showAnswer = function(question) { //Questions contains the answer.
+    console.log('showing answer');
+    console.log(question);
 }
