@@ -56,7 +56,7 @@ var answerSchema = new Schema({
 
 exports.answerSchema = answerSchema;
 
-exports.sessionSchema = new Schema({
+var sessionSchema = new Schema({
 	presenter: { type: ObjectId },
 	slides: { type: ObjectId },
 	activeSlide: { type: String, default: '0' },
@@ -68,20 +68,22 @@ exports.sessionSchema = new Schema({
 	started: {type: Boolean, default: false}
 });
 
-exports.sessionSchema.virtual('nextQuestion').get(function() {
+sessionSchema.methods.question = function(callback) {
 	var that = this;
-	var Slideshow = db.model('Slideshow', exports.slideshowSchema);
+	var Slideshow = db.model('Slideshow', slideshowSchema);
 	Slideshow.findById(this.slides, function(err, slideshow) {
-		var Question = db.model('Question', exports.questionSchema);
+		var Question = db.model('Question', questionSchema);
 		Question.findOne({_id: { $in: slideshow.questions },
 						afterslide: that.activeSlide},
-				        function(err, question) {
-							return question
+				        function(err, question) {;
+							callback(err, question);
 						});
 	});
-})
+}
 
-exports.sessionSchema.set('toJSON', { virtuals: true });
+sessionSchema.set('toJSON', { virtuals: true });
+
+exports.sessionSchema = sessionSchema;
 
 exports.answerSchema = new Schema({
 	question: {type: ObjectId},

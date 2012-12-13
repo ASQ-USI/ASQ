@@ -8,40 +8,39 @@ var connect = function(host, port, session) {
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
     socket.on('connect', function(event) {
-        socket.emit('admin', {session:session});
+        socket.emit('asq:admin', {session:session});
 
         /**
           Handle socket event 'new'
           Notifies the admin of a new connection to the presentation.
          */
-        socket.on('new', function(event){
+        socket.on('asq:new-viewer', function(event){
             console.log('New viewer connected');
         });
 
-        socket.on('impress:start', function(event) {
+        socket.on('asq:start', function(event) {
             if (!started) {
                 console.log('started');
+                impress().start();
                 $('#welcomeScreen').modal('hide');
                 started = true;
             }
         });
 
-        socket.on('goto', function(event, question) {
-            if (started) {
-                showQuestion(question);
-            }
+        socket.on('asq:goto', function(event) {
+            console.log('received goto');
             impress().goto(event.slide);
         });
 
-        socket.on('question', function(event) {
+        socket.on('asq:question', function(event) {
             showQuestion(event.question);
         });
 
-        socket.on('answer', function(event) {
+        socket.on('asq:answer', function(event) {
             showAnswer(event.answer);
         });
 
-        socket.on('hide', function(event) {
+        socket.on('asq:hide-answer', function(event) {
             $('#popAnswer').modal('hide');
         });
 
@@ -52,7 +51,8 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:stepgoto", function(event) {
-        socket.emit('goto', {slide:event.target.id, session:session});
+        console.log('emitting goto');
+        socket.emit('asq:goto', {slide:event.target.id, session:session});
     });
 
     /**
@@ -61,21 +61,22 @@ var connect = function(host, port, session) {
      */
     document.addEventListener("impress:start", function(event) {
         console.log('going to ' + event.target.id);
-        socket.emit('impress:start', {session:session});
+        socket.emit('asq:start', {session:session});
     });
 
     document.addEventListener('asq:answer', function(event) {
-        socket.emit('show:answer', {session:session});
+        socket.emit('asq:show-answer', {session:session});
     });
 
     document.addEventListener('asq:close', function(event) {
-        socket.emit('goto', {session:session});
+        socket.emit('asq:goto', {session:session});
     });
 
 
 }
 
 var showQuestion=function(question) {
+    console.log(question.questionText);
     $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
     
