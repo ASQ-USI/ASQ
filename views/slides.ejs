@@ -27,6 +27,7 @@
 </head>
 
 <body class="impress-not-supported">
+    
     <div class="modal hide fade" id="quest">
 			<div id='questiontext' class="modal-header">
 				
@@ -48,6 +49,7 @@
         window.onload = function() {
         impress().init();
         $('#welcomeScreen').modal('show');
+	$('#quest').modal('show');
         connect(<%='\'' + host + '\''%>, <%=port %>, '<%= id %>');
         }
     </script>
