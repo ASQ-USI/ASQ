@@ -402,30 +402,30 @@ exports.addquestion=function(req,res) {
 	}
 		);
 	
-	var answerDB = db.model('Answer', schemas.answerSchema);
-	var testanswer = [];
-	for(var i = 0; i<20; i++){
-		var testans = {content: ["true", "false", "false", "false"]};
-		testanswer.push(testans)
-	}
-	for(var i = 0; i<5; i++){
-		var testans = {content: ["false", "true", "false", "false"]};
-		testanswer.push(testans)
-	}
-	for(var i = 0; i<3; i++){
-		var testans = {content: ["false", "false", "true", "false"]};
-		testanswer.push(testans)
-	}
-	for(var i = 0; i<10; i++){
-		var testans = {content: ["false", "false", "false", "true"]};
-		testanswer.push(testans)
-	}
-	var newanswer = new answerDB({
-		//question: "50c7738315ed6e214a000009",
-		question: newQuestion._id,
-		answers : testanswer
-	}
-	);
+	// var answerDB = db.model('Answer', schemas.answerSchema);
+	// var testanswer = [];
+	// for(var i = 0; i<20; i++){
+		// var testans = {content: ["true", "false", "false", "false"]};
+		// testanswer.push(testans)
+	// }
+	// for(var i = 0; i<5; i++){
+		// var testans = {content: ["false", "true", "false", "false"]};
+		// testanswer.push(testans)
+	// }
+	// for(var i = 0; i<3; i++){
+		// var testans = {content: ["false", "false", "true", "false"]};
+		// testanswer.push(testans)
+	// }
+	// for(var i = 0; i<10; i++){
+		// var testans = {content: ["false", "false", "false", "true"]};
+		// testanswer.push(testans)
+	// }
+	// var newanswer = new answerDB({
+		// //question: "50c7738315ed6e214a000009",
+		// question: newQuestion._id,
+		// answers : testanswer
+	// }
+	// );
 	newanswer.save();
 	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 	

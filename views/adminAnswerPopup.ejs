@@ -1,10 +1,37 @@
 <div id="answer" class="modal hide fade" style="pointer-events: auto;">
-	<div class="modal-header" id="answerText">
-	</div>
+	
 	<div class="modal-body">
-		<div id='answersolutions'></div>
-	    <div id="Q1Correct"></div>
-	    <div id="q" style="height: 200px;"></div>
+		
+	   	<div id="answerText"></div>    
+	   	
+	    <ul class="nav nav-tabs" id="myTab">
+				  <li class="active"><a href="#answersolutions"  data-toggle="tab">Correct Answer</a></li>
+				  <li><a href="#rvsw" data-toggle="tab">Right vs. Wrong</a></li>
+				  <li><a href="#mscstats" data-toggle="tab">Multiple Choice Statistics</a></li>
+				  <li><a href="#diffAns" data-toggle="tab">Different answers</a></li>
+		</ul>
+				 
+		<div class="tab-content">
+		
+			<!--	Displays correct solution -->
+			<div class="tab-pane active" id='answersolutions'></div>  	
+				  
+			<!-- Displays Pie-Chart Right vs. Wrong -->
+			<div class="tab-pane" id="rvsw">
+				<div id="rvswChart" style="width: 900px; height: 500px;"></div>
+			</div>
+				  
+			<!-- Display multiple choice stats -->
+			<div class="tab-pane" id="mscstats">
+				<div id="mscstatChart" style="height:350px"></div>
+			</div>
+			
+			<!-- Display different aswers  -->
+			<div class="tab-pane" id="diffAns">
+				<div id="diffAnsChart" style="height:350px"></div>
+			</div>
+		</div>	
+
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" data-dismiss="modal" id ="continue" onclick="impress().next()" >Continue Presentation</button>
