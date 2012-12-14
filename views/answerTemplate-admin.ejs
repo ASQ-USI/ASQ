@@ -10,6 +10,17 @@
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<style>
+			.modal {
+			  width: 800px;
+			  margin-left:-400px;
+			  max-height: 600px;
+			}
+			.modal-body{
+			
+			}
+			
+		</style>
 	 
 	 <script type="text/javascript">
 		google.load("visualization", "1", {
@@ -24,12 +35,18 @@
 			console.log(data);
 
 			var options3 = {
-				title : 'Correct vs. Wrong'
+				title : 'Correct vs. Wrong',
+				'width':760,
+                'height':300,
+                
 			};
 			
 			var options2 = {
 	       	  animation: {duration: 1000},
 	          hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
+	          'width':760,
+              'height':300,
+              'legend': {position: 'top', textStyle: { fontSize: 16}}
 	        };
 
 			var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
@@ -40,7 +57,7 @@
 		}
 
 
-		$.getJSON('/stats/fjhdf', function(data) {
+		$.getJSON('/stats/50c9cd8774f7e23665000009/', function(data) {
 
 			correct = data.correct;
 			countedMcOptions = data.countedMcOptions;
@@ -61,47 +78,67 @@
 			</div>
 			
 			<div class="modal-body">
-				<!--- Multiple choice question --->
-				<% if(questionObj.questionType == "Multiple choice"){ %>	
-					<% for(var i=0; i<arrayoptions.length; i++){ %>
-						<label class="checkbox" >
-					      	<% if(arrayoptions[i].correct == "true") { %>
-					      		<i class="icon-ok"> </i> 
-					      	<% } else {%>
-					      		<i class="icon-remove"> </i> 
-					      	<% } %>
-					      	
-					      	<%= arrayoptions[i].optionText %>
-				      	</label>
-				      <% } %>
-				      
-				      <div id="Q1Correct" style="height: 200px;"></div>
-				      <div id="q" style="height: 200px;"></div>
-				      
-				      	
-				 <% } %>
 				
-				<!--- Text input questions ---->
-				<% if(questionObj.questionType == "Text input"){ %>	
-					<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>	
-					<input type="text" placeholder="Your solution...">
-				<% } %>
-				
-				
-				
-				
-
+				<ul class="nav nav-tabs" id="myTab">
+				  <li class="active"><a href="#correct"  data-toggle="tab">Correct Answer</a></li>
+				  <li><a href="#rvsw" data-toggle="tab">Right vs. Wrong</a></li>
+				  <li><a href="#mscstats" data-toggle="tab">Multiple Choice Statistics</a></li>
+				  
+				</ul>
+				 
+				<div class="tab-content">
+				  <div class="tab-pane active" id="correct">
+				  	
+				  	<!--- Multiple choice question --->
+							<% if(questionObj.questionType == "Multiple choice"){ %>	
+								<% for(var i=0; i<arrayoptions.length; i++){ %>
+									<label class="checkbox" >
+								      	<% if(arrayoptions[i].correct == "true") { %>
+								      		<i class="icon-ok"> </i> 
+								      	<% } else {%>
+								      		<i class="icon-remove"> </i> 
+								      	<% } %>
+								      	
+								      	<%= arrayoptions[i].optionText %>
+							      	</label>
+							      <% } %>			      	
+							 <% } %>
+							
+							<!--- Text input questions ---->
+							<% if(questionObj.questionType == "Text input"){ %>	
+								<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>	
+								<input type="text" placeholder="Your solution...">
+							<% } %>
+				  	
+				  </div>
+				  <div class="tab-pane" id="rvsw">
+				  	
+				  	 <div id="Q1Correct"></div>
+				  	
+				  </div>
+				  <div class="tab-pane" id="mscstats">
+				  	
+				  		<div id="q"></div>
+				  	
+				  </div>
+				 
+				</div>
 			
 			</div>
-				<div class="modal-footer">
-					<a href="#" class="btn btn-primary">Continue presentation</a>
-				</div>
+			<div class="modal-footer">
+				<a href="#" class="btn btn-primary">Continue presentation</a>
+			</div>
 		</div>
 		
-	    <script>
+	<script>
         window.onload = function() {
         	$('#quest').modal('show');
         }
     </script>
+	<script>
+		$(function() {
+			$('#myTab a:last').tab('show');
+		})
+	</script>
 	</body>
 </html>
