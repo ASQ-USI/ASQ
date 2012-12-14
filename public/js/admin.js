@@ -90,6 +90,7 @@ var showQuestion=function(question) {
         optionsstring+='<input type="text" placeholder="Your solution...">';
     }
     
+    
     $('#answeroptions').html(optionsstring);
 			
 }
@@ -115,6 +116,50 @@ var showAnswer=function(question) {
         optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
         optionsstring+='<input type="text" placeholder="Your solution...">';
     }
+    
+    google.load("visualization", "1", {
+			packages : ["corechart"]
+		});
+		var correct = null;
+		var countedMcOptions = null;
+
+		function drawChart() {
+                    console.log('IM DRAWIIING');
+			var data = google.visualization.arrayToDataTable(countedMcOptions);
+			var q1correct = google.visualization.arrayToDataTable(correct);
+			console.log(data);
+
+			var options3 = {
+				title : 'Correct vs. Wrong',
+				'width':760,
+                'height':300,
+                
+			};
+			
+			var options2 = {
+	       	  animation: {duration: 1000},
+	          hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
+	          'width':760,
+              'height':300,
+              'legend': {position: 'top', textStyle: { fontSize: 16}}
+	        };
+                        
+			var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
+			chart3.draw(q1correct, options3);
+			
+			var chart = new google.visualization.ColumnChart(document.getElementById('q'));
+			chart.draw(data, options2);
+		}
+
+
+		$.getJSON('/stats/50cade3a56b9801502000009/', function(data) {
+			correct = data.correct;
+			countedMcOptions = data.countedMcOptions;
+			console.log(countedMcOptions);
+			google.setOnLoadCallback(drawChart);
+
+		});
+    
     
     $('#answersolutions').html(optionsstring);
 };
