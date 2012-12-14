@@ -39,7 +39,7 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:hide-answer', function(event) {
-            $('#popAnswer').modal('hide');
+            $('#answer').modal('hide');
         });
 
     });
