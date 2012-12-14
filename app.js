@@ -73,8 +73,6 @@ function ensureAuthenticated(req, res, next) {
     } else {
         res.redirect("/");
     }
-    
-
 }
 
 app = express();
@@ -171,6 +169,8 @@ app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
 
 app.get('/user/:username/delete', ensureAuthenticated, registration.deletequestion);
 
+app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
+
 //The user logs out, and get redirected
 app.get('/logout/', function(req, res){
   req.logout();
@@ -197,7 +197,7 @@ app.get('/edithtml/', ensureAuthenticated, function (req,res) {
 });
 
 app.get('/render/', ensureAuthenticated, registration.parsequestion);
-app.get('/render2/', ensureAuthenticated, registration.sendanswer);
+app.get('/render2/',  registration.sendanswer);
 
 
 /** HTTP Server */

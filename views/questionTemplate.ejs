@@ -23,10 +23,9 @@
 				<!--- Multiple choice question --->
 				<% if(questionObj.questionType == "Multiple choice"){ %>
 					<span class="help-block">Please select all correct answers.</span>	
-					<% for (var i=0;i<arrayoptions.length;i++) { %>
+					<% for (var i=0; i<arrayoptions.length; i++) { %>
 						<label class="checkbox">
-						<input type="checkbox"><%= arrayoptions[i].optionText %>
-						</label>
+				      	<input type="checkbox"><%= arrayoptions[i].optionText %></label>
 					<% } %>	
 				
 				<!--- Text input questions ---->

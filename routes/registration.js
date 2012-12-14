@@ -83,50 +83,216 @@ function preload(jsonFile) {
 
 exports.parsequestion=function(req,res) {
 	var questionDB= db.model('Question', schemas.questionSchema);
-	questionDB.find({},function(err,question) {
-	
-		
-	//question=preload(loadJSON('slides/example/question2.json'));
+	questionDB.findOne({},function(err,question) {
 		var optionDB= db.model('Option', schemas.optionSchema);
-		optionDB.find({ _id: { $in: question[0].answeroptions }}, function(err, options) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
 			if (err) throw err;
-			res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+			console.log(options)
+			res.render('questionTemplate',{questionObj: question, arrayoptions: options, mode:'admin'});
 		});
-	
 	});
 
 }
 
 exports.sendanswer=function(req,res) {
-	question=preload(loadJSON('slides/example/question1.json'));
-	console.log(question);
-	res.render('answerTemplate',{questionObj: question, mode:'admin'});
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var optionDB= db.model('Option', schemas.optionSchema);
+	
+	questionDB.findById("50cade3a56b9801502000009",function(err,question) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			getQuestionStats("50cade3a56b9801502000009", function(err, stats) {
+				if (err) throw err;
+				res.render('answerTemplate-admin', {questionObj: question, arrayoptions: options} );
+			});
+		});	
+	});
+}
+
+
+exports.sendstats=function(req,res) {
+
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var optionDB= db.model('Option', schemas.optionSchema);
+	console.log("###### " + req.params.id)
+
+	
+	questionDB.findById(req.params.id, function(err,question) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			if (err) throw err;
+			
+			getQuestionStats(req.params.id, function(err, stats) {
+			
+			var correct = [
+		      ['Correct answers', 'Number of answers'],
+		      ['Correct', stats.correct],
+		      ['Wrong', stats.wrong]
+			]
+			
+			var countedMcOptions = [
+				[question.questionText, "Number of answers"]
+			]
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				countedMcOptions.push( [options[ans].optionText, stats.countedMcOptions[ans]]);
+			}
+	
+			var equalAnswers = [
+				['Different answers', 'Number of answers']
+			]
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+			}
+
+			//console.log(countedMcOptions);
+			res.send(200,{correct: correct,countedMcOptions: countedMcOptions, equalAnswers:equalAnswers});
+
+			});
+		});	
+	});
 
 }
 
-function getQuestionStats(questionId){
+function getQuestionStats(questionId, callback){
 	var answerDB= db.model('Answer', schemas.answerSchema);
 	var questionDB= db.model('Question', schemas.questionSchema);
+	var optionDB= db.model('Option', schemas.optionSchema);
 	
 	questionDB.findById(questionId, function(err,question) {
-		answerDB.find({question: questionId},function(err,answer) {
-			var result = {
-				total:null,
-				correct: null,
-				wrong: null,
-				answers: [{answer: null, amount: null, correct: null}]
+		answerDB.findOne({question: questionId},function(err,answer) {
+			optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
+				if (err) callback(err);
+	
+				var result = {
+					total:answer.answers.length,
+					correct: null,
+					wrong: null,
+					equalAnswers: null,
+					countedMcOptions: null,
 				}
 			
-			if(question.questionType == "Multiple choice"){
+				//Get array of correct answers
+				var correctWrong = getCorrectAnswers(answer,answerOptions);
+				result.correct = correctWrong[0];
+				result.wrong = correctWrong[1];
 				
-			}
-			console.log(answer[0].answers[0]);
-			console.log(answer);
-			console.log(question);
+				// Counting equal answers
+				result.equalAnswers = getEqualAnswers(answer);
+				
+				// Counting selectet options for multiple choice
+				result.countedMcOptions = getCountedMCOptions(answer,question); 
 			
+				console.log(result);
+				callback(null, result);
+
 		});
 	});
+});
+}
 
+
+function getNumberOfAnswers(questionId){
+	answerDB.findOne({question: questionId},function(err,answer) {
+		return answer.answers.length();
+		
+	});
+}
+
+function getCorrectAnswers(answer, answerOptions) {
+	var correctAnswer = new Array();
+	for (ans in answerOptions) {
+		if (answerOptions[ans].correct == true) {
+			correctAnswer.push("true");
+		} else if (answerOptions[ans].correct == false) {
+			correctAnswer.push("false");
+		}else if (answerOptions[ans].correct !== undefined) {
+			correctAnswer.push(answerOptions[ans].correct);
+			console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
+			
+		} else {
+			correctAnswer.push("false");
+		}
+
+	}
+	console.log("Correct ans " + correctAnswer);
+
+	//Check for correct answers
+	var correct = 0;
+	var wrong = 0;
+	for (var i = 0; i < answer.answers.length; i++) {
+		console.log(answer.answers[i].content+" "+correctAnswer +" "+arrayEqual(answer.answers[i].content, correctAnswer))
+		if (arrayEqual(answer.answers[i].content, correctAnswer)) {
+			correct++;
+		} else {
+			wrong++;
+		}
+	}
+	return [correct, wrong];
+}
+
+
+function getEqualAnswers(answer) {
+	var equalAnswers = new Array();
+
+	for (var i = 0; i < answer.answers.length; i++) {
+		var newAnswer = true;
+
+		//Chack all already grouped equal answers
+		for (exAns in equalAnswers) {
+			//Anwer already exists
+			if (arrayEqual(answer.answers[i].content, equalAnswers[exAns].ansContent)) {
+				equalAnswers[exAns].count++;
+				newAnswer = false;
+			}
+
+		}
+		if (newAnswer) {
+			equalAnswers.push({
+				ansContent : answer.answers[i].content,
+				count : 1
+			})
+		}
+	}
+	return equalAnswers;
+}
+
+
+
+function getCountedMCOptions(answer, question) {
+	var countetMcOptions = new Array();
+	if (question.questionType == "Multiple choice") {
+		//init array with 0
+		for (var i = 0; i < answer.answers[0].content.length; i++) {
+			countetMcOptions.push(0);
+		}
+
+		for (var j = 0; j < answer.answers.length; j++) {
+			
+			for (var k = 0; k < answer.answers[j].content.length; k++) {
+				if (answer.answers[j].content[k] == "true")
+					countetMcOptions[k]++;
+			}
+
+		}
+	}else{return null;}
+	return countetMcOptions;
+}
+
+
+
+function arrayEqual(array1, array2){
+	if(array1.length !== array2.length){
+		console.log( "wrong length")
+		return false;
+	} else {
+		for(var i = 0; i <array1.length; i++){
+			if(array1[i] != array2[i]){
+				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 exports.deletequestion=function(req,res) {
@@ -156,12 +322,7 @@ exports.deletequestion=function(req,res) {
 		}
 		res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 		});
-		
-	
-	
-	
-	
-	
+
 }
 
 exports.addquestion=function(req,res) {
@@ -173,7 +334,7 @@ exports.addquestion=function(req,res) {
 		afterslide: req.body.afterslide
 		//answeroptions: optionsDB
 	});
-	newQuestion.save();
+	//newQuestion.save();
 	
 	var optionDB=db.model('Option', schemas.optionSchema);
 	for (var i=0; i<256; i++) {
@@ -212,19 +373,19 @@ exports.addquestion=function(req,res) {
 	var answerDB = db.model('Answer', schemas.answerSchema);
 	var testanswer = [];
 	for(var i = 0; i<20; i++){
-		var testans = {content: [true, false, false, false]};
+		var testans = {content: ["true", "false", "false", "false"]};
 		testanswer.push(testans)
 	}
 	for(var i = 0; i<5; i++){
-		var testans = {content: [false, true, false, false]};
+		var testans = {content: ["false", "true", "false", "false"]};
 		testanswer.push(testans)
 	}
 	for(var i = 0; i<3; i++){
-		var testans = {content: [false, false, true, false]};
+		var testans = {content: ["false", "false", "true", "false"]};
 		testanswer.push(testans)
 	}
 	for(var i = 0; i<10; i++){
-		var testans = {content: [false, false, false, true]};
+		var testans = {content: ["false", "false", "false", "true"]};
 		testanswer.push(testans)
 	}
 	var newanswer = new answerDB({
@@ -271,7 +432,6 @@ exports.editslideshow=function(req,res) {
 									questionDB.findById(slideshow.questions[i], function(err, question) {
 										questions.push(question);
 										if (questions.length==slideshow.questions.length) {
-											
 											res.render('edit', {arrayquestions: questions, username: req.user.name});
 										}
 									});

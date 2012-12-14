@@ -27,11 +27,11 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:answer', function(event) {
-            showAnswer(event.answer);
+            showAnswer(event.question);
         });
 
         socket.on('asq:hide-answer', function(event) {
-            $('#popAnswer').modal('hide');
+            $('#answer').modal('hide');
         });
 
         /**
@@ -44,6 +44,55 @@ var connect = function(host, port, session) {
     });
     
     document.addEventListener('asq:submit', function(event) {
-        socket.emit('asq:submit', {session:session, data: event.data});
+        //socket.emit('asq:submit', {session:session, answers:event.detail.answers});
     });
+    
+    
 }
+
+
+
+
+var showQuestion=function(question) {
+    $('#question').modal('show');
+    $('#questionText').html('<h3>'+question.questionText+'</h3>');
+    var optionsstring='';
+    if (question.questionType=="Multiple choice") {
+        optionsstring='<span class="help-block">Please select all correct answers.</span>';
+        for (var i=0;i<question.answeroptions.length;i++) {
+            optionsstring+='<label class="checkbox"><input type="checkbox" id="checkbox'+i+'">'+question.answeroptions[i].optionText+'</label>';
+        }
+        
+    } else {
+        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
+        optionsstring+='<input type="text" placeholder="Your solution...">';
+    }
+    
+    $('#answeroptions').html(optionsstring);
+			
+}
+
+var showAnswer=function(question) {
+    $('#question').modal('hide');
+    $('#answer').modal('show');
+    $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
+    var optionsstring='';
+    if (question.questionType=="Multiple choice") {
+        console.log(question);
+        for (var i=0;i<question.answeroptions.length;i++) {
+            optionsstring+='<label class="checkbox" >';
+            if (question.answeroptions[i].correct==true) {
+                optionsstring+='<i class="icon-ok"> </i> ';
+            } else {
+                optionsstring+='<i class="icon-remove"> </i> ';
+            }
+            optionsstring+=question.answeroptions[i].optionText+'</label>';
+        }
+        
+    } else {
+        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
+        optionsstring+='<input type="text" placeholder="Your solution...">';
+    }
+    
+    $('#answersolutions').html(optionsstring);
+};

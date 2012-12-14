@@ -39,7 +39,7 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:hide-answer', function(event) {
-            $('#popAnswer').modal('hide');
+            $('#answer').modal('hide');
         });
 
     });
@@ -74,3 +74,93 @@ showAnswer = function(question) { //Questions contains the answer.
     console.log('showing answer');
     console.log(question);
 }
+
+var showQuestion=function(question) {
+    $('#question').modal('show');
+    $('#questionText').html('<h3>'+question.questionText+'</h3>');
+    var optionsstring='';
+    if (question.questionType=="Multiple choice") {
+        optionsstring='<span class="help-block">Please select all correct answers.</span>';
+        for (var i=0;i<question.answeroptions.length;i++) {
+            optionsstring+='<label class="checkbox"><input type="checkbox">'+question.answeroptions[i].optionText+'</label>';
+        }
+        
+    } else {
+        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
+        optionsstring+='<input type="text" placeholder="Your solution...">';
+    }
+    
+    
+    $('#answeroptions').html(optionsstring);
+			
+}
+
+var showAnswer=function(question) {
+    $('#question').modal('hide');
+    $('#answer').modal('show');
+    $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
+    var optionsstring='';
+    if (question.questionType=="Multiple choice") {
+        console.log(question);
+        for (var i=0;i<question.answeroptions.length;i++) {
+            optionsstring+='<label class="checkbox" >';
+            if (question.answeroptions[i].correct==true) {
+                optionsstring+='<i class="icon-ok"> </i> ';
+            } else {
+                optionsstring+='<i class="icon-remove"> </i> ';
+            }
+            optionsstring+=question.answeroptions[i].optionText+'</label>';
+        }
+        
+    } else {
+        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
+        optionsstring+='<input type="text" placeholder="Your solution...">';
+    }
+    
+    google.load("visualization", "1", {
+			packages : ["corechart"]
+		});
+		var correct = null;
+		var countedMcOptions = null;
+
+		function drawChart() {
+                    console.log('IM DRAWIIING');
+			var data = google.visualization.arrayToDataTable(countedMcOptions);
+			var q1correct = google.visualization.arrayToDataTable(correct);
+			console.log(data);
+
+			var options3 = {
+				title : 'Correct vs. Wrong',
+				'width':760,
+                'height':300,
+                
+			};
+			
+			var options2 = {
+	       	  animation: {duration: 1000},
+	          hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
+	          'width':760,
+              'height':300,
+              'legend': {position: 'top', textStyle: { fontSize: 16}}
+	        };
+                        
+			var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
+			chart3.draw(q1correct, options3);
+			
+			var chart = new google.visualization.ColumnChart(document.getElementById('q'));
+			chart.draw(data, options2);
+		}
+
+
+		$.getJSON('/stats/50cade3a56b9801502000009/', function(data) {
+			correct = data.correct;
+			countedMcOptions = data.countedMcOptions;
+			console.log(countedMcOptions);
+			google.setOnLoadCallback(drawChart);
+
+		});
+    
+    
+    $('#answersolutions').html(optionsstring);
+};
+
