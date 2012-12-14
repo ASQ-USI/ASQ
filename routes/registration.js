@@ -116,7 +116,7 @@ exports.sendstats=function(req,res) {
 	console.log("###### " + req.params.id)
 
 	
-	questionDB.findById(req.params.id,function(err,question) {
+	questionDB.findById(req.params.id, function(err,question) {
 		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
 			if (err) throw err;
 			
@@ -131,7 +131,10 @@ exports.sendstats=function(req,res) {
 			var countedMcOptions = [
 				[question.questionText, "Number of answers"]
 			]
-			
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				countedMcOptions.push( [options[ans].optionText, stats.countedMcOptions[ans]]);
+			}
 	
 			var equalAnswers = [
 				['Different answers', 'Number of answers']
@@ -141,7 +144,7 @@ exports.sendstats=function(req,res) {
 				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
 			}
 
-			console.log(countedMcOptions);
+			//console.log(countedMcOptions);
 			res.send(200,{correct: correct,countedMcOptions: countedMcOptions, equalAnswers:equalAnswers});
 
 			});
@@ -198,22 +201,26 @@ function getNumberOfAnswers(questionId){
 function getCorrectAnswers(answer, answerOptions) {
 	var correctAnswer = new Array();
 	for (ans in answerOptions) {
-		if (answerOptions[ans].correct == "true") {
-			correctAnswer.push('true');
-		} else if (answerOptions[ans].correct !== undefined) {
+		if (answerOptions[ans].correct == true) {
+			correctAnswer.push("true");
+		} else if (answerOptions[ans].correct == false) {
+			correctAnswer.push("false");
+		}else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
+			console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
+			
 		} else {
-			correctAnswer.push('false');
+			correctAnswer.push("false");
 		}
 
 	}
-	//console.log(correctAnswer);
+	console.log("Correct ans " + correctAnswer);
 
 	//Check for correct answers
 	var correct = 0;
 	var wrong = 0;
 	for (var i = 0; i < answer.answers.length; i++) {
-
+		console.log(answer.answers[i].content+" "+correctAnswer +" "+arrayEqual(answer.answers[i].content, correctAnswer))
 		if (arrayEqual(answer.answers[i].content, correctAnswer)) {
 			correct++;
 		} else {
@@ -260,7 +267,7 @@ function getCountedMCOptions(answer, question) {
 		}
 
 		for (var j = 0; j < answer.answers.length; j++) {
-			//console.log(answer.answers[j].content)
+			
 			for (var k = 0; k < answer.answers[j].content.length; k++) {
 				if (answer.answers[j].content[k] == "true")
 					countetMcOptions[k]++;
@@ -275,12 +282,12 @@ function getCountedMCOptions(answer, question) {
 
 function arrayEqual(array1, array2){
 	if(array1.length !== array2.length){
-		//console.log( "wrong length")
+		console.log( "wrong length")
 		return false;
 	} else {
 		for(var i = 0; i <array1.length; i++){
-			if(array1[i] !== array2[i]){
-				//console.log( array1[i] + " - "+ array2[i])
+			if(array1[i] != array2[i]){
+				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
 				return false;
 			}
 		}
@@ -315,12 +322,7 @@ exports.deletequestion=function(req,res) {
 		}
 		res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 		});
-		
-	
-	
-	
-	
-	
+
 }
 
 exports.addquestion=function(req,res) {
