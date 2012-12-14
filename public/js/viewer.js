@@ -44,7 +44,7 @@ var connect = function(host, port, session) {
     });
     
     document.addEventListener('asq:submit', function(event) {
-        //socket.emit('asq:submit', {session:session, answers:event.detail.answers});
+        socket.emit('asq:submit', {session:session, answers:event.detail.answers});
     });
     
     
