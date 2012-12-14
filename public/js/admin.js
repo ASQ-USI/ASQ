@@ -27,8 +27,6 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:goto', function(event) {
-            console.log('received goto');
-            console.log(event.slide);
             impress().goto(event.slide);
         });
 
