@@ -5,11 +5,6 @@
 
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session) {
-    //Load chart data for stats
-    //google.load("visualization", "1", {
-    //    packages : ["corechart"]
-    //});
-    //socket connection handling
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
     socket.on('connect', function(event) {
@@ -137,7 +132,6 @@ var showAnswer=function(question, stats) {
             }
             optionsstring+=question.answeroptions[i].optionText+'</label>';
         }
-
     } else {
         optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
         optionsstring+='<input type="text" placeholder="Your solution...">';
