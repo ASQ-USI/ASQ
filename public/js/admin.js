@@ -96,5 +96,27 @@ var showQuestion=function(question) {
 }
 
 var showAnswer=function(question) {
+    $('#question').modal('hide');
+    $('#answer').modal('show');
+    $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
+    var optionsstring='';
+    if (question.questionType=="Multiple choice") {
+        console.log(question);
+        for (var i=0;i<question.answeroptions.length;i++) {
+            optionsstring+='<label class="checkbox" >';
+            if (question.answeroptions[i].correct==true) {
+                optionsstring+='<i class="icon-ok"> </i> ';
+            } else {
+                optionsstring+='<i class="icon-remove"> </i> ';
+            }
+            optionsstring+=question.answeroptions[i].optionText+'</label>';
+        }
+        
+    } else {
+        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
+        optionsstring+='<input type="text" placeholder="Your solution...">';
+    }
+    
+    $('#answersolutions').html(optionsstring);
 };
 
