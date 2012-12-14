@@ -142,6 +142,7 @@ var showAnswer=function(question, stats) {
     //google.setOnLoadCallback(drawChart);
     //drawChart();
     //update modal content
+    //random comment
     $('#answersolutions').html(optionsstring);
     $('#question').modal('hide');
     $('#answer').modal('show');
