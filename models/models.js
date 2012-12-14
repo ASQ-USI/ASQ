@@ -18,7 +18,7 @@ var questionSchema=new Schema({
 	questionText: {type: String},
 	questionType: {type: String},
 	afterslide: {type: String},
-	answeroptions: [ObjectId]
+	answeroptions: {type: [ObjectId], ref: 'Option'}
 });
 
 exports.questionSchema=questionSchema;

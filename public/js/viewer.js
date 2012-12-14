@@ -46,8 +46,6 @@ var connect = function(host, port, session) {
     document.addEventListener('asq:submit', function(event) {
         //socket.emit('asq:submit', {session:session, answers:event.detail.answers});
     });
-    
-    
 }
 
 
@@ -96,3 +94,20 @@ var showAnswer=function(question) {
     
     $('#answersolutions').html(optionsstring);
 };
+
+var send=function() {
+    var answers=[];
+    for (var i=0;i<$('#answeroptions').children().size()-1;i++) {
+        if ($('#checkbox'+i).is(':checked')){
+            answers[i]=true;
+        } else {
+            answers[i]=false;
+        }
+    }
+    var myEvent = new CustomEvent("asq:submit", {
+        "detail": {
+            "answers": answers
+        }
+    });
+    document.dispatchEvent(myEvent);
+}

@@ -5,6 +5,11 @@
 
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session) {
+    //Load chart data for stats
+    //google.load("visualization", "1", {
+    //    packages : ["corechart"]
+    //});
+    //socket connection handling
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
     socket.on('connect', function(event) {
@@ -35,7 +40,7 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:answer', function(event) {
-            showAnswer(event.question); //Question contains the answer.
+            showAnswer(event.question, event.stats); //Question contains the answer.
         });
 
         socket.on('asq:hide-answer', function(event) {
@@ -65,16 +70,6 @@ var connect = function(host, port, session) {
     });
 }
 
-showQuestion = function(question){
-    console.log('showing question');
-    console.log(question);
-}
-
-showAnswer = function(question) { //Questions contains the answer.
-    console.log('showing answer');
-    console.log(question);
-}
-
 var showQuestion=function(question) {
     $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
@@ -95,9 +90,40 @@ var showQuestion=function(question) {
 			
 }
 
-var showAnswer=function(question) {
-    $('#question').modal('hide');
-    $('#answer').modal('show');
+var showAnswer=function(question, stats) {
+    google.load("visualization", "1", {
+        packages : ["corechart"],
+        callback : drawChart
+    });
+
+    //Google chart drawing for stats
+    function drawChart() {
+        console.log('GOOGLE CHART');
+        var data = google.visualization.arrayToDataTable(countedMcOptions);
+        var q1correct = google.visualization.arrayToDataTable(correct);
+        console.log(data);
+
+        var options3 = {
+            title : 'Correct vs. Wrong',
+            'width':760,
+            'height':300,
+        };
+
+        var options2 = {
+            animation: {duration: 1000},
+            hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
+            'width':760,
+            'height':300,
+            'legend': {position: 'top', textStyle: { fontSize: 16}}
+        };
+
+        var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
+        chart3.draw(q1correct, options3);
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('q'));
+        chart.draw(data, options2);
+    }
+
     $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
     var optionsstring='';
     if (question.questionType=="Multiple choice") {
@@ -111,56 +137,18 @@ var showAnswer=function(question) {
             }
             optionsstring+=question.answeroptions[i].optionText+'</label>';
         }
-        
+
     } else {
         optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
         optionsstring+='<input type="text" placeholder="Your solution...">';
     }
-    
-    google.load("visualization", "1", {
-			packages : ["corechart"]
-		});
-		var correct = null;
-		var countedMcOptions = null;
 
-		function drawChart() {
-                    console.log('IM DRAWIIING');
-			var data = google.visualization.arrayToDataTable(countedMcOptions);
-			var q1correct = google.visualization.arrayToDataTable(correct);
-			console.log(data);
-
-			var options3 = {
-				title : 'Correct vs. Wrong',
-				'width':760,
-                'height':300,
-                
-			};
-			
-			var options2 = {
-	       	  animation: {duration: 1000},
-	          hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
-	          'width':760,
-              'height':300,
-              'legend': {position: 'top', textStyle: { fontSize: 16}}
-	        };
-                        
-			var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
-			chart3.draw(q1correct, options3);
-			
-			var chart = new google.visualization.ColumnChart(document.getElementById('q'));
-			chart.draw(data, options2);
-		}
-
-
-		$.getJSON('/stats/50cade3a56b9801502000009/', function(data) {
-			correct = data.correct;
-			countedMcOptions = data.countedMcOptions;
-			console.log(countedMcOptions);
-			google.setOnLoadCallback(drawChart);
-
-		});
-    
-    
+    var correct = stats.correct || null;
+    var countedMcOptions = stats.countedMcOptions || null;
+    //google.setOnLoadCallback(drawChart);
+    //drawChart();
+    //update modal content
     $('#answersolutions').html(optionsstring);
+    $('#question').modal('hide');
+    $('#answer').modal('show');
 };
-

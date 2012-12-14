@@ -153,6 +153,38 @@ exports.sendstats=function(req,res) {
 
 }
 
+exports.getStats = function(questionId, callback) {
+	var Question = db.model('Question', schemas.questionSchema);
+	Question.findById(questionId).populate('answeroptions').exec(function(err, question){
+		if (err) callback(err);
+		getQuestionStats(questionId, function(err, stats) {
+			if (err) callback(err);
+			var correct = [
+		      ['Correct answers', 'Number of answers'],
+		      ['Correct', stats.correct],
+		      ['Wrong', stats.wrong]
+			]
+
+			var countedMcOptions = [
+				[question.questionText, "Number of answers"]
+			]
+			for(ans in stats.equalAnswers){
+				console.log("###########");
+				countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
+			}
+
+			var equalAnswers = [
+				['Different answers', 'Number of answers']
+			]
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+			}
+			callback(null, {correct: correct,countedMcOptions: countedMcOptions, equalAnswers:equalAnswers});
+		});
+	});
+}
+
 function getQuestionStats(questionId, callback){
 	var answerDB= db.model('Answer', schemas.answerSchema);
 	var questionDB= db.model('Question', schemas.questionSchema);

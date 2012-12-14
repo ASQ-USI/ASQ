@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>ASQ - My Presentations</title>
@@ -94,7 +94,7 @@
 				
 				<!--- Multiple choice question --->
 				
-				<% if(questionObj.questionType == "Multiple choice"){ %>	
+				<!--<% if(questionObj.questionType == "Multiple choice"){ %>
 					<% for(var i = 0; i < questionObj.answeroptions.length; i++){ %>
 						<label class="checkbox" >
 					      	<input type="checkbox" disabled class="text-success">
@@ -103,16 +103,16 @@
 					      	<% } else {%> <i class="icon-remove"> </i><% } %>  	
 					      	<%= questionObj.answeroptions[i].optionText %>
 				      	</label>
-				     <% } %>
+				     <% } %>-->
 		
 				<!--- Text input questions ---->
-				<% } else if(questionObj.questionType == "Text input"){ %>	
+				<!--<% } else if(questionObj.questionType == "Text input"){ %>
 					<p><b style="width: 100px">Your answer:</b> dsbssdbjlsadj</p>
 					<p><b style="width: 100px">Correct:</b> <%= questionObj.options[0].correct %> </p>
-				<% } %>
+				<% } %>-->
 
 			
-			</div>
+			<!--</div>
 		</div>
 		
 	    <script>
@@ -121,4 +121,14 @@
         }
     </script>
 	</body>
-</html>
+</html>-->
+<div id="answer" class="modal hide fade" style="pointer-events: auto;">
+	<div class="modal-header" id="answerText">
+	</div>
+	<div class="modal-body" id='answersolutions'>
+	     <div id="Q1Correct"></div>
+	     <div id="q" style="height: 200px;"></div>
+	</div>
+	<div class="modal-footer">
+	</div>
+    <div class="modal-footer">

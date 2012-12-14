@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>ASQ - My Presentations</title>
@@ -21,7 +21,6 @@
 			}
 			
 		</style>
-	 
 	 <script type="text/javascript">
 		google.load("visualization", "1", {
 			packages : ["corechart"]
@@ -90,7 +89,7 @@
 				  <div class="tab-pane active" id="correct">
 				  	
 				  	<!--- Multiple choice question --->
-							<% if(questionObj.questionType == "Multiple choice"){ %>	
+							<!--<% if(questionObj.questionType == "Multiple choice"){ %>
 								<% for(var i=0; i<arrayoptions.length; i++){ %>
 									<label class="checkbox" >
 								      	<% if(arrayoptions[i].correct == "true") { %>
@@ -102,15 +101,15 @@
 								      	<%= arrayoptions[i].optionText %>
 							      	</label>
 							      <% } %>			      	
-							 <% } %>
+							 <% } %>-->
 							
 							<!--- Text input questions ---->
-							<% if(questionObj.questionType == "Text input"){ %>	
+							<!--<% if(questionObj.questionType == "Text input"){ %>
 								<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>	
 								<input type="text" placeholder="Your solution...">
-							<% } %>
+							<% } %>-->
 				  	
-				  </div>
+				  <!--</div>
 				  <div class="tab-pane" id="rvsw">
 				  	
 				  	 <div id="Q1Correct"></div>
@@ -141,4 +140,19 @@
 		})
 	</script>
 	</body>
-</html>
+</html>-->
+
+<div id="answer" class="modal hide fade" style="pointer-events: auto;">
+	<div class="modal-header" id="answerText">
+	</div>
+	<div class="modal-body" id='answersolutions'>
+	     <div id="Q1Correct"></div>
+	     <div id="q" style="height: 200px;"></div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" data-dismiss="modal" id ="continue" onclick="impress().next()" >Continue Presentation</button>
+	</div>
+    <div class="modal-footer">
+
+    </div>
+ </div>

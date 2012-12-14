@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta charset="utf-8" />
@@ -21,64 +20,22 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
     <% if (mode === 'admin') { %>
-    	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    	<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+        <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
     <% } %>
-
     
+
 </head>
 
 <body class="impress-not-supported">
-    
-     <div id="question" class="modal hide fade" style="pointer-events: auto;">
-	<div class="modal-header" id="questionText">
-	</div>
-	<div class="modal-body">
-	    <form>
-		<fieldset id='answeroptions'>
-		</fieldset>
-	    </form>	
-	</div>
-	<div class="modal-footer">
-	    <!--- Button for admin --->
-	    <% if(mode === 'admin'){ %>
-		<button class="btn btn-primary" data-dismiss="modal" id ="showanswers" onclick="show()" >Show answers</button>					
-	    <!--- Button for viewer --->
-	    <% } else if(mode ==="viewer"){ %>
-		<button type="button" class="btn btn-primary"  data-toggle="button" id ="sendanswers" onclick="send()" >Done</button>
-	    <% } %>
-					
-	</div>
-    <div class="modal-footer">
-        
-    </div>
- </div>
-     
-     
-     <div id="answer" class="modal hide fade" style="pointer-events: auto;">
-	<div class="modal-header" id="answerText">
-	</div>
-	<div class="modal-body" id='answersolutions'>
-	     <div id="Q1Correct"></div>
-	     <div id="q" style="height: 200px;"></div>
-	</div>
-	<div class="modal-footer">
-	    <!--- Button for admin --->
-	    <% if(mode === 'admin'){ %>
-		<button class="btn btn-primary" data-dismiss="modal" id ="continue" onclick="nextslide()" >Continue Presentation</button>					
-	    <% } %>
-					
-	</div>
-    <div class="modal-footer">
-        
-    </div>
- </div>
-     
-     
-
     <% if (mode === 'admin') { %>
-        <%  include slidesWelcome %>
+        <% include slidesWelcome %>
+        <% include adminQuestionPopup %>
+        <% include adminAnswerPopup %>
     <% } else {%>
         <% include slidesWait %>
+        <% include viewerQuestionPopup %>
+        <% include viewerAnswerPopup %>
     <% } %>
    
     <%- partial(path) %>
@@ -86,36 +43,10 @@
     <script src="/js/<%= mode %>.js"></script>
     <script>
         window.onload = function() {
-        impress().init();
-        $('#welcomeScreen').modal('show');
-	
-        connect(<%='\'' + host + '\''%>, <%=port %>, '<%= id %>');
+            impress().init();
+            $('#welcomeScreen').modal('show');
+            connect(<%='\'' + host + '\''%>, <%=port %>, '<%= id %>');
         }
-	
-	var show=function() {
-	    impress().next();
-	}
-	
-	var send=function() {
-	    var answers=[];
-	    for (var i=0;i<$('#answeroptions').children().size()-1;i++) {
-		if ($('#checkbox'+i).is(':checked')){
-		    answers[i]=true;
-		} else {
-		    answers[i]=false;
-		}
-	    }
-	    var myEvent = new CustomEvent("asq:submit", {
-		"detail": {
-		    "answers": answers
-		}
-	    });
-	    document.dispatchEvent(myEvent);
-	}
-	
-	var nextslide=function() {
-	    impress().next();
-	}
     </script>
 </body>
 </html>
