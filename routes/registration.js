@@ -98,9 +98,9 @@ exports.sendanswer=function(req,res) {
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var optionDB= db.model('Option', schemas.optionSchema);
 	
-	questionDB.findById("50c9cd8774f7e23665000009",function(err,question) {
+	questionDB.findById("50cade3a56b9801502000009",function(err,question) {
 		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
-			getQuestionStats("50c9cd8774f7e23665000009", function(err, stats) {
+			getQuestionStats("50cade3a56b9801502000009", function(err, stats) {
 				if (err) throw err;
 				res.render('answerTemplate-admin', {questionObj: question, arrayoptions: options} );
 			});

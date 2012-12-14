@@ -37,7 +37,6 @@
 			
 			var chart = new google.visualization.ColumnChart(document.getElementById('q'));
 			chart.draw(data, options2);
-
 		}
 
 
@@ -45,7 +44,7 @@
 
 			correct = data.correct;
 			countedMcOptions = data.countedMcOptions;
-console.log(countedMcOptions);
+			console.log(countedMcOptions);
 			google.setOnLoadCallback(drawChart);
 
 		});
