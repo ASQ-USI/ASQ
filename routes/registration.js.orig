@@ -83,60 +83,144 @@ function preload(jsonFile) {
 
 exports.parsequestion=function(req,res) {
 	var questionDB= db.model('Question', schemas.questionSchema);
-	questionDB.find({},function(err,question) {
-	
-		
-	//question=preload(loadJSON('slides/example/question2.json'));
+	questionDB.findOne({},function(err,question) {
 		var optionDB= db.model('Option', schemas.optionSchema);
-		optionDB.find({ _id: { $in: question[0].answeroptions }}, function(err, options) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
 			if (err) throw err;
-			res.render('questionTemplate',{questionObj: question[0], arrayoptions: options, mode:'admin'});
+			console.log(options)
+			res.render('questionTemplate',{questionObj: question, arrayoptions: options, mode:'admin'});
 		});
-	
 	});
 
 }
 
 exports.sendanswer=function(req,res) {
-	question=preload(loadJSON('slides/example/question1.json'));
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var optionDB= db.model('Option', schemas.optionSchema);
 	
-	getQuestionStats("50c9cd8774f7e23665000009");
+	questionDB.findById("50cade3a56b9801502000009",function(err,question) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			getQuestionStats("50cade3a56b9801502000009", function(err, stats) {
+				if (err) throw err;
+				res.render('answerTemplate-admin', {questionObj: question, arrayoptions: options} );
+			});
+		});	
+	});
+}
+
+
+exports.sendstats=function(req,res) {
+
+	var questionDB= db.model('Question', schemas.questionSchema);
+	var optionDB= db.model('Option', schemas.optionSchema);
+	console.log("###### " + req.params.id)
+
 	
-	//res.render('answerTemplate',{questionObj: question, mode:'admin'});
+	questionDB.findById(req.params.id, function(err,question) {
+		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			if (err) throw err;
+			
+			getQuestionStats(req.params.id, function(err, stats) {
+			
+			var correct = [
+		      ['Correct answers', 'Number of answers'],
+		      ['Correct', stats.correct],
+		      ['Wrong', stats.wrong]
+			]
+			
+			var countedMcOptions = [
+				[question.questionText, "Number of answers"]
+			]
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				countedMcOptions.push( [options[ans].optionText, stats.countedMcOptions[ans]]);
+			}
+	
+			var equalAnswers = [
+				['Different answers', 'Number of answers']
+			]
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+			}
+
+			//console.log(countedMcOptions);
+			res.send(200,{correct: correct,countedMcOptions: countedMcOptions, equalAnswers:equalAnswers});
+
+			});
+		});	
+	});
 
 }
 
-function getQuestionStats(questionId){
+exports.getStats = function(questionId, callback) {
+	var Question = db.model('Question', schemas.questionSchema);
+	Question.findById(questionId).populate('answeroptions').exec(function(err, question){
+		if (err) callback(err);
+		getQuestionStats(questionId, function(err, stats) {
+			if (err) callback(err);
+			var correct = [
+		      ['Correct answers', 'Number of answers'],
+		      ['Correct', stats.correct],
+		      ['Wrong', stats.wrong]
+			]
+
+			var countedMcOptions = [
+				[question.questionText, "Number of answers"]
+			]
+			for(ans in stats.equalAnswers){
+				console.log("###########");
+				countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
+			}
+
+			var equalAnswers = [
+				['Different answers', 'Number of answers']
+			]
+			for(ans in stats.equalAnswers){
+				//console.log("###########");
+				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+			}
+			callback(null, {correct: correct,countedMcOptions: countedMcOptions, equalAnswers:equalAnswers});
+		});
+	});
+}
+
+function getQuestionStats(questionId, callback){
 	var answerDB= db.model('Answer', schemas.answerSchema);
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var optionDB= db.model('Option', schemas.optionSchema);
 	
 	questionDB.findById(questionId, function(err,question) {
 		answerDB.findOne({question: questionId},function(err,answer) {
-			optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
-				if (err) throw err;
+			if (answer) {
+				optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
+					if (err) callback(err);
+		
+					var result = {
+						total:answer.answers.length,
+						correct: null,
+						wrong: null,
+						equalAnswers: null,
+						countedMcOptions: null,
+					}
+				
+					//Get array of correct answers
+					var correctWrong = getCorrectAnswers(answer,answerOptions);
+					result.correct = correctWrong[0];
+					result.wrong = correctWrong[1];
+					
+					// Counting equal answers
+					result.equalAnswers = getEqualAnswers(answer);
+					
+					// Counting selectet options for multiple choice
+					result.countedMcOptions = getCountedMCOptions(answer,question); 
+				
+					console.log(result);
+					callback(null, result);
 	
-				var result = {
-					total:answer.answers.length,
-					correct: null,
-					wrong: null,
-					equalAnswers: null,
-					countetMcOptions: null,
-				}
+				});	
+			}
 			
-				//Get array of correct answers
-				var correctWrong = getCorrectAnswers(answer,answerOptions);
-				result.correct = correctWrong[0];
-				result.wrong = correctWrong[1];
-				
-				// Counting equal answers
-				result.equalAnswers = getEqualAnswers(answer);
-				
-				// Counting selectet options for multiple choice
-				result.countetMcOptions = getCoutedMCOptions(answer); 
-			
-				console.log(result);
-		});
 	});
 });
 }
@@ -152,22 +236,26 @@ function getNumberOfAnswers(questionId){
 function getCorrectAnswers(answer, answerOptions) {
 	var correctAnswer = new Array();
 	for (ans in answerOptions) {
-		if (answerOptions[ans].correct == "true") {
-			correctAnswer.push('true');
-		} else if (answerOptions[ans].correct !== undefined) {
+		if (answerOptions[ans].correct == true) {
+			correctAnswer.push("true");
+		} else if (answerOptions[ans].correct == false) {
+			correctAnswer.push("false");
+		}else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
+			console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
+			
 		} else {
-			correctAnswer.push('false');
+			correctAnswer.push("false");
 		}
 
 	}
-	//console.log(correctAnswer);
+	console.log("Correct ans " + correctAnswer);
 
 	//Check for correct answers
 	var correct = 0;
 	var wrong = 0;
 	for (var i = 0; i < answer.answers.length; i++) {
-
+		console.log(answer.answers[i].content+" "+correctAnswer +" "+arrayEqual(answer.answers[i].content, correctAnswer))
 		if (arrayEqual(answer.answers[i].content, correctAnswer)) {
 			correct++;
 		} else {
@@ -205,7 +293,7 @@ function getEqualAnswers(answer) {
 
 
 
-function getCoutedMCOptions(answer) {
+function getCountedMCOptions(answer, question) {
 	var countetMcOptions = new Array();
 	if (question.questionType == "Multiple choice") {
 		//init array with 0
@@ -214,14 +302,14 @@ function getCoutedMCOptions(answer) {
 		}
 
 		for (var j = 0; j < answer.answers.length; j++) {
-			//console.log(answer.answers[j].content)
+			
 			for (var k = 0; k < answer.answers[j].content.length; k++) {
 				if (answer.answers[j].content[k] == "true")
 					countetMcOptions[k]++;
 			}
 
 		}
-	}
+	}else{return null;}
 	return countetMcOptions;
 }
 
@@ -229,12 +317,12 @@ function getCoutedMCOptions(answer) {
 
 function arrayEqual(array1, array2){
 	if(array1.length !== array2.length){
-		//console.log( "wrong length")
+		console.log( "wrong length")
 		return false;
 	} else {
 		for(var i = 0; i <array1.length; i++){
-			if(array1[i] !== array2[i]){
-				//console.log( array1[i] + " - "+ array2[i])
+			if(array1[i] != array2[i]){
+				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
 				return false;
 			}
 		}
@@ -269,12 +357,7 @@ exports.deletequestion=function(req,res) {
 		}
 		res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 		});
-		
-	
-	
-	
-	
-	
+
 }
 
 exports.addquestion=function(req,res) {
@@ -294,16 +377,8 @@ exports.addquestion=function(req,res) {
 			var newOptionDB=new optionDB( {
 				optionText: req.param('option'+i),
 			});
-<<<<<<< HEAD
-			if (req.param('checkbox'+i)) {
-				newOptionDB.correct=true;
-			}
-=======
 			newOptionDB.correct = req.param('checkbox'+i) ? true : false;
->>>>>>> feat-slideshow-handling
 			newOptionDB.save()
-			
-			
 			newQuestion.answeroptions.push(newOptionDB._id);
 			newQuestion.save();
 			} else {
@@ -313,8 +388,6 @@ exports.addquestion=function(req,res) {
 			}
 
 	}
-	
-	
 	
 	var nquestion=0;
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
@@ -331,7 +404,8 @@ exports.addquestion=function(req,res) {
 		}
 	}
 		);
-	
+<<<<<<< HEAD
+	/**
 	var answerDB = db.model('Answer', schemas.answerSchema);
 	var testanswer = [];
 	for(var i = 0; i<20; i++){
@@ -356,7 +430,35 @@ exports.addquestion=function(req,res) {
 		answers : testanswer
 	}
 	);
+	newanswer.save();*/
+=======
+	
+	// var answerDB = db.model('Answer', schemas.answerSchema);
+	// var testanswer = [];
+	// for(var i = 0; i<20; i++){
+		// var testans = {content: ["true", "false", "false", "false"]};
+		// testanswer.push(testans)
+	// }
+	// for(var i = 0; i<5; i++){
+		// var testans = {content: ["false", "true", "false", "false"]};
+		// testanswer.push(testans)
+	// }
+	// for(var i = 0; i<3; i++){
+		// var testans = {content: ["false", "false", "true", "false"]};
+		// testanswer.push(testans)
+	// }
+	// for(var i = 0; i<10; i++){
+		// var testans = {content: ["false", "false", "false", "true"]};
+		// testanswer.push(testans)
+	// }
+	// var newanswer = new answerDB({
+		// //question: "50c7738315ed6e214a000009",
+		// question: newQuestion._id,
+		// answers : testanswer
+	// }
+	// );
 	newanswer.save();
+>>>>>>> 78255f38bdbbfab995005e86535d33d3b6dd23be
 	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 	
 	
