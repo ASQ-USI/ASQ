@@ -192,32 +192,35 @@ function getQuestionStats(questionId, callback){
 	
 	questionDB.findById(questionId, function(err,question) {
 		answerDB.findOne({question: questionId},function(err,answer) {
-			optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
-				if (err) callback(err);
+			if (answer) {
+				optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
+					if (err) callback(err);
+		
+					var result = {
+						total:answer.answers.length,
+						correct: null,
+						wrong: null,
+						equalAnswers: null,
+						countedMcOptions: null,
+					}
+				
+					//Get array of correct answers
+					var correctWrong = getCorrectAnswers(answer,answerOptions);
+					result.correct = correctWrong[0];
+					result.wrong = correctWrong[1];
+					
+					// Counting equal answers
+					result.equalAnswers = getEqualAnswers(answer);
+					
+					// Counting selectet options for multiple choice
+					result.countedMcOptions = getCountedMCOptions(answer,question); 
+				
+					console.log(result);
+					callback(null, result);
 	
-				var result = {
-					total:answer.answers.length,
-					correct: null,
-					wrong: null,
-					equalAnswers: null,
-					countedMcOptions: null,
-				}
+				});	
+			}
 			
-				//Get array of correct answers
-				var correctWrong = getCorrectAnswers(answer,answerOptions);
-				result.correct = correctWrong[0];
-				result.wrong = correctWrong[1];
-				
-				// Counting equal answers
-				result.equalAnswers = getEqualAnswers(answer);
-				
-				// Counting selectet options for multiple choice
-				result.countedMcOptions = getCountedMCOptions(answer,question); 
-			
-				console.log(result);
-				callback(null, result);
-
-		});
 	});
 });
 }
@@ -401,7 +404,7 @@ exports.addquestion=function(req,res) {
 		}
 	}
 		);
-	
+	/**
 	var answerDB = db.model('Answer', schemas.answerSchema);
 	var testanswer = [];
 	for(var i = 0; i<20; i++){
@@ -426,7 +429,7 @@ exports.addquestion=function(req,res) {
 		answers : testanswer
 	}
 	);
-	newanswer.save();
+	newanswer.save();*/
 	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 	
 	

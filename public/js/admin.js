@@ -122,7 +122,6 @@ var showAnswer=function(question, stats) {
     $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
     var optionsstring='';
     if (question.questionType=="Multiple choice") {
-        console.log(question);
         for (var i=0;i<question.answeroptions.length;i++) {
             optionsstring+='<label class="checkbox" >';
             if (question.answeroptions[i].correct==true) {
@@ -142,7 +141,6 @@ var showAnswer=function(question, stats) {
     //google.setOnLoadCallback(drawChart);
     //drawChart();
     //update modal content
-    //random comment
     $('#answersolutions').html(optionsstring);
     $('#question').modal('hide');
     $('#answer').modal('show');
