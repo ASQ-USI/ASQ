@@ -16,7 +16,15 @@ var connect = function(host, port, session) {
          */
         socket.on('asq:new-viewer', function(event){
         	$("#viewers").add('<i class="icon-user"></i>');
-            console.log('New viewer connected');
+            console.log('New viewer connected. Total: ' + event.users);
+        });
+
+        socket.on('asq:viewer-disconnect', function(event) {
+            console.log('User disconnected. Total: ' + event.users);
+        });
+
+        socket.on('asq:submit', function(event) {
+            updateParticipation(event.submitted, event.users);
         });
 
         socket.on('asq:start', function(event) {
