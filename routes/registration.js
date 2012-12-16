@@ -81,39 +81,39 @@ function preload(jsonFile) {
 
 
 
-exports.parsequestion=function(req,res) {
-	var questionDB= db.model('Question', schemas.questionSchema);
-	questionDB.findOne({},function(err,question) {
-		var optionDB= db.model('Option', schemas.optionSchema);
-		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
-			if (err) throw err;
-			console.log(options)
-			res.render('questionTemplate',{questionObj: question, arrayoptions: options, mode:'admin'});
-		});
-	});
+// exports.parsequestion=function(req,res) {
+	// var questionDB= db.model('Question', schemas.questionSchema);
+	// questionDB.findOne({},function(err,question) {
+		// var optionDB= db.model('Option', schemas.optionSchema);
+		// optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			// if (err) throw err;
+			// console.log(options)
+			// res.render('questionTemplate',{questionObj: question, arrayoptions: options, mode:'admin'});
+		// });
+	// });
+// 
+// }
 
-}
-
-exports.sendanswer=function(req,res) {
-	var questionDB= db.model('Question', schemas.questionSchema);
-	var optionDB= db.model('Option', schemas.optionSchema);
-	
-	questionDB.findById("50cade3a56b9801502000009",function(err,question) {
-		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
-			getQuestionStats("50cade3a56b9801502000009", function(err, stats) {
-				if (err) throw err;
-				res.render('answerTemplate-admin', {questionObj: question, arrayoptions: options} );
-			});
-		});	
-	});
-}
+// exports.sendanswer=function(req,res) {
+	// var questionDB= db.model('Question', schemas.questionSchema);
+	// var optionDB= db.model('Option', schemas.optionSchema);
+// 	
+	// questionDB.findById("50cade3a56b9801502000009",function(err,question) {
+		// optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
+			// getQuestionStats("50cade3a56b9801502000009", function(err, stats) {
+				// if (err) throw err;
+				// res.render('answerTemplate-admin', {questionObj: question, arrayoptions: options} );
+			// });
+		// });	
+	// });
+// }
 
 
 exports.sendstats=function(req,res) {
 
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var optionDB= db.model('Option', schemas.optionSchema);
-	console.log("###### " + req.params.id)
+	console.log("###### Sendimg stats " + req.params.id)
 
 	
 	questionDB.findById(req.params.id, function(err,question) {
@@ -158,6 +158,8 @@ exports.getStats = function(questionId, callback) {
 	Question.findById(questionId).populate('answeroptions').exec(function(err, question){
 		if (err) callback(err);
 		getQuestionStats(questionId, function(err, stats) {
+		
+			
 			if (err) callback(err);
 			var correct = [
 		      ['Correct answers', 'Number of answers'],
@@ -195,7 +197,11 @@ function getQuestionStats(questionId, callback){
 			if (answer) {
 				optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
 					if (err) callback(err);
-		
+					
+					console.log("#### Answers")	
+					console.log(answer);
+					console.log(answer.answers);
+					console.log("--- Answers")
 					var result = {
 						total:answer.answers.length,
 						correct: null,
@@ -249,7 +255,7 @@ function getCorrectAnswers(answer, answerOptions) {
 		}
 
 	}
-	console.log("Correct ans " + correctAnswer);
+	//console.log("Correct ans " + correctAnswer);
 
 	//Check for correct answers
 	var correct = 0;
