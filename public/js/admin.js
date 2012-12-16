@@ -15,6 +15,7 @@ var connect = function(host, port, session) {
           Notifies the admin of a new connection to the presentation.
          */
         socket.on('asq:new-viewer', function(event){
+        	$("#viewers").add('<i class="icon-user"></i>');
             console.log('New viewer connected');
         });
 
@@ -63,7 +64,19 @@ var connect = function(host, port, session) {
     document.addEventListener('asq:close', function(event) {
         socket.emit('asq:goto', {session:session});
     });
+    
+    //Shows stasts/answers
+     document.addEventListener('local:show-stats', function(event) {
+        console.log('sending show-stats');
+        socket.emit('asq:show-stats', {});
+    });
 }
+
+var showStats=function() {
+    var myEvent = new CustomEvent('local:show-stats', {});
+    document.dispatchEvent(myEvent);
+}
+
 
 var showQuestion=function(question) {
     $('#question').modal('show');
@@ -94,35 +107,38 @@ var showAnswer=function(question, stats) {
     //Google chart drawing for stats
     function drawChart() {
         console.log('GOOGLE CHART');
-        var data = google.visualization.arrayToDataTable(countedMcOptions);
-        var q1correct = google.visualization.arrayToDataTable(correct);
-        console.log(data);
+        var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+        var rvswData  = google.visualization.arrayToDataTable(correct);
+        var diffAnsData  = google.visualization.arrayToDataTable(equalAnswers);
 
-        var options3 = {
+        var rvswOpt = {
             title : 'Correct vs. Wrong',
             'width':760,
-            'height':300,
+            'height':400,
+            chartArea:{left:0,top:0,width:"600px",height:"350px"}
         };
 
-        var options2 = {
+        var mscstatOpt = {
             animation: {duration: 1000},
             hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
             'width':760,
-            'height':300,
+            
             'legend': {position: 'top', textStyle: { fontSize: 16}}
         };
 
-        var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
-        chart3.draw(q1correct, options3);
+        var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
+        chart3.draw(rvswData, rvswOpt);
 
-        var chart = new google.visualization.ColumnChart(document.getElementById('q'));
-        chart.draw(data, options2);
+        var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
+        chart.draw(mscstatData, mscstatOpt);
+        
+        var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
+        chart.draw(diffAnsData, mscstatOpt);
     }
 
-    $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
-    var optionsstring='';
+    $('#answerText').html('<h3>Statistics for "'+question.questionText+'"</h3>');
+    var optionsstring='<h5>Correct answer:</h5>';
     if (question.questionType=="Multiple choice") {
-        console.log(question);
         for (var i=0;i<question.answeroptions.length;i++) {
             optionsstring+='<label class="checkbox" >';
             if (question.answeroptions[i].correct==true) {
@@ -139,6 +155,7 @@ var showAnswer=function(question, stats) {
 
     var correct = stats.correct || null;
     var countedMcOptions = stats.countedMcOptions || null;
+    var equalAnswers = stats.equalAnswers || null;
     //google.setOnLoadCallback(drawChart);
     //drawChart();
     //update modal content
