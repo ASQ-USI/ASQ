@@ -44,7 +44,7 @@ var connect = function(host, port, session) {
     });
     
     document.addEventListener('asq:submit', function(event) {
-        socket.emit('asq:submit', {session:session, answers:event.detail.answers});
+        socket.emit('asq:submit', {session:session, answers:event.detail.answers, questionId:questionId});
     });
 }
 
@@ -63,7 +63,7 @@ var showQuestion=function(question) {
         
     } else {
         optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
-        optionsstring+='<input type="text" placeholder="Your solution...">';
+        optionsstring+='<input type="text" id="textbox" placeholder="Your solution...">';
     }
     
     $('#answeroptions').html(optionsstring);
@@ -76,7 +76,6 @@ var showAnswer=function(question) {
     $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
     var optionsstring='';
     if (question.questionType=="Multiple choice") {
-        console.log(question);
         for (var i=0;i<question.answeroptions.length;i++) {
             optionsstring+='<label class="checkbox" >';
             if (question.answeroptions[i].correct==true) {
@@ -89,7 +88,7 @@ var showAnswer=function(question) {
         
     } else {
         optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
-        optionsstring+='<input type="text" placeholder="Your solution...">';
+        optionsstring+='<input  type="text"  placeholder="Your solution...">';
     }
     
     $('#answersolutions').html(optionsstring);
@@ -98,11 +97,16 @@ var showAnswer=function(question) {
 var send=function() {
     var answers=[];
     for (var i=0;i<$('#answeroptions').children().size()-1;i++) {
-        if ($('#checkbox'+i).is(':checked')){
+        if ($('#textbox').length>0) {
+            answers[i]=$('#textbox').val();
+        } else {
+            if ($('#checkbox'+i).is(':checked')){
             answers[i]=true;
         } else {
             answers[i]=false;
         }
+        }
+        
     }
     var myEvent = new CustomEvent("asq:submit", {
         "detail": {

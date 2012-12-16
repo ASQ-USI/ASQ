@@ -58,7 +58,7 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:start", function(event) {
-        socket.emit('asq:start', {session:session, slide:document.querySelector(".active").id});
+        socket.emit('asq:start', {session:session, slide:$('#impress .active').attr('id')});
     });
 
     document.addEventListener('asq:close', function(event) {
@@ -67,7 +67,6 @@ var connect = function(host, port, session) {
     
     //Shows stasts/answers
      document.addEventListener('local:show-stats', function(event) {
-        console.log('sending show-stats');
         socket.emit('asq:show-stats', {});
     });
 }

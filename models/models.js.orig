@@ -14,24 +14,14 @@ exports.userSchema = new Schema({
 
 });
 
-<<<<<<< HEAD
-var optionSchema= new Schema( {
-	optionText: {type: String},
-	correct: {type: String}
-});
-
-exports.optionSchema= optionSchema;
-
-=======
 var questionSchema=new Schema({
 	questionText: {type: String},
 	questionType: {type: String},
 	afterslide: {type: String},
-	answeroptions: [ObjectId]
+	answeroptions: {type: [ObjectId], ref: 'Option'}
 });
->>>>>>> feat-slideshow-handling
 
-
+exports.questionSchema=questionSchema;
 
 var slideshowSchema= new Schema({
 	title: { type: String },
@@ -50,9 +40,13 @@ exports.slideshowSchema.virtual('path').get(function() {
 exports.slideshowSchema.set('toJSON', { virtuals: true });
 
 var answerSchema = new Schema({
-	question: {type: ObjectId}, 
+	question: {type: ObjectId, ref:'Question'},
 	answers: [{
-		user: ObjectId, 
+<<<<<<< HEAD
+		user: String,
+=======
+		user: {type: String}, 
+>>>>>>> feat-answer-stats
 		content: {type: Array, default: []} 
 	}]
 })
@@ -65,10 +59,15 @@ var sessionSchema = new Schema({
 	activeSlide: { type: String, default: '0' },
 	date: {type: Date, default: Date.now },
 	viewers: {type: Array, default: []},
-	answers: [answerSchema],
+<<<<<<< HEAD
+	answers: {type:[ObjectId], ref: 'Answer'},
+=======
+	answers: [ObjectId],
+>>>>>>> feat-answer-stats
 	showingQuestion: {type: Boolean, default: false},
 	showingAnswer: {type: Boolean, default: false},
-	started: {type: Boolean, default: false}
+	started: {type: Boolean, default: false},
+	questionsDisplayed: {type: [ObjectId], ref: 'Question'}
 });
 
 sessionSchema.methods.question = function(callback) {
@@ -76,7 +75,7 @@ sessionSchema.methods.question = function(callback) {
 	var Slideshow = db.model('Slideshow', slideshowSchema);
 	Slideshow.findById(this.slides, function(err, slideshow) {
 		var Question = db.model('Question', questionSchema);
-		Question.findOne({_id: { $in: slideshow.questions },
+		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
 						afterslide: that.activeSlide},
 				        function(err, question) {;
 							callback(err, question);
@@ -88,20 +87,10 @@ sessionSchema.set('toJSON', { virtuals: true });
 
 exports.sessionSchema = sessionSchema;
 
-<<<<<<< HEAD
-exports.answerSchema = new Schema({
-	question: {type: ObjectId},
-	answers: [{ user: ObjectId,
-		    content: {type: Array, default: []}
-	}]
-});
-
-=======
 var optionSchema = new Schema( {
 	optionText: {type: String},
 	correct: {type: Boolean, default: false}
 });
->>>>>>> feat-slideshow-handling
 
 exports.optionSchema = optionSchema;
 
@@ -112,13 +101,8 @@ var questionSchema = new Schema({
 	answeroptions: [{type: ObjectId, ref: 'Option'}]
 });
 
-<<<<<<< HEAD
-
-questionSchema.methods.displayQuestion = function(callback) {
-=======
 questionSchema.methods.displayQuestion = function(answer, callback) {
 	answer = answer || false;
->>>>>>> feat-slideshow-handling
 	var that = this;
 	var Option = db.model('Option', optionSchema);
 	Option.find({_id: {$in: this.answeroptions}})

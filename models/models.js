@@ -42,7 +42,7 @@ exports.slideshowSchema.set('toJSON', { virtuals: true });
 var answerSchema = new Schema({
 	question: {type: ObjectId, ref:'Question'},
 	answers: [{
-		user: String,
+		user: {type: String}, 
 		content: {type: Array, default: []} 
 	}]
 })
@@ -69,7 +69,10 @@ sessionSchema.methods.question = function(callback) {
 		var Question = db.model('Question', questionSchema);
 		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
 						afterslide: that.activeSlide},
-				        function(err, question) {;
+				        function(err, question) {
+							console.log('question');
+							console.log(question);
+							console.log(that.activeSlide);
 							callback(err, question);
 						});
 	});
