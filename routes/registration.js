@@ -237,9 +237,9 @@ function getCorrectAnswers(answer, answerOptions) {
 	var correctAnswer = new Array();
 	for (ans in answerOptions) {
 		if (answerOptions[ans].correct == true) {
-			correctAnswer.push("true");
+			correctAnswer.push(true);
 		} else if (answerOptions[ans].correct == false) {
-			correctAnswer.push("false");
+			correctAnswer.push(false);
 		}else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
 			console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
@@ -304,7 +304,7 @@ function getCountedMCOptions(answer, question) {
 		for (var j = 0; j < answer.answers.length; j++) {
 			
 			for (var k = 0; k < answer.answers[j].content.length; k++) {
-				if (answer.answers[j].content[k] == "true")
+				if (answer.answers[j].content[k] == true)
 					countetMcOptions[k]++;
 			}
 
@@ -429,7 +429,7 @@ exports.addquestion=function(req,res) {
 		// answers : testanswer
 	// }
 	// );
-	newanswer.save();
+	//newanswer.save();
 	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
 	
 	

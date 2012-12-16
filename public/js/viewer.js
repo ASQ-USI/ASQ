@@ -107,8 +107,6 @@ var send=function() {
         }
         }
         
-        
-        console.log(answers);
     }
     var myEvent = new CustomEvent("asq:submit", {
         "detail": {
