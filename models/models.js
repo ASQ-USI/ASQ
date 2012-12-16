@@ -40,9 +40,9 @@ exports.slideshowSchema.virtual('path').get(function() {
 exports.slideshowSchema.set('toJSON', { virtuals: true });
 
 var answerSchema = new Schema({
-	question: {type: ObjectId}, 
+	question: {type: ObjectId, ref:'Question'},
 	answers: [{
-		user: ObjectId, 
+		user: String,
 		content: {type: Array, default: []} 
 	}]
 })
@@ -55,7 +55,7 @@ var sessionSchema = new Schema({
 	activeSlide: { type: String, default: '0' },
 	date: {type: Date, default: Date.now },
 	viewers: {type: Array, default: []},
-	answers: [answerSchema],
+	answers: {type:[ObjectId], ref: 'Answer'},
 	showingQuestion: {type: Boolean, default: false},
 	showingAnswer: {type: Boolean, default: false},
 	started: {type: Boolean, default: false},

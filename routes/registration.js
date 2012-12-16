@@ -214,7 +214,7 @@ function getQuestionStats(questionId, callback){
 				// Counting selectet options for multiple choice
 				result.countedMcOptions = getCountedMCOptions(answer,question); 
 			
-				console.log(result);
+				//console.log(result);
 				callback(null, result);
 
 		});
@@ -239,20 +239,20 @@ function getCorrectAnswers(answer, answerOptions) {
 			correctAnswer.push("false");
 		}else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
-			console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
+			//console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
 			
 		} else {
 			correctAnswer.push("false");
 		}
 
 	}
-	console.log("Correct ans " + correctAnswer);
+	//console.log("Correct ans " + correctAnswer);
 
 	//Check for correct answers
 	var correct = 0;
 	var wrong = 0;
 	for (var i = 0; i < answer.answers.length; i++) {
-		console.log(answer.answers[i].content+" "+correctAnswer +" "+arrayEqual(answer.answers[i].content, correctAnswer))
+		//console.log(answer.answers[i].content+" "+correctAnswer +" "+arrayEqual(answer.answers[i].content, correctAnswer))
 		if (arrayEqual(answer.answers[i].content, correctAnswer)) {
 			correct++;
 		} else {
@@ -314,12 +314,12 @@ function getCountedMCOptions(answer, question) {
 
 function arrayEqual(array1, array2){
 	if(array1.length !== array2.length){
-		console.log( "wrong length")
+		//console.log( "wrong length")
 		return false;
 	} else {
 		for(var i = 0; i <array1.length; i++){
 			if(array1[i] != array2[i]){
-				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
+				//console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
 				return false;
 			}
 		}
