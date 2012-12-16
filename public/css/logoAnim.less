@@ -15,15 +15,11 @@
 
       @-moz-keyframes myfirst2 {
       0% {-webkit-transform: rotateY( 0deg );}
-      
       25% {-webkit-transform: rotateY( 0deg );}
       75% {-webkit-transform: rotateY( 180deg );}
       100% {-webkit-transform: rotateY( 180deg );}
       }
       
-    #welcomeScreen .modal-header{
-      
-    }
       
     #logocontainer{
       margin: 20px auto 30px auto;
@@ -96,4 +92,32 @@
    width: 800px;
    margin-left:-400px;
    max-height: 600px;
+}
+#blockOptions{
+  width: 530px;
+  height: 100%;
+  background-color: rgba(255,255,255, 0.7);
+  position: absolute;
+  top: 0px;
+  vertical-align: middle;
+  a{
+    position: relative;
+    text-align:center;
+    padding-top: 50px;
+    display:block;
+    z-index: 200;
+  }
+}
+.modal-body{
+  position: relative;
+}
+.progress{
+  box-shadow: inset 0px 1px 4px rgba(0,0,0,0.4);
+  text-align: center;
+  span{
+    position: absolute;
+    margin: 0 auto 0 auto;
+    color: #000;
+    font-weight: bold;
+  }
 }

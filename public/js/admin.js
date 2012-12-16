@@ -7,6 +7,7 @@
 var connect = function(host, port, session) {
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
+    var connectedViewers = 0;
     socket.on('connect', function(event) {
         socket.emit('asq:admin', {session:session});
 
@@ -15,15 +16,22 @@ var connect = function(host, port, session) {
           Notifies the admin of a new connection to the presentation.
          */
         socket.on('asq:new-viewer', function(event){
-        	$("#viewers").add('<i class="icon-user"></i>');
-            console.log('New viewer connected. Total: ' + event.users);
+        	
+        	if(connectedViewers % 5 == 0 && connectedViewers % 10 != 0){
+        		$('#viewers').append('<span>&nbsp;&nbsp;</span>');
+        	}if(connectedViewers % 10 == 0){
+        		$('#viewers').append('<br>');
+        	}
+        	connectedViewers++;
+ 
+        	$("#numViewers").text(connectedViewers + " viewers");
+        	if(connectedViewers <= 50){
+        		$('#viewers').append('<i class="icon-user"></i> ');
+        	}
+            console.log('New viewer connected');
         });
 
-        socket.on('asq:viewer-disconnect', function(event) {
-            console.log('User disconnected. Total: ' + event.users);
-        });
-
-        socket.on('asq:submit', function(event) {
+		socket.on('asq:submit', function(event) {
             updateParticipation(event.submitted, event.users);
         });
 
