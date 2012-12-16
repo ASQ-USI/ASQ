@@ -495,6 +495,17 @@ exports.editslideshow=function(req,res) {
 	
 }
 
+
+exports.edithtml=function(req,res) {
+	console.log(req.query.id);
+	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+	var folderHTML = './slides/' + req.query.id+ '/index.html';
+	fs.read(folderHTML,function(err,data) {
+		console.log(data);
+	});
+	res.render('edithtml', {username: req.user.name});
+}
+
 exports.renderuser=function(req,res) {
 	if (req.params.username==req.user.name) {
 		var users= db.model('User', schemas.userSchema);

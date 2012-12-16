@@ -185,16 +185,14 @@ app.get('/statistics/', ensureAuthenticated, function (req,res) {
 });
 
 
-app.get('/editimages/', ensureAuthenticated, function (req,res) {
-    res.render('editimages');
+app.get('/user/:username/editimages/', ensureAuthenticated, function (req,res) {
+    res.render('editimages', {username: req.user.name});
 });
 
-app.get('/editstyle/', ensureAuthenticated, function (req,res) {
-    res.render('editstyle');
+app.get('/user/:username/editstyle/', ensureAuthenticated, function (req,res) {
+    res.render('editstyle', {username: req.user.name});
 });
-app.get('/edithtml/', ensureAuthenticated, function (req,res) {
-    res.render('edithtml');
-});
+app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
 
 app.get('/render/', ensureAuthenticated, registration.parsequestion);
 app.get('/render2/',  registration.sendanswer);
