@@ -113,7 +113,6 @@ exports.sendstats=function(req,res) {
 
 	var questionDB= db.model('Question', schemas.questionSchema);
 	var optionDB= db.model('Option', schemas.optionSchema);
-	console.log("###### Sendimg stats " + req.params.id)
 
 	
 	questionDB.findById(req.params.id, function(err,question) {
@@ -153,11 +152,11 @@ exports.sendstats=function(req,res) {
 
 }
 
-exports.getStats = function(questionId, callback) {
+exports.getStats = function(questionId, sessionId, callback) {
 	var Question = db.model('Question', schemas.questionSchema);
 	Question.findById(questionId).populate('answeroptions').exec(function(err, question){
 		if (err) callback(err);
-		getQuestionStats(questionId, function(err, stats) {
+		getQuestionStats(questionId, sessionId,function(err, stats) {
 		
 			
 			if (err) callback(err);
@@ -187,49 +186,63 @@ exports.getStats = function(questionId, callback) {
 	});
 }
 
-function getQuestionStats(questionId, callback){
-	var answerDB= db.model('Answer', schemas.answerSchema);
-	var questionDB= db.model('Question', schemas.questionSchema);
-	var optionDB= db.model('Option', schemas.optionSchema);
+
+function getQuestionStats(questionId, sessionId, callback) {
+	var answerDB = db.model('Answer', schemas.answerSchema);
+	var questionDB = db.model('Question', schemas.questionSchema);
+	var optionDB = db.model('Option', schemas.optionSchema);
+	var sessionDB = db.model('Session', schemas.sessionSchema);
+
+	console.log("------------" + sessionId)
 	
-	questionDB.findById(questionId, function(err,question) {
-		answerDB.findOne({question: questionId},function(err,answer) {
-			if (answer) {
-				optionDB.find({ _id: { $in: question.answeroptions}}, function(err, answerOptions) {
-					if (err) callback(err);
-					
-					console.log("#### Answers")	
-					console.log(answer);
-					console.log(answer.answers);
-					console.log("--- Answers")
-					var result = {
-						total:answer.answers.length,
-						correct: null,
-						wrong: null,
-						equalAnswers: null,
-						countedMcOptions: null,
-					}
-				
-					//Get array of correct answers
-					var correctWrong = getCorrectAnswers(answer,answerOptions);
-					result.correct = correctWrong[0];
-					result.wrong = correctWrong[1];
-					
-					// Counting equal answers
-					result.equalAnswers = getEqualAnswers(answer);
-					
-					// Counting selectet options for multiple choice
-					result.countedMcOptions = getCountedMCOptions(answer,question); 
-				
-					console.log(result);
-					callback(null, result);
 	
-				});	
-			}
-			
+	
+
+	questionDB.findById(questionId, function(err, question) {
+		sessionDB.findById(sessionId, function(err, session) {
+			answerDB.findById(session.answers, function(err, answer) {
+				if (answer) {
+					optionDB.find({
+						_id : {
+							$in : question.answeroptions
+						}
+					}, function(err, answerOptions) {
+						if (err)
+							callback(err);
+
+						console.log("#### Answers")
+						console.log(answer);
+						console.log(answer.answers);
+						console.log("--- Answers")
+						var result = {
+							total : answer.answers.length,
+							correct : null,
+							wrong : null,
+							equalAnswers : null,
+							countedMcOptions : null,
+						}
+
+						//Get array of correct answers
+						var correctWrong = getCorrectAnswers(answer, answerOptions);
+						result.correct = correctWrong[0];
+						result.wrong = correctWrong[1];
+
+						// Counting equal answers
+						result.equalAnswers = getEqualAnswers(answer);
+
+						// Counting selectet options for multiple choice
+						result.countedMcOptions = getCountedMCOptions(answer, question);
+
+						console.log(result);
+						callback(null, result);
+
+					});
+				}
+			});
+		});
 	});
-});
 }
+
 
 
 function getNumberOfAnswers(questionId){
@@ -499,6 +512,17 @@ exports.editslideshow=function(req,res) {
 		
 	
 	
+}
+
+
+exports.edithtml=function(req,res) {
+	console.log(req.query.id);
+	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+	var folderHTML = './slides/' + req.query.id+ '/index.html';
+	fs.read(folderHTML,function(err,data) {
+		console.log(data);
+	});
+	res.render('edithtml', {username: req.user.name});
 }
 
 exports.renderuser=function(req,res) {

@@ -15,6 +15,7 @@ var connect = function(host, port, session) {
           Notifies the admin of a new connection to the presentation.
          */
         socket.on('asq:new-viewer', function(event){
+        	$("#viewers").add('<i class="icon-user"></i>');
             console.log('New viewer connected');
         });
 
@@ -63,7 +64,18 @@ var connect = function(host, port, session) {
     document.addEventListener('asq:close', function(event) {
         socket.emit('asq:goto', {session:session});
     });
+    
+    //Shows stasts/answers
+     document.addEventListener('local:show-stats', function(event) {
+        socket.emit('asq:show-stats', {});
+    });
 }
+
+var showStats=function() {
+    var myEvent = new CustomEvent("local:show-stats", {});
+    document.dispatchEvent(myEvent);
+}
+
 
 var showQuestion=function(question) {
     $('#question').modal('show');
