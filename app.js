@@ -73,6 +73,7 @@ function ensureAuthenticated(req, res, next) {
     } else {
         res.redirect("/");
     }
+    return false; //Ensure a value is always returned
 }
 
 app = express();
