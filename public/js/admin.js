@@ -101,9 +101,6 @@ function updateParticipation(submitted, users){
 	}
 	var width = (submitted/maxUsers)*100;
 	$('#progessbar').css('width', width+"%");
-	
-
-	
 }
 
 var showStats=function() {
@@ -113,6 +110,8 @@ var showStats=function() {
 
 
 var showQuestion=function(question) {
+	$('#progessbar').css('width',"0%");
+	$('#progressNum').text('Waiting for answers!');
     $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
     var optionsstring='';
@@ -191,8 +190,10 @@ var showAnswer=function(question, stats) {
             optionsstring+=question.answeroptions[i].optionText+'</label>';
         }
     } else {
-        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
-        optionsstring+='<input type="text" placeholder="Your solution...">';
+        optionsstring='<span class="help-block">Correct answer.</span>';
+        optionsstring+='<p>'+  +'</p>';
+        optionsstring+='<span class="help-block">Your answer.</span>';
+		optionsstring+='<input type="text" value="Norway" readonly>';
     }
 
     var correct = stats.correct || null;

@@ -183,9 +183,7 @@ app.get('/logout/', function(req, res){
 //Serving static files
 app.get('/images/:path/', registration.get);
 
-app.get('/user/:username/statistics/', ensureAuthenticated, function (req,res) {
-    res.render('statistics', {username: req.user.name}, statistics.getSessionsOfUser);
-});
+app.get('/user/:username/statistics/', ensureAuthenticated,  statistics.getSessionStats);
 
 
 app.get('/user/:username/editimages/', ensureAuthenticated, function (req,res) {

@@ -40,6 +40,7 @@ var connect = function(host, port, session) {
          */
         socket.on('asq:goto', function(event) {
             impress().goto(event.slide);
+            $('#answer').modal('hide');
         });
     });
     
@@ -52,8 +53,12 @@ var connect = function(host, port, session) {
 
 
 var showQuestion=function(question) {
+	$('#blockOptions').css("display", "none");
+	$('#changeAnswer').css("display", "none");
+	$('#sendanswers').removeAttr("disabled");
+	
     $('#question').modal('show');
-    $('#questionText').html('<h3>'+question.questionText+'</h3>');
+    $('#questionText').html('<h3>'+question.questionText+'</h3><button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
     var optionsstring='';
     if (question.questionType === "Multiple choice") {
         optionsstring='<span class="help-block">Please select all correct answers.</span>';
@@ -73,7 +78,10 @@ var showQuestion=function(question) {
 var showAnswer=function(question) {
     $('#question').modal('hide');
     $('#answer').modal('show');
-    $('#answerText').html('<h3>Statistics for</h3><h4>"'+question.questionText+'"</h4>');
+    $('#answerText').html('<h3>Statistics for</h3><h4>"' 
+    		+ question.questionText 
+    		+ '"</h4> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
+    		
     var optionsstring='';
     if (question.questionType=="Multiple choice") {
         for (var i=0;i<question.answeroptions.length;i++) {
@@ -87,8 +95,10 @@ var showAnswer=function(question) {
         }
         
     } else {
-        optionsstring='<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
-        optionsstring+='<input  type="text"  placeholder="Your solution...">';
+        optionsstring+='<span class="help-block">Correct answer.</span>';
+        optionsstring+='<p>'+  +'</p>';
+        optionsstring+='<span class="help-block">Your answer.</span>';
+		optionsstring+='<input type="text" value="Norway" readonly>';
     }
     
     $('#answersolutions').html(optionsstring);

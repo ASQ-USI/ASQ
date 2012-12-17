@@ -309,24 +309,22 @@ function getCorrectAnswers(answers, answerOptions) {
 	for (var ans = 0; ans < answerOptions.length; ans++) {
 		if (answerOptions[ans].correct == true) {
 			correctAnswer.push(true);
-		} else if (answerOptions[ans].correct == false) {
+		}else if (answerOptions[ans].correct == false) {
 			correctAnswer.push(false);
 		}else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
 			//console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
-		} else {
-			correctAnswer.push(false);
 		}
 
 	}
-	//console.log("Correct ans " + correctAnswer);
+	console.log("Correct ans " + correctAnswer);
 
 	//Check for correct answers
 	var correct = 0;
 	var wrong = 0;
 	for (var i = 0; i < answers.length; i++) {
-		console.log(answers[i]);
-		console.log(answers[i].content+" "+correctAnswer +" "+arrayEqual(answers[i].content, correctAnswer))
+		//console.log(answers[i]);
+		console.log(answers[i].content+" "+correctAnswer[i] +" "+arrayEqual(answers[i].content, correctAnswer))
 		if (arrayEqual(answers[i].content, correctAnswer)) {
 			correct++;
 		} else {
@@ -393,8 +391,8 @@ function arrayEqual(array1, array2){
 		return false;
 	} else {
 		for(var i = 0; i <array1.length; i++){
-			if(array1[i] != array2[i]){
-				//console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
+			if(array1[i].toString() != array2[i].toString()){
+				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
 				return false;
 			}
 		}
@@ -569,7 +567,7 @@ exports.edithtml=function(req,res) {
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 	var folderHTML = './slides/' + req.query.id+ '/index.html';
 	fs.readFile(folderHTML, 'utf-8', function (error, data) {
-		console.log(data);
+		//console.log(data);
 	
 		res.render('edithtml', {username: req.user.name, html: data});
 	});
@@ -577,8 +575,8 @@ exports.edithtml=function(req,res) {
 }
 
 exports.savehtml=function(req,res) {
-	console.log(req.query.id);
-	console.log(req.body.editorvalue);
+	//console.log(req.query.id);
+	//console.log(req.body.editorvalue);
 	var folderHTML = './slides/' + req.query.id+ '/index.html';
 	fs.writeFile(folderHTML, req.body.editorvalue, function(err) {
 		if (err) {
