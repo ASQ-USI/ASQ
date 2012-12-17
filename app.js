@@ -73,12 +73,14 @@ function ensureAuthenticated(req, res, next) {
     } else {
         res.redirect("/");
     }
+    return false; //Ensure a value is always returned
 }
 
 app = express();
 app.engine('ejs', engine);
 // Global variable: hostname which we want to advertise for connection.
-appHost = 'localhost';
+appHost = process.argv[2] || 'localhost';
+console.log(appHost);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
@@ -143,7 +145,7 @@ app.get('/signup/', function(req, res){
 app.get('/checkusername/:username/', registration.checkusername);
 
 //Registration happened. 
-app.post('/signup', registration.signup);
+app.post('/signup/', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user/', ensureAuthenticated, function(req,res) {

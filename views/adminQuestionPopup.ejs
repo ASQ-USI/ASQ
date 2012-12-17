@@ -8,9 +8,10 @@
 	    </form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" data-dismiss="modal" id ="showanswers" onclick="impress().next()" >Show answers</button>
+		<div class="progress" >
+			<div class="bar" id="progessbar" style="width: 0%;"></div>
+		</div>
+		<h5 class="pull-left" id="progressNum">Waiting for answers!</h5>
+		<button class="btn" id ="show-stats" onclick="showStats()" >Show answers</button>
 	</div>
-    <div class="modal-footer">
-
-    </div>
 </div>

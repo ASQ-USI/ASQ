@@ -7,6 +7,7 @@
 var connect = function(host, port, session) {
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
+    var connectedViewers = 0;
     socket.on('connect', function(event) {
         socket.emit('asq:admin', {session:session});
 
@@ -15,7 +16,24 @@ var connect = function(host, port, session) {
           Notifies the admin of a new connection to the presentation.
          */
         socket.on('asq:new-viewer', function(event){
+        	
+        	if(connectedViewers % 5 == 0 && connectedViewers % 10 != 0){
+        		$('#viewers').append('<span>&nbsp;&nbsp;</span>');
+        	}if(connectedViewers % 10 == 0){
+        		$('#viewers').append('<br>');
+        	}
+        	connectedViewers++;
+ 
+        	$("#numViewers").text(connectedViewers + " viewers");
+        	if(connectedViewers <= 50){
+        		$('#viewers').append('<i class="icon-user"></i> ');
+        	}
             console.log('New viewer connected');
+        });
+
+		socket.on('asq:submit', function(event) {
+			console.log("You've got an answer!");
+            updateParticipation(event.submitted, event.users);
         });
 
         socket.on('asq:start', function(event) {
@@ -57,13 +75,42 @@ var connect = function(host, port, session) {
       sSend a socket event to notify which slide to go to.
      */
     document.addEventListener("impress:start", function(event) {
-        socket.emit('asq:start', {session:session, slide:document.querySelector(".active").id});
+        socket.emit('asq:start', {session:session, slide:$('#impress .active').attr('id')});
     });
 
     document.addEventListener('asq:close', function(event) {
         socket.emit('asq:goto', {session:session});
     });
+    
+    //Shows stasts/answers
+     document.addEventListener('local:show-stats', function(event) {
+        socket.emit('asq:show-stats', {});
+    });
 }
+
+function updateParticipation(submitted, users){
+	var maxUsers = -1;
+	if(maxUsers < users.length){
+		maxUsers = users.length;
+	}
+	if(maxUsers == submitted){
+		$('#progressNum').text( 'All answers recived ('+ submitted + '/' + maxUsers + '). ');
+		$('#show-stats').attr("class","btn btn-success");
+	}else{
+		$('#progressNum').text(submitted + '/' + maxUsers + ' answers recived.');
+	}
+	var width = (submitted/maxUsers)*100;
+	$('#progessbar').css('width', width+"%");
+	
+
+	
+}
+
+var showStats=function() {
+    var myEvent = new CustomEvent('local:show-stats', {});
+    document.dispatchEvent(myEvent);
+}
+
 
 var showQuestion=function(question) {
     $('#question').modal('show');
@@ -94,7 +141,9 @@ var showAnswer=function(question, stats) {
     //Google chart drawing for stats
     function drawChart() {
         console.log('GOOGLE CHART');
-        var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+       	if(question.questionType === "Multiple choice"){
+        	var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+        }
         var rvswData  = google.visualization.arrayToDataTable(correct);
         var diffAnsData  = google.visualization.arrayToDataTable(equalAnswers);
 
@@ -115,9 +164,15 @@ var showAnswer=function(question, stats) {
 
         var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
         chart3.draw(rvswData, rvswOpt);
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
-        chart.draw(mscstatData, mscstatOpt);
+	
+		if(question.questionType === "Multiple choice"){
+        	var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
+        	chart.draw(mscstatData, mscstatOpt);
+		}else{
+			$('#mscstats').css("display", 'none');
+			$('#mscstats').removeAttr('style');
+			$('#mscstatsBtn').remove();
+		}
         
         var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
         chart.draw(diffAnsData, mscstatOpt);
