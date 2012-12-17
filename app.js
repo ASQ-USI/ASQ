@@ -15,7 +15,17 @@ var express = require('express')
   , registration = require('./routes/registration')
   , statistics = require('./routes/statistics')
   , socketio = require('socket.io');
+  , SessionMongoose = require("session-mongoose")(express)
+  , mongooseSessionStore = new SessionMongoose({
+        url: "mongodb://localhost/login",
+        interval: 120000 
+    });
+
+  var config = require('./config');
   
+  // save sessionStore to config for later access
+  config.setSessionStore(mongooseSessionStore);
+
 
 
 // Passport session setup.
@@ -98,7 +108,8 @@ app.configure(function() {
     app.use(express.bodyParser({uploadDir: './slides/'}));
     app.use(express.methodOverride());
     app.use(express.cookieParser('your secret here'));
-    app.use(express.session());
+    //mongosession store to be used with socket.io
+    app.use(express.session({secret : 'ASQsecret' , store : mongooseSessionStore }));
     //necessary initialization for passport plugin
     app.use(passport.initialize());
     app.use(flash());
