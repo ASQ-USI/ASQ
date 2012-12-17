@@ -32,6 +32,7 @@ var connect = function(host, port, session) {
         });
 
 		socket.on('asq:submit', function(event) {
+			console.log("You've got an answer!");
             updateParticipation(event.submitted, event.users);
         });
 
@@ -87,6 +88,24 @@ var connect = function(host, port, session) {
     });
 }
 
+function updateParticipation(submitted, users){
+	var maxUsers = -1;
+	if(maxUsers < users.length){
+		maxUsers = users.length;
+	}
+	if(maxUsers == submitted){
+		$('#progressNum').text( 'All answers recived ('+ submitted + '/' + maxUsers + '). ');
+		$('#show-stats').attr("class","btn btn-success");
+	}else{
+		$('#progressNum').text(submitted + '/' + maxUsers + ' answers recived.');
+	}
+	var width = (submitted/maxUsers)*100;
+	$('#progessbar').css('width', width+"%");
+	
+
+	
+}
+
 var showStats=function() {
     var myEvent = new CustomEvent('local:show-stats', {});
     document.dispatchEvent(myEvent);
@@ -122,7 +141,9 @@ var showAnswer=function(question, stats) {
     //Google chart drawing for stats
     function drawChart() {
         console.log('GOOGLE CHART');
-        var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+       	if(question.questionType === "Multiple choice"){
+        	var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+        }
         var rvswData  = google.visualization.arrayToDataTable(correct);
         var diffAnsData  = google.visualization.arrayToDataTable(equalAnswers);
 
@@ -143,9 +164,15 @@ var showAnswer=function(question, stats) {
 
         var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
         chart3.draw(rvswData, rvswOpt);
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
-        chart.draw(mscstatData, mscstatOpt);
+	
+		if(question.questionType === "Multiple choice"){
+        	var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
+        	chart.draw(mscstatData, mscstatOpt);
+		}else{
+			$('#mscstats').css("display", 'none');
+			$('#mscstats').removeAttr('style');
+			$('#mscstatsBtn').remove();
+		}
         
         var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
         chart.draw(diffAnsData, mscstatOpt);

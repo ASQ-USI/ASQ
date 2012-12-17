@@ -173,12 +173,15 @@ exports.getStats = function(questionId, sessionId, callback) {
 		      ['Wrong', stats.wrong]
 			]
 
+
 			var countedMcOptions = [
 				[question.questionText, "Number of answers"]
 			]
-			for(ans in stats.equalAnswers){
-				console.log("###########");
-				countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
+			if(question.questionType === "Multiple choice"){
+				for(ans in stats.equalAnswers){
+					//console.log("###########");
+					countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
+				}
 			}
 
 			var equalAnswers = [
@@ -200,7 +203,7 @@ function getQuestionStats(questionId, sessionId, callback) {
 	var optionDB = db.model('Option', schemas.optionSchema);
 	var sessionDB = db.model('Session', schemas.sessionSchema);
 
-	console.log("------------" + sessionId)
+	//console.log("------------" + sessionId)
 	
 	
 	
@@ -215,10 +218,10 @@ function getQuestionStats(questionId, sessionId, callback) {
 					callback(null, {});
 					return;
 				}
-				console.log("#### Answers")
-				console.log(answer);
-				console.log(answer.answers);
-				console.log("--- Answers")
+				// console.log("#### Answers")
+				// console.log(answer);
+				// console.log(answer.answers);
+				// console.log("--- Answers")
 				var result = {
 					total : answer.answers.length,
 					correct : null,
@@ -236,7 +239,9 @@ function getQuestionStats(questionId, sessionId, callback) {
 				result.equalAnswers = getEqualAnswers(answer.answers);
 
 				// Counting selectet options for multiple choice
-				result.countedMcOptions = getCountedMCOptions(answer.answers, question);
+				if(question.questionType === "Multiple choice"){
+					result.countedMcOptions = getCountedMCOptions(answer.answers, question);
+				}				
 
 				console.log(result);
 				callback(null, result);
@@ -301,17 +306,16 @@ function getNumberOfAnswers(questionId){
 
 function getCorrectAnswers(answers, answerOptions) {
 	var correctAnswer = new Array();
-	for (ans in answerOptions) {
+	for (var ans = 0; ans < answerOptions.length; ans++) {
 		if (answerOptions[ans].correct == true) {
 			correctAnswer.push(true);
 		} else if (answerOptions[ans].correct == false) {
 			correctAnswer.push(false);
 		}else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
-			console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
-			
+			//console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
 		} else {
-			correctAnswer.push("false");
+			correctAnswer.push(false);
 		}
 
 	}
@@ -384,12 +388,13 @@ function getCountedMCOptions(answers, question) {
 
 function arrayEqual(array1, array2){
 	if(array1.length !== array2.length){
+		console.log(array1.length + " " + array2.length)
 		console.log( "wrong length")
 		return false;
 	} else {
 		for(var i = 0; i <array1.length; i++){
 			if(array1[i] != array2[i]){
-				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
+				//console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
 				return false;
 			}
 		}
@@ -564,11 +569,11 @@ exports.editslideshow=function(req,res) {
 
 
 exports.edithtml=function(req,res) {
-	console.log(req.query.id);
+	//console.log(req.query.id);
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 	var folderHTML = './slides/' + req.query.id+ '/index.html';
 	fs.read(folderHTML,function(err,data) {
-		console.log(data);
+		//console.log(data);
 	});
 	res.render('edithtml', {username: req.user.name});
 }

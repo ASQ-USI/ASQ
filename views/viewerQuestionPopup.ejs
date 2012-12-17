@@ -7,12 +7,12 @@
 				<fieldset id='answeroptions'> </fieldset>
 	    	</form>
 		</div>
-	    <div id="blockOptions">
-	    	<a href="#">Click to change your answer.</a>
-	    </div>
+	   <div id="blockOptions" style="display: none;">
+	    	<a href="#" onclick="changeAnswer()">Click to change your answer.</a>
+	   </div>
 	</div>
 	<div class="modal-footer">
-		<button type="button" class="btn btn-primary"  data-toggle="button" id ="sendanswers" onclick="send()" >Done</button>
-		
+		<button type="button" class="btn btn-success" id="changeAnswer" onclick="changeAnswer()" style="display: none;">Change answer</button>
+		<button type="button" class="btn btn-primary" id="sendanswers" onclick="send()">Done</button>
 	</div>
  </div>

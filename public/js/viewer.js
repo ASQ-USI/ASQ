@@ -55,7 +55,7 @@ var showQuestion=function(question) {
     $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
     var optionsstring='';
-    if (question.questionType=="Multiple choice") {
+    if (question.questionType === "Multiple choice") {
         optionsstring='<span class="help-block">Please select all correct answers.</span>';
         for (var i=0;i<question.answeroptions.length;i++) {
             optionsstring+='<label class="checkbox"><input type="checkbox" id="checkbox'+i+'">'+question.answeroptions[i].optionText+'</label>';
@@ -95,23 +95,33 @@ var showAnswer=function(question) {
 };
 
 var send=function() {
-    var answers=[];
-    for (var i=0;i<$('#answeroptions').children().size()-1;i++) {
-        if ($('#textbox').length>0) {
-            answers[i]=$('#textbox').val();
-        } else {
-            if ($('#checkbox'+i).is(':checked')){
-            answers[i]=true;
-        } else {
-            answers[i]=false;
-        }
-        }
-        
-    }
-    var myEvent = new CustomEvent("asq:submit", {
-        "detail": {
-            "answers": answers
-        }
-    });
-    document.dispatchEvent(myEvent);
+	var answers = [];
+	for (var i = 0; i < $('#answeroptions').children().size() - 1; i++) {
+		if ($('#textbox').length > 0) {
+			answers[i] = $('#textbox').val();
+		} else {
+			if ($('#checkbox' + i).is(':checked')) {
+				answers[i] = true;
+			} else {
+				answers[i] = false;
+			}
+		}
+
+	}
+	var myEvent = new CustomEvent("asq:submit", {
+		"detail" : {
+			"answers" : answers
+		}
+	});
+	document.dispatchEvent(myEvent); 
+	
+	$('#blockOptions').css("display", "block");
+	$('#changeAnswer').removeAttr("style");
+	$('#sendanswers').attr("disabled", "disabled");
+}
+
+var changeAnswer = function(){
+	$('#blockOptions').css("display", "none");
+	$('#changeAnswer').css("display", "none");
+	$('#sendanswers').removeAttr("disabled");
 }
