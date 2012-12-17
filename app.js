@@ -14,7 +14,6 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
   , statistics = require('./routes/statistics')
-  , socketio = require('socket.io');
   , SessionMongoose = require("session-mongoose")(express)
   , mongooseSessionStore = new SessionMongoose({
         url: "mongodb://localhost/login",
