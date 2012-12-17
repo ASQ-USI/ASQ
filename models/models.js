@@ -43,7 +43,8 @@ var answerSchema = new Schema({
 	question: {type: ObjectId, ref:'Question'},
 	answers: [{
 		user: {type: String}, 
-		content: {type: Array, default: []} 
+		content: {type: Array, default: []} ,
+		final: {type: Boolean, default: true}
 	}]
 })
 

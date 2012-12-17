@@ -7,7 +7,26 @@
 var connect = function(host, port, session) {
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
-    var connectedViewers = 0;
+
+    var updateViewersCount = function(event){
+        if (!event.users) return;
+        var connectedViewers = event.users;
+
+        // Draw icons for the first 50 viewers
+        var lim = connectedViewers < 50 ? connectedViewers : 50;
+        $('#viewers').empty();
+        for (var i = 0; i < lim; i++) {
+            if(connectedViewers % 10 == 0)
+                $('#viewers').append('<br/>');
+            else if(connectedViewers % 5 == 0)
+                $('#viewers').append('<span>&nbsp;&nbsp;</span>');
+            $('#viewers').append('<i class="icon-user"></i> ');
+        }
+
+        //update viewers count
+        $("#numViewers").text(connectedViewers + " viewers");
+        console.log('New viewer connected');
+    }
     socket.on('connect', function(event) {
         socket.emit('asq:admin', {session:session});
 
@@ -15,26 +34,15 @@ var connect = function(host, port, session) {
           Handle socket event 'new'
           Notifies the admin of a new connection to the presentation.
          */
-        socket.on('asq:new-viewer', function(event){
-        	
-        	if(connectedViewers % 5 == 0 && connectedViewers % 10 != 0){
-        		$('#viewers').append('<span>&nbsp;&nbsp;</span>');
-        	}if(connectedViewers % 10 == 0){
-        		$('#viewers').append('<br>');
-        	}
-        	connectedViewers++;
- 
-        	$("#numViewers").text(connectedViewers + " viewers");
-        	if(connectedViewers <= 50){
-        		$('#viewers').append('<i class="icon-user"></i> ');
-        	}
-            console.log('New viewer connected');
-        });
-
-		socket.on('asq:submit', function(event) {
+	socket.on('asq:submit', function(event) {
 			console.log("You've got an answer!");
             updateParticipation(event.submitted, event.users);
         });
+
+        /**
+         * Update the viewers count when users connect or disconnect.
+         */
+        socket.on('asq:viewers-update', updateViewersCount);
 
         socket.on('asq:start', function(event) {
             if (!started) {
@@ -90,8 +98,8 @@ var connect = function(host, port, session) {
 
 function updateParticipation(submitted, users){
 	var maxUsers = -1;
-	if(maxUsers < users.length){
-		maxUsers = users.length;
+	if(maxUsers < users){
+		maxUsers = users;
 	}
 	if(maxUsers == submitted){
 		$('#progressNum').text( 'All answers recived ('+ submitted + '/' + maxUsers + '). ');
@@ -100,7 +108,7 @@ function updateParticipation(submitted, users){
 		$('#progressNum').text(submitted + '/' + maxUsers + ' answers recived.');
 	}
 	var width = (submitted/maxUsers)*100;
-	$('#progessbar').css('width', width+"%");
+	$('#progessbar').css('width', width+'%');
 	
 
 	
