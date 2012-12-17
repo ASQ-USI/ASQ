@@ -50,7 +50,7 @@ var answerSchema = new Schema({
 exports.answerSchema = answerSchema;
 
 var sessionSchema = new Schema({
-	presenter: { type: ObjectId },
+	presenter: { type: ObjectId, ref: 'User'},
 	slides: { type: ObjectId },
 	activeSlide: { type: String, default: '0' },
 	date: {type: Date, default: Date.now },

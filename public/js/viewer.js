@@ -41,6 +41,11 @@ var connect = function(host, port, session) {
         socket.on('asq:goto', function(event) {
             impress().goto(event.slide);
         });
+    })
+
+    .on('connect_failed', function (reason) {
+        console.error('unable to connect to namespace', reason);
+        $('#socket-error').css('display', 'block');
     });
     
     document.addEventListener('asq:submit', function(event) {

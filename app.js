@@ -80,7 +80,8 @@ app = express();
 app.engine('ejs', engine);
 // Global variable: hostname which we want to advertise for connection.
 appHost = process.argv[2] || 'localhost';
-console.log(appHost);
+clientsLimit = process.argv[3] || 50;
+console.log(appHost + ' clients: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
