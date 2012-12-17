@@ -17,6 +17,15 @@
 					options+="<option>"+(i+1)+"</option>";
 				}
 				$("[name='afterslide']").html(options);
+				$("[name='questionType']").change(function() {
+					if ($("[name='questionType']").val()=="Text input") {
+						$('#addOption').hide();
+					} else {
+						$('#addOption').show();
+					}
+				}
+				);
+				
 				
 				$('#addQuestion').click(function() {
 					$('#addQuestionForm').submit();
@@ -127,7 +136,6 @@
 		    <div class="controls">
 		      <select id="inputType" name="questionType" >
 				  <option>Multiple choice</option>
-				  <option>Numeric input</option>
 				  <option>Text input</option>
 				</select>
 		    </div>

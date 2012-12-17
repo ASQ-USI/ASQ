@@ -114,7 +114,7 @@ app.configure('development', function(){
 
 /** Routing */
 app.get('/', ensureAuthenticated, function(req, res){
-  res.render('logged');
+  res.redirect('/user');
 });
 
 /** Initialize a new session with slides matching the id */
