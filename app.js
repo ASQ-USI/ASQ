@@ -145,7 +145,7 @@ app.get('/signup/', function(req, res){
 app.get('/checkusername/:username/', registration.checkusername);
 
 //Registration happened. 
-app.post('/signup/', registration.signup);
+app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user/', ensureAuthenticated, function(req,res) {

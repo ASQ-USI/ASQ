@@ -445,7 +445,7 @@ exports.addquestion=function(req,res) {
 	
 	var optionDB=db.model('Option', schemas.optionSchema);
 	for (var i=0; i<256; i++) {
-		if (req.param('option'+i)) {
+		if (req.param('option'+i)!==undefined && req.param('option'+i)!=="") {
 			var newOptionDB=new optionDB( {
 				optionText: req.param('option'+i),
 			});
@@ -453,11 +453,7 @@ exports.addquestion=function(req,res) {
 			newOptionDB.save()
 			newQuestion.answeroptions.push(newOptionDB._id);
 			newQuestion.save();
-			} else {
-				if (i>0) {
-					break;
-				}
-			}
+			} 
 
 	}
 	
