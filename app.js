@@ -171,6 +171,8 @@ app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
 
 app.get('/user/:username/delete', ensureAuthenticated, registration.deletequestion);
 
+app.get('/user/:username/deleteslideshow', ensureAuthenticated, registration.deleteslideshow);
+
 app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 
 //The user logs out, and get redirected
@@ -186,14 +188,6 @@ app.get('/statistics/', ensureAuthenticated, function (req,res) {
     res.render('statistics');
 });
 
-
-app.get('/user/:username/editimages/', ensureAuthenticated, function (req,res) {
-    res.render('editimages', {username: req.user.name});
-});
-
-app.get('/user/:username/editstyle/', ensureAuthenticated, function (req,res) {
-    res.render('editstyle', {username: req.user.name});
-});
 app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
 app.post('/user/:username/edithtml', ensureAuthenticated, registration.savehtml);
 
