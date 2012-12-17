@@ -568,10 +568,26 @@ exports.edithtml=function(req,res) {
 	//console.log(req.query.id);
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 	var folderHTML = './slides/' + req.query.id+ '/index.html';
-	fs.read(folderHTML,function(err,data) {
-		//console.log(data);
+	fs.readFile(folderHTML, 'utf-8', function (error, data) {
+		console.log(data);
+	
+		res.render('edithtml', {username: req.user.name, html: data});
 	});
-	res.render('edithtml', {username: req.user.name});
+	
+}
+
+exports.savehtml=function(req,res) {
+	console.log(req.query.id);
+	console.log(req.body.editorvalue);
+	var folderHTML = './slides/' + req.query.id+ '/index.html';
+	fs.writeFile(folderHTML, req.body.editorvalue, function(err) {
+		if (err) {
+			console.log(err);
+		}
+		res.render('edithtml', {username: req.user.name, html: req.body.editorvalue});
+		
+	});
+	
 }
 
 exports.renderuser=function(req,res) {
@@ -595,3 +611,5 @@ exports.renderuser=function(req,res) {
         res.redirect('/user/'+req.user.name + '/');
     }
 }
+
+

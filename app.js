@@ -195,6 +195,7 @@ app.get('/user/:username/editstyle/', ensureAuthenticated, function (req,res) {
     res.render('editstyle', {username: req.user.name});
 });
 app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
+app.post('/user/:username/edithtml', ensureAuthenticated, registration.savehtml);
 
 app.get('/render/', ensureAuthenticated, registration.parsequestion);
 app.get('/render2/',  registration.sendanswer);
