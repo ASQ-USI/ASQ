@@ -20,17 +20,22 @@
 				$("[name='questionType']").change(function() {
 					if ($("[name='questionType']").val()=="Text input") {
 						$('#addOption').hide();
-						$('.checkbox').each(function() {
+						$('.labelcheckbox').each(function() {
 							$(this).hide();
 						});
+						
 						$('.option').hide();
+						$('#labelcheckbox1').hide();
 						$('#inputOption1').show();
 						$('.removeOption').hide();
 					} else {
 						$('#addOption').show();
-						$('.checkbox').each(function() {
+						$('.labelcheckbox').each(function() {
+				
 							$(this).show();
 						});
+						
+						$('#labelcheckbox1').show();
 						$(".option").show();
 						$('.removeOption').show();
 					}
@@ -39,30 +44,121 @@
 				
 				
 				$('#addQuestion').click(function() {
+					
 					$('#addQuestionForm').submit();
 				});
 				
 				$('#addOption').click(function() {
-					console.log('boh');
-					var noptions=$("[class='option']").length+1;
+					
+					var noptions=$("[class='option']").length+2;
 					var optionsstring='<div class="controls-row">'+
 					'<input type="text" id="inputOption'+noptions+'"  name="option'+noptions+'"  class="option">'+
 					'<i style="cursor: pointer" id="removeOption'+noptions+'" class="icon-minus-sign removeOption" onclick="delOption(this)" ></i>'+
-					'<label id="labelcheckbox'+noptions+'"class="checkbox"><input type="checkbox" id ="checkbox'+noptions+'" name="checkbox'+noptions+'" > Correct</label></div>';
+					
+					
+					'<label class="labelcheckbox" id="labelcheckbox'+noptions+'"><input type="checkbox" class="checkbox" id ="checkbox'+noptions+'" name="checkbox'+noptions+'" > Correct</label></div>';
 					$('#options').append(optionsstring);
 					
 					
 				});
 				
+				$('.editquestion').click(function() {
+					
+					var currentId = $(this).attr('id');
+					var index=parseInt(currentId.slice(12));
+					<% for (var i=0;i<arrayquestions.length;i++) { %>
+					if(<%=i%>==index) {
+						$("#inputQuestion").val("<%=arrayquestions[i].questionText %>");
+						$('#addQuestionForm').attr("action", "edit"+window.location.search+"&quest=<%=arrayquestions[i]._id%>");
+						$("#inputType").val("<%=arrayquestions[i].questionType %>");
+						<% if (arrayquestions[i].questionType=='Text input') {%>
+							$('#addOption').hide();
+							$('.labelcheckbox').each(function() {
+								$(this).hide();
+							});
+							$('#labelcheckbox1').hide();
+							$('.option').hide();
+							$('#inputOption1').show();
+							$('.removeOption').hide();
+						<% } else { %>
+							$('#addOption').show();
+							$('.labelcheckbox').each(function() {
+								$(this).show();
+							});
+							$('#labelcheckbox1').show();
+							$(".option").show();
+							$('.removeOption').show();
+						<% }  %>
+						$('#afterslide').val("<%=arrayquestions[i].afterslide %>");
+						$(".option").each(function() {
+							$(this).remove();
+						});
+						$(".removeOption").each(function() {
+							$(this).remove();
+						});
+						$(".labelcheckbox").each(function() {
+							$(this).remove();
+						});
+						<% for (var j=0;j<arrayquestions[i].answeroptions.length-1;j++) { %>
+							var optionsstring='<div class="controls-row">'+
+							'<input type="text" id="inputOption<%=(j+2)%>"  name="option<%=(j+2)%>" class="option">'+
+							'<i style="cursor: pointer" id="removeOption'+<%=(j+2)%>+'" class="icon-minus-sign removeOption" onclick="delOption(this)" ></i>'+
+							'<label id="labelcheckbox'+<%=(j+2)%>+'"class="checkbox"><input type="checkbox" id ="checkbox'+<%=(j+2)%>+'" name="checkbox'+<%=(j+2)%>+'" > Correct</label></div>';
+							$('#options').append(optionsstring);
+							
+						<% } %>
+						<% for (var j=0;j<arrayquestions[i].answeroptions.length;j++) { %>
+							$('#inputOption<%=(j+1)%>').val('<%=arrayquestions[i].answeroptions[j].optionText%>');
+							<% if (arrayquestions[i].answeroptions[j].correct==true) {%>
+								$('#checkbox<%=(j+1)%>').attr('checked', true);
+							<% } else {%>
+								$('#checkbox<%=(j+1)%>').attr('checked', false);
+							<% } %>
+							
+						<% } %>
+						
+					
+						
+					}
+					<% } %>
+					
+					$('#myModal').show();
+
+				});
+				
+				$('#addnewquestion').click(function() {
+					$("#inputQuestion").val("");
+					$("#inputType").val("Multiple choice");
+					$('#afterslide').val("");
+					$('#inputOption1').val("");
+					$('#checkbox1').attr('checked',false);
+					$('#addOption').show();
+							$('.checkbox').each(function() {
+								$(this).show();
+							});
+							$('#checkbox1').show();
+							$(".option").show();
+							$('.removeOption').show();
+					$(".option").each(function() {
+							$(this).remove();
+						});
+						$(".removeOption").each(function() {
+							$(this).remove();
+						});
+						$(".checkbox").each(function() {
+							$(this).remove();
+						});
+				});
 				
 					
-				
+				$('#deleteslideshow').attr('href', "deleteslideshow"+window.location.search);
 				
 				$('#addQuestionForm').attr('action',"edit"+window.location.search);
 				
 				$('.delete').each( function() {
 					$(this).attr('href', "delete"+window.location.search+"&"+$(this).attr('href'));
 				});
+				
 				$('.edit').each(function() {
 					$(this).attr('href', $(this).attr('href')+window.location.search);
 				});
@@ -72,6 +168,7 @@
 			var delOption=function(element) {
 					
 					var index=parseInt(element.id.slice(12));
+					console.log(index);
 					$('#inputOption'+index).val("");
 					$('#inputOption'+index).hide();
 					$('#checkbox'+index).hide();
@@ -99,13 +196,13 @@
 
 			<div class="row group" >
 				
-				<div class="span12"><h3>Edit "What is ASQ?"</h3></div>
+				<div class="span12"><h3>Edit "<%=title%>"</h3></div>
 				<!---   Seperating Headline   --->
 				<div class="span12  headline">
 					<h2 class="pull-left">Questions & Answers</h2>
-					<a class="pull-right controls edit" href="edithtml"><i class="icon-align-left icon-white"> </i> HTML </a>
-					<a class="pull-right controls edit" href="editstyle"><i class="icon-eye-open icon-white"> </i> Style/CSS </a>
-					<a class="pull-right controls edit" href="editimages"><i class="icon-picture icon-white"> </i> Images </a>
+					<a class="pull-right controls" id="deleteslideshow"><i class="icon-trash icon-white"> </i> Delete Slideshow </a>
+					<a class="pull-right controls"><i class="icon-signal icon-white"> </i> Show Statistics </a>
+					<a class="pull-right controls edit" href="edithtml"><i class="icon-align-left icon-white"> </i> Edit HTML </a>
 				</div>
 				
 				
@@ -129,7 +226,7 @@
 						      <td><%=arrayquestions[i].afterslide %></td>
 						      
 						      <td>
-						      	<a href="#"  ><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
+						      	<a id ="editquestion<%=i%>" class="editquestion" href="#" data-toggle="modal" data-target="#myModal" ><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
 						      	<a class ="delete" href="quest=<%=arrayquestions[i]._id %>"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
 						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
 						      </td>
@@ -138,7 +235,7 @@
 						<% } %>
 						  </tbody>
 						</table>
-						<a href="#" data-toggle="modal" data-target="#myModal" class="span12" style="text-align: center; color: white"><i class="icon-plus-sign icon-white"></i> Add question </a>
+						<a href="#" data-toggle="modal" id="addnewquestion" data-target="#myModal" class="span12" style="text-align: center; color: white"><i class="icon-plus-sign icon-white"></i> Add question </a>
 					</div>
 	
 					
@@ -154,7 +251,7 @@
 	    <h3 id="myModalLabel">Add or edit question</h3>
 	  </div>
 	  <div class="modal-body">
-	    <form class="form-horizontal"  id="addQuestionForm" method="post">
+	    <form class="form-horizontal" id="addQuestionForm" method="post">
 		  <div class="control-group">
 		    <label class="control-label" for="inputQuestion">Question text:</label>
 		    <div class="controls">
@@ -173,16 +270,16 @@
 		  <div class="control-group">
 		    <label class="control-label" for="inputQuestion">After slide</label>
 		    <div class="controls">
-		      <input type="text" id="inputQuestion" name="afterslide" >
+		      <input type="text" id="afterslide" name="afterslide" >
 		    </div>
 		  </div>
 		  <div class="control-group">
 		    <label class="control-label" for="inputOptions">Answer Options</label>
 		    <div class="controls" id="options">
 			    <div class="controls-row">
-			      <input type="text" id="inputOption1" class="option" name="option1">
+			      <input type="text" id="inputOption1"  name="option1">
 				<i style="cursor: pointer" id="addOption" class="icon-plus-sign"></i>
-			      <label class="checkbox"><input type="checkbox" name=checkbox1> Correct</label>
+			      <label  id="labelcheckbox1"><input type="checkbox" id="checkbox1" name=checkbox1> Correct</label>
 			      
 			    </div>
 			    
@@ -195,15 +292,10 @@
 	  </div>
 	  <div class="modal-footer">
 	    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-	    <button class="btn btn-primary" id="addQuestion">Add question</button>
+	    <button class="btn btn-primary" id="addQuestion">Save question</button>
 	  </div>
 	</div>
 	
-	<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script>
-	    var editor = ace.edit("editor");
-	    editor.setTheme("ace/theme/vibrant_ink");
-	    editor.getSession().setMode("ace/mode/javascript");
-	</script>
+	
 	</body>
 </html>
