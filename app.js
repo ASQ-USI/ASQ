@@ -13,6 +13,7 @@ var express = require('express')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
+  , statistics = require('./routes/statistics')
   , socketio = require('socket.io');
   
 
@@ -182,8 +183,8 @@ app.get('/logout/', function(req, res){
 //Serving static files
 app.get('/images/:path/', registration.get);
 
-app.get('/statistics/', ensureAuthenticated, function (req,res) {
-    res.render('statistics');
+app.get('/user/:username/statistics/', ensureAuthenticated, function (req,res) {
+    res.render('statistics', {username: req.user.name}, statistics.getSessionsOfUser);
 });
 
 
