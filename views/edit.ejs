@@ -17,19 +17,47 @@
 					options+="<option>"+(i+1)+"</option>";
 				}
 				$("[name='afterslide']").html(options);
+				$("[name='questionType']").change(function() {
+					if ($("[name='questionType']").val()=="Text input") {
+						$('#addOption').hide();
+						$('.checkbox').each(function() {
+							$(this).hide();
+						});
+						$('.option').hide();
+						$('#inputOption1').show();
+						$('.removeOption').hide();
+					} else {
+						$('#addOption').show();
+						$('.checkbox').each(function() {
+							$(this).show();
+						});
+						$(".option").show();
+						$('.removeOption').show();
+					}
+				}
+				);
+				
 				
 				$('#addQuestion').click(function() {
 					$('#addQuestionForm').submit();
 				});
 				
 				$('#addOption').click(function() {
+					console.log('boh');
 					var noptions=$("[class='option']").length+1;
 					var optionsstring='<div class="controls-row">'+
 					'<input type="text" id="inputOption'+noptions+'"  name="option'+noptions+'"  class="option">'+
-					'<label class="checkbox"><input type="checkbox" name="checkbox'+noptions+'" > Correct</label></div>';
+					'<i style="cursor: pointer" id="removeOption'+noptions+'" class="icon-minus-sign removeOption" onclick="delOption(this)" ></i>'+
+					'<label id="labelcheckbox'+noptions+'"class="checkbox"><input type="checkbox" id ="checkbox'+noptions+'" name="checkbox'+noptions+'" > Correct</label></div>';
 					$('#options').append(optionsstring);
 					
+					
 				});
+				
+				
+					
+				
+				
 				$('#addQuestionForm').attr('action',"edit"+window.location.search);
 				
 				$('.delete').each( function() {
@@ -40,6 +68,17 @@
 				});
 				
 			});
+			
+			var delOption=function(element) {
+					
+					var index=parseInt(element.id.slice(12));
+					$('#inputOption'+index).val("");
+					$('#inputOption'+index).hide();
+					$('#checkbox'+index).hide();
+					$('#removeOption'+index).hide();
+					$('#labelcheckbox'+index).hide();
+					
+			};
 			
 		</script>
 		<style type="text/css" media="screen">
@@ -90,7 +129,7 @@
 						      <td><%=arrayquestions[i].afterslide %></td>
 						      
 						      <td>
-						      	<a href="#"><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
+						      	<a href="#"  ><i class="icon-pencil icon-white"></i></a> &nbsp;&nbsp;
 						      	<a class ="delete" href="quest=<%=arrayquestions[i]._id %>"><i class="icon-trash icon-white"></i></a>	&nbsp;&nbsp;
 						      	<a href="#"><i class="icon-resize-vertical icon-white"></i></a> &nbsp;&nbsp;
 						      </td>
@@ -127,7 +166,6 @@
 		    <div class="controls">
 		      <select id="inputType" name="questionType" >
 				  <option>Multiple choice</option>
-				  <option>Numeric input</option>
 				  <option>Text input</option>
 				</select>
 		    </div>

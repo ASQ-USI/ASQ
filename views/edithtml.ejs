@@ -16,7 +16,19 @@
 			$('#myTab a').click(function (e) {
 			  e.preventDefault();
 			  $(this).tab('show');
-			})
+			});
+			$(document).ready(function() {
+				var initial=editor.getSession().getValue();
+				$('#editorvalue').hide();
+				$('#save').click(function() {
+					$('#editorvalue').val(editor.getSession().getValue());
+					$('#formeditor').submit();
+				});
+				$('#discard').click(function() {
+					$('#editorvalue').val(initial);
+					$('#formeditor').submit();
+				});
+			});
 		</script>
 		<style type="text/css" media="screen">
     #editor { 
@@ -46,26 +58,17 @@
 					<a class="pull-right controls" href="edit"><i class="icon-question-sign icon-white"> </i> Questions </a>
 				</div>
 				
-				
-					<div id="editor" class="span12">
-&lt;!DOCTYPE html>
-&lt;html>
-  &lt;head>
-    &lt;title>My sample presentation&lt;/title>
-  &lt;/head>
-  &lt;body>
-    &lt;h1>Hello, world!&lt;/h1>
-    &lt;script src="http://code.jquery.com/jquery-latest.js">&lt;/script>
-  &lt;/body>
-&lt;/html>
-</div>
+					<form class="form-horizontal"  id="formeditor" method="post">
+					<textarea name="editorvalue" id="editorvalue"></textarea>
+					<div id="editor" class="span12" name="editor"><%=html%></div>
 					
 				<div class="row span12">
 					<br />
-					<button class="btn btn-primary pull-right" type="button">Save Changes</button>
+					<button id="save" class="btn btn-primary pull-right" type="button" >Save Changes</button>
 					<span class="pull-right">&nbsp; &nbsp;</span>
-					<button class="btn pull-right" type="button">Discard changes</button>  					
-				</div>	
+					<button class="btn pull-right" id="discard" type="button">Discard changes</button>  					
+				</div>
+				</form>
 					 
 				
 			</div>

@@ -116,7 +116,7 @@ app.configure('development', function(){
 
 /** Routing */
 app.get('/', ensureAuthenticated, function(req, res){
-  res.render('logged');
+  res.redirect('/user');
 });
 
 /** Initialize a new session with slides matching the id */
@@ -145,7 +145,7 @@ app.get('/signup/', function(req, res){
 app.get('/checkusername/:username/', registration.checkusername);
 
 //Registration happened. 
-app.post('/signup/', registration.signup);
+app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
 app.get('/user/', ensureAuthenticated, function(req,res) {
@@ -195,6 +195,7 @@ app.get('/user/:username/editstyle/', ensureAuthenticated, function (req,res) {
     res.render('editstyle', {username: req.user.name});
 });
 app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
+app.post('/user/:username/edithtml', ensureAuthenticated, registration.savehtml);
 
 app.get('/render/', ensureAuthenticated, registration.parsequestion);
 app.get('/render2/',  registration.sendanswer);
