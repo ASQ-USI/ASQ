@@ -140,6 +140,9 @@ var showQuestion=function(question) {
 }
 
 var showAnswer=function(question, stats) {
+    var correct = stats.correct || null;
+    var countedMcOptions = stats.countedMcOptions || null;
+    var equalAnswers = stats.equalAnswers || null;
     google.load("visualization", "1", {
         packages : ["corechart"],
         callback : drawChart
@@ -203,10 +206,6 @@ var showAnswer=function(question, stats) {
         optionsstring+='<span class="help-block">Your answer.</span>';
 		optionsstring+='<input type="text" value="Norway" readonly>';
     }
-
-    var correct = stats.correct || null;
-    var countedMcOptions = stats.countedMcOptions || null;
-    var equalAnswers = stats.equalAnswers || null;
     //google.setOnLoadCallback(drawChart);
     //drawChart();
     //update modal content
