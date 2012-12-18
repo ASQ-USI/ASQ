@@ -29,7 +29,8 @@
     
     <% if (mode === 'admin') { %>
     	<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-        <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+        <script type="text/javascript" 
+        src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
     <% } %>
     <link href="/css/meny.css" rel="stylesheet" />
     <script src="/js/meny.min.js"></script>
@@ -54,11 +55,15 @@
     <% if (mode === 'admin') { %>
         <div class="meny-arrow"></div>
         <div class="meny">
-            
-                <a class="btn" style="width: 80px;" onclick="impress().prev()">Previous</a>
-                <a class="btn" style="width: 80px;" onclick="impress().next()">Next</a>
-                <a class="btn btn-danger" style="width: 80px;" href="/user/<%= user %>/stop/">Stop</a>
-                <a><img src="/img/logo-small.png" class="pull-right" /></a>
+        	<a class="btn btn-danger pull-left"  href="/user/<%= user %>/stop/">Stop presentation</a>
+        	
+        	<div style="width: 200px; margin: 0 auto 0 auto">
+        		<button class="btn pull-left" style="width: 80px;" onclick="impress().prev()">Previous</button>
+        		
+        		<button class="btn pull-right" style="width: 80px;" onclick="impress().next()">Next</button>     		
+        	</div>
+ 
+            <img src="/img/logo-small.png" class="pull-right" />
 
         </div>
         <script>

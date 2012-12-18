@@ -178,7 +178,7 @@ exports.getStats = function(questionId, sessionId, callback) {
 				[question.questionText, "Number of answers"]
 			]
 			if(question.questionType === "Multiple choice"){
-				for(ans in stats.equalAnswers){
+				for(ans in stats.countedMcOptions){
 					//console.log("###########");
 					countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
 				}

@@ -27,5 +27,6 @@ exports.getSessionStats = function (req, res) {
 		}
 			
 	});	
-  	res.render('statistics', {username: req.user.name, stats.result});
+	
+  	res.render('statistics', {username: req.user.name, stats:results});
 }
