@@ -32,9 +32,7 @@
 </head>
 
 <body class="impress-not-supported">
-<div id="asq-container">
-
-    <% if (mode === 'admin') { %>
+	<% if (mode === 'admin') { %>
         <% include slidesWelcome %>
         <% include adminQuestionPopup %>
         <% include adminAnswerPopup %>
@@ -43,21 +41,21 @@
         <% include viewerQuestionPopup %>
         <% include viewerAnswerPopup %>
     <% } %>
-
+<div id="asq-container">
     <%- partial(path) %>
 </div>
     <% if (mode === 'admin') { %>
         <div class="meny-arrow"></div>
-        <div class="meny">
+        <div class="meny" style="pointer-events:auto">
         	<a class="btn btn-danger pull-left"  href="/user/<%= user %>/stop/">Stop presentation</a>
-        	
+        	<img src="/img/logo-big.png" class="pull-right" />
         	<div style="width: 200px; margin: 0 auto 0 auto">
         		<button class="btn pull-left" style="width: 80px;" onclick="impress().prev()">Previous</button>
-        		
-        		<button class="btn pull-right" style="width: 80px;" onclick="impress().next()">Next</button>     		
+        		<button class="btn pull-right" style="width: 80px;" onclick="impress().next()">Next</button>
+        		<br /><br />
+        		<h2 style="text-align: center" id="time">00:13:24</h2>     		
         	</div>
- 
-            <img src="/img/logo-small.png" class="pull-right" />
+        	<div class="pull-left"><span>Viewers connected: </span><span id="numConnectedViewers"></span></div>
 
         </div>
         <script>

@@ -1,14 +1,6 @@
-body {
-	background-color: #222;
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAGklEQVQIW2NkYGD4D8SMQAwGcAY2AbBKDBUAVuYCBQPd34sAAAAASUVORK5CYII=);
-	background-repeat: repeat;
 
-	font-family: 'Lato', Helvetica, sans-serif;
-	font-size: 16px;
-	color: #222;
-}
 
-a {
+.meny a {
 	color: #c2575b;
 	text-decoration: none;
 
@@ -18,12 +10,12 @@ a {
 	     -o-transition: 0.15s color ease;
 	        transition: 0.15s color ease;
 }
-	a:hover {
+	.meny a:hover {
 		color: #f76f76;
 	}
 
-h1, 
-h2 {
+.meny h1, 
+.meny h2 {
 	font-size: 24px;
 }
 
