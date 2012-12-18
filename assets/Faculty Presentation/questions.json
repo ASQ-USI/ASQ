@@ -1,0 +1,19 @@
+[
+	{
+	"questionText":"Wouldn't it be nice if we could ASQ for your feedback?<br/>(Tick the right answer(s) and press done)",
+	"questionType":"Multiple choice",
+	"afterslide":"11",
+	"options":[
+		{"optionText":"Yes!","correct":true},
+		{"optionText":"Absolutely!","correct":true}]
+	},
+	{
+	"questionText":"Well that's all for now. We hope you liked our project.",
+	"questionType":"Multiple choice",
+	"afterslide":"12",
+	"options":[
+		{"optionText":"Yes, it was very interesting!","correct":true},
+		{"optionText":"I wanted to say no, but I did't want to be rude so I chose this option...","correct":true}
+		{"optionText":"No!","correct":false}]
+	}
+]

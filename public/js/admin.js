@@ -25,6 +25,7 @@ var connect = function(host, port, session) {
 
         //update viewers count
         $("#numViewers").text(connectedViewers + " viewers");
+        $('#numConnectedViewers').text(connectedViewers + '');
         console.log('New viewer connected');
     }
     socket.on('connect', function(event) {

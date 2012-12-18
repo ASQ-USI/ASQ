@@ -18,7 +18,8 @@ module.exports.admin = function(req, res) {
                                   user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
                                   path: path.relative(app.get('views'), slideshow.path + 'index.html'),
                                   links: slideshow.links,
-                                  id: session.id
+                                  id: session.id,
+                                  date: session.date
                                  });
         }
     });
