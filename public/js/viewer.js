@@ -40,11 +40,21 @@ var connect = function(host, port, session) {
          */
         socket.on('asq:goto', function(event) {
             impress().goto(event.slide);
+            $('#answer').modal('hide');
         });
+    })
+
+    .on('connect_failed', function (reason) {
+        console.error('unable to connect to namespace', reason);
+        $('#socket-error').css('display', 'block');
     });
     
     document.addEventListener('local:submit', function(event) {
         socket.emit('asq:submit', {session:session, answers:event.detail.answers, questionId:questionId});
+    });
+
+    document.addEventListener('local:resubmit', function(event) {
+        socket.emit('asq:resubmit', {questionId:questionId});
     });
 }
 
@@ -56,7 +66,7 @@ var showQuestion=function(question) {
 	$('#changeAnswer').css("display", "none");
 	$('#sendanswers').removeAttr("disabled");
 	
-    
+    $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3><button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
     var optionsstring='';
     if (question.questionType === "Multiple choice") {
@@ -71,11 +81,12 @@ var showQuestion=function(question) {
     }
     
     $('#answeroptions').html(optionsstring);
-    $('#question').modal('show');
+			
 }
 
 var showAnswer=function(question) {
     $('#question').modal('hide');
+    $('#answer').modal('show');
     $('#answerText').html('<h3>Statistics for</h3><h4>"' 
     		+ question.questionText 
     		+ '"</h4> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
@@ -94,13 +105,12 @@ var showAnswer=function(question) {
         
     } else {
         optionsstring+='<span class="help-block">Correct answer.</span>';
-        optionsstring+='<p>'+ A +'</p>';
+        optionsstring+='<p>'+  +'</p>';
         optionsstring+='<span class="help-block">Your answer.</span>';
 		optionsstring+='<input type="text" value="Norway" readonly>';
     }
     
     $('#answersolutions').html(optionsstring);
-    $('#answer').modal('show');
 };
 
 var send=function() {
@@ -130,7 +140,9 @@ var send=function() {
 }
 
 var changeAnswer = function(){
-	$('#blockOptions').css("display", "none");
-	$('#changeAnswer').css("display", "none");
-	$('#sendanswers').removeAttr("disabled");
+    var resubmitEvent = new CustomEvent('local:resubmit', {});
+    document.dispatchEvent(resubmitEvent);
+    $('#blockOptions').css("display", "none");
+    $('#changeAnswer').css("display", "none");
+    $('#sendanswers').removeAttr("disabled");
 }
