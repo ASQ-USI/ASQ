@@ -803,8 +803,7 @@
 
         e = $.Event('hide')
 
-        //Jacques: Added fix...
-        if ($("div.modal.in").length <= 1) this.$element.trigger(e)
+        this.$element.trigger(e)
 
         if (!this.isShown || e.isDefaultPrevented()) return
 

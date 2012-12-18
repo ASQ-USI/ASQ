@@ -84,7 +84,6 @@ var showQuestion=function(question) {
 }
 
 var showAnswer = function(question) {
-    $('#question').modal('hide');
     $('#answerText').html('<h3>Statistics for</h3><h4>"'
     		+ question.questionText
     		+ '"</h4> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
@@ -110,7 +109,13 @@ var showAnswer = function(question) {
     }
     
     $('#answersolutions').html(optionsstring.join(''));
-    $('#answer').modal('show');
+    //$('#answer').on('show', function() {
+    //   $('#question').on('hidden', function() {/*nothing*/});
+    //});
+    $('#question').on('hidden', function() {
+        $('#answer').modal('show')}
+    );
+    $('#question').modal('hide');
 }
 
 var send=function() {
