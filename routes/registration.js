@@ -180,7 +180,11 @@ exports.getStats = function(questionId, sessionId, callback) {
 			if(question.questionType === "Multiple choice"){
 				for(ans in stats.equalAnswers){
 					//console.log("###########");
-					countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
+					//This is what went wrong during the M4 demo
+					//The check below can prevent the same mistake
+					//But I don't know how it affects the expected result
+					if (question.answeroptions[ans])
+						countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
 				}
 			}
 
@@ -698,5 +702,3 @@ exports.renderuser=function(req,res) {
         res.redirect('/user/'+req.user.name + '/');
     }
 }
-
-
