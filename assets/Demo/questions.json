@@ -1,4 +1,4 @@
 [
-{"questionText":"Who is our TA?","questionType":"Multiple choice","afterslide":"2","options":[{"optionText":"Mauro Pezze","correct":"no"},{"optionText":"Barack Obama","correct":"no"},{"optionText":"Vassilis Triglianos","correct":"yes"}]},{"questionText":"Where is USI?","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"in Lugano","correct":"yes"},{"optionText":"in Swiss","correct":"yes"},{"optionText":"in Geneva","correct":"no"},{"optionText":"in Munich","correct":"no"}]},
-{"questionText":"What's the name our our project?","questionType":"Input text","afterslide":"4","options":[{"optionText":"ASQ","correct":"yes"}]}
+{"questionText":"Who is our TA?","questionType":"Multiple choice","afterslide":"2","options":[{"optionText":"Mauro Pezze","correct":false},{"optionText":"Barack Obama","correct":false},{"optionText":"Vassilis Triglianos","correct":true}]},{"questionText":"Where is USI?","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"in Lugano","correct":true},{"optionText":"in Swiss","correct":true},{"optionText":"in Geneva","correct":false},{"optionText":"in Munich","correct":false}]},
+{"questionText":"What's the name our our project?","questionType":"Text input","afterslide":"4","options":[{"optionText":"ASQ","correct":true}]}
 ]

@@ -309,24 +309,22 @@ function getCorrectAnswers(answers, answerOptions) {
 	for (var ans = 0; ans < answerOptions.length; ans++) {
 		if (answerOptions[ans].correct == true) {
 			correctAnswer.push(true);
-		} else if (answerOptions[ans].correct == false) {
+		}else if (answerOptions[ans].correct == false) {
 			correctAnswer.push(false);
 		}else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
 			//console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
-		} else {
-			correctAnswer.push(false);
 		}
 
 	}
-	//console.log("Correct ans " + correctAnswer);
+	console.log("Correct ans " + correctAnswer);
 
 	//Check for correct answers
 	var correct = 0;
 	var wrong = 0;
 	for (var i = 0; i < answers.length; i++) {
-		console.log(answers[i]);
-		console.log(answers[i].content+" "+correctAnswer +" "+arrayEqual(answers[i].content, correctAnswer))
+		//console.log(answers[i]);
+		console.log(answers[i].content+" "+correctAnswer[i] +" "+arrayEqual(answers[i].content, correctAnswer))
 		if (arrayEqual(answers[i].content, correctAnswer)) {
 			correct++;
 		} else {
@@ -393,8 +391,8 @@ function arrayEqual(array1, array2){
 		return false;
 	} else {
 		for(var i = 0; i <array1.length; i++){
-			if(array1[i] != array2[i]){
-				//console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
+			if(array1[i].toString() != array2[i].toString()){
+				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
 				return false;
 			}
 		}
@@ -433,72 +431,104 @@ exports.deletequestion=function(req,res) {
 }
 
 exports.addquestion=function(req,res) {
-	
 	var questionDB= db.model('Question', schemas.questionSchema);
-	var newQuestion=new questionDB({
-		questionText:req.body.questionText,
-		questionType: req.body.questionType,
-		afterslide: req.body.afterslide
-		//answeroptions: optionsDB
-	});
-	//newQuestion.save();
 	
-	var optionDB=db.model('Option', schemas.optionSchema);
-	for (var i=0; i<256; i++) {
-		if (req.param('option'+i)!==undefined && req.param('option'+i)!=="") {
-			var newOptionDB=new optionDB( {
-				optionText: req.param('option'+i),
-			});
-			newOptionDB.correct = req.param('checkbox'+i) ? true : false;
-			newOptionDB.save()
-			newQuestion.answeroptions.push(newOptionDB._id);
-			newQuestion.save();
-			} 
-
-	}
 	
-	var nquestion=0;
-	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-	slideshowDB.findById(req.query.id, function(err, slideshow) {
-		if (err) {
-			console.log(err);
-		} else {
-			if (slideshow) {
-				nquestion=slideshow.questions.length;
-				slideshow.questions.push(newQuestion._id);
-				slideshow.save();
+	if (req.query.quest) {
+		questionDB.findById(req.query.quest,function(err,question) {
+			question.questionText=req.body.questionText;
+			question.uestionType=req.body.questionType;
+			question.afterslide=req.body.afterslide;
+			//question.save();
+			var optionDB=db.model('Option', schemas.optionSchema);
+			question.answeroptions=[];
+			for (var i=0; i<256; i++) {
+				if (req.param('option'+i)!==undefined && req.param('option'+i)!=="") {
+					var newOptionDB=new optionDB( {
+						optionText: req.param('option'+i),
+					});
+					newOptionDB.correct = req.param('checkbox'+i) ? true : false;
+					newOptionDB.save();
+					question.answeroptions.push(newOptionDB._id);
+					//newQuestion.save();
+					} 
+		
 			}
-			
-		}
-	}
-		);
+			question.save();
+			res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
+
+	});
+		
+	} else {
+		var newQuestion=new questionDB({
+			questionText:req.body.questionText,
+			questionType: req.body.questionType,
+			afterslide: req.body.afterslide
+			//answeroptions: optionsDB
+		});
+		//newQuestion.save();
+		
+		var optionDB=db.model('Option', schemas.optionSchema);
+		for (var i=0; i<256; i++) {
+			if (req.param('option'+i)!==undefined && req.param('option'+i)!=="") {
+				var newOptionDB=new optionDB( {
+					optionText: req.param('option'+i),
+				});
+				newOptionDB.correct = req.param('checkbox'+i) ? true : false;
+				newOptionDB.save()
+				newQuestion.answeroptions.push(newOptionDB._id);
+				//newQuestion.save();
+				} 
 	
-	// var answerDB = db.model('Answer', schemas.answerSchema);
-	// var testanswer = [];
-	// for(var i = 0; i<20; i++){
-		// var testans = {content: ["true", "false", "false", "false"]};
-		// testanswer.push(testans)
-	// }
-	// for(var i = 0; i<5; i++){
-		// var testans = {content: ["false", "true", "false", "false"]};
-		// testanswer.push(testans)
-	// }
-	// for(var i = 0; i<3; i++){
-		// var testans = {content: ["false", "false", "true", "false"]};
-		// testanswer.push(testans)
-	// }
-	// for(var i = 0; i<10; i++){
-		// var testans = {content: ["false", "false", "false", "true"]};
-		// testanswer.push(testans)
-	// }
-	// var newanswer = new answerDB({
-		// //question: "50c7738315ed6e214a000009",
-		// question: newQuestion._id,
-		// answers : testanswer
-	// }
-	// );
-	//newanswer.save();
-	res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
+		}
+		newQuestion.save();
+		
+		var nquestion=0;
+		var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+		slideshowDB.findById(req.query.id, function(err, slideshow) {
+			if (err) {
+				console.log(err);
+			} else {
+				if (slideshow) {
+					nquestion=slideshow.questions.length;
+					slideshow.questions.push(newQuestion._id);
+					slideshow.save();
+				}
+				
+			}
+		}
+			);
+		
+		// var answerDB = db.model('Answer', schemas.answerSchema);
+		// var testanswer = [];
+		// for(var i = 0; i<20; i++){
+			// var testans = {content: ["true", "false", "false", "false"]};
+			// testanswer.push(testans)
+		// }
+		// for(var i = 0; i<5; i++){
+			// var testans = {content: ["false", "true", "false", "false"]};
+			// testanswer.push(testans)
+		// }
+		// for(var i = 0; i<3; i++){
+			// var testans = {content: ["false", "false", "true", "false"]};
+			// testanswer.push(testans)
+		// }
+		// for(var i = 0; i<10; i++){
+			// var testans = {content: ["false", "false", "false", "true"]};
+			// testanswer.push(testans)
+		// }
+		// var newanswer = new answerDB({
+			// //question: "50c7738315ed6e214a000009",
+			// question: newQuestion._id,
+			// answers : testanswer
+		// }
+		// );
+		//newanswer.save();
+		res.redirect('/user/'+req.user.name + '/edit?id='+req.query.id);
+	}
+	
+	
+	
 	
 	
 	
@@ -531,16 +561,45 @@ exports.editslideshow=function(req,res) {
 								
 								var questions=[];
 								var questionDB=db.model('Question', schemas.questionSchema);
+								var optionDB= db.model('Option', schemas.optionSchema);
 								for (var i=0;i<slideshow.questions.length;i++) {
 									questionDB.findById(slideshow.questions[i], function(err, question) {
-										questions.push(question);
-										if (questions.length==slideshow.questions.length) {
-											res.render('edit', {arrayquestions: questions, username: req.user.name});
+										
+										if (question) {
+											
+											var newquestionob=new Object( {
+											_id: question._id,
+											questionText:question.questionText,
+											questionType: question.questionType,
+											afterslide: question.afterslide,
+											answeroptions:[]
+										});
+										
+										for (var j=0;j<question.answeroptions.length;j++) {
+											optionDB.findById(question.answeroptions[j],function(err,option) {
+												newquestionob.answeroptions.push(option);
+												if (newquestionob.answeroptions.length==question.answeroptions.length) {
+													questions.push(newquestionob);
+													if (questions.length==slideshow.questions.length) {
+														res.render('edit', {arrayquestions: questions, username: req.user.name, title:slideshow.title});
+													}
+												}
+											});
 										}
+										if (question.answeroptions.length==0) {
+											questions.push(newquestionob);
+													if (questions.length==slideshow.questions.length) {
+														res.render('edit', {arrayquestions: questions, username: req.user.name, title:slideshow.title});
+													}
+										}
+										} 
+										
+										
+										
 									});
 								}
 								if (slideshow.questions.length==0) {
-									res.render('edit', {arrayquestions: questions, username: req.user.name});
+									res.render('edit', {arrayquestions: questions, username: req.user.name, title:slideshow.title});
 								}
 								
 							} else {
@@ -563,13 +622,41 @@ exports.editslideshow=function(req,res) {
 	
 }
 
+exports.deleteslideshow=function(req,res) {
+	var users= db.model('User', schemas.userSchema);
+		var out =users.findById(req.user._id, function (err, user) {
+		if (user) {
+			for (var i=0;i<user.slides.length;i++) {
+					if (user.slides[i]==req.query.id) {
+						user.slides.splice(i,1);
+						user.save();
+					}
+			}
+			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
+			var questionDB= db.model('Question', schemas.questionSchema);
+			slideshowDB.findById(req.query.id, function(err, slideshow) {
+				questionDB.remove( {_id: { $in: slideshow.questions }}, function(err, question) {
+					if (err) {
+						console.log(err);
+					}
+				});
+				slideshow.remove();
+				res.redirect('/user/'+req.user.name);
+			});
+			
+		}
+		});
+}
+	
+
+
 
 exports.edithtml=function(req,res) {
 	//console.log(req.query.id);
 	var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
 	var folderHTML = './slides/' + req.query.id+ '/index.html';
 	fs.readFile(folderHTML, 'utf-8', function (error, data) {
-		console.log(data);
+		//console.log(data);
 	
 		res.render('edithtml', {username: req.user.name, html: data});
 	});
@@ -577,8 +664,8 @@ exports.edithtml=function(req,res) {
 }
 
 exports.savehtml=function(req,res) {
-	console.log(req.query.id);
-	console.log(req.body.editorvalue);
+	//console.log(req.query.id);
+	//console.log(req.body.editorvalue);
 	var folderHTML = './slides/' + req.query.id+ '/index.html';
 	fs.writeFile(folderHTML, req.body.editorvalue, function(err) {
 		if (err) {

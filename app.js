@@ -13,8 +13,18 @@ var express = require('express')
   , passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
-  , socketio = require('socket.io');
+  , statistics = require('./routes/statistics')
+  , SessionMongoose = require("session-mongoose")(express)
+  , mongooseSessionStore = new SessionMongoose({
+        url: "mongodb://localhost/login",
+        interval: 120000 
+    });
+
+  var config = require('./config');
   
+  // save sessionStore to config for later access
+  config.setSessionStore(mongooseSessionStore);
+
 
 
 // Passport session setup.
@@ -98,7 +108,8 @@ app.configure(function() {
     app.use(express.bodyParser({uploadDir: './slides/'}));
     app.use(express.methodOverride());
     app.use(express.cookieParser('your secret here'));
-    app.use(express.session());
+    //mongosession store to be used with socket.io
+    app.use(express.session({secret : 'ASQsecret' , store : mongooseSessionStore }));
     //necessary initialization for passport plugin
     app.use(passport.initialize());
     app.use(flash());
@@ -172,6 +183,8 @@ app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
 
 app.get('/user/:username/delete', ensureAuthenticated, registration.deletequestion);
 
+app.get('/user/:username/deleteslideshow', ensureAuthenticated, registration.deleteslideshow);
+
 app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 
 //The user logs out, and get redirected
@@ -183,18 +196,8 @@ app.get('/logout/', function(req, res){
 //Serving static files
 app.get('/images/:path/', registration.get);
 
-app.get('/statistics/', ensureAuthenticated, function (req,res) {
-    res.render('statistics');
-});
+app.get('/user/:username/statistics/', ensureAuthenticated,  statistics.getSessionStats);
 
-
-app.get('/user/:username/editimages/', ensureAuthenticated, function (req,res) {
-    res.render('editimages', {username: req.user.name});
-});
-
-app.get('/user/:username/editstyle/', ensureAuthenticated, function (req,res) {
-    res.render('editstyle', {username: req.user.name});
-});
 app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
 app.post('/user/:username/edithtml', ensureAuthenticated, registration.savehtml);
 

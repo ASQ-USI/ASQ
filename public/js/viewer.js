@@ -40,6 +40,7 @@ var connect = function(host, port, session) {
          */
         socket.on('asq:goto', function(event) {
             impress().goto(event.slide);
+            $('#answer').modal('hide');
         });
     })
 
@@ -48,7 +49,7 @@ var connect = function(host, port, session) {
         $('#socket-error').css('display', 'block');
     });
     
-    document.addEventListener('asq:submit', function(event) {
+    document.addEventListener('local:submit', function(event) {
         socket.emit('asq:submit', {session:session, answers:event.detail.answers, questionId:questionId});
     });
 
@@ -126,7 +127,7 @@ var send=function() {
 		}
 
 	}
-	var myEvent = new CustomEvent("asq:submit", {
+	var myEvent = new CustomEvent("local:submit", {
 		"detail" : {
 			"answers" : answers
 		}
