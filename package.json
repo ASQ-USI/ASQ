@@ -19,6 +19,7 @@
         "passport-local" : "0.1.x",
         "passport.socketio" : "0.0.x",
         "connect" : "2.7.x",
+        "session-mongoose" :  "0.2.x",
 	"connect-slashes" : "0.0.x",
 	"mongoose" : "3.4.x",
         "unzip" : "0.1.x",
