@@ -223,12 +223,20 @@ function getQuestionStats(questionId, sessionId, callback) {
 				// console.log(answer.answers);
 				// console.log("--- Answers")
 				var result = {
+					questionText: "",
+					questionOptions: ["Lorem", "Ipsum", "Dolor", "Sit amet"],  
+					questionType: "Multiple choice",
 					total : answer.answers.length,
-					correct : null,
-					wrong : null,
+					correct : 1,
+					wrong : 1,
 					equalAnswers : null,
 					countedMcOptions : null,
 				}
+				
+				//Set question data
+				result.questionText= question.questionText;
+				result.questionType = question.questionType;
+				result.questionOptions = question.answeroptions;
 
 				//Get array of correct answers
 				var correctWrong = getCorrectAnswers(answer.answers, question.answeroptions);
@@ -249,50 +257,7 @@ function getQuestionStats(questionId, sessionId, callback) {
 		});
 	});
 
-	//questionDB.findById(questionId, function(err, question) {
-	//	sessionDB.findById(sessionId, function(err, session) {
-	//		answerDB.findById(session.answers, function(err, answer) {
-	//			if (err) throw err;
-	//			console.log(answer);
-	//			if (answer) {
-	//				optionDB.find({
-	//					_id : {
-	//						$in : question.answeroptions
-	//					}
-	//				}, function(err, answerOptions) {
-	//					if (err) callback(err);
-	//
-	//					console.log("#### Answers")
-	//					console.log(answer);
-	//					console.log(answer.answers);
-	//					console.log("--- Answers")
-	//					var result = {
-	//						total : answer.answers.length,
-	//						correct : null,
-	//						wrong : null,
-	//						equalAnswers : null,
-	//						countedMcOptions : null,
-	//					}
-	//
-	//					//Get array of correct answers
-	//					var correctWrong = getCorrectAnswers(answer, answerOptions);
-	//					result.correct = correctWrong[0];
-	//					result.wrong = correctWrong[1];
-	//
-	//					// Counting equal answers
-	//					result.equalAnswers = getEqualAnswers(answer);
-	//
-	//					// Counting selectet options for multiple choice
-	//					result.countedMcOptions = getCountedMCOptions(answer, question);
-	//
-	//					console.log(result);
-	//					callback(null, result);
-	//
-	//				});
-	//			}
-	//		});
-	//	});
-	//});
+	
 }
 
 
