@@ -625,7 +625,7 @@
             
             // START 
             // by selecting step defined in url or first step of the presentation
-            goto(getElementFromHash() || steps[0], 0);
+            goto(steps[0], 0);
         }, false);
         
         body.classList.add("impress-disabled");

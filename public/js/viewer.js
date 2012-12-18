@@ -62,11 +62,10 @@ var connect = function(host, port, session) {
 
 
 var showQuestion=function(question) {
-	$('#blockOptions').css("display", "none");
-	$('#changeAnswer').css("display", "none");
-	$('#sendanswers').removeAttr("disabled");
+    $('#blockOptions').css("display", "none");
+    $('#changeAnswer').css("display", "none");
+    $('#sendanswers').removeAttr("disabled");
 	
-    $('#question').modal('show');
     $('#questionText').html('<h3>'+question.questionText+'</h3><button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
     var optionsstring='';
     if (question.questionType === "Multiple choice") {
@@ -81,37 +80,38 @@ var showQuestion=function(question) {
     }
     
     $('#answeroptions').html(optionsstring);
-			
+    $('#question').modal('show');
 }
 
-var showAnswer=function(question) {
+var showAnswer = function(question) {
     $('#question').modal('hide');
-    $('#answer').modal('show');
-    $('#answerText').html('<h3>Statistics for</h3><h4>"' 
-    		+ question.questionText 
+    $('#answerText').html('<h3>Statistics for</h3><h4>"'
+    		+ question.questionText
     		+ '"</h4> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
     		
-    var optionsstring='';
-    if (question.questionType=="Multiple choice") {
+    var optionsstring=[];
+    if (question.questionType === 'Multiple choice') {
         for (var i=0;i<question.answeroptions.length;i++) {
-            optionsstring+='<label class="checkbox" >';
-            if (question.answeroptions[i].correct==true) {
-                optionsstring+='<i class="icon-ok"> </i> ';
+            optionsstring.push('<label class="checkbox" >');
+            if (question.answeroptions[i].correct  === true) {
+                optionsstring.push('<i class="icon-ok"> </i>');
             } else {
-                optionsstring+='<i class="icon-remove"> </i> ';
+                optionsstring.push('<i class="icon-remove"> </i>');
             }
-            optionsstring+=question.answeroptions[i].optionText+'</label>';
+            optionsstring.push(question.answeroptions[i].optionText)
+            optionsstring.push('</label>');
         }
         
     } else {
-        optionsstring+='<span class="help-block">Correct answer.</span>';
-        optionsstring+='<p>'+  +'</p>';
-        optionsstring+='<span class="help-block">Your answer.</span>';
-		optionsstring+='<input type="text" value="Norway" readonly>';
+        optionsstring.push('<span class="help-block">Correct answer.</span>');
+        optionsstring.push('<p></p>');
+        optionsstring.push('<span class="help-block">Your answer.</span>');
+	optionsstring.push('<input type="text" value="Norway" readonly>');
     }
     
-    $('#answersolutions').html(optionsstring);
-};
+    $('#answersolutions').html(optionsstring.join(''));
+    $('#answer').modal('show');
+}
 
 var send=function() {
 	var answers = [];
