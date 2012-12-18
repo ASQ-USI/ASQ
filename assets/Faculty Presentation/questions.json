@@ -13,7 +13,7 @@
 	"afterslide":"12",
 	"options":[
 		{"optionText":"Yes, it was very interesting!","correct":true},
-		{"optionText":"I wanted to say no, but I did't want to be rude so I chose this option...","correct":true}
+		{"optionText":"I wanted to say no, but I did't want to be rude so I chose this option...","correct":true},
 		{"optionText":"No!","correct":false}]
 	}
 ]
