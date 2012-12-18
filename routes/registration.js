@@ -161,7 +161,7 @@ exports.getStats = function(questionId, sessionId, callback) {
 				callback(err);
 				return;
 			}
-			if (stats === {}) {
+			if (stats === null) {
 				callback(null, {correct:{}, countedMcOptions: {}, equalAnswers: {}});
 				return;
 			}
@@ -180,7 +180,7 @@ exports.getStats = function(questionId, sessionId, callback) {
 			if(question.questionType === "Multiple choice"){
 				var lim = stats.countedMcOptions.length < question.answeroptions.length ?
 				stats.countedMcOptions.length : question.answeroptions.length;
-				for(var ans = 0; ans < lim; i++){
+				for(var ans = 0; ans < lim; ans++){
 					//console.log("###########");
 					//This is what went wrong during the M4 demo
 					//The check below can prevent the same mistake
@@ -221,7 +221,7 @@ function getQuestionStats(questionId, sessionId, callback) {
 					return;
 				}
 				if (!answer) {
-					callback(null, {});
+					callback(null, null);
 					return;
 				}
 				// console.log("#### Answers")
