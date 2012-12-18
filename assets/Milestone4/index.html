@@ -1,89 +1,114 @@
-    <style type="text/css">
-    	.step{
-
-    		width: 1024px;
-
-    		display: table-cell;
-    		text-align: center;
-    		vertical-align: middle;
-    	}
-	.step h1, .step h2, .step h3, .step li, .step p{
-		color: white;
-	}
-	.step h1{
-		font-size: 50px;
-		margin-bottom: 20px;
-		font-weight: bold;
-	}
-	.step p, .step li{
-		font-size: 34px;
-	}
-	.step li{
-		text-align: left;
-		list-style: disc;
-		margin-bottom: 20px
-	}
-    </style>
 
 	<div class="fallback-message">
 	    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
 	    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
 	</div>
-
+	
 	<div id="impress">
+	    
+        
+	
+            <div id="1" class="step" data-x="-1200">
+                <img src="img/logo-big.png" />
+	       <p>Software Atelier III</p>
+	        <p  class="small">USI / December 2012</p>
+            </div>
 
-		<div id="1" class="step"  data-x="-1024" data-y="0">
-	       <!--- <img src="../img/logo-big.png" />
-	        <p style="font-size: 28px; color: #999">Interactive presentations based on node.js and impress.js</p>/--->
-	        <img src="img/apple-cinema-display2.png"  height="700px"/>
-	   </div>
+            <div id="slidetwo" class="step" data-x="0">
+                <span class="delay first" ><p>Lots of tools to deliver ideas</p></span>
+		<span class="delay second" >No tool to <span class="red">retrieve information</span> from audience</span>	
+            </div>
 
-	   	<div id="2" class="step"  data-x="0" data-y="0">
-	    	<h1>What is ASQ?</h1>
-	    	<p>This web app allows to broadcast a slideshow synchronously to multiple clients. <br /> ASQ allows the lecturer to give questions to the students and recive their answers in real-time.</p>
-		</div>
+            <div id="3" class="step" data-x="1200">
+                <p>A portable solution for <span class="green">two-way communication</span> between lecturer and followers</p>
+            </div>
 
-	   	<div id="2b" class="step"  data-x="1024" data-y="0">
-			 <img src="img/asq.png"/>
-		</div>
+            <div id="4" class="step" data-x="2200" data-y="-500">
+                <h1>We created..</h1>
+		    <ul>
+			<li><p>Online presentation tool</p></li>
+			<li><p>Data retrieval application</p></li>
+			<li><p>Simple editor for interactive slideshows</p></li>
+		    </ul>	
+            </div>
 
-		<div id="3" class="step"  data-x="2048" data-y="0">
-	    	<h1>Workflow</h1>
-	    	<ul>
-	    		<li>Daily meetings with the TA (Vassilis)</li>
-	    		<li>Code and Wiki on GitHub</li>
-	    		<li>Seperated branch for each feature</li>
-	    		<li>EtherPad for discussions</li>
-	    	</ul>
-		</div>
+            <div id="5" class="step" data-x="2200" data-y="500">
+                <h1>Steps of a user experience</h1>
+		    <ul>
+			<li><p>Upload presentation</p></li>
+			<li><p>Edit</p></li>
+			<li><p>Broadcast slideshow</p></li>
+			<li><p>Process collected data</p></li>
+		    </ul>	
+            </div>
 
-		<div id="3b" class="step"  data-x="3072" data-y="0">
-	    	<h1>Database model </h1>
-	    	<img src="img/ASQ_DB_model_1.png" style="background-color: #FFF; border: 10px solid white;"/>
-		</div>
+            <div id="6" class="step" data-x="3200" data-rotate="150">
+                <h1>Challenges</h1>
+		    <ul>
+			<li><p>Synchronization</p></li>
+			<li><p>Websockets authentication</p></li>
+			<li><p>Real time monitoring connected clients</p></li>
+			<li><p>Monitoring of given answers</p></li>
+		    </ul>	
+            </div>
 
-	   	<div id="4" class="step"  data-x="4096" data-y="0">
-	    	<h1>Currently... </h1>
-	    	<ul>
-	    		<li>Max is working on User Interface</li>
-	    		<li>Magarita is working on User Authentification</li>
-	    		<li>Jacques is working on Slideshow rendering &amp; synchronisation</li>
-	    	</ul>
-		</div>
+            
 
-		<div id="5" class="step"  data-x="5120" data-y="0">
-	    	<h1>Challenges</h1>
-	    	<ul>
-	    		<li>Developing different question types (more than multiple choice)</li>
-	    		<li>Storing, sending and rendering questions and answers</li>
-	    		<li>Database structures</li>
-	    		<li>User authentification and security</li>
-	    		<li>URL structure and routing</li>
-	    	</ul>
-	    </div>
-	    <div id="6" class="step"  data-x="6144" data-y="0">
-	    	<h1>Demo of user interface</h1>
-	    	<img src="img/apple-cinema-display.png"  height="700px"/>
-		</div>
+            <div id="7" class="step" data-x="4200" data-y='1500' data-z='1500'>
+		<h1>Jacques' work</h1>
+                <ul>
+			<li><p>Add new websocket events</p></li>
+			<li><p>Websocket authentication</p></li>
+			<li><p>Handle number connected clients</p></li>
+			<li><p>Confine data to session scope</p></li>
+		    </ul>
+            </div>
 
+            <div id="8" class="step" data-x="4900" data-y='1500' data-z='100'>
+		<h1>Max's work</h1>
+                <ul>
+			<li><p>Design of questions and answers</p></li>
+			<li><p>Statistic analysis of data</p></li>
+			<li><p>Handle number connected clients</p></li>
+			<li><p>Confine data to session scope</p></li>
+		    </ul>	
+            </div>
+
+            <div id="9" class="step" data-x="5600" data-y='1500' data-z='-1500'>
+		<h1>Marga's work</h1>
+                <ul>
+			<li><p>Show questions and answers</p></li>
+			<li><p>Collect answers from clients</p></li>
+			<li><p>Edit and remove a presentation</p></li>
+			<li><p>Edit existing question</p></li>
+		    </ul>
+            </div>
+
+            <div id="ing" class="step" data-x="6600" data-y='3000' data-z="3000"data-scale='10'>
+                <p>and a</p></br></br>
+		<p><b class="scaling">  lot  </b> </p>
+		</br></br>
+		<p>of bugfixing</p>	
+            </div>
+	    
+	    <div id="11" class="step" data-x="6700" data-y="-300" data-z="10000" data-scale="6">
+		<h1>We used</h1>
+                <img src="img/tagcloud.png"/>
+            </div>
+	    <div id="12" class="step" data-x="6700" data-y="-300" data-z="60000" data-scale="6">
+		<h1>Development</h1>
+                git video
+            </div>
+	    
+	    
+
+	    
+
+        </div>
+
+
+		
+	   
 	</div>
+	
+	

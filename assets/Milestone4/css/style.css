@@ -705,3 +705,87 @@ step a:focus {
     Thanks for reading. I hope you enjoyed it at least as much as I enjoyed writing it
     for you.
 */
+
+
+
+#slidetwo span.delay {
+	opacity: 0;
+
+    -webkit-transition: all 1000ms cubic-bezier(0.445, 0.250, 0.000, 1); /* older webkit */
+    -webkit-transition: all 1000ms cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+       -moz-transition: all 1000ms cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+        -ms-transition: all 1000ms cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+         -o-transition: all 1000ms cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+            transition: all 1000ms cubic-bezier(0.445, 0.250, 0.000, 1.275); /* custom */
+    
+    -webkit-transition-timing-function: cubic-bezier(0.445, 0.250, 0.000, 1); /* older webkit */
+    -webkit-transition-timing-function: cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+       -moz-transition-timing-function: cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+        -ms-transition-timing-function: cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+         -o-transition-timing-function: cubic-bezier(0.445, 0.250, 0.000, 1.275); 
+            transition-timing-function: cubic-bezier(0.445, 0.250, 0.000, 1.275); /* custom */
+}
+#slidetwo.active span.delay,
+.step-status #slidetwo span.delay,
+.impress-not-supported #slidetwo span.delay {
+    opacity: 1;
+}
+#slidetwo.active span.delay.first {
+    -webkit-transition-delay: 0.7s;
+    -moz-transition-delay:    0.7s;
+    -ms-transition-delay:     0.7s;
+    -o-transition-delay:      0.7s;
+    transition-delay:         0.7s;
+}
+#slidetwo.active span.delay.second {
+    -webkit-transition-delay: 1.2s;
+    -moz-transition-delay:    1.2s;
+    -ms-transition-delay:     1.2s;
+    -o-transition-delay:      1.2s;
+    transition-delay:         1.2s;
+}
+
+    	.step div{
+    		
+    		width: 1024px;
+    		
+    		display: table-cell;
+    		text-align: center;
+    		vertical-align: middle;
+    	}
+   		.step h1, .step h2, .step h3, .step li, .step p, .step span{
+   			color: white;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			font-weight: 300;
+   		}
+   		.step h1{
+   			font-size: 42px;
+   			margin-bottom: 20px;
+   			font-weight: bold;
+   		}
+   		.step p{
+   			font-size: 34px;
+   		}
+		.step span{
+   			font-size: 34px;
+   		}
+		.step .red{
+		    color:#E9463C;
+		}
+		.step .green{
+		    
+		    color:#527F41;
+		}
+		.step .small {
+		    font-size:20px;
+		}
+   		.step li{
+   			text-align: left;
+   			list-style: disc;
+   			margin-bottom: 20px;
+   			font-size: 30px;
+   		}
+   		.step ul{
+   			padding-left: 30px;
+   			padding-bottom: 20px;
+   		}
