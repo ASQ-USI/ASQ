@@ -196,7 +196,7 @@ app.get('/logout/', function(req, res){
 //Serving static files
 app.get('/images/:path/', registration.get);
 
-app.get('/user/:username/statistics/', ensureAuthenticated,  statistics.getSessionStats);
+app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
 
 app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
 app.post('/user/:username/edithtml', ensureAuthenticated, registration.savehtml);

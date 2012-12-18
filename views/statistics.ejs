@@ -18,85 +18,47 @@
 	      google.setOnLoadCallback(drawChart);
 
 	     function drawChart() {
-	        var data = google.visualization.arrayToDataTable([
-	          ['Question', 'Right', 'Wrong'],
-	          ['1) USI is the university of?',  32,      3],
-	          ['2) What is the currency in Switzerland?',  20,      15],
-	          ['3) Another sample question?',  7,       28],
-	          ['4) Another sample question?',  7,       28],
-	          ['5) Another sample question?',  7,       28],
-	          ['6) Another sample question?',  7,       28],
-			  ['7) Another sample question?',  7,       28],
-	          ['8) Why not another one?',  15,      20]
-	        ]);
-	        
-	         var q1= google.visualization.arrayToDataTable([
-	          ['USI is the university of?',  'Number of answers'],
-	          ['A) Lugano', 32],
-	          ['b) Luzern',  1],
-	          ['C) Bern',  2],
-	          ['D) Rome',  0],  
-	        ]);
-	        var q1correct= google.visualization.arrayToDataTable([
-	          ['Correct answers',  'Number of answers'],
-	          ['Correct', 32],
-	          ['Wrong',  3],
-	        ]);
-	       	var q1partici = google.visualization.arrayToDataTable([
-	          ['Participation',  'Number of answers'],
-	          ['Answer', 35],
-	          ['No Answer',  0],
-	        ]);
-	        
-	
-	        var options = {
-	          animation: {duration: 100},
-	          isStacked: true,
-	          backgroundColor: '#222325',
-	          vAxis : {baselineColor: '#999', gridlines: {color: '#666'}, textStyle: {color: "#CCC"}},
-	          title: 'Answers per Question',
-	          titleTextStyle: {color: 'white'},
-	          legend: {textStyle: {color: '#999'}},
-	          hAxis: {textStyle: {color: '#999'}, allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50}
-	         }
-	        
-	        var options2 = {
-	        	animation: {duration: 1000},
-	          backgroundColor: '#222325',
-	          vAxis : {baselineColor: '#999', gridlines: {color: '#666'}, textStyle: {color: "#CCC"}},
-	          titleTextStyle: {color: 'white'},
-	          hAxis: {textStyle: {color: '#999'}, allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
-	          legend: {textStyle: {color: '#999'}}
-	        };
-	        
-	        var options3 = {
-	        	 backgroundColor: '#222325',
-	        	 titleTextStyle: {color: 'white'},
-      		    title: 'Correct vs. Wrong'
-     	   };
-     	    var options4 = {
-     	    	 backgroundColor: '#222325',
-     	    	 titleTextStyle: {color: 'white'},
-      		    title: 'Participation'
-     	   };
 
+			var rvswOpt = {
+				title : 'Correct vs. Wrong',
+				'width':760,
+				'height':400,
+				chartArea:{left:0,top:0,width:"600px",height:"350px"}
+			};
 	
-	        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-	        chart.draw(data, options);
-	        var chart2 = new google.visualization.ColumnChart(document.getElementById('q1'));
-	        chart2.draw(q1, options2);
-	        var chart2 = new google.visualization.ColumnChart(document.getElementById('q2'));
-	        chart2.draw(q1, options2);
-	        var chart2 = new google.visualization.ColumnChart(document.getElementById('q3'));
-	        chart2.draw(q1, options2);
-	        
-	        var chart3 = new google.visualization.PieChart(document.getElementById('Q1Correct'));
-        	chart3.draw(q1correct, options3);
-        	
-        	var chart4 = new google.visualization.PieChart(document.getElementById('Q1Partici'));
-        	chart4.draw(q1partici, options4);
+			var mscstatOpt = {
+				animation: {duration: 1000},
+				hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
+				'width':760,
+				'legend': {position: 'top', textStyle: { fontSize: 16}}
+			};
+     	   
+     	   <% for(var quest = 0; quest < stats.length; quest++){ %>
+     	   	
+     	   		<% if(stats[quest].questionType === "Multiple choice"){
+     	   			var mscstatData<%=quest%> 	= google.visualization.arrayToDataTable(<%=stats[quest].countedMcOptions%>);
+        			var rvswData<%=quest%>		= google.visualization.arrayToDataTable(<%=stats[quest].correct%>);
+        			var diffAnsData<%=quest%>  	= google.visualization.arrayToDataTable(<%=stats[quest].equalAnswers%>);
+        			
+        			var mscstatChart<%=quest%> = new google.visualization.ColumnChart(document.getElementById('mscstatChart<%=quest%>'));
+        			mscstatChart<%=quest%>.draw(mscstatData<%=quest%>, mscstatOpt);
+        			
+        			     	   			
+     	   		<% } else { %>
+        			var rvswData<%=quest%>		= google.visualization.arrayToDataTable(<%=stats[quest].correct%>);
+        			var diffAnsData<%=quest%>  	= google.visualization.arrayToDataTable(<%=stats[quest].equalAnswers%>);
+     	   			
+     	   		<% }
+     	   		
+     	   		var diffAnsChart<%=quest%> 		= new google.visualization.ColumnChart(document.getElementById('diffAnsChart<%=quest%>'));
+        		diffAnsChart<%=quest%>.draw(diffAnsData<%=quest%>, mscstatOpt);
+        		
+        		var rvswChart<%=quest%> 		= new google.visualization.PieChart(document.getElementById('rvswChart<%=quest%>'));
+        		rvswChart<%=quest%>.draw(rvswData<%=quest%>, rvswOpt);
 
-	      }
+     	   		
+     	   <% } %> 
+	 }
     </script>
 
 	</head>
@@ -115,7 +77,7 @@
 					<h2 class="pull-left">Satistics of "What is ASQ?"</h2>
 				</div>
 				
-				<!---   Seperating Headline   --->
+				<!---   Seperating Headline   
 				<div class="span12  headline">
 					<h2 class="pull-left">General statistics</h2>
 				</div>
@@ -140,68 +102,8 @@
 					
 					<div id="chart_div" class="span12 chart" style="height: 300px;margin-bottom: 30px"></div>
 				</div>
+				--->
 				
-				
-				
-				<div class="span12  headline">
-					<h2 class="pull-left">Question 1: "Lugano is in which country?"</h2>
-				</div>
-				<div class="span12 row">
-					<div class="span3">
-						<p><b>Answers</b></p>
-						<p><b>Correct</b></p>
-						<p><b>Wrong</b></p>
-					</div>
-					<div class="span2">
-						<p>35</p>
-						<p>25</p>
-						<p>10</p>
-					</div>
-					<div class="span3">
-						<div id="Q1Correct" style="height: 150px;"></div>
-					</div>
-					<div class="span3">
-						<div id="Q1Partici" style="height: 150px;"></div>
-					</div>
-					
-					<div id="q1" class="span12 chart" style="height: 300px;margin-bottom: 30px"></div>
-				</div> 
-				
-				
-				<div class="span12  headline">
-					<h2 class="pull-left">Question 2: "What is the currency in Switzerland?"</h2>
-				</div>
-				<div class="span12 row">
-					<div class="span3">
-						<p><b>Answers</b></p>
-						<p><b>Correct</b></p>
-						<p><b>Wrong</b></p>
-					</div>
-					<div class="span2">
-						<p>35</p>
-						<p>25</p>
-						<p>10</p>
-					</div>
-					<div id="q2" class="span12 chart" style="height: 300px;margin-bottom: 30px"></div>
-				</div> 
-				
-				
-				<div class="span12  headline">
-					<h2 class="pull-left">Question 1: "Another sample question?"</h2>
-				</div>
-				<div class="span12 row">
-					<div class="span3">
-						<p><b>Answers</b></p>
-						<p><b>Correct</b></p>
-						<p><b>Wrong</b></p>
-					</div>
-					<div class="span2">
-						<p>35</p>
-						<p>25</p>
-						<p>10</p>
-					</div>
-					<div id="q3" class="span12 chart" style="height: 300px;margin-bottom: 30px"></div>
-				</div> 
 				
 			</div>
 			
