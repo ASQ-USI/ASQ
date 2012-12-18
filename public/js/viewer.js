@@ -40,7 +40,6 @@ var connect = function(host, port, session) {
          */
         socket.on('asq:goto', function(event) {
             impress().goto(event.slide);
-            //$('#answer').modal('hide');
         });
     });
     
@@ -53,7 +52,6 @@ var connect = function(host, port, session) {
 
 
 var showQuestion=function(question) {
-    console.log('show question');
 	$('#blockOptions').css("display", "none");
 	$('#changeAnswer').css("display", "none");
 	$('#sendanswers').removeAttr("disabled");
@@ -77,7 +75,6 @@ var showQuestion=function(question) {
 }
 
 var showAnswer=function(question) {
-    console.log('show answer');
     $('#question').modal('hide');
     $('#answerText').html('<h3>Statistics for</h3><h4>"' 
     		+ question.questionText 
@@ -97,7 +94,7 @@ var showAnswer=function(question) {
         
     } else {
         optionsstring+='<span class="help-block">Correct answer.</span>';
-        optionsstring+='<p>'+  +'</p>';
+        optionsstring+='<p>'+ A +'</p>';
         optionsstring+='<span class="help-block">Your answer.</span>';
 		optionsstring+='<input type="text" value="Norway" readonly>';
     }
