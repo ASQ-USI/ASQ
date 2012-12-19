@@ -13,7 +13,7 @@
 	"afterslide":"q2",
 	"options":[
 		{"optionText":"Yes, it was very interesting!","correct":true},
-		{"optionText":"Doesn't matter - The world ends in two days anyway.","correct":false},
+		{"optionText":"Doesn&apos;t matter - The world ends in two days anyway.","correct":false},
 		{"optionText":"No!","correct":false}]
 	}
 ]

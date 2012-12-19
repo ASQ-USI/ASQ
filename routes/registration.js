@@ -7,8 +7,6 @@ exports.getsingle=function(req, res) {
 
 //User is added to the database, and page is redirected to confirm the registration
 exports.signup=function(req, res) {
-	res.redirect(301, '/');
-	return;
 	if (req.body.signupusername=="" || req.body.signuppassword=="") {
 		res.render('index', {message: "Missing credentials", fromsignup:'true' });
 		return;
