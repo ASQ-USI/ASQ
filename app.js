@@ -75,7 +75,7 @@ passport.use(new LocalStrategy(
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated() ) {
+    if (req.isAuthenticated()) {
         return next();
     }
     if (req.url=="/") {
