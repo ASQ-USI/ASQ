@@ -8,7 +8,8 @@ var schemas = require('../models/models.js')
   , when = promise.when
   , seq = promise.seq
   , all = promise.all
-  , wrench = require('wrench');
+  , wrench = require('wrench')
+  , config = require('../config');
 
 module.exports.show = function(req, res) {
     res.render('upload', {username: req.user.name});
@@ -20,10 +21,12 @@ module.exports.post = function(req, res) {
                                     title:req.files.upload.name,
                                     owner: req.user._id
                                     });
-    var folderPath = './slides/' + newSlideshow._id;
+    var folderPath = config.rootPath + '/slides/' + newSlideshow._id;
     pfs.mkdir(folderPath).then(function() {
         fs.createReadStream(req.files.upload.path)
             .on('close', function() {
+                //TODO: this settimeout is ugly. we should capture the correct event for the stream
+                setTimeout(function(){
                 var index = pfs.exists(folderPath + '/index.html').then(
                     //Why the FUCK are the success and error handlers inversed here?
                     function() {
@@ -36,7 +39,9 @@ module.exports.post = function(req, res) {
                         console.log('index.html ok');
                         return true;
                     }
+                    
                 );
+                console.log(folderPath + '/assets.json');
                 var assets = pfs.readFile(folderPath + '/assets.json').then(
                     function(file) {
                         console.log('assets ok');
@@ -47,7 +52,9 @@ module.exports.post = function(req, res) {
                         console.log(assets);
                         return true;
                     },
-                    function() {
+                    function(error) {
+                        console.log(__dirname)
+                        console.log(error)
                         console.log('error: assets.json');
                         return false;
                     }
@@ -125,7 +132,7 @@ module.exports.post = function(req, res) {
                             pfs.unlink(req.files.upload.path).then(res.redirect('/'));
                         //});
                     });
-            })
+            }, 10000); })
             .pipe(unzip.Extract({ path:'slides/' + newSlideshow._id }));
     });
 }

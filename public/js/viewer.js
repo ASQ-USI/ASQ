@@ -42,6 +42,14 @@ var connect = function(host, port, session) {
             impress().goto(event.slide);
             $('#answer').modal('hide');
         });
+
+        /**
+          Handle socket event 'goto'
+          Uses impress.js API to go to the specified slide in the event.
+         */
+        socket.on('asq:gotosub', function(event) {
+            impress().gotoSub(event.substepIndex);
+        });
     })
 
     .on('connect_failed', function (reason) {

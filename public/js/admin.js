@@ -60,6 +60,10 @@ var connect = function(host, port, session) {
             impress().goto(event.slide);
         });
 
+        socket.on('asq:gotosub', function(event) {
+            impress().gotoSub(event.substepIndex);
+        });
+
         socket.on('asq:question', function(event) {
             showQuestion(event.question);
         });
@@ -81,6 +85,15 @@ var connect = function(host, port, session) {
     document.addEventListener("impress:stepgoto", function(event) {
         socket.emit('asq:goto', {slide:event.target.id, session:session});
     });
+
+    /**
+      Handle impress:stepgotosub event
+      sSend a socket event to notify which slide subtest to go to.
+     */
+    document.addEventListener("impress:stepgotosub", function(event) {
+        socket.emit('asq:gotosub', {substepIndex:event.detail.index, session:session});
+    });
+
 
     /**
       Handle impress:stepgoto event

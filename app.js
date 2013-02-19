@@ -30,6 +30,9 @@ var express = require('express')
   // save sessionStore to config for later access
   config.setSessionStore(mongooseSessionStore);
 
+  //set the root path
+  config.setRootPath(__dirname);
+
 
 
 
