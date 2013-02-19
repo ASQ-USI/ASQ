@@ -227,7 +227,9 @@
                 init: empty,
                 start: empty,
                 goto: empty,
+                gotoSub: empty,
                 emitGoto: empty,
+                emitGotoSub: empty,
                 prev: empty,
                 next: empty
             };
@@ -434,6 +436,7 @@
         
         // used to reset timeout for `impress:stepenter` event
         var stepEnterTimeout = null;
+
         
         var emitGoto = function( el, duration ) {
             if ( !initialized || !(el = getStep(el)) ) {
@@ -580,24 +583,224 @@
             
             return el;
         };
+
+        //PATCH for SUBSTEPS
+    var forEach = Array.prototype.forEach,
+        slice = Array.prototype.slice,
+        isArray = Array.isArray;
         
-        // `prev` API function goes to previous step (in document order)
-        var prev = function () {
-            var prev = steps.indexOf( activeStep ) - 1;
+    var removeClass = function (elm, className) {
+    if (elm.classList) {
+            elm.classList.remove(className);
+    } else {
+            if (!elm || !elm.className) {
+                return false;
+            }
+            var regexp = new RegExp("(^|\\s)" + className + "(\\s|$)", "g");
+            elm.className = elm.className.replace(regexp, "$2");
+    }
+    }
+    
+ 
+    var setPrevious = function (data) {
+        if (isArray(data)) {
+            data.forEach(setPrevious);
+            return;
+        }
+        //removeClass(data,'active');
+        //data.className = data.className + ' previous';
+        data.classList.remove('active');
+        data.classList.add('previous');
+    };
+
+    var setActive = function (data) {
+        if (isArray(data)) {
+            data.forEach(setActive);
+            return;
+        }
+        //removeClass(data,'previous');
+        //data.className = data.className + ' active';
+        data.classList.remove('previous');
+        data.classList.add('active');
+    };
+
+    var clearSub = function (data) {
+        if (isArray(data)) {
+            data.forEach(clearSub);
+            return;
+        }
+        //removeClass(data,'previous');
+        //removeClass(data,'active');
+        data.classList.remove('active');
+        data.classList.remove('previous');
+    };
+
+
+    var onStepGotoSub = function (index) {
+        triggerEvent(activeStep, "impress:stepgotosub", {"index": index});
+    };
+
+    var emitGotoSub = function(index) {
+        //TODO: check if index is valid
+            if ( !initialized ) {
+                // presentation not initialized 
+                return false;
+            }
+
+            //TODO: check if we need a similar check for substeps
+            // trigger leave of currently active element (if it's not the same step again)
+            // if (activeStep && activeStep !== el) {
+            //     onStepGoto(el);
+            //     onStepLeave(activeStep);
+            // }
+
+            onStepGotoSub(index)
+        }
+
+
+    // `gotoSub` API function that moves to substep given with `index` parameter.
+    var gotoSub = function(index){
+
+        var active = activeStep;
+        
+        var subactive, subSteps;
+        
+        if (!active.subSteps) {
+            setSubSteps(active);
+        }
+
+        subSteps = active.subSteps;
+
+        //if index is null then we got this from a prev action
+        // and we have to prepare the previous step
+        if(index === null){
+            prev = steps.indexOf( active ) - 1;
             prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
+            if (!prev.subSteps) {
+                setSubSteps(prev);
+            }
+            if (prev.subSteps.length &&
+                (prev.subSteps.active !== (prev.subSteps.length - 1))) {
+                slice.call(prev.subSteps, 0, -1).forEach(setPrevious);
+                setActive(prev.subSteps[prev.subSteps.length - 1]);
+                prev.subSteps.active = prev.subSteps.length - 1;
+            }
+
+        }
+
+        if (subSteps.length && (index >= 0) && (index <= (subSteps.length - 1))) {
+
+            //set previous substeps to have the class 'previous'
+            if(index){
+                slice.call(subSteps, 0, index).forEach(setPrevious);
+            }
+
+            //clear next subSteps
+            if(index < (subSteps.length - 1) ){
+                slice.call(subSteps, index).forEach(clearSub);
+            }
+
+            //if we are on the last substep we have to prepare the next step
+            if(index == (subSteps.length - 1)){
+                next = steps.indexOf( active ) + 1;
+                next = next < steps.length ? steps[ next ] : steps[ 0 ];
+                if (!next.subSteps) {
+                    setSubSteps(next);
+                }
+                if (next.subSteps.active != null) {
+                    forEach.call(next.subSteps, clearSub);
+                    next.subSteps.active = null;
+                }
+            }
             
-            return emitGoto(prev);
-            //return goto(prev);
-        };
+            //set active
+            if(index != null ){
+                setActive(subSteps[index]);
+            }
+            subSteps.active = index;
+        }
+
+    };
+ 
+    var next = function () {
+        var active = activeStep;
         
-        // `next` API function goes to next step (in document order)
-        var next = function () {
-            var next = steps.indexOf( activeStep ) + 1;
-            next = next < steps.length ? steps[ next ] : steps[ 0 ];
-            
-            return emitGoto(next);
-            //return goto(next);
-        };
+        var subactive, next, subSteps;
+        
+        if (!active.subSteps) {
+            setSubSteps(active);
+        }
+        subSteps = active.subSteps;
+
+        //if we have substeps deal with them first
+        if (subSteps.length && ((subactive = subSteps.active) !== (subSteps.length - 1))) {
+            if(isNaN(subactive) || (subactive==null)){
+                subactive = -1;
+            }
+            //return gotoSub(++subactive)
+            return emitGotoSub(++subactive);
+        }
+
+        next = steps.indexOf( active ) + 1;
+        next = next < steps.length ? steps[ next ] : steps[ 0 ];
+       
+        //return goto(next);
+        return emitGoto(next);
+    };
+ 
+    var prev = function () {
+        var active = activeStep;
+        
+        var subactive, next, subSteps;
+        if (!active.subSteps) {
+            setSubSteps(active);
+        }
+        subSteps = active.subSteps;
+        //if we have substeps deal with them first
+        if (subSteps.length && ((subactive = subSteps.active) || (subactive === 0))) {
+            if (subactive) {
+                --subactive;
+            } else {
+                subactive = null;
+            }
+            return emitGotoSub(subactive);
+            //return gotoSub(subactive);
+        }
+
+        prev = steps.indexOf( active ) - 1;
+        prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
+
+        //return goto(prev);
+        return emitGoto(prev);
+    };
+ 
+     var setSubSteps = function (el) {
+        var steps = el.querySelectorAll(".substep"),
+        order = [], unordered = [];
+        forEach.call(steps, function (el) {
+            if (el.dataset) {
+                var index = Number(el.dataset.order);
+                
+                if (!isNaN(index)) {
+                    if (!order[index]) {
+                        order[index] = el;
+                    } else if (Array.isArray(order[index])) {
+                        order[index].push(el);
+                    } else {
+                        order[index] = [order[index], el];
+                    }
+                } else {
+                    unordered.push(el);
+                } 
+            } else {
+               unordered.push(el);
+                
+            }
+        });
+        el.subSteps = order.filter(Boolean).concat(unordered);
+    };
+ 
+ //END PATCH       
         
         // Adding some useful classes to step elements.
         //
@@ -671,6 +874,8 @@
             init: init,
             start: start,
             goto: goto,
+            gotoSub: gotoSub,
+            emitGotoSub: emitGotoSub,
             emitGoto: emitGoto,
             next: next,
             prev: prev
