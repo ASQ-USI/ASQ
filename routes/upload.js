@@ -1,4 +1,8 @@
-/** @module routes/upload */
+/** @module routes/upload
+    @author Jacques Dafflon jacques.dafflon@gmail.com
+    @description Functions handling upload of new slideshows.
+    TODO Handle upload of incrrect slideshows and their removal from the server.
+*/
 
 var schemas = require('../models/models.js')
   , fs = require('fs')
@@ -15,6 +19,12 @@ module.exports.show = function(req, res) {
     res.render('upload', {username: req.user.name});
 }
 
+/*
+ * Handle a POST request to the server to upload a new slideshow.
+ * This function checks the slideshow is in the correct format in order to work
+ * Some checks and handling still need to be done...
+ * Handling for stats is long and complex and need to be optimized.
+ */
 module.exports.post = function(req, res) {
     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
     var newSlideshow = new Slideshow({
@@ -72,7 +82,7 @@ module.exports.post = function(req, res) {
                             });
                             newQuestion.save();
                             newSlideshow.questions.push(newQuestion._id);
-                            
+
                             var optionDB=db.model('Option', schemas.optionSchema);
                             for (var j=0;j< questions[i].options.length;j++) {
                                 newOptionDB=new optionDB( {
@@ -82,12 +92,12 @@ module.exports.post = function(req, res) {
                                 newOptionDB.save();
                                 newQuestion.answeroptions.push(newOptionDB._id);
                                 newQuestion.save();
-                                
+
                             }
-                            
-                           
-                        } 
-                        
+
+
+                        }
+
                         return true;
                     },
                     function() {
