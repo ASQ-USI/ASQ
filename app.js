@@ -235,7 +235,7 @@ app.get('/logout/', function(req, res){
 // Crash at start with node.js 0.10.10
 // And why is the registration module involved in serving static files?
 //Serving static files
-// app.get('/images/:path/', registration.get);
+//app.get('/images/:path/', registration.get);
 
 app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
 
@@ -244,8 +244,10 @@ app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyl
 app.post('/user/:username/edithtml', ensureAuthenticated, editFunctions.savehtml);
 app.post('/user/:username/editstyle', ensureAuthenticated, editFunctions.savestyle);
 
-// app.get('/render/', ensureAuthenticated, registration.parsequestion);
-// app.get('/render2/',  registration.sendanswer);
+
+// Crash at start with node.js 0.10.10
+//app.get('/render/', ensureAuthenticated, registration.parsequestion);
+//app.get('/render2/',  registration.sendanswer);
 
 // Crash at start with node.js 0.10.10
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);
