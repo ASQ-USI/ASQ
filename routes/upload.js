@@ -13,7 +13,9 @@ var schemas = require('../models/models.js')
   , seq = promise.seq
   , all = promise.all
   , wrench = require('wrench')
-  , config = require('../config');
+  , config = require('../config')
+  , AdmZip = require('adm-zip')
+  , rimraf = require('rimraf');
 
 module.exports.show = function(req, res) {
     res.render('upload', {username: req.user.name});
@@ -32,13 +34,12 @@ module.exports.post = function(req, res) {
                                     owner: req.user._id
                                     });
     var folderPath = config.rootPath + '/slides/' + newSlideshow._id;
-    pfs.mkdir(folderPath).then(function() {
-        fs.createReadStream(req.files.upload.path)
-            .on('close', function() {
-                //TODO: this settimeout is ugly. we should capture the correct event for the stream
-                setTimeout(function(){
-                var index = pfs.exists(folderPath + '/index.html').then(
-                    //Why the FUCK are the success and error handlers inversed here?
+    var zip = new AdmZip(req.files.upload.path);
+    zip.extractAllTo(folderPath);
+
+    // Check if index.html exists (This does not check it's content or parse the file).
+    var index = pfs.exists(folderPath + '/index.html').then(
+                    //Why are the success and error handlers inversed here?
                     function() {
                         console.log('error: index.html');
                         reject(new Error('index.html is missing!'));
@@ -49,10 +50,10 @@ module.exports.post = function(req, res) {
                         console.log('index.html ok');
                         return true;
                     }
-                    
+
                 );
-                console.log(folderPath + '/assets.json');
-                var assets = pfs.readFile(folderPath + '/assets.json').then(
+    // Check and parse assets.json
+    var assets = pfs.readFile(folderPath + '/assets.json').then(
                     function(file) {
                         console.log('assets ok');
                         var assets = JSON.parse(file);
@@ -67,8 +68,10 @@ module.exports.post = function(req, res) {
                         console.log('error: assets.json');
                         return false;
                     }
-                )
-                var questions = pfs.readFile(folderPath + '/questions.json').then(
+                );
+
+    // Check adn parse questions.json
+    var questions = pfs.readFile(folderPath + '/questions.json').then(
                     function(file) {
                         console.log('questions ok');
                         var questions = JSON.parse(file);
@@ -104,44 +107,40 @@ module.exports.post = function(req, res) {
                         newSlideshow.questions = [];
                         return false;
                     }
-                )
-                var group = all(index, assets, questions);
-                var done = when(group,
-                    function(result) {
-                        console.log('index result is ' + result[0]);
-                        console.log('assets result is ' + result[1]);
-                        console.log('questions result is ' + result[2]);
-                        console.log('all ok');
-                        seq([
-                            function() {
-                                newSlideshow.save();
-                            },
-                            function() {
-                                if (result[1]) pfs.unlink(folderPath + '/assets.json');
-                            },
-                            function() {
-                                if (result[2]) pfs.unlink(folderPath + '/questions.json');
-                            },
-                            function() {
-                                var User = db.model('User', schemas.userSchema);
-                                User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }, function(err, user) {
-                                    pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
-                                });
-                            }]);
-                    },
-                    function() {
-                        console.log('something went wrong');
-                        //TODO: Find a module to remove the (not empty) directory
-                        //with the invalid slides without throwing an error becasue
-                        //it deleted what it was suppose to delete... FUCK!
-                        //or that does not delete everything as wrench-js used
-                        //below... FUCK as well
-                        //wrench.rmdirRecursive(folderPath, function(err){
-                        //    if(err) throw err;
-                            pfs.unlink(req.files.upload.path).then(res.redirect('/'));
-                        //});
+                );
+
+    var group = all(index, assets, questions);
+    var done = when(group,
+        function(result) {
+            console.log('index result is ' + result[0]);
+            console.log('assets result is ' + result[1]);
+            console.log('questions result is ' + result[2]);
+            console.log('all ok');
+            seq([
+                function() {
+                    newSlideshow.save();
+                },
+                function() {
+                    if (result[1]) pfs.unlink(folderPath + '/assets.json');
+                },
+                function() {
+                    if (result[2]) pfs.unlink(folderPath + '/questions.json');
+                },
+                function() {
+                    var User = db.model('User', schemas.userSchema);
+                    User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }, function(err, user) {
+                        pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
                     });
-            }, 10000); })
-            .pipe(unzip.Extract({ path:'slides/' + newSlideshow._id }));
-    });
+                }]);
+        },
+        function() {
+            console.log('something went wrong');
+
+            //Remove the extracted folder
+            rimraf(folderPath, function(err) {
+                if(err) throw err;
+                // Remove the downloaded archive (zip file).
+                pfs.unlink(req.files.upload.path).then(res.redirect('/'));
+            });
+        });
 }
