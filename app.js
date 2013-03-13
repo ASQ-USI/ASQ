@@ -168,8 +168,8 @@ app.get('/admin/',  ensureAuthenticated, routes.slides.admin);
 app.get('/admin/*', ensureAuthenticated, routes.slides.adminStatic);
 
 /** Upload new slides */
-app.post('/user/:username/upload', ensureAuthenticated, routes.upload.post);
-app.get('/user/:username/upload', ensureAuthenticated, routes.upload.show);
+app.post('/user/:username/upload/', ensureAuthenticated, routes.upload.post);
+app.get('/user/:username/upload/', ensureAuthenticated, routes.upload.show);
 
 //Someone types /signup URL, which has no meaning. He is redirected.
 app.get('/signup/', function(req, res){
