@@ -21,7 +21,7 @@ var express = require('express')
   , statistics = require('./routes/statistics')
   , SessionMongoose = require("session-mongoose")(express)
   , mongooseSessionStore = new SessionMongoose({
-        url: "mongodb://localhost/login",
+        url: "mongodb://127.0.0.1/login",
         interval: 120000
     });
 
@@ -102,13 +102,13 @@ app = express();
 //app.engine('ejs', engine);
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
-appHost = process.argv[2] || 'localhost';
+appHost = process.argv[2] || '127.0.0.1';
 clientsLimit = process.argv[3] || 50;
 console.log(appHost + ' clients: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection('localhost', 'asq');
+db = mongoose.createConnection('127.0.0.1', 'asq');
 schemas = require('./models/models.js');
 
 /** Configure express */
@@ -231,6 +231,9 @@ app.get('/logout/', function(req, res){
   res.redirect('/');
 });
 
+
+// Crash at start with node.js 0.10.10
+// And why is the registration module involved in serving static files?
 //Serving static files
 //app.get('/images/:path/', registration.get);
 
@@ -241,9 +244,8 @@ app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyl
 app.post('/user/:username/edithtml', ensureAuthenticated, editFunctions.savehtml);
 app.post('/user/:username/editstyle', ensureAuthenticated, editFunctions.savestyle);
 
-//edit presentation deteils
-app.post('/user/:username/savedetails', ensureAuthenticated, editFunctions.saveDetails)
 
+// Crash at start with node.js 0.10.10
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);
 //app.get('/render2/',  registration.sendanswer);
 
