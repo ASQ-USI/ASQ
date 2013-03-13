@@ -1,4 +1,8 @@
-/** @module routes/slides */
+/** @module routes/slides
+    @author Jacques Dafflon jacques.dafflon@gmail.com
+    @description Functions related to the direct interaction with slideshows and
+    sessions.
+*/
 
 var path = require('path')
   , schemas = require('../models/models.js');
@@ -116,6 +120,14 @@ module.exports.start = function(req, res) {
     });
 }
 
+/*
+ * Set the current session for an authentificated user t null,
+ * effectively stopping the leive session.
+ * This require an authentificated user.
+ * Note that if the user has no live session ie. his session is set to null,
+ * This will still reset it to null, successfully "stopping" a non-existent live
+ * session.
+ */
 module.exports.stop = function(req, res) {
     var User = db.model('User', schemas.userSchema);
     User.findByIdAndUpdate(req.user._id, {current: null}, function(err, user) {

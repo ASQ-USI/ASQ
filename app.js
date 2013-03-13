@@ -17,11 +17,11 @@ var express = require('express')
   , SessionMongoose = require("session-mongoose")(express)
   , mongooseSessionStore = new SessionMongoose({
         url: "mongodb://localhost/login",
-        interval: 120000 
+        interval: 120000
     });
 
   var config = require('./config');
-  
+
   // save sessionStore to config for later access
   config.setSessionStore(mongooseSessionStore);
 
@@ -156,7 +156,7 @@ app.get('/signup/', function(req, res){
 
 app.get('/checkusername/:username/', registration.checkusername);
 
-//Registration happened. 
+//Registration happened.
 app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
