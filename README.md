@@ -44,10 +44,10 @@ Technologies Used
 -----------------
 - [node.js][1]
 - [express.js][2]
-- [MongoDB][3] (to confirm)
-- [embeddded js (ejs)][4] (to confirm)
-- [Passport.js][5] (to confirm)
-- [impress.js][6] (to confirm)
+- [MongoDB][3]
+- [embeddded js (ejs)][4]
+- [Passport.js][5]
+- [impress.js][6]
 
 Browser Support
 ---------------
@@ -55,6 +55,11 @@ Browser Support
 Currently we will focus on supporting Google Chrome and Chromium.
 We might support Firefox in the future but this will not be a priority.  
 Please note that browser support depends also on [impress.js][5].
+
+Changelog
+---------
+
+See the changelog [here](https://github.com/jacquesd/ASQ/blob/master/CHANGELOG.md).
 
 [1]: http://nodejs.org/                     "node.js"
 [2]: http://expressjs.com/                  "express.js"
