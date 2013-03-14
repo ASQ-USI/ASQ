@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## v 0.1
- * Supports Node.js < 0.10.0
+ * Supports Node.js up to v0.8.22
  * Adminstrator view
  * Upload presentation in a zip format
  * Edit presentation code
