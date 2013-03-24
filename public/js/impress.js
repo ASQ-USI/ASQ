@@ -168,18 +168,18 @@
     var body = document.body;
     
     var ua = navigator.userAgent.toLowerCase();
-    var impressSupported = 
+    var impressSupported = true;
                           // browser should support CSS 3D transtorms 
-                           ( pfx("perspective") !== null ) &&
+                           //( pfx("perspective") !== null ) &&
                            
                           // and `classList` and `dataset` APIs
-                           ( body.classList ) &&
-                           ( body.dataset ) &&
+                           //( body.classList ) &&
+                           //( body.dataset );// &&
                            
                           // but some mobile devices need to be blacklisted,
                           // because their CSS 3D support or hardware is not
                           // good enough to run impress.js properly, sorry...
-                           ( ua.search(/(iphone)|(ipod)|(android)/) === -1 );
+    //                       ( ua.search(/(iphone)|(ipod)|(android)/) === -1 );
     
     if (!impressSupported) {
         // we can't be sure that `classList` is supported
@@ -328,6 +328,11 @@
             });
         };
         
+        var newStep = function ( el ) {
+            initStep(el);
+            steps.push(el);
+            }
+        
         // `init` API function that initializes (and runs) the presentation.
         var init = function () {
             if (initialized) { return; }
@@ -418,6 +423,11 @@
         // used to reset timeout for `impress:stepenter` event
         var stepEnterTimeout = null;
         
+        var transformationCallback = null;
+        var setTransformationCallback = function(callback){
+          transformationCallback=callback;
+        }
+        
         // `goto` API function that moves to step given with `el` parameter (by index, id or element),
         // with a transition `duration` optionally given as second parameter.
         var goto = function ( el, duration ) {
@@ -461,6 +471,14 @@
                 },
                 scale: 1 / step.scale
             };
+            
+            if(transformationCallback) { 
+                transformationCallback({
+                  scale:step.scale,
+                  rotate:step.rotate,
+                  translate:step.translate
+                });
+            }
             
             // Check if the transition is zooming in or not.
             //
@@ -549,7 +567,7 @@
         };
         
         // `prev` API function goes to previous step (in document order)
-        var prev = function () {
+        var _prev = function () {
             var prev = steps.indexOf( activeStep ) - 1;
             prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
             
@@ -557,12 +575,225 @@
         };
         
         // `next` API function goes to next step (in document order)
-        var next = function () {
+        var _next = function () {
             var next = steps.indexOf( activeStep ) + 1;
             next = next < steps.length ? steps[ next ] : steps[ 0 ];
             
             return goto(next);
         };
+        
+        
+ //PATCH for Menu
+ 
+         // Capitalize first letter of string
+        var capitalize = function( str ) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+
+    
+        // It defines the names of each entry by the id capitalized.
+        var showMenu = function() {
+            // Create the menu wrapper and the element that will be cloned
+            // for each entry.
+          //  console.log('showMenu')
+            var menu = document.createElement('div'),
+                frag = document.createDocumentFragment(),
+                el = document.createElement('div');
+
+            // Apply some classes
+            menu.className = 'menu';
+            el.className = 'menu-item';
+
+            // Create an element that will be the "button" and append it
+            // to the menu
+            var button = document.createElement('div');
+            button.className = 'menu-button';
+            button.textContent = '';
+            menu.appendChild(button);
+
+            // Now, for each div in the first element child of  #impress,
+            // add an entry to the menu         
+              arrayify(byId('impress').firstElementChild.children).forEach(
+                    function( child, index ) {
+                    	
+                if (!child.classList.contains('step')) return;
+
+                var newEl = el.cloneNode(),
+                    i = index + 1, // We don't want to start at 0
+                    text = i + '. ' + capitalize(child.id);
+
+                // Set the text of the new element
+                newEl.innerHTML = '<a href="#/'+child.id+'" title="'+text+'">&bull;</a>';
+                newEl.id = "m-" + child.id;
+
+                // Add an onclick event to the new element
+                // We need to use a closure to make sure the index is correct
+                (function( index, id ) {
+                    newEl.addEventListener('click', function() {
+                        goto(index);
+                    });
+                    newEl.addEventListener('mouseover', function() {
+                    	var baseURL = document.URL.substring(0, document.URL.search('#/'));
+                        button.innerHTML = '<iframe src="'+baseURL+"?preview#/"+id+'">';
+                    });
+                    newEl.addEventListener('mouseout', function() {
+                        button.innerHTML = "";
+                    });
+                }( index, child.id ));
+
+                // And append the new element to the menu
+                frag.appendChild(newEl);
+            });
+
+            // Add the frag to the menu
+            menu.appendChild(frag);
+
+            // And append the menu to the body.
+            // Appending it to #impress would mess things up, since
+            // `position: absolute` wouldn't work anymore in it.
+            document.body.appendChild(menu);
+        };
+ 
+ //END PATCH
+        
+ //PATCH for SUBSTEPS
+ 	var forEach = Array.prototype.forEach,
+        slice = Array.prototype.slice,
+        isArray = Array.isArray;
+        
+    var removeClass = function (elm, className) {
+    if (elm.classList) {
+            elm.classList.remove(className);
+    } else {
+            if (!elm || !elm.className) {
+                return false;
+            }
+            var regexp = new RegExp("(^|\\s)" + className + "(\\s|$)", "g");
+            elm.className = elm.className.replace(regexp, "$2");
+    }
+	}
+    
+ 
+    var setPrevious = function (data) {
+        if (isArray(data)) {
+            data.forEach(setPrevious);
+            return;
+        }
+        //removeClass(data,'active');
+        //data.className = data.className + ' previous';
+        data.classList.remove('active');
+        data.classList.add('previous');
+    };
+
+    var setActive = function (data) {
+        if (isArray(data)) {
+            data.forEach(setActive);
+            return;
+        }
+        //removeClass(data,'previous');
+        //data.className = data.className + ' active';
+        data.classList.remove('previous');
+        data.classList.add('active');
+    };
+
+    var clearSub = function (data) {
+        if (isArray(data)) {
+            data.forEach(clearSub);
+            return;
+        }
+        //removeClass(data,'previous');
+        //removeClass(data,'active');
+        data.classList.remove('active');
+        data.classList.remove('previous');
+    };
+ 
+ 	var next = function () {
+ 		var active = activeStep;
+ 		
+        var subactive, next, subSteps;
+        
+        if (!active.subSteps) {
+            setSubSteps(active);
+        }
+        subSteps = active.subSteps;
+        if (subSteps.length && ((subactive = subSteps.active) !== (subSteps.length - 1))) {
+            if (subactive != null) {
+                setPrevious(subSteps[subactive]);
+            } else {
+                subactive = -1;
+            }
+            setActive(subSteps[++subactive]);
+            subSteps.active = subactive;
+            return;
+        }
+        next = steps.indexOf( active ) + 1;
+        next = next < steps.length ? steps[ next ] : steps[ 0 ];
+        if (!next.subSteps) {
+            setSubSteps(next);
+        }
+        if (next.subSteps.active != null) {
+            forEach.call(next.subSteps, clearSub);
+            next.subSteps.active = null;
+        }
+        return goto(next);
+    };
+ 
+ 	var prev = function () {
+ 		var active = activeStep;
+ 		
+        var subactive, next, subSteps;
+        if (!active.subSteps) {
+            setSubSteps(active);
+        }
+        subSteps = active.subSteps;
+        if (subSteps.length && ((subactive = subSteps.active) || (subactive === 0))) {
+            clearSub(subSteps[subactive]);
+            if (subactive) {
+                setActive(subSteps[--subactive]);
+                subSteps.active = subactive;
+            } else {
+                subSteps.active = null;
+            }
+            return;
+        }
+        next = steps.indexOf( active ) - 1;
+        next = next >= 0 ? steps[ next ] : steps[ steps.length-1 ];
+        if (!next.subSteps) {
+            setSubSteps(next);
+        }
+        if (next.subSteps.length &&
+            (next.subSteps.active !== (next.subSteps.length - 1))) {
+            slice.call(next.subSteps, 0, -1).forEach(setPrevious);
+            setActive(next.subSteps[next.subSteps.length - 1]);
+            next.subSteps.active = next.subSteps.length - 1;
+        }
+        return goto(next);
+    };
+ 
+	 var setSubSteps = function (el) {
+        var steps = el.querySelectorAll(".substep"),
+        order = [], unordered = [];
+        forEach.call(steps, function (el) {
+        	if (el.dataset) {
+            var index = Number(el.dataset.order);
+            if (!isNaN(index)) {
+                if (!order[index]) {
+                    order[index] = el;
+                } else if (Array.isArray(order[index])) {
+                    order[index].push(el);
+                } else {
+                    order[index] = [order[index], el];
+                }
+            } else {
+                unordered.push(el);
+            } } else {
+            	unordered.push(el);
+            }
+        });
+        el.subSteps = order.filter(Boolean).concat(unordered);
+    };
+ 
+ //END PATCH       
         
         // Adding some useful classes to step elements.
         //
@@ -578,20 +809,38 @@
         // For example the `present` class can be used to trigger some custom
         // animations when step is shown.
         root.addEventListener("impress:init", function(){
+        	
+        	var _add = function(dom, c) {
+        		dom.classList.add(c);
+        		var m_dom = document.getElementById("m-"+dom.id);
+        		if (m_dom) m_dom.classList.add(c);
+        	}
+        	
+        	var _remove = function(dom, c) {
+        		dom.classList.remove(c);
+        		var m_dom = document.getElementById("m-"+dom.id);
+        		if (m_dom) m_dom.classList.remove(c);        		
+        	}
+        	
             // STEP CLASSES
             steps.forEach(function (step) {
-                step.classList.add("future");
+            	_add(step,"future");
             });
             
             root.addEventListener("impress:stepenter", function (event) {
-                event.target.classList.remove("past");
-                event.target.classList.remove("future");
-                event.target.classList.add("present");
+            	_add(event.target,"present");
+            	_remove(event.target,"past");
+            	_remove(event.target,"future");
+//                event.target.classList.remove("past");
+ //               event.target.classList.remove("future");
+ //               event.target.classList.add("present");
             }, false);
             
             root.addEventListener("impress:stepleave", function (event) {
-                event.target.classList.remove("present");
-                event.target.classList.add("past");
+            	_remove(event.target,"present");
+            	_add(event.target,"past");          	
+//                event.target.classList.remove("present");
+//                event.target.classList.add("past");
             }, false);
             
         }, false);
@@ -635,7 +884,11 @@
             init: init,
             goto: goto,
             next: next,
-            prev: prev
+            prev: prev,
+            initStep: initStep,
+            newStep:newStep,
+            setTransformationCallback:setTransformationCallback,
+            showMenu: showMenu
         });
 
     };

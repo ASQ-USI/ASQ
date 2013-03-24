@@ -1,33 +1,9 @@
 {
-    "name" : "ASQ",
-    "version" : "0.1.0",
-    "author" : "Jacques DAFFLON <jacques.dafflon@gmail.com>, Margarita GRINVALD <margarita.grinvald@usi.ch>, Max VON BUELOW",
-    "description" : "Synchronous slideshow mixed with a classroom clicker.",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jacquesd/ASQ"
-    },
-    "dependencies" : {
-        "express" : "3.x",
-        "stylus" : "0.x",
-        "ejs" : "0.8.x",
-        "ejs-locals" : "1.0.x",
-        "path" : "0.4.x",
-        "socket.io" : "0.9.x",
-        "connect-flash": "0.1.x",
-        "passport": "0.1.x",
-        "passport-local" : "0.1.x",
-        "passport.socketio" : "0.0.x",
-        "connect" : "2.7.x",
-        "session-mongoose" :  "0.2.x",
-	"connect-slashes" : "0.0.x",
-	"mongoose" : "3.4.x",
-        "unzip" : "0.1.x",
-        "promised-io" : "0.3.x",
-        "wrench" :"1.4.x"
-    },
-    "engines" : {
-        "node" : "0.8.x",
-        "npm" : "1.1.X"
-    }
+  "name": "impress-editor",
+  "description": "impress editor for ASQ",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x"
+  }
 }

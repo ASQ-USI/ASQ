@@ -1,0 +1,335 @@
+<html lang="en" style="height: 100%;"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>ASQ Team presentation</title>
+    
+    <meta name="description" content="ASQ team - kick off meeting">
+    <meta name="author" content="Cesare Pautasso">
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/logoAnim.css" rel="stylesheet">
+    <link href="css/font.css" rel="stylesheet">
+    <link href="css/default.css" rel="stylesheet">
+    <link href="css/builder.css" rel="stylesheet">
+   
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <script src="js/jquery.1.7.1.min.js"></script>
+    <script src="js/img-svg.js"></script>
+</head>
+
+<body>
+<div class="fallback-message">
+    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+</div>
+
+<div id="canvas"></div>
+
+<div id="impress" data-transition-duration="500">
+    <div id="title" class="step" data-x="-20000" data-y="845" data-scale="1" data-rotate="0">
+       
+ 
+        <div style="text-align:center">
+
+             <div id="welcomeScreen" class="modal hide fade" tabindex="-1" data-focus-on="input:first" style="pointer-events: auto;">
+               
+                <div class="modal-header">
+                    
+                    <div id="logocontainer">
+                        <div class="lettercontainer" id="a">
+                            <p class="front">A</p>
+                        </div>
+                        <div class="lettercontainer" id="s">
+                            <p class="front">S</p>
+                        </div>
+                        <div class="lettercontainer" id="q">
+                            <p  class="front">Q</p>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <div id="previously" class="step" data-x="-20000" data-y="845" data-z="-10000" data-scale="0.2"  data-rotate-y="0">
+        <h3>Previously on ASQ...</h3>
+        <ul>
+            <li class="substep">v0.1 Developed by Jacques Dafflon, Margarita Grinvald, Max von Bülow</li>
+            <li class="substep">Supported features
+                <ul>
+                <li>Adminstrator view</li>
+                <li>Upload presentation in a zip format</li>
+                <li>Edit presentation code</li>
+                <li>Multiple Clients</li>
+                <li>Anonymous login</li>
+                <li>1 question per slide</li>
+                <li>Multiple-choice questions</li>
+                <li>Simple statistics per question</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+     <div id="team" class="step" data-x="3000" data-y="-1700" data-scale="1" data-rotate="90">
+        <h3>Meet the team</h3>
+        <ul class='twocol'>
+            <li class="substep">Vassilis Triglianos
+                <ul>
+                    <li>Project Manager</li>
+                    <li>Lead Developer</li>
+                </ul>
+            </li>
+
+
+            <li class="substep">Jacques Dafflon
+                <ul>
+                    <li>Core Developer</li>
+                    <li>webSockets, file parsing, etc.</li>
+                </ul>
+            </li>
+
+            <li class="colbreak substep">Max von Bülow
+                <ul>
+                    <li>Bachelor Thesis on ASQ</li>
+                    <li>Mobile UX and implementation</li>
+                    <li>Statistics and Question Types</li>
+                    <li>Evaluation</li>
+                </ul>
+            </li>
+
+            <li class="substep">Giorgos Kokosioulis
+                <ul>
+                    <li>impress.js editor eveloper</li>
+                    <li>Integrate with ASQ</li>
+                </ul>
+            </li>
+
+        </ul>
+     </div>
+
+     <div id="workflow" class="step" data-x="2000" data-y="1845" data-scale="1" data-rotate="0">
+        <h3>Workflow</h3>
+        <ul>
+            <li>Features on Trello</li>
+            <li>weekly team meetings every Monday</li>
+            <li>"ASQ" skype chatroom</li>
+            <li>One GitHub repo</li>
+            <li>Use GitHub workflow</li>
+        </ul>
+    </div>
+
+    <div id="git" class="step" data-x="4000" data-y="1845" data-scale="1" data-rotate="0">
+        <h3>git</h3>
+        <ul>
+            <li class="substep">Git is your friend :-) Commit frequently!</li>
+            <li class="substep"><code>git push -f</code> should be avoided as much as possible</li>
+            <li class="substep">Learn what a rebase is and why we use it <a href="http://gitready.com/intermediate/2009/01/31/intro-to-rebase.html">here</a></li>
+            <li class="substep">Common git <a href="https://github.com/jacquesd/ASQ/wiki/Git-stuff">scenarios</a></li>
+            <li class="substep"><a href="http://try.github.com/">try github</a></li>
+        </ul>
+    </div>
+
+    <div id="github" class="step" data-x="6000" data-y="1845" data-scale="1" data-rotate="0">
+        <h3>Github Workflow</h3>
+        <ul>
+            <li class="substep">Master branch  always deployable</li>
+            <li class="substep">Feature branches with descriptive names</li>
+            <li class="substep">When you need feedback or help, or you think the branch is ready for merging, open a pull request</li>
+            <li class="substep">After someone else (usually Vassilis or Jacques) has reviewed and signed off on the feature, you can merge it into master</li>
+            <li class="substep">Once it is merged and pushed to ‘master’, you can and should deploy immediately</li>
+            <li class="substep">Read the article <a href="http://scottchacon.com/2011/08/31/github-flow.html">here</a>
+        </ul>
+    </div>
+    
+    <div id="tools" class="step" data-x="6000" data-y="3000" data-scale="1" data-rotate="0">
+        <h3>Cool Tools and Services</h3>
+        <ul>
+            <li class="substep">git</li>
+            <li class="substep">github</li>
+            <li class="substep">jsdoc</li>
+            <li class="substep">mocha</li>
+            <li class="substep">should.js</li>
+            <li class="substep">trello</li>
+            <li class="substep">learn how to use them!</li>
+        </ul>
+    </div>
+
+     <div id="javascript" class="step" data-x="4900" data-y="3100" data-scale="1" data-rotate="-30">
+        <h3>Javascript stuff</h3>
+        <ul>
+            <li class="substep">Make your tests deterministic <a href ="http://howtonode.org/make-your-tests-deterministic">guide</a></li>
+            <li class="substep"><a href="Scalable JavaScript Design Patterns">presentation and resources</a></li>
+            <li class="substep"><a href="Learning JavaScript Design Patterns">Learning JavaScript Design Patterns</a></li>
+            <li class="substep">Understanding <a href="http://stackoverflow.com/questions/5311334/what-is-the-purpose-of-nodejs-module-exports-and-how-do-you-use-it">exports</a> in node.js</li>
+            <li class="substep"><a href="http://try.jquery.com/">Try jQuery</a></li>
+            <li class="substep">Ask me if you have any javascript questions :-)</li>
+        </ul>
+    </div>
+
+     <div id="css" class="step" data-x="5100" data-y="4000" data-scale="1" data-rotate="-60">
+        <h3>CSS stuff</h3>
+        <ul>
+            <li>We use <a href ="http://lesscss.org/">LESS</a></li>
+            <li>both LESS and compiled CSS files on Github repo  </li>
+            <li>compile with less script or <a href="http://incident57.com/less/">{less}.app</a></li>
+            <li>Understanding <a href="http://stackoverflow.com/questions/5311334/what-is-the-purpose-of-nodejs-module-exports-and-how-do-you-use-it">exports</a> in node.js</li>
+            <li>Ask me if you have any javascript questions :-)</li>
+        </ul>
+    </div>
+    
+     <div id="business" class="step" data-x="1000" data-y="2473" data-scale="1" data-rotate="0">
+        <h3 class="centertext">Back to business!</h3>
+        <ul>
+            <li class="empty centertext"> <img src="./img/asq-devices.png" style="height:40%"/></li>
+        </ul>
+    </div>
+    
+    <div id="vision" class="step" data-x="1000" data-y="3498" data-scale="1" data-rotate="0">
+        <h3>Our vision for ASQ</h3>
+        <ul>
+            <li class="substep">Full featured bi-directional presentation tool
+             <ul>
+                    <li>Ease of use for novice to expert users</li>
+                    <li>Minimum requirements: Internet connectivity, HTML5 capable browser</li>
+                    <li>CRUD presentations easily, more than one ways to do so</li>
+                </ul>
+            </li>
+            <li class="substep">Enhance learning experience
+                <ul>
+                    <li>Multiple types of questions and feedback</li>
+                    <li>automatic-assessment, teacher-assessment, eer-assessment, self-assessment</li>
+                    <li>Data mining on feedback - Statistics</li>
+                    <li>Adopt to student's needs with Machine learning</li>
+                </ul>
+            </li>
+
+            <li class="substep">Read the paper on ASQ please:)</li>
+        </ul>
+    </div>
+
+    <div id="features" class="step" data-x="1000" data-y="4500" data-scale="1" data-rotate-x="-40">
+        <h3>Features</h3>
+        <ul>
+            <li>Full feature list on <a href="https://trello.com/board/asq/51012cbf580e11775b000043">Trello</a> - Suggest something!</li>
+
+            <li class="substep">Use member tags for cards</li>
+        </ul>
+    </div>
+
+     
+    <div id="jump" class="step" data-x="5000" data-y="340" data-scale="1" data-rotate-y="90">
+        <h3>Let's jump in from high above!</h3>
+    </div>
+
+    <div id="1000feet" class="step" data-x="3000" data-y="340" data-z="0" data-scale="1" data-rotate-y="90">
+        <h3>1000 Feet</h3>
+        <img src="./img/1000_feet.svg" class="svg substep"  style="width:100%;"/>
+    </div>
+
+    <div id="100feet" class="step" data-x="1000" data-y="340" data-z="0" data-scale="1" data-rotate-y="90">
+        <h3>100 Feet</h3>
+        <img src="./img/100_feet.svg" class="svg substep" style="width:100%;"/>
+    </div>
+
+    <div id="log" class="step" data-x="-1000" data-y="340" data-z="0" data-scale="1" data-rotate-y="90">
+        <ul>
+            <li class="empty centertext">
+                <h4>How does an <b>answer</b> fit into the data model?</h4>
+            </li>
+            <li class="empty substep centertext"> <img src="./img/full_answer_schema.svg" class="svg" style="height:15%"/></li>
+            <li class="empty substep centertext">
+                <h4>What does an <b>answer log</b> look like?</h4>
+            </li>
+            <li class="empty substep centertext" ><img src="./img/answer_log_schema.svg" class="svg" style="height:34%;"/></li>
+        </ul>
+    </div>
+
+    <div id="1foot" class="step" data-x="-3000" data-y="340" data-z="0" data-scale="1" data-rotate-y="90">
+        <h3>1Foot</h3>
+        <img src="./img/1foot.svg" class="svg substep" style="width:100%;"/>
+    </div> 
+
+    <div id="design" class="step" data-x="-5000" data-y="340" data-z="2000" data-scale="1" data-rotate-y="90">
+        <ul>
+             <li class="empty centertext">
+                    <h4>What <b>data</b> are affected at <b>design time</b> and how?</h4>
+            </li>
+            <li class="empty centertext">
+                <img src="./img/design.svg" class="svg" style="height:15%;"/>
+            </li>
+            <li class="empty centertext substep">
+                <img src="./img/design_data.svg" class="svg" style="height:30%; padding-top: 3%"/>
+            </li>
+        </ul>
+    </div>  
+
+    <div id="present" class="step" data-x="-5000" data-y="340" data-z="0" data-scale="1" data-rotate-y="90">
+       <ul>
+             <li class="empty centertext">
+                    <h4>What <b>data</b> are affected at <b>presentation time</b> and how?</h4>
+            </li>
+            <li class="empty centertext">
+                <img src="./img/lecture.svg" class="svg" style="height:15%;"/>
+            </li>
+            <li class="empty centertext substep">
+                <img src="./img/lecture_data.svg" class="svg" style="height:30%; padding-top: 3%"/>
+            </li>
+        </ul>
+    </div>  
+
+    <div id="stats" class="step" data-x="-5000" data-y="340" data-z="-2000" data-scale="1" data-rotate-y="90">
+        <ul>
+             <li class="empty centertext">
+                    <h4>What about <b>statistics</b>?</h4>
+            </li>
+            <li class="empty centertext">
+                <img src="./img/stats_graphic.svg" class="svg" style="height:15%;"/>
+            </li>
+            <li class="empty centertext substep">
+                    <h4><b>Statistics</b>are just <b>logical operations</b> on the logs</h4>
+            </li>
+            <li class="empty centertext substep">
+                <img src="./img/stats.png" style="height:25%; padding-top: 3%"/>
+            </li>
+        </ul>
+    </div> 
+
+    <div id="thankyou" class="step" data-x="5000" data-y="9340" data-z="0" data-scale="1" data-rotate-y="0">
+        <div style="text-align:center">
+            <h3><b>Thank you</b></h3>
+            <p> Vassilis Triglianos<br>
+        </div>
+           
+    </div>      
+
+      <div id="overview" class="step" data-x="2000" data-y="1000" data-scale="4.5"></div>
+
+
+
+<div class="hint">
+    <p>Use a spacebar or arrow keys to navigate</p>
+</div>
+
+</div>
+
+
+<script src="js/impress.js"></script>
+
+<script>impress().init();</script>
+
+<script src="js/jquery.1.7.1.min.js"></script>
+<!-- <script src="js/builder.js"></script> -->
+<script src="js/canvas.js"></script>
+<!--<script src="js/console.js"></script>-->
+<script src="js/highlight.pack.js"></script>
+<!-- <script src="js/main.js"></script> -->
+
+
+</body></html>

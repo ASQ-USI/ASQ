@@ -1,4 +1,0 @@
-[
-{"questionText":"Who is our TA?","questionType":"Multiple choice","afterslide":"2","options":[{"optionText":"Mauro Pezze","correct":false},{"optionText":"Barack Obama","correct":false},{"optionText":"Vassilis Triglianos","correct":true}]},{"questionText":"Where is USI?","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"in Lugano","correct":true},{"optionText":"in Swiss","correct":true},{"optionText":"in Geneva","correct":false},{"optionText":"in Munich","correct":false}]},
-{"questionText":"What's the name our our project?","questionType":"Text input","afterslide":"4","options":[{"optionText":"ASQ","correct":true}]}
-]
