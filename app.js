@@ -13,11 +13,6 @@ app.configure(function(){
 // });
 
 app.get('/', function(req, res) {
-  // var html = fs.readFileSync(__dirname + '/public/team.html', 'utf8'); 
-  // var $ = cheerio.load(html);
-  // var scriptNode = '<script>alert("script appended!");</script>';
-  // $('body').append(scriptNode);
-  // res.send($.html());
   res.sendfile(__dirname + '/public/team.html');
 });
 
