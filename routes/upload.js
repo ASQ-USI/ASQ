@@ -12,7 +12,6 @@ var schemas = require('../models/models.js')
   , when = promise.when
   , seq = promise.seq
   , all = promise.all
-  , wrench = require('wrench')
   , config = require('../config')
   , AdmZip = require('adm-zip')
   , rimraf = require('rimraf');
