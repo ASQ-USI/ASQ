@@ -49,3 +49,7 @@ slides/
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Nodemon #
+######################
+.nodemonignore
