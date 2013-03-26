@@ -138,9 +138,12 @@ var showQuestion=function(question) {
     $('#questionText').html('<h3>'+question.questionText+'</h3>');
     var optionsstring='';
     if (question.questionType=="Multiple choice") {
+        var optionLetter = "A";
         optionsstring='<span class="help-block">Please select all correct answers.</span>';
+
         for (var i=0;i<question.answeroptions.length;i++) {
-            optionsstring+='<label class="checkbox"><input type="checkbox">'+question.answeroptions[i].optionText+'</label>';
+            optionsstring+='<label class="checkbox"><input type="checkbox">' + optionLetter + ". " + question.answeroptions[i].optionText+'</label>';
+            optionLetter = nextChar(optionLetter);
         }
         
     } else {
@@ -157,6 +160,22 @@ var showAnswer=function(question, stats) {
     var correct = stats.correct || null;
     var countedMcOptions = stats.countedMcOptions || null;
     var equalAnswers = stats.equalAnswers || null;
+
+    //TRIGLIAN map true,false to a,b,c,d,e
+    equalAnswers.forEach(function(eqAnswer){
+        var testStr = eqAnswer[0].split(',')
+        var dict = ['A','B','C', 'D', 'E']
+        for(var i=0; i< dict.length;i++){
+            if(testStr[i] =='false' ){
+                dict.splice(i,1);
+            }
+            eqAnswer[0] = dict.join();
+        }
+
+    });
+
+    // END TRIGLIAN
+
     google.load("visualization", "1", {
         packages : ["corechart"],
         callback : drawChart
@@ -166,7 +185,26 @@ var showAnswer=function(question, stats) {
     function drawChart() {
         console.log('GOOGLE CHART');
        	if(question.questionType === "Multiple choice"){
-        	var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+            //TRIGLIAN
+
+        	//var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+
+            var mscstatData = new google.visualization.DataTable();
+                        
+            mscstatData.addColumn('string', 'Column');
+            mscstatData.addColumn('number', 'Correct');
+            mscstatData.addColumn('number', 'Wrong');
+
+            for(var i=1; i<countedMcOptions.length; i++){
+                if(question.answeroptions[i-1].correct){
+                     mscstatData.addRow([countedMcOptions[i][0], countedMcOptions[i][1], null]);
+                }else{
+                    mscstatData.addRow([countedMcOptions[i][0], null, countedMcOptions[i][1]]);
+                }
+
+            }
+
+            //END TRIGLIAN
         }
         var rvswData  = google.visualization.arrayToDataTable(correct);
         var diffAnsData  = google.visualization.arrayToDataTable(equalAnswers);
@@ -180,6 +218,9 @@ var showAnswer=function(question, stats) {
 
         var mscstatOpt = {
             animation: {duration: 1000},
+            //TRIGLIAN
+            isStacked: true,
+            //END TRIGLIAN
             hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
             'width':760,
             
@@ -205,6 +246,7 @@ var showAnswer=function(question, stats) {
     $('#answerText').html('<h3>Statistics for "'+question.questionText+'"</h3>');
     var optionsstring='<h5>Correct answer:</h5>';
     if (question.questionType=="Multiple choice") {
+        var optionLetter = "A";
         for (var i=0;i<question.answeroptions.length;i++) {
             optionsstring+='<label class="checkbox" >';
             if (question.answeroptions[i].correct==true) {
@@ -212,7 +254,8 @@ var showAnswer=function(question, stats) {
             } else {
                 optionsstring+='<i class="icon-remove"> </i> ';
             }
-            optionsstring+=question.answeroptions[i].optionText+'</label>';
+            optionsstring+= optionLetter + ". " + question.answeroptions[i].optionText+'</label>';
+            optionLetter = nextChar(optionLetter);
         }
     } else {
         optionsstring='<span class="help-block">Correct answer.</span>';
@@ -227,3 +270,7 @@ var showAnswer=function(question, stats) {
     $('#question').modal('hide');
     $('#answer').modal('show');
 };
+
+function nextChar(c) {
+    return String.fromCharCode(c.charCodeAt(0) + 1);
+}
