@@ -197,15 +197,15 @@ app.get('/logout/', function(req, res){
 });
 
 //Serving static files
-app.get('/images/:path/', registration.get);
+// app.get('/images/:path/', registration.get);
 
 app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
 
 app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
 app.post('/user/:username/edithtml', ensureAuthenticated, registration.savehtml);
 
-app.get('/render/', ensureAuthenticated, registration.parsequestion);
-app.get('/render2/',  registration.sendanswer);
+// app.get('/render/', ensureAuthenticated, registration.parsequestion);
+// app.get('/render2/',  registration.sendanswer);
 
 
 /** HTTP Server */
