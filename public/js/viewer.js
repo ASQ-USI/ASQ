@@ -77,9 +77,11 @@ var showQuestion=function(question) {
     $('#questionText').html('<h3>'+question.questionText+'</h3><button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
     var optionsstring='';
     if (question.questionType === "Multiple choice") {
+        var optionLetter = "A";
         optionsstring='<span class="help-block">Please select all correct answers.</span>';
         for (var i=0;i<question.answeroptions.length;i++) {
-            optionsstring+='<label class="checkbox"><input type="checkbox" id="checkbox'+i+'">'+question.answeroptions[i].optionText+'</label>';
+            optionsstring+='<label class="checkbox"><input type="checkbox" id="checkbox'+i+'">'+ optionLetter + ". " + question.answeroptions[i].optionText+'</label>';
+            optionLetter = nextChar(optionLetter);
         }
         
     } else {
@@ -98,6 +100,7 @@ var showAnswer = function(question) {
     		
     var optionsstring=[];
     if (question.questionType === 'Multiple choice') {
+        var optionLetter = "A";
         for (var i=0;i<question.answeroptions.length;i++) {
             optionsstring.push('<label class="checkbox" >');
             if (question.answeroptions[i].correct  === true) {
@@ -105,8 +108,9 @@ var showAnswer = function(question) {
             } else {
                 optionsstring.push('<i class="icon-remove"> </i>');
             }
-            optionsstring.push(question.answeroptions[i].optionText)
+            optionsstring.push(optionLetter + ". " + question.answeroptions[i].optionText)
             optionsstring.push('</label>');
+            optionLetter = nextChar(optionLetter);
         }
         
     } else {
@@ -159,3 +163,8 @@ var changeAnswer = function(){
     $('#changeAnswer').css("display", "none");
     $('#sendanswers').removeAttr("disabled");
 }
+
+function nextChar(c) {
+    return String.fromCharCode(c.charCodeAt(0) + 1);
+}
+

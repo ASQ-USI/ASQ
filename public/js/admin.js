@@ -181,6 +181,34 @@ var showAnswer=function(question, stats) {
         callback : drawChart
     });
 
+    chartOptions = {
+        rvswOpt : {
+            title : 'Correct vs. Wrong',
+            'width':760,
+            'height':400,
+            chartArea:{left:0,top:0,width:"600px",height:"350px"}
+        },
+
+        mscstatOpt: {
+            animation: {duration: 1000},
+            //TRIGLIAN
+            isStacked: true,
+            //END TRIGLIAN
+            hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
+            'width':760,
+            'height':400,
+            
+            'legend': {position: 'top', textStyle: { fontSize: 16}}
+        }
+
+    }
+
+    chartData={
+        mscstatData : {},
+        rvswData : {},
+        diffAnsData : {}
+    };
+
     //Google chart drawing for stats
     function drawChart() {
         console.log('GOOGLE CHART');
@@ -189,50 +217,34 @@ var showAnswer=function(question, stats) {
 
         	//var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
 
-            var mscstatData = new google.visualization.DataTable();
+            chartData.mscstatData = new google.visualization.DataTable();
                         
-            mscstatData.addColumn('string', 'Column');
-            mscstatData.addColumn('number', 'Correct');
-            mscstatData.addColumn('number', 'Wrong');
+            chartData.mscstatData.addColumn('string', 'Column');
+            chartData.mscstatData.addColumn('number', 'Correct');
+            chartData.mscstatData.addColumn('number', 'Wrong');
 
             for(var i=1; i<countedMcOptions.length; i++){
                 if(question.answeroptions[i-1].correct){
-                     mscstatData.addRow([countedMcOptions[i][0], countedMcOptions[i][1], null]);
+                     chartData.mscstatData.addRow([countedMcOptions[i][0], countedMcOptions[i][1], null]);
                 }else{
-                    mscstatData.addRow([countedMcOptions[i][0], null, countedMcOptions[i][1]]);
+                    chartData.mscstatData.addRow([countedMcOptions[i][0], null, countedMcOptions[i][1]]);
                 }
 
             }
 
             //END TRIGLIAN
         }
-        var rvswData  = google.visualization.arrayToDataTable(correct);
-        var diffAnsData  = google.visualization.arrayToDataTable(equalAnswers);
+        chartData.rvswData  = google.visualization.arrayToDataTable(correct);
+        chartData.diffAnsData  = google.visualization.arrayToDataTable(equalAnswers);
 
-        var rvswOpt = {
-            title : 'Correct vs. Wrong',
-            'width':760,
-            'height':400,
-            chartArea:{left:0,top:0,width:"600px",height:"350px"}
-        };
 
-        var mscstatOpt = {
-            animation: {duration: 1000},
-            //TRIGLIAN
-            isStacked: true,
-            //END TRIGLIAN
-            hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
-            'width':760,
-            
-            'legend': {position: 'top', textStyle: { fontSize: 16}}
-        };
 
         var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
-        chart3.draw(rvswData, rvswOpt);
+        chart3.draw(chartData.rvswData, chartOptions.rvswOpt);
 	
 		if(question.questionType === "Multiple choice"){
         	var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
-        	chart.draw(mscstatData, mscstatOpt);
+        	chart.draw(chartData.mscstatData, chartOptions.mscstatOpt);
 		}else{
 			$('#mscstats').css("display", 'none');
 			$('#mscstats').removeAttr('style');
@@ -240,7 +252,7 @@ var showAnswer=function(question, stats) {
 		}
         
         var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
-        chart.draw(diffAnsData, mscstatOpt);
+        chart.draw(chartData.diffAnsData, chartOptions.mscstatOpt);
     }
 
     $('#answerText').html('<h3>Statistics for "'+question.questionText+'"</h3>');
@@ -269,7 +281,33 @@ var showAnswer=function(question, stats) {
     $('#answersolutions').html(optionsstring);
     $('#question').modal('hide');
     $('#answer').modal('show');
+    drawCharts();
+
+
+
+    $('a[data-toggle="tab"]').on('shown', function (e) {
+        drawCharts()
+    })
 };
+
+function drawCharts(){
+
+    var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
+    chart3.draw(chartData.rvswData, chartOptions.rvswOpt);
+
+   // if(question.questionType === "Multiple choice"){
+        var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
+        chart.draw(chartData.mscstatData, chartOptions.mscstatOpt);
+    // }else{
+    //     $('#mscstats').css("display", 'none');
+    //     $('#mscstats').removeAttr('style');
+    //     $('#mscstatsBtn').remove();
+    // }
+    
+    var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
+    chart.draw(chartData.diffAnsData, chartOptions.mscstatOpt);
+
+}
 
 function nextChar(c) {
     return String.fromCharCode(c.charCodeAt(0) + 1);
