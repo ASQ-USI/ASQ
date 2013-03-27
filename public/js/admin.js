@@ -116,10 +116,10 @@ function updateParticipation(submitted, users){
 		maxUsers = users;
 	}
 	if(maxUsers == submitted){
-		$('#progressNum').text( 'All answers recived ('+ submitted + '/' + maxUsers + '). ');
+		$('#progressNum').text( 'All answers received ('+ submitted + '/' + maxUsers + '). ');
 		$('#show-stats').attr("class","btn btn-success");
 	}else{
-		$('#progressNum').text(submitted + '/' + maxUsers + ' answers recived.');
+		$('#progressNum').text(submitted + '/' + maxUsers + ' answers received.');
 	}
 	var width = (submitted/maxUsers)*100;
 	$('#progessbar').css('width', width+"%");
