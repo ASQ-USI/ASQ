@@ -1,0 +1,320 @@
+/* --- Body --- */
+body{
+    background-image: url("../img/pattern5.jpg");
+    height: 100%;
+    color: #FFF;
+    background-color: #333;
+}
+
+#mainContainer{
+  margin-top: 90px;
+}
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+  background: #333;
+  }
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255, 0.5);
+    -webkit-border-radius: 1ex;
+}
+
+.modal, .popover{
+  color: black;
+}
+
+
+/* --- Menu --- */
+.navbar .nav  li{
+    line-height: 34px;
+    font-size:16px;
+}
+.navbar .nav > li > a{
+    padding-left:0px;
+    padding-right: 30px;
+}
+.navbar .nav > .active > a{
+    background: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    font-weight: bold;
+}
+
+.navbar .nav > .active > a:hover,
+.navbar .nav > li:hover{
+    background: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    color:#000;
+}
+
+.navbar .navbar-inner{
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color:rgba(240, 240, 240, 0.95);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+}
+
+.navbar .brand{
+    float:right;
+    line-height: 34px;
+}
+
+.navbar .nav .dropdown-toggle .caret{
+    margin-top:15px;
+}
+
+
+
+/* ----- Style for content area -----*/
+#content{
+  padding-top: 80px;
+  color: #FFF;
+ -webkit-perspective: 800px;
+}
+
+.group{
+  margin-top: 20px;
+  margin-bottom: 80px;
+}
+
+/* -- Style for seperating headline -- */
+.headline{
+  border-bottom: 1px solid #000;
+  box-shadow:  0 1px 0 #333;
+  margin-bottom: 20px;
+  h2{
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+  }
+  .controls{
+    color: #FFF;
+    font-size: 15px;
+    margin: 12px 0 0 20px;
+  }
+}
+
+
+/* -- Style for presentation thumbnails on startpage -- */
+.span3{
+  -webkit-perspective: 800px;
+  position: relative;
+  z-index: 1;
+}
+
+.thumb {
+  height: 195px;
+  box-shadow: 0 3px 6px #000;
+  margin-top: 20px;
+  color: #000;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 1s;  
+  position: relative;
+  h4{
+    text-align: center;
+    margin-top: 60px;
+  }
+  div{
+    position: absolute;
+    .100WidthHeight;
+    -webkit-backface-visibility: hidden;
+  }
+  .info{
+    background-color: #EFEFEF;   
+  }
+  .buttons{
+    -webkit-transform: rotateY( 180deg );
+    background-color: #fff; 
+    box-shadow: 0px 50px 100px black;
+    height: 195px;
+    a{
+      display: block;
+      margin: 5px auto 5px auto;
+      width: 150px;
+    }
+    a:first-child{
+      display: block;
+       margin: 25px auto 5px auto;
+    }
+  }
+  p{
+    text-align: center;
+  }
+}
+.100WidthHeight{
+     width: 100%;
+    height: 100%;
+}
+.hoverBorder{
+  box-shadow: inset 3px 3px 0px #6666CC,inset -3px -3px 0px #6666CC;
+}
+.thumb .info:hover{
+  .hoverBorder;
+  background-color: #FFF;
+}
+.flipped{
+  -webkit-transform: rotateY( 180deg ) translateZ(-100px);
+  z-index: 100;
+}
+
+/* -----  Style for Stats ----- */
+.chart{
+  height: 700px;
+  margin: 15px 0 30px 0;
+}
+
+
+/* ------ Style edit ----- */
+#editorImages{
+  box-shadow: inset 0 0px 6px #000;
+  background-color: rgba(0,0,0,0.2);
+  padding: 20px 0 20px 0;
+  
+  div{
+    display:table-cell;
+    height: 250px;
+    img{
+      margin: 0 auto 0 auto,
+      display: block;
+      vertical-align: center;
+    }
+    p{
+      vertical-align: bottom;
+    }
+  }
+}
+
+
+/* --- Waiting Box ---*/
+.centerContainer{
+  display: table;
+  height: 100%;
+}
+.waiting{
+    height: 400px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    h2{
+        text-align: center;
+        border-bottom: 1px solid #000;
+        box-shadow:  0 1px 0 #333;
+    }
+}
+
+/* --- Controlls --- */
+#nextButton{
+  clear: both;
+  height: 100px;
+  width: 400px;
+}
+.controlls{
+    #clock{
+        margin: 0 auto 0 auto;
+        width: 500px;
+        div:first-child{
+         float:left;
+        }
+        .btn-group{
+            width: 221px;
+            margin: 30px auto 0 auto;
+            display: block;
+            float: right;
+        }
+    } 
+    .controllButton{
+        margin: 20px auto 0 auto;
+        display: block;
+    }   
+    
+
+}
+
+#controllThumbs{
+  background-color: #222;
+  background-image: none;
+  box-shadow: inset 0 5px 10px black;
+  overflow: scroll;
+  overflow-y: hidden;
+  position: absolute;
+  bottom:0;
+  left: 0;
+  right:0;
+  width: 100%;
+  height: 250px;
+  .thumb{
+    box-shadow: 0 3px 6px #000;
+    float: left;
+    height: 150px;
+    width: 200px;
+    margin: 40px 10px 40px 10px;
+    background-color: #EFEFEF; 
+    color: #999;
+  }
+  .active{
+    height: 210px;
+    width: 280px;
+    margin: 10px 10px 10px 10px;
+  }
+}
+/* --- Editor Style ---*/
+#editor { 
+        position: relative;
+        height: 550px;
+}
+
+
+
+/* --- Questions ---*/
+#slidesOverview .add{
+  float: left;
+  margin-top: 100px;
+}
+#slidesOverview .slide {
+  float: left;
+  width: 230px;
+  height: 150px;
+  background-color: #EFEFEF;  
+  margin: 10px 5px 40px 5px; 
+  padding: 15px 10px 15px 10px;
+  box-shadow: 0 3px 6px #000;
+  overflow: hidden;
+  .innerText{
+    position: absolute;
+    width: 230px;
+    height: 115px;
+    display: table-cell; 
+    overflow: hidden;
+  }
+  p{
+    font-size: 20px;
+    line-height: 28px;
+    vertical-align: middle; 
+    text-align: center; 
+    color: #999;
+    overflow: hidden;
+    height: 115px;
+  }
+  .labelContainer{
+    position: absolute;
+    width: 230px;
+    height: 150px;
+    display: table;
+    overflow: hidden;
+  }
+  
+  .labels{
+    vertical-align: bottom;
+    display: table-cell;
+    text-align: left;
+   }
+  .slidenr{
+    position: absolute;
+    top: 170px;
+    left: 220px;
+  }
+}

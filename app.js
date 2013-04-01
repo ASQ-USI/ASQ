@@ -11,8 +11,10 @@ var express = require('express')
   , routes = require('./routes')
   , flash = require('connect-flash')
   , passport = require('passport')
+  , jsdom = require('jsdom')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
+  , editFunctions = require('./routes/edit')
   , statistics = require('./routes/statistics')
   , SessionMongoose = require("session-mongoose")(express)
   , mongooseSessionStore = new SessionMongoose({
@@ -177,13 +179,29 @@ app.get('/user/:username/edit/', ensureAuthenticated, function (req,res) {
     res.redirect("/user/"+req.params.username+"/edit")
 });
 
-app.get('/user/:username/edit', ensureAuthenticated,registration.editslideshow);
+app.get('/user/:username/edithtml/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/"+req.params.username+"/edit")
+});
 
-app.post('/user/:username/edit', ensureAuthenticated, registration.addquestion);
+app.get('/user/:username/editstyle/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/"+req.params.username+"/edit")
+});
+app.get('/user/:username/editquestions/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/"+req.params.username+"/edit")
+});
 
-app.get('/user/:username/delete', ensureAuthenticated, registration.deletequestion);
 
-app.get('/user/:username/deleteslideshow', ensureAuthenticated, registration.deleteslideshow);
+app.get('/user/:username/edit', ensureAuthenticated, editFunctions.editslideshow);
+
+app.get('/user/:username/editquestions', ensureAuthenticated, editFunctions.editquestions);
+
+app.post('/user/:username/edit', ensureAuthenticated, editFunctions.addquestion);
+
+app.post('/user/:username/editquestions', ensureAuthenticated, editFunctions.addquestion);
+
+app.get('/user/:username/delete', ensureAuthenticated, editFunctions.deletequestion);
+
+app.get('/user/:username/deleteslideshow', ensureAuthenticated, editFunctions.deleteslideshow);
 
 app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 
@@ -194,15 +212,17 @@ app.get('/logout/', function(req, res){
 });
 
 //Serving static files
-app.get('/images/:path/', registration.get);
+//app.get('/images/:path/', registration.get);
 
 app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
 
-app.get('/user/:username/edithtml', ensureAuthenticated, registration.edithtml);
-app.post('/user/:username/edithtml', ensureAuthenticated, registration.savehtml);
+app.get('/user/:username/edithtml', ensureAuthenticated, editFunctions.edithtml);
+app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyle);
+app.post('/user/:username/edithtml', ensureAuthenticated, editFunctions.savehtml);
+app.post('/user/:username/editstyle', ensureAuthenticated, editFunctions.savestyle);
 
-app.get('/render/', ensureAuthenticated, registration.parsequestion);
-app.get('/render2/',  registration.sendanswer);
+//app.get('/render/', ensureAuthenticated, registration.parsequestion);
+//app.get('/render2/',  registration.sendanswer);
 
 
 /** HTTP Server */
