@@ -144,6 +144,8 @@ app.get('/live/:user/', routes.slides.live);
 app.get('/live/:user/*', routes.slides.liveStatic);
 
 /** Control your current session (if any) */
+app.get('/admincontroll',  ensureAuthenticated, routes.slides.adminControll);
+app.get('/admincontroll/*', ensureAuthenticated, routes.slides.adminStatic);
 app.get('/admin/',  ensureAuthenticated, routes.slides.admin);
 app.get('/admin/*', ensureAuthenticated, routes.slides.adminStatic);
 

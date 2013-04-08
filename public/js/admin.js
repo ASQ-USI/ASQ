@@ -49,6 +49,9 @@ var connect = function(host, port, session) {
             if (!started) {
                 impress().start();
                 $('#welcomeScreen').modal('hide');
+                $('#waitingScreen').hide();
+                $('#slidesControll').show();
+                
                 started = true;
             }
         });

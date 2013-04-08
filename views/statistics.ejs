@@ -1,114 +1,126 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>ASQ - My Presentation</title>
-		<!-- Bootstrap -->
-		<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<html lang="en">
+  <head>
+		<% include htmlHead %>
+		<title>ASQ - Statistics of <%=title%></title>
 		
-		<link rel="stylesheet/less" type="text/css" href="/css/backend.less">
-		<script src="/js/less-1.3.1.min.js" type="text/javascript"></script>
-		
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
-		
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    	
-    	<script type="text/javascript">
-	      google.load("visualization", "1", {packages:["corechart"]});
-	      google.setOnLoadCallback(drawChart);
-
-	     function drawChart() {
-
-			var rvswOpt = {
-				title : 'Correct vs. Wrong',
-				'width':760,
-				'height':400,
-				chartArea:{left:0,top:0,width:"600px",height:"350px"}
-			};
+		 <!--Load the AJAX API-->
+	    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	    <script type="text/javascript">
 	
-			var mscstatOpt = {
-				animation: {duration: 1000},
-				hAxis: {allowContainerBoundaryTextCufoff: true, slantedTextAngle: 50},
-				'width':760,
-				'legend': {position: 'top', textStyle: { fontSize: 16}}
-			};
-     	   
-     	   <% for(var quest = 0; quest < stats.length; quest++){ %>
-     	   	
-     	   		<% if(stats[quest].questionType === "Multiple choice"){
-     	   			var mscstatData<%=quest%> 	= google.visualization.arrayToDataTable(<%=stats[quest].countedMcOptions%>);
-        			var rvswData<%=quest%>		= google.visualization.arrayToDataTable(<%=stats[quest].correct%>);
-        			var diffAnsData<%=quest%>  	= google.visualization.arrayToDataTable(<%=stats[quest].equalAnswers%>);
-        			
-        			var mscstatChart<%=quest%> = new google.visualization.ColumnChart(document.getElementById('mscstatChart<%=quest%>'));
-        			mscstatChart<%=quest%>.draw(mscstatData<%=quest%>, mscstatOpt);
-        			
-        			     	   			
-     	   		<% } else { %>
-        			var rvswData<%=quest%>		= google.visualization.arrayToDataTable(<%=stats[quest].correct%>);
-        			var diffAnsData<%=quest%>  	= google.visualization.arrayToDataTable(<%=stats[quest].equalAnswers%>);
-     	   			
-     	   		<% }
-     	   		
-     	   		var diffAnsChart<%=quest%> 		= new google.visualization.ColumnChart(document.getElementById('diffAnsChart<%=quest%>'));
-        		diffAnsChart<%=quest%>.draw(diffAnsData<%=quest%>, mscstatOpt);
-        		
-        		var rvswChart<%=quest%> 		= new google.visualization.PieChart(document.getElementById('rvswChart<%=quest%>'));
-        		rvswChart<%=quest%>.draw(rvswData<%=quest%>, rvswOpt);
-
-     	   		
-     	   <% } %> 
-	 }
-    </script>
-
-	</head>
-	<body>
+	      // Load the Visualization API and the piechart package.
+	      google.load('visualization', '1.0', {'packages':['corechart']});
+	
+	      // Set a callback to run when the Google Visualization API is loaded.
+	      google.setOnLoadCallback(drawChart);
+	
+	      // Callback that creates and populates a data table,
+	      // instantiates the pie chart, passes in the data and
+	      // draws it.
+	      function drawChart() {
+	
+	        // Create the data table.
+	        var data = new google.visualization.DataTable();
+	        data.addColumn('string', 'Solution');
+	        data.addColumn('number', 'Number Answers');
+	        data.addRows([
+	          ['Wrong', 3],
+	          ['Right', 1],
+	        ]);
+	        
+	        var mc = new google.visualization.DataTable();
+	        mc.addColumn('string', 'Solution');
+	        mc.addColumn('number', 'Number Answers');
+	        mc.addRows([
+	          ['Very Good', 39],
+	          ['Good', 15],
+	          ['OK', 5],
+	          ['Bad', 1],
+	          ['Very Bad', 1],
+	        ]);
+	
+	        // Set chart options
+	        var options = {'title':'Right vs. Wrong Answers',
+	                       'width':'100%',
+	                       'height':300,
+	                       'backgroundColor': 'none',
+	                       'titleTextStyle': {
+	                       		color: 'white',
+	                       		fontSize: 16,
+	                       		textAlign: 'left'
+	                       	},
+	                       'legend' : {
+	                       		textStyle: {color: 'white'}
+	                       		}
+	                       };
+	
+	        // Instantiate and draw our chart, passing in some options.
+	         <% for (var i = 0; i < questions.length; i++) { %> 
+	         	
+	        var chart<%=i%> = new google.visualization.PieChart(document.getElementById('chart_div<%=i%>'));
+	        chart<%=i%>.draw(data, options);
+	        
+	        var chart<%=i%> = new google.visualization.ColumnChart(document.getElementById('mc_div<%=i%>'));
+	        chart<%=i%>.draw(mc, options);
+	        
+	        <% }%>
+	      }
+		</script>
 		
+  </head>
+
+  <body>
+
 		<!---   top menu --->
 		<% include menu %>
 		
 		
-		<!---   Content area   --->
-		<div class="container" id="content">
-
-			<div class="row group" >
-				
-				<div class="span12">
-					<h2 class="pull-left">Satistics of "What is ASQ?"</h2>
+		<!---   Content area   --->  
+    	<div class="container" id="mainContainer">
+	        
+	        <!--- Edit menu --->
+	        <div class="row" >
+				<div class="span12 headline">
+					<h3 class="pull-left">Statistics presentation</h3>
+					<form class="pull-right controls edit">
+			  			<select>
+			  				<option>Choose session</option>
+						  <% for (var i = 0; i < session.length; i++) { %> <option><%= session[i] %></option><% }%>
+						</select>
+					</form>	
 				</div>
-				
-				<!---   Seperating Headline   
-				<div class="span12  headline">
-					<h2 class="pull-left">General statistics</h2>
-				</div>
-				
-				<div class="span12">
-					<div class="row">
-						<div class="span3">
-							<p><b>Presentation held on:</b></p>
-							<p><b>Average answers/question</b></p>
-						</div>
-						<div class="span3">
-							<p>21.10.2012 - 13: 00</p>
-							<p>16 (46%)</p>
-						</div>
-						<div class="span3">
-							<p><b>Students loged in:</b></p>
-						</div>
-						<div class="span3">
-							<p>35</p>
-						</div>
-					</div>
-					
-					<div id="chart_div" class="span12 chart" style="height: 300px;margin-bottom: 30px"></div>
-				</div>
-				--->
-				
-				
-			</div>
+	  		</div>
 			
-		</div>
+			<div class="row">
+				<div class="span3">
+					<ul class="nav nav-tabs nav-stacked">
+					   <% for (var i = 0; i < questions.length; i++) { %> <li><a href="#"><%=i+1%> - <%= questions[i] %></a></li><% }%>
+					</ul>
+				</div>
+				<div class="span9">
+					 <% for (var i = 0; i < questions.length; i++) { %> 
+					 	<div class="row">
+					 		<div class="span9 headline"><h2> <%=i+1%> - <%= questions[i] %> </h2></div>
+						 	<div class="span9"> 
+						 		<div id="chart_div<%= i %>"></div>
+						 		<div id="mc_div<%= i %>"></div>
+						 	</div>
+					 	</div>
+					 <% }%>
+					
+				</div>
+			</div>
+		
+	     </div> <!-- /container -->
 
+		 <!-- Le javascript --->
 
-	</body>
+		 <script src="/js/jquery.js"></script>
+		 <script src="/js/bootstrap.js"></script>
+		 <script>
+		 $('.edit').each(function() {
+			$(this).attr('href', $(this).attr('href')+window.location.search);	
+		 });
+		 </script>
+  </body>
 </html>

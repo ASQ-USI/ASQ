@@ -42,7 +42,7 @@ module.exports.post = function(req, res) {
                         console.log('assets ok');
                         var assets = JSON.parse(file);
                         newSlideshow.title = assets.title;
-                        newSlideshow.course = assets.course || "General course";
+                        newSlideshow.course = "General course";
                         newSlideshow.links = assets.links || [];
                         console.log(assets);
                         return true;

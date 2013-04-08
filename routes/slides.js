@@ -25,6 +25,28 @@ module.exports.admin = function(req, res) {
     });
 }
 
+/** Renders the controll view for admins */
+module.exports.adminControll = function(req, res) {
+    var userId = req.user._id;
+    sessionFromUserId(userId, function(err, session) {
+        if (err) throw err;
+        if (!session.id) {
+            res.redirect('/user/' + req.user.name +
+                        '/?alert=You have no session running!&type=error');
+        } else {
+            var slideshow = session.slideshow;
+             res.render('slidesControll', {title: slideshow.title, mode:'admin',
+                                  host: appHost, port: app.get('port'),
+                                  user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
+                                  path: path.relative(app.get('views'), slideshow.path + 'index.html'),
+                                  links: slideshow.links,
+                                  id: session.id,
+                                  date: session.date
+                                 });
+        }
+    });
+}
+
 /** Serve slideshow files for admin **/
 module.exports.adminStatic = function(req, res) {
     var userId = req.user._id;
@@ -109,7 +131,7 @@ module.exports.start = function(req, res) {
             if (err) throw err;
             var User = db.model('User', schemas.userSchema);
             User.findByIdAndUpdate(req.user._id, {current: newSession._id}, function(err, user) {
-                res.redirect(302, '/admin');
+                res.redirect(302, '/admincontroll');
             });
 
         });
