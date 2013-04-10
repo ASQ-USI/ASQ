@@ -21,13 +21,13 @@
 	  		</div>
 			
 			<!---   Seperating Headline   --->       
-			<form>
+			<form action="savedetails?id=<%=slideshow._id%>" method="post">
 			  <fieldset>
 			    <label>Name of presentation</label>
-			    <input type="text" placeholder="Lesson 1: Introduction">
+			    <input type="text" name="presentationName" value="<%=slideshow.title%>">
 			    
 			    <label>Course</label>
-			    <input type="text" placeholder="Informatics 101">
+			    <input type="text" name="courseName" value="<%=slideshow.course%>">
 			    
 			    <br />
 			    <button type="submit" class="btn">Save changes</button>

@@ -106,6 +106,10 @@ module.exports.liveStatic = function(req, res) {
 module.exports.start = function(req, res) {
     var slidesId = req.params.id;
     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+    //Update last played date
+	Slideshow.findByIdAndUpdate(slidesId, {lastSession: new Date()}, function(err, slides){
+		 if (err) throw err;
+	});
     var User = db.model('User', schemas.userSchema);
     Slideshow.findById(slidesId, function(err, slides) {
         if (err || slides === null) {

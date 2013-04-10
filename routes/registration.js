@@ -1,178 +1,185 @@
-var schemas =require("../models/models.js");
+var schemas = require("../models/models.js");
 var fs = require("fs");
+var moment = require('moment');
+var ejs = require('ejs');
 
-exports.getsingle=function(req, res) {
+
+exports.getsingle = function(req, res) {
 	res.sendfile(req.path);
 }
-
 //User is added to the database, and page is redirected to confirm the registration
-exports.signup=function(req, res) {
-	if (req.body.signupusername=="" || req.body.signuppassword=="") {
-		res.render('index', {message: "Missing credentials", fromsignup:'true' });
+exports.signup = function(req, res) {
+	if (req.body.signupusername == "" || req.body.signuppassword == "") {
+		res.render('index', {
+			message : "Missing credentials",
+			fromsignup : 'true'
+		});
 		return;
 	}
 	var myRegxp = /^([a-zA-Z0-9_-]){3,10}$/;
-	if(myRegxp.test(req.body.signupusername) == false|| myRegxp.test(req.body.signuppassword) == false)
-	{
-	    res.render('index', { message: "Credentials must be only alphanumeric, between 3 and 10 characters", fromsignup:'true' });
-	    return;
+	if (myRegxp.test(req.body.signupusername) == false || myRegxp.test(req.body.signuppassword) == false) {
+		res.render('index', {
+			message : "Credentials must be only alphanumeric, between 3 and 10 characters",
+			fromsignup : 'true'
+		});
+		return;
 	}
 	var myRegxp = /\S+@\S+\.\S+/;
-	if(myRegxp.test(req.body.signupemail) == false)
-	{
-	    res.render('index', { message: "Please insert a valid email adress", fromsignup:'true' });
-	    return;
+	if (myRegxp.test(req.body.signupemail) == false) {
+		res.render('index', {
+			message : "Please insert a valid email adress",
+			fromsignup : 'true'
+		});
+		return;
 	}
-	if (req.body.signuppassword!=req.body.signuppasswordconfirm) {
-		res.render('index', {message: "The two passwords are not matching", fromsignup:'true' });
+	if (req.body.signuppassword != req.body.signuppasswordconfirm) {
+		res.render('index', {
+			message : "The two passwords are not matching",
+			fromsignup : 'true'
+		});
 		return;
 	}
 
-
-	var users= db.model('User', schemas.userSchema);
-	var out =users.findOne({ name: req.body.signupusername }, function (err, user) {
-        if (user) {
-		res.render('index', {message: "Username already taken", fromsignup:'true'  });
-	} else {
-		var newUser= new users({
-		name: req.body.signupusername,
-		password: req.body.signuppassword,
-		email: req.body.signupemail
-	}
-	);
-		newUser.save();
-		res.render('registered', null);
-	}
-	});	
+	var users = db.model('User', schemas.userSchema);
+	var out = users.findOne({
+		name : req.body.signupusername
+	}, function(err, user) {
+		if (user) {
+			res.render('index', {
+				message : "Username already taken",
+				fromsignup : 'true'
+			});
+		} else {
+			var newUser = new users({
+				name : req.body.signupusername,
+				password : req.body.signuppassword,
+				email : req.body.signupemail
+			});
+			newUser.save();
+			res.render('registered', null);
+		}
+	});
 
 }
 
-
-
-
-
-exports.checkusername=function(req,res) {
-	User= db.model('User', schemas.userSchema);
-	var response='0';
-	var out =User.findOne({ name: req.params.username }, function (err, user) {
-        if (user) {
-		response='1';
-	}
-	res.send(200,response);
-});
+exports.checkusername = function(req, res) {
+	User = db.model('User', schemas.userSchema);
+	var response = '0';
+	var out = User.findOne({
+		name : req.params.username
+	}, function(err, user) {
+		if (user) {
+			response = '1';
+		}
+		res.send(200, response);
+	});
 }
-
-function loadJSON(filePath){
+function loadJSON(filePath) {
 	var file = fs.readFileSync(filePath, 'utf8');
 	return JSON.parse(file);
 }
 
 function preload(jsonFile) {
 	var question = new Object({
-		questionText:jsonFile.questionText,
-		questionType: jsonFile.questionType,
-		afterslide: jsonFile.afterslide,
-		options: jsonFile.options
+		questionText : jsonFile.questionText,
+		questionType : jsonFile.questionType,
+		afterslide : jsonFile.afterslide,
+		options : jsonFile.options
 	});
 	return question;
-	
 
 }
 
-exports.sendstats=function(req,res) {
+exports.sendstats = function(req, res) {
 
-	var questionDB= db.model('Question', schemas.questionSchema);
-	var optionDB= db.model('Option', schemas.optionSchema);
+	var questionDB = db.model('Question', schemas.questionSchema);
+	var optionDB = db.model('Option', schemas.optionSchema);
 
-	
-	questionDB.findById(req.params.id, function(err,question) {
-		optionDB.find({ _id: { $in: question.answeroptions }}, function(err, options) {
-			if (err) throw err;
-			
+	questionDB.findById(req.params.id, function(err, question) {
+		optionDB.find({
+			_id : {
+				$in : question.answeroptions
+			}
+		}, function(err, options) {
+			if (err)
+				throw err;
+
 			getQuestionStats(req.params.id, function(err, stats) {
-			
-			var correct = [
-		      ['Correct answers', 'Number of answers'],
-		      ['Correct', stats.correct],
-		      ['Wrong', stats.wrong]
-			]
-			
-			var countedMcOptions = [
-				[question.questionText, "Number of answers"]
-			]
-			for(ans in stats.equalAnswers){
-				//console.log("###########");
-				countedMcOptions.push( [options[ans].optionText, stats.countedMcOptions[ans]]);
-			}
-	
-			var equalAnswers = [
-				['Different answers', 'Number of answers']
-			]
-			for(ans in stats.equalAnswers){
-				//console.log("###########");
-				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
-			}
 
-			//console.log(countedMcOptions);
-			res.send(200,{correct: correct,countedMcOptions: countedMcOptions, equalAnswers:equalAnswers});
+				var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
+
+				var countedMcOptions = [[question.questionText, "Number of answers"]]
+				for (ans in stats.equalAnswers) {
+					//console.log("###########");
+					countedMcOptions.push([options[ans].optionText, stats.countedMcOptions[ans]]);
+				}
+
+				var equalAnswers = [['Different answers', 'Number of answers']]
+				for (ans in stats.equalAnswers) {
+					//console.log("###########");
+					equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+				}
+
+				//console.log(countedMcOptions);
+				res.send(200, {
+					correct : correct,
+					countedMcOptions : countedMcOptions,
+					equalAnswers : equalAnswers
+				});
 
 			});
-		});	
+		});
 	});
 
 }
 
 exports.getStats = function(questionId, sessionId, callback) {
 	var Question = db.model('Question', schemas.questionSchema);
-	Question.findById(questionId).populate('answeroptions').exec(function(err, question){
-		if (err) callback(err);
-		getQuestionStats(questionId, sessionId,function(err, stats) {
+	Question.findById(questionId).populate('answeroptions').exec(function(err, question) {
+		if (err)
+			callback(err);
+		getQuestionStats(questionId, sessionId, function(err, stats) {
 			if (err) {
 				callback(err);
 				return;
 			}
 			if (stats === null) {
-				callback(null, {correct:{}, countedMcOptions: {}, equalAnswers: {}});
+				callback(null, {
+					correct : {},
+					countedMcOptions : {},
+					equalAnswers : {}
+				});
 				return;
 			}
-			
-			
-			var correct = [
-		      ['Correct answers', 'Number of answers'],
-		      ['Correct', stats.correct],
-		      ['Wrong', stats.wrong]
-			]
 
+			var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
 
-			var countedMcOptions = [
-				[question.questionText, "Number of answers"]
-			]
-			if(question.questionType === "Multiple choice"){
-				var lim = stats.countedMcOptions.length < question.answeroptions.length ?
-				stats.countedMcOptions.length : question.answeroptions.length;
-				for(var ans = 0; ans < lim; ans++){
+			var countedMcOptions = [[question.questionText, "Number of answers"]]
+			if (question.questionType === "Multiple choice") {
+				var lim = stats.countedMcOptions.length < question.answeroptions.length ? stats.countedMcOptions.length : question.answeroptions.length;
+				for (var ans = 0; ans < lim; ans++) {
 					//console.log("###########");
 					//This is what went wrong during the M4 demo
 					//The check below can prevent the same mistake
 					//But I don't know how it affects the expected result
 					if (question.answeroptions[ans])
-						countedMcOptions.push( [question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
+						countedMcOptions.push([question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
 				}
 			}
 
-			var equalAnswers = [
-				['Different answers', 'Number of answers']
-			]
-			for(ans in stats.equalAnswers){
+			var equalAnswers = [['Different answers', 'Number of answers']]
+			for (ans in stats.equalAnswers) {
 				//console.log("###########");
-				equalAnswers.push( [stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+				equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
 			}
-			callback(null, { correct:correct, countedMcOptions:countedMcOptions, equalAnswers:equalAnswers});
+			callback(null, {
+				correct : correct,
+				countedMcOptions : countedMcOptions,
+				equalAnswers : equalAnswers
+			});
 		});
 	});
 }
-
-
 function getQuestionStats(questionId, sessionId, callback) {
 	var answerDB = db.model('Answer', schemas.answerSchema);
 	var questionDB = db.model('Question', schemas.questionSchema);
@@ -180,12 +187,15 @@ function getQuestionStats(questionId, sessionId, callback) {
 	var sessionDB = db.model('Session', schemas.sessionSchema);
 
 	//console.log("------------" + sessionId)
-	
-	
-	
-	questionDB.findById(questionId).populate('answeroptions').exec(function(err, question){
-		sessionDB.findById(sessionId, function(err, session){
-			answerDB.findOne({_id: {$in: session.answers}, question:questionId}, function(err, answer){
+
+	questionDB.findById(questionId).populate('answeroptions').exec(function(err, question) {
+		sessionDB.findById(sessionId, function(err, session) {
+			answerDB.findOne({
+				_id : {
+					$in : session.answers
+				},
+				question : questionId
+			}, function(err, answer) {
 				if (err) {
 					callback(err);
 					return;
@@ -199,18 +209,18 @@ function getQuestionStats(questionId, sessionId, callback) {
 				// console.log(answer.answers);
 				// console.log("--- Answers")
 				var result = {
-					questionText: "",
-					questionOptions: ["Lorem", "Ipsum", "Dolor", "Sit amet"],  
-					questionType: "Multiple choice",
+					questionText : "",
+					questionOptions : ["Lorem", "Ipsum", "Dolor", "Sit amet"],
+					questionType : "Multiple choice",
 					total : answer.answers.length,
 					correct : 1,
 					wrong : 1,
 					equalAnswers : null,
 					countedMcOptions : null,
 				}
-				
+
 				//Set question data
-				result.questionText= question.questionText;
+				result.questionText = question.questionText;
 				result.questionType = question.questionType;
 				result.questionOptions = question.answeroptions;
 
@@ -223,9 +233,9 @@ function getQuestionStats(questionId, sessionId, callback) {
 				result.equalAnswers = getEqualAnswers(answer.answers);
 
 				// Counting selectet options for multiple choice
-				if(question.questionType === "Multiple choice"){
+				if (question.questionType === "Multiple choice") {
 					result.countedMcOptions = getCountedMCOptions(answer.answers, question);
-				}				
+				}
 
 				console.log(result);
 				callback(null, result);
@@ -233,15 +243,14 @@ function getQuestionStats(questionId, sessionId, callback) {
 		});
 	});
 
-	
 }
 
-
-
-function getNumberOfAnswers(questionId){
-	answerDB.findOne({question: questionId},function(err,answer) {
+function getNumberOfAnswers(questionId) {
+	answerDB.findOne({
+		question : questionId
+	}, function(err, answer) {
 		return answer.answers.length();
-		
+
 	});
 }
 
@@ -250,9 +259,9 @@ function getCorrectAnswers(answers, answerOptions) {
 	for (var ans = 0; ans < answerOptions.length; ans++) {
 		if (answerOptions[ans].correct == true) {
 			correctAnswer.push(true);
-		}else if (answerOptions[ans].correct == false) {
+		} else if (answerOptions[ans].correct == false) {
 			correctAnswer.push(false);
-		}else if (answerOptions[ans].correct !== undefined) {
+		} else if (answerOptions[ans].correct !== undefined) {
 			correctAnswer.push(answerOptions[ans].correct);
 			//console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
 		}
@@ -265,7 +274,7 @@ function getCorrectAnswers(answers, answerOptions) {
 	var wrong = 0;
 	for (var i = 0; i < answers.length; i++) {
 		//console.log(answers[i]);
-		console.log(answers[i].content+" "+correctAnswer[i] +" "+arrayEqual(answers[i].content, correctAnswer))
+		console.log(answers[i].content + " " + correctAnswer[i] + " " + arrayEqual(answers[i].content, correctAnswer))
 		if (arrayEqual(answers[i].content, correctAnswer)) {
 			correct++;
 		} else {
@@ -274,7 +283,6 @@ function getCorrectAnswers(answers, answerOptions) {
 	}
 	return [correct, wrong];
 }
-
 
 function getEqualAnswers(answers) {
 	var equalAnswers = new Array();
@@ -301,8 +309,6 @@ function getEqualAnswers(answers) {
 	return equalAnswers;
 }
 
-
-
 function getCountedMCOptions(answers, question) {
 	var countetMcOptions = new Array();
 	if (question.questionType == "Multiple choice") {
@@ -312,28 +318,28 @@ function getCountedMCOptions(answers, question) {
 		}
 
 		for (var j = 0; j < answers.length; j++) {
-			
+
 			for (var k = 0; k < answers[j].content.length; k++) {
 				if (answers[j].content[k] == true)
 					countetMcOptions[k]++;
 			}
 
 		}
-	}else{return null;}
+	} else {
+		return null;
+	}
 	return countetMcOptions;
 }
 
-
-
-function arrayEqual(array1, array2){
-	if(array1.length !== array2.length){
+function arrayEqual(array1, array2) {
+	if (array1.length !== array2.length) {
 		console.log(array1.length + " " + array2.length)
-		console.log( "wrong length")
+		console.log("wrong length")
 		return false;
 	} else {
-		for(var i = 0; i <array1.length; i++){
-			if(array1[i].toString() != array2[i].toString()){
-				console.log( typeof(array1[i]) + " - "+ typeof(array2[i]))
+		for (var i = 0; i < array1.length; i++) {
+			if (array1[i].toString() != array2[i].toString()) {
+				console.log( typeof (array1[i]) + " - " + typeof (array2[i]))
 				return false;
 			}
 		}
@@ -341,26 +347,38 @@ function arrayEqual(array1, array2){
 	return true;
 }
 
+exports.renderuser = function(req, res) {
+	if (req.params.username == req.user.name) {
+		var users = db.model('User', schemas.userSchema);
+		var out = users.findById(req.user._id, function(err, user) {
+			if (user) {
+				slides = [];
+				var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
+				slideshowDB.find({
+					_id : {
+						$in : user.slides
+					}
+				}, function(err, slides) {
+					if (err)
+						throw err;
+					var type = req.query.type && /(succes|error|info)/g.test(req.query.type) ? 'alert-' + req.query.type : '';
+					res.render('user', {
+						arrayslides : slides,
+						username : req.user.name,
+						alert : req.query.alert,
+						type : type,
+						session : user.current
+					});
+				});
 
-
-exports.renderuser=function(req,res) {
-	if (req.params.username==req.user.name) {
-		var users= db.model('User', schemas.userSchema);
-		var out =users.findById(req.user._id, function (err, user) {
-		if (user) {
-			slides=[];
-			var slideshowDB=db.model('Slideshow', schemas.slideshowSchema);
-			slideshowDB.find({ _id: { $in : user.slides } }, function(err, slides) {
-				if (err) throw err;
-				var type = req.query.type &&
-						   /(succes|error|info)/g.test(req.query.type) ?
-				           'alert-' + req.query.type : '';
-				res.render('user', {arrayslides: slides, username: req.user.name, alert: req.query.alert, type:type, session: user.current});
-			});
-			
-		} 
+			}
 		});
-    } else {
-        res.redirect('/user/'+req.user.name + '/');
-    }
+	} else {
+		res.redirect('/user/' + req.user.name + '/');
+	}
+}
+
+//EJS helper to print dates in nice format. Done by Moment.js
+ejs.filters.fromNow = function(date){
+  return moment(date).format('DD.MM.YYYY HH:mm');
 }

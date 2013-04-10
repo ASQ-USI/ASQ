@@ -28,7 +28,9 @@ var slideshowSchema= new Schema({
 	course: { type: String, default: "General" },
 	owner: { type: ObjectId },
 	questions: [ObjectId],
-	links: {type: Array, default: []}
+	links: {type: Array, default: []},
+	lastSession: {type: Date, default: Date.now},
+	lastEdit: {type: Date, default: Date.now}
 });
 
 exports.slideshowSchema = slideshowSchema; 

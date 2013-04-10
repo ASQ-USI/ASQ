@@ -223,6 +223,9 @@ app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyl
 app.post('/user/:username/edithtml', ensureAuthenticated, editFunctions.savehtml);
 app.post('/user/:username/editstyle', ensureAuthenticated, editFunctions.savestyle);
 
+//edit presentation deteils
+app.post('/user/:username/savedetails', ensureAuthenticated, editFunctions.saveDetails)
+
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);
 //app.get('/render2/',  registration.sendanswer);
 

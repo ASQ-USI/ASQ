@@ -57,8 +57,11 @@
 	                        <a href="start/<%=arrayslides[i]._id%>" class="btn btn-primary hidden-phone"><i class="icon-play icon-white"> </i> Start Presentation</a>
 	                        <a href="statistics?id=<%=arrayslides[i]._id%>" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
 	                        <a href="edit?id=<%=arrayslides[i]._id%>" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-	                        <p>Last session: 21.01.2013 12:05</p>
-	                        <p>Last edit: 20.01.2013 18:32</p>
+	                       	<div class="dates">
+	                       		
+	                       		<p><i class="icon-play"></i> <%=: arrayslides[i].lastSession | fromNow %></p>
+	                       		<p><i class="icon-pencil" ></i> <%=: arrayslides[i].lastEdit | fromNow %></p>
+	                       	</div>
 	                    </div>
 	                </div>
 	            </div>
