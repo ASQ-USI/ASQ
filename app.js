@@ -6,6 +6,9 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
+  , fs = require('fs')
+  , cons = require('consolidate')
+  , dust = require('dustjs-linkedin')
   , engine = require('ejs-locals')
   , slashes = require("connect-slashes")
   , routes = require('./routes')
@@ -26,6 +29,7 @@ var express = require('express')
   
   // save sessionStore to config for later access
   config.setSessionStore(mongooseSessionStore);
+
 
 
 
@@ -81,7 +85,10 @@ function ensureAuthenticated(req, res, next) {
         return next();
     }
     if (req.url=="/") {
-        res.render('index', { message: req.flash('error'), fromsignup:'false' });
+        res.render('index', {
+     		'message': req.flash('error'),
+   			'fromsignup': false
+  		});
     } else {
         res.redirect("/");
     }
@@ -89,7 +96,8 @@ function ensureAuthenticated(req, res, next) {
 }
 
 app = express();
-app.engine('ejs', engine);
+//app.engine('ejs', engine);
+app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
 appHost = process.argv[2] || 'localhost';
 clientsLimit = process.argv[3] || 50;
@@ -104,7 +112,8 @@ schemas = require('./models/models.js');
 app.configure(function() {
     app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
-    app.set('view engine', 'ejs');
+    app.set('view engine', 'dust');
+    //app.set('view engine', 'ejs');
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser({uploadDir: './slides/'}));
@@ -127,11 +136,17 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
+// app.get('/', function(req, res){
+  // res.render('index2', {
+    // title: 'Testing out dust.js server-side rendering',
+    // username: "Welcome Max"
+  // });
+// });
 
 /** Routing */
-app.get('/', ensureAuthenticated, function(req, res){
-  res.redirect('/user');
-});
+ app.get('/', ensureAuthenticated, function(req, res){
+   res.redirect('/user');
+ });
 
 /** Initialize a new session with slides matching the id */
 app.get('/user/:username/start/:id', ensureAuthenticated, routes.slides.start);

@@ -1,7 +1,7 @@
 var schemas = require("../models/models.js");
 var fs = require("fs");
 var moment = require('moment');
-var ejs = require('ejs');
+var dust = require('dustjs-linkedin');
 
 
 exports.getsingle = function(req, res) {
@@ -12,7 +12,7 @@ exports.signup = function(req, res) {
 	if (req.body.signupusername == "" || req.body.signuppassword == "") {
 		res.render('index', {
 			message : "Missing credentials",
-			fromsignup : 'true'
+			fromsignup : true
 		});
 		return;
 	}
@@ -20,7 +20,7 @@ exports.signup = function(req, res) {
 	if (myRegxp.test(req.body.signupusername) == false || myRegxp.test(req.body.signuppassword) == false) {
 		res.render('index', {
 			message : "Credentials must be only alphanumeric, between 3 and 10 characters",
-			fromsignup : 'true'
+			fromsignup : true
 		});
 		return;
 	}
@@ -28,14 +28,14 @@ exports.signup = function(req, res) {
 	if (myRegxp.test(req.body.signupemail) == false) {
 		res.render('index', {
 			message : "Please insert a valid email adress",
-			fromsignup : 'true'
+			fromsignup : true
 		});
 		return;
 	}
 	if (req.body.signuppassword != req.body.signuppasswordconfirm) {
 		res.render('index', {
 			message : "The two passwords are not matching",
-			fromsignup : 'true'
+			fromsignup : true
 		});
 		return;
 	}
@@ -47,7 +47,7 @@ exports.signup = function(req, res) {
 		if (user) {
 			res.render('index', {
 				message : "Username already taken",
-				fromsignup : 'true'
+				fromsignup : true
 			});
 		} else {
 			var newUser = new users({
@@ -352,16 +352,25 @@ exports.renderuser = function(req, res) {
 		var users = db.model('User', schemas.userSchema);
 		var out = users.findById(req.user._id, function(err, user) {
 			if (user) {
-				slides = [];
 				var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
 				slideshowDB.find({
 					_id : {
 						$in : user.slides
 					}
 				}, function(err, slides) {
-					if (err)
-						throw err;
+					if (err){throw err;}
 					var type = req.query.type && /(succes|error|info)/g.test(req.query.type) ? 'alert-' + req.query.type : '';
+					modSlides = slides
+					
+					for(var i = 0; i <slides.length; i++){
+						slides[i] = {
+							_id: slides[i]._id,		
+							title: slides[i].title,
+							lastEdit: moment( slides[i].lastSession).format('DD.MM.YYYY HH:mm'),
+							lastSession: moment( slides[i].lastEdit).format('DD.MM.YYYY HH:mm')
+							};
+					}
+				
 					res.render('user', {
 						arrayslides : slides,
 						username : req.user.name,
@@ -379,6 +388,21 @@ exports.renderuser = function(req, res) {
 }
 
 //EJS helper to print dates in nice format. Done by Moment.js
-ejs.filters.fromNow = function(date){
-  return moment(date).format('DD.MM.YYYY HH:mm');
-}
+// ejs.filters.fromNow = function(date){
+  // return moment(date).format('DD.MM.YYYY HH:mm');
+// }
+dust.helpers.formatDate = function (chunk, context, bodies, params) {
+   	 var value = dust.helpers.tap(params.value, chunk, context),
+        timestamp,
+        month,
+        date,
+        year;
+
+    timestamp = new Date(value);
+    month = timestamp.getMonth() + 1;
+    date = timestamp.getDate();
+    year = timestamp.getFullYear();
+
+    return chunk.write(date + '.' + month + '.' + year);
+};
+

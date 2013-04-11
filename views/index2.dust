@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{+title}7th-Degree{/title}</title>
+    <script type="text/javascript" src='/javascripts/utils.js'></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    {+http_header/}
+</head>
+<body>
+<div id="wrapper">
+    <div id="header">
+    {>header /}
+        <div class="logo"></div>
+        <div class="header_login">
+            {?username}
+              {username}
+            {:else}
+            <form method="POST" action="/signin">
+            <label>Email <input type="text" name="user[username]" id="s-user"></label>
+            <label>Password<input type="text" name="user[password]" id="s-pass"></label>
+            <input type="submit" class="submit" value="Login">
+            </form>
+            {/username}
+        </div>
+        {+header/}
+    </div>
+    <div id="content">
+        <div id="right">
+          {+right/}
+        </div>
+        <div id="left">
+          {+left/}
+        </div>
+    </div>
+    <div id="footer">
+        <ul>
+            <li>About</li>
+            <li>Contact/Bug Report</li>
+            <li>Copyright © 2011-2012 Stanislav Palatnik. All rights reserved.</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

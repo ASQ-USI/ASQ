@@ -19,23 +19,22 @@ exports.editslideshow = function(req, res) {
 
 				// Run some jQuery on a html fragment
 				var jsdom = require("jsdom");
-				jsdom.env(data, ["http://code.jquery.com/jquery.js"], function(errors, window) {
-					var $ = window.$;
-					slides = $(".step");
-
-					/* Array with text on slide. If no text then one whitespace. */
-					slidesText = [];
-
-					/* Fill array with text */
-					var mytest = $(".step").each(function() {
-						slidesText.push($(this).text().replace(/\s+/g, ' '));
-					});
-					
+				//jsdom.env(data, ["http://code.jquery.com/jquery.js"], function(errors, window) {
+					// var $ = window.$;
+					// slides = $(".step");
+// 
+					// /* Array with text on slide. If no text then one whitespace. */
+					// slidesText = [];
+// 
+					// /* Fill array with text */
+					// var mytest = $(".step").each(function() {
+						// slidesText.push($(this).text().replace(/\s+/g, ' '));
+					// });
 
 					// res.render('edit', {
-						// username : req.user.name,
-						// slidesText : slidesText,
-						// title : slideshow.title
+					// username : req.user.name,
+					// slidesText : slidesText,
+					// title : slideshow.title
 					// });
 
 					var questions = [];
@@ -60,13 +59,13 @@ exports.editslideshow = function(req, res) {
 										if (newquestionob.answeroptions.length == question.answeroptions.length) {
 											questions.push(newquestionob);
 											if (questions.length == slideshow.questions.length) {
-												
+
 												res.render('edit', {
 													arrayquestions : questions,
 													username : req.user.name,
 													title : slideshow.title,
-													slidesText : slidesText,
-													slideshow: slideshow
+													//slidesText : slidesText,
+													slideshow : slideshow
 												});
 											}
 										}
@@ -75,12 +74,12 @@ exports.editslideshow = function(req, res) {
 								if (question.answeroptions.length == 0) {
 									questions.push(newquestionob);
 									if (questions.length == slideshow.questions.length) {
-										
+
 										res.render('edit', {
 											arrayquestions : questions,
 											username : req.user.name,
 											title : slideshow.title,
-											slidesText : slidesText
+											//slidesText : slidesText
 										});
 									}
 								}
@@ -89,27 +88,31 @@ exports.editslideshow = function(req, res) {
 						});
 					}
 					if (slideshow.questions.length == 0) {
-						
+
 						res.render('edit', {
 							arrayquestions : questions,
 							username : req.user.name,
 							title : slideshow.title,
-							slidesText : slidesText
+							//slidesText : slidesText
 						});
 					}
-				});
+				//});
 
 			});
 		}
 	});
 }
 
-exports.saveDetails  = function(req, res){
+exports.saveDetails = function(req, res) {
 	console.log("###########wekljfnekrn");
 	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
-	slideshowDB.findByIdAndUpdate(req.query.id, {title: req.body.presentationName, course: req.body.courseName}, function(err, slides){
-		 if (err) throw err;
-		 res.redirect('/user/' + req.user.name + '?alert=Slideshow successfully updated &type=succes');
+	slideshowDB.findByIdAndUpdate(req.query.id, {
+		title : req.body.presentationName,
+		course : req.body.courseName
+	}, function(err, slides) {
+		if (err)
+			throw err;
+		res.redirect('/user/' + req.user.name + '?alert=Slideshow successfully updated &type=succes');
 	});
 	//res.redirect('/user/' + req.user.name + '?alert=Slideshow successfully updated &type=succes');
 }
@@ -173,8 +176,11 @@ exports.savehtml = function(req, res) {
 
 	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
 	//Update last edit date
-	slideshowDB.findByIdAndUpdate(req.query.id, {lastEdit: new Date()}, function(err, slides){
-		 if (err) throw err;
+	slideshowDB.findByIdAndUpdate(req.query.id, {
+		lastEdit : new Date()
+	}, function(err, slides) {
+		if (err)
+			throw err;
 	});
 	slideshowDB.findById(req.query.id, function(err, slideshow) {
 		if (err) {
@@ -185,7 +191,7 @@ exports.savehtml = function(req, res) {
 				if (err) {
 					console.log(err);
 				} else {
-					
+
 					res.render('edithtml', {
 						username : req.user.name,
 						html : req.body.editorvalue,
@@ -194,8 +200,7 @@ exports.savehtml = function(req, res) {
 						alert : "Your data has been successfully saved.",
 						type : "succes"
 					});
-					
-					
+
 				}
 			});
 		}
@@ -232,8 +237,11 @@ exports.savestyle = function(req, res) {
 	//console.log(req.body.editorvalue);
 	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
 	//Update last edit date
-	slideshowDB.findByIdAndUpdate(req.query.id, {lastEdit: new Date()}, function(err, slides){
-		 if (err) throw err;
+	slideshowDB.findByIdAndUpdate(req.query.id, {
+		lastEdit : new Date()
+	}, function(err, slides) {
+		if (err)
+			throw err;
 	});
 	slideshowDB.findById(req.query.id, function(err, slideshow) {
 		if (err) {
@@ -386,7 +394,7 @@ exports.deletequestion = function(req, res) {
 
 exports.addquestion = function(req, res) {
 	var questionDB = db.model('Question', schemas.questionSchema);
-	
+
 	if (req.query.quest) {
 		questionDB.findById(req.query.quest, function(err, question) {
 			question.questionText = req.body.questionText;

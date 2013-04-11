@@ -20,7 +20,7 @@ exports.getSessionStats = function(req, res) {
 								    + allSessions[i].date.getHours() + ":" 
 								    + allSessions[i].date.getMinutes();
 								    
-					sessionArray.push(timeString);
+					sessionArray.push({time: timeString});
 				}
 				
 				
@@ -29,7 +29,9 @@ exports.getSessionStats = function(req, res) {
 				for (var i = 0; i < slideshow.questions.length; i++) {
 					questionDB.findById(slideshow.questions[i], function(err, question) {
 						if (question) {
-							questions.push(question.questionText);
+							questions.push({
+								text: question.questionText}
+							);
 						}
 						//Render it after last question added!
 						if (questions.length == slideshow.questions.length) {
