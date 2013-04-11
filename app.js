@@ -35,7 +35,6 @@ var express = require('express')
 
 
 
-
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into and deserialize users out of the session.  Typically,
@@ -244,10 +243,6 @@ app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyl
 app.post('/user/:username/edithtml', ensureAuthenticated, editFunctions.savehtml);
 app.post('/user/:username/editstyle', ensureAuthenticated, editFunctions.savestyle);
 
-
-// Crash at start with node.js 0.10.10
-//app.get('/render/', ensureAuthenticated, registration.parsequestion);
-//app.get('/render2/',  registration.sendanswer);
 
 // Crash at start with node.js 0.10.10
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);
