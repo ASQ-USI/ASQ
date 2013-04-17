@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<% include htmlHead %>
+		<title>ASQ - Edit <%=title%></title>
+  </head>
+
+  <body>
+
+		<!---   top menu --->
+		<% include menu %>
+		
+		
+		<!---   Content area   --->  
+    	<div class="container" id="mainContainer">
+	        
+	        <!--- Edit menu --->
+	        <div class="row" >
+				<div class="span12"><h3>Edit presentation</h3></div>
+	  			<% include editSubmenu %>
+	  		</div>
+			
+			<!---   Seperating Headline   --->       
+			<form action="savedetails?id=<%=slideshow._id%>" method="post">
+			  <fieldset>
+			    <label>Name of presentation</label>
+			    <input type="text" name="presentationName" value="<%=slideshow.title%>">
+			    
+			    <label>Course</label>
+			    <input type="text" name="courseName" value="<%=slideshow.course%>">
+			    
+			    <br />
+			    <button type="submit" class="btn">Save changes</button>
+			  </fieldset>
+			</form>
+			<a id="more" href="#" ><span class="label">Click for 5 more questions</span></a>
+			
+			<div class="row headline" >
+				<div class="span12"><h2>Slides overview</h2></div>
+	  		</div>
+			
+			<div class="row">
+				<div class="span12" id="slidesOverview">
+					
+					
+					<% for(var i = 0; i < slidesText.length; i++) {%>
+						<div class="slide">
+							<div class="innerText">
+								<% if(slidesText[i] == " ") { %>
+								<p>No text on slide.</p>
+								<% } %>
+								<p><%= slidesText[i] %></p> 
+							</div>
+							<div class="labelContainer">
+								<div class="labels">
+									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
+									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
+									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
+									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
+									
+									<span class="label label-info"><i class="icon-exclamation-sign icon-white"></i> What is ASQ about?</span>
+									
+								</div>
+							</div> 
+						</div>
+						<div class="add">
+							 <a href="#"><span class="badge badge-success">+</span> </a>
+						</div>
+					<% } %>
+					
+				</div>
+			</div>
+		
+	     </div> <!-- /container -->
+
+		 <!-- Le javascript --->
+
+		 <script src="/js/jquery.js"></script>
+		 <script src="/js/bootstrap.js"></script>
+		 <script>
+		 $('.edit').each(function() {
+			$(this).attr('href', $(this).attr('href')+window.location.search);	
+		 });
+		 $('#more').popover({title: "All questions for slide 3"});
+		 $('#more').popover('show');
+		 </script>
+  </body>
+</html>

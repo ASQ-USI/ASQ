@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<% include htmlHead %>
+		<title>ASQ - Edit CSS of </title>		
+	
+		<script>
+			$(document).ready(function() {
+				var initial=editor.getSession().getValue();
+				$('#editorvalue').hide();
+				$('#save').click(function() {
+					$('#editorvalue').val(editor.getSession().getValue());
+					$('#formeditor').submit();
+				});
+				$('#discard').click(function() {
+					$('#editorvalue').val(initial);
+					$('#formeditor').submit();
+				});
+			});
+		</script>
+		<style type="text/css" media="screen">
+		    #editor { 
+		        position: relative;
+		        height: 550px
+		    }
+		</style>
+	</head>
+	<body>
+		
+		<!---   top menu --->
+		<% include menu %>
+		
+		
+		<!---   Content area   --->  
+    	<div class="container" id="mainContainer">
+    		
+    		<!-- Show notification fo user feedback based on query alert and type-->
+			<% if (alert) { %>
+				<div class="alert <%= type %>">
+					<%= alert %>
+				</div>
+ 			<% } %>
+
+		 	<!--- Edit menu --->
+	        <div class="row" >
+				<div class="span12"><h3>Edit Stylesheet</h3></div>
+	  			<% include editSubmenu %>
+	  		</div>
+				
+			<div class="row">	
+								
+				<form class="form-horizontal"  id="formeditor" method="post">	
+					<textarea name="editorvalue" id="editorvalue">&nbrsp;</textarea>
+										
+					<div id="editor" class="span12" name="editor"><%=html%></div>
+				
+					<div class="span12">
+						<br />	
+						<button id="save" class="btn btn-primary pull-right" type="button" >Save Changes</button>
+						<span class="pull-right">&nbsp; &nbsp;</span>
+						<button class="btn pull-right" id="discard" type="button">Discard changes</button>  				
+					</div>
+					
+				</form>	
+					
+			</div>
+			
+			
+		</div>
+
+	<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+	    var editor = ace.edit("editor");
+	    editor.setTheme("ace/theme/vibrant_ink");
+	    editor.getSession().setMode("ace/mode/css");
+	
+		$('.edit').each(function() {
+			$(this).attr('href', $(this).attr('href')+window.location.search);
+		});
+	</script>
+	</body>
+</html>

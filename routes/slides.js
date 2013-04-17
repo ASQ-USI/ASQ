@@ -39,7 +39,8 @@ module.exports.adminControll = function(req, res) {
                         '/?alert=You have no session running!&type=error');
         } else {
             var slideshow = session.slideshow;
-             res.render('slidesControll', {title: slideshow.title, mode:'admin',
+             res.render('slidesControll', {title: slideshow.title, 
+             					  mode: "admin",
                                   host: appHost, port: app.get('port'),
                                   user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
                                   path: path.relative(app.get('views'), slideshow.path + 'index.html'),
@@ -60,6 +61,32 @@ module.exports.adminStatic = function(req, res) {
         else
             res.send(404, 'You do not have a session running');
     });
+}
+
+/** Renders the slideshow for thumbnail */
+module.exports.render = function(req, res) {
+	 var id = req.params.id;
+	 var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+
+     Slideshow.findById(id, function (err, slideshow) {
+          	 res.render('slidesRender', {	
+          	 	title: slideshow.title, 
+          	 	path: path.relative(app.get('views'), 
+          	 	slideshow.path + 'index.html'),
+                links: slideshow.links,
+             });
+        })                                                   
+}
+
+
+/** Serves slides for slideshow rendering */
+module.exports.renderStatic = function(req, res) {
+	 var id = req.params.id;
+	 var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+
+     Slideshow.findById(id, function (err, slideshow) {
+          	  res.sendfile(slideshow.path + req.params[0]);
+        })                                                   
 }
 
 /** Renders the slideshow for viewers */

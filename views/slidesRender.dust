@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Rendering of slides</title>
+
+    <link href="css/impress-demo.css" rel="stylesheet" />
+    <script src="/js/jquery.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    {#links}
+    	<link href="{.}" rel="stylesheet" />
+    {/links}
+    
+</head>
+
+<body class="impress-not-supported">
+	<div id="asq-container">
+   	{>"{path}" /}
+</div>
+<script src="/js/impress.js"></script>
+
+<script>
+        window.onload = function() {
+            impress().init();
+        }
+    </script>
+</body>
+
+</html>

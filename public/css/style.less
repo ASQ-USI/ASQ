@@ -106,12 +106,15 @@ body{
   margin-top: 20px;
   margin-bottom: 80px;
 }
-
+.btn{
+  margin-right: 10px;
+}
 /* -- Style for seperating headline -- */
 .headline{
   border-bottom: 1px solid #000;
   box-shadow:  0 1px 0 #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  margin-top: 20px;
   h2{
     font-size: 20px;
     font-weight: normal;
@@ -140,21 +143,41 @@ body{
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 1s;  
   position: relative;
-  h4{
-    text-align: center;
-    margin-top: 60px;
+ 
+
+  .bg{
+    background-size: cover;
+    background-position:center; 
+    background-repeat:  no-repeat;
+    position: absolute;
+    z-index: 1;
+    box-shadow: inset 3px 3px 0px #ccc, 
+        inset -3px -3px 0px #ccc,
+        inset 0px 0px 8px #000;
   }
+  h4{
+    color: #ccc;
+    text-align: center;
+    margin-top: 90px;
+    z-index: 100;
+    width: 100%;
+    position: absolute;
+    -webkit-backface-visibility: hidden;
+    text-shadow: 0px 0px 40px black;
+    display: none;
+    }
   div{
     position: absolute;
     .100WidthHeight;
     -webkit-backface-visibility: hidden;
   }
   .info{
-    background-color: #EFEFEF;   
+    background-color: #000;
+    text-shadow: black 0px 0px 500px;
   }
   .buttons{
     -webkit-transform: rotateY( 180deg );
-    background-color: #fff; 
+    background-color: #efefef; 
     box-shadow: 0px 50px 100px black;
     height: 195px;
     a{
@@ -189,10 +212,16 @@ body{
 }
 .hoverBorder{
   box-shadow: inset 3px 3px 0px #6666CC,inset -3px -3px 0px #6666CC;
+   box-shadow: inset 3px 3px 0px #FFF,inset -3px -3px 0px #FFF;
 }
-.thumb .info:hover{
-  .hoverBorder;
-  background-color: #FFF;
+.thumb:hover{
+  .bg {
+    opacity: 0.66;
+    .hoverBorder;
+    }
+  h4{
+    display: block;
+  }
 }
 .flipped{
   -webkit-transform: rotateY( 180deg ) translateZ(-100px);
@@ -311,15 +340,34 @@ body{
 #slidesOverview .add{
   float: left;
   margin-top: 100px;
+  height: 3px;
+  background-color: rgb(140,140,140);
+  width: 15px;
+  box-shadow: 0 3px 6px #000;
 }
+
+#slidesOverview .add:first-child{
+  display: none;
+}
+#slidesOverview .add:first-child:before{
+  content: '▶';
+  position: relative;
+  top: -8px;
+  left: 17px;
+  color: rgb(140,140,140);
+  font-size: 16px;
+}
+
 #slidesOverview .slide {
   float: left;
-  width: 230px;
-  height: 150px;
-  background-color: #EFEFEF;  
-  margin: 10px 5px 40px 5px; 
+  width: 255px;
+  height: 175px;
+  background-size: contain;  
+  background-color: black;
+  
+  margin: 10px 0px 40px 0px; 
   padding: 15px 10px 15px 10px;
-  box-shadow: 0 3px 6px #000;
+  box-shadow: 0 3px 6px #000, inset 3px 3px 0px #ccc, inset -3px -3px 0px #ccc;
   overflow: hidden;
   .innerText{
     position: absolute;
@@ -339,12 +387,17 @@ body{
   }
   .labelContainer{
     position: absolute;
-    width: 230px;
-    height: 150px;
+    width: 247px;
+    height: 180px;
     display: table;
     overflow: hidden;
   }
-  
+  .label{
+    overflow: hidden;
+    max-width: 247px;
+    margin-bottom: 3px;
+    
+  }
   .labels{
     vertical-align: bottom;
     display: table-cell;

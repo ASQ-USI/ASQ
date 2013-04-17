@@ -40,18 +40,19 @@
 			{/session}
 
 			<!---   Seperating Headline   --->
-			<!---   Seperating Headline   --->
-			<div class="row">
-				<div class="span12  headline">
-					<h2 class="pull-left">General course</h2>
-				</div>
-			</div>
 
-			<div class="row">
-				{#arrayslides}
+				{#slidesByCourses}
+				<div class="row">
+				<div class="span12  headline">
+					<h2 class="pull-left">{course}</h2>
+				</div>
+				</div>
+				<div class="row">
+				{#slides}
 				<div class="span3">
-					<div class="thumb">
-						<div class="info">
+					<div class="thumb" >
+						<div class="info" >
+							<div class="bg" style="background-image: url('/thumbs/{_id}-thumb.png')"></div>
 							<h4>{title}</h4>
 						</div>
 
@@ -71,20 +72,23 @@
 						</div>
 					</div>
 				</div>
-			{/arrayslides}
-			</div>
+				{/slides}
+				</div>
+			{/slidesByCourses}
+
 
 		</div>
 		<!-- /container -->
 
 		<!-- Le javascript --->
-		<script src="/js/jquery.js"></script>
 		<script src="/js/bootstrap.js"></script>
 		<script>
 			$('.thumb').click(function (evt) {
+				
 		    evt.stopPropagation(); 
-		    $(this).parent().siblings().find(".thumb").removeClass("flipped");
-		    $(this).parent().siblings().css("z-index", "1");
+		    console.log("here");
+		    $(this).parent().parent().parent().siblings().siblings().siblings().find(".thumb").removeClass("flipped");
+		    $(this).parent().parent().parent().siblings().siblings().siblings().css("z-index", "1");
 		    $(this).addClass("flipped");
 		    $(this).parent().css("z-index", "100");
 		});

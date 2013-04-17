@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
 		{>htmlHead/}
-		<title>ASQ - Edit <%=title%></title>
+		<title>ASQ - Edit {title}</title>
   </head>
 
   <body>
@@ -33,50 +33,32 @@
 			    <button type="submit" class="btn">Save changes</button>
 			  </fieldset>
 			</form>
-			<a id="more" href="#" ><span class="label">Click for 5 more questions</span></a>
 			
-			<div class="row headline" >
-				<div class="span12"><h2>Slides overview</h2></div>
+			<div class="row" >
+				<div class="span12 headline"><h2>Slides overview</h2></div>
 	  		</div>
 			
 			<div class="row">
 				<div class="span12" id="slidesOverview">
 					
-					{#slidesText}
-					
-						<div class="slide">
-							<div class="innerText">
-								{@if cond="{slidesText} == ' '"}
-									<p>No text on slide.</p>
-								{:else}
-									<p>{slidesText}</p> 
-								{/if}
-							</div>
+					{#slides slideshowID=slideshow._id}
+						<div class="add"></div>
+						<div class="slide {.}" style="background-image: url('/thumbs/{slideshowID}-{.}-thumb.png');">
 							<div class="labelContainer">
-								<div class="labels">
-									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
-									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
-									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
-									<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
-									
-									<span class="label label-info"><i class="icon-exclamation-sign icon-white"></i> What is ASQ about?</span>
-									
-								</div>
+								<div class="labels"> </div>
 							</div> 
 						</div>
-						<div class="add">
-							 <a href="#"><span class="badge badge-success">+</span> </a>
-						</div>
-					
-					{/slidesText}
+						
+					{/slides}
 				</div>
 			</div>
 		
 	     </div> <!-- /container -->
 
 		 <!-- Le javascript --->
+		
 
-		 <script src="/js/jquery.js"></script>
+		 
 		 <script src="/js/bootstrap.js"></script>
 		 <script>
 		 $('.edit').each(function() {
@@ -84,6 +66,19 @@
 		 });
 		 $('#more').popover({title: "All questions for slide 3"});
 		 $('#more').popover('show');
+		 </script>
+		 
+		 <script>
+		 	var questions = [ 
+		 		{#questions}
+		 		{ afterslide: "{afterslide}" ,
+		 		 text: "{questionText}" },
+		 		{/questions} 
+		 	];
+		 	for(var i = 0; i < questions.length; i++){
+		 		console.log("haha");
+		 		$("." + questions[i].afterslide + " > .labelContainer > .labels").append('<span class="label"><i class="icon-question-sign icon-white"></i> '+questions[i].text+'</span>');
+		 	}
 		 </script>
   </body>
 </html>

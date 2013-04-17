@@ -46,6 +46,7 @@ h2{
   box-shadow: 0 3px 6px #000;
   margin-top: 20px;
   color: #000;
+
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 1s;  
   position: relative;
@@ -58,8 +59,18 @@ h2{
     .100WidthHeight;
     -webkit-backface-visibility: hidden;
   }
+  .bg{
+    background-size: cover;
+    background-position:center; 
+    background-repeat:  no-repeat;
+    position: absolute;
+    z-index: 1;
+    box-shadow: inset 3px 3px 0px #ccc, 
+        inset -3px -3px 0px #ccc,
+        inset 0px 0px 8px #000;
+  }
   .info{
-    background-color: #EFEFEF;   
+    background-color: #000;   
   }
   .buttons{
     -webkit-transform: rotateY( 180deg );
@@ -78,6 +89,21 @@ h2{
   }
     p{
     text-align: center;
+  }
+  .dates{
+    background-color: rgba(0,0,0,0.2);
+    height: 30px;
+    display: table-cell;
+    margin-top: 20px;
+    p{
+      font-size: 13px;
+      display: inline;
+      padding: 5px;
+      float: left;
+    }
+    p:last-child{
+      float: right;
+    }
   }
 }
 .100WidthHeight{

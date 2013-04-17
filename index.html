@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bootstrap 101 Template</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Bootstrap -->
+		<link href="public/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="public/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+		<style type="text/css">
+			#myCarousel {
+				height: 420px;
+				background-image: url("public/img/pattern5.jpg");
+			}
+			#banner1 {
+				
+				display: table;
+				height: 420px;
+				margin: 0 auto;
+				background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 61%); /* FF3.6+ */
+				background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,0.1)), color-stop(61%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+				background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Chrome10+,Safari5.1+ */
+				background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Opera 12+ */
+				background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* IE10+ */
+				background: radial-gradient(ellipse at center,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* W3C */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1affffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+			}
+			#banner1 div {
+				display: table-cell;
+				vertical-align: middle;
+				text-align: center;
+				color: #fff;
+			}
+			#banner1 div p {
+				font-family: Georgia, sans-serif;
+				color: #CDCDCD;
+				font-style: italic;
+				font-size: 16px;
+				text-align: center;
+				display: block;
+				font-weight: 300;
+				letter-spacing: 1px;
+				margin-top: 20px;
+			}
+			.navbar-inverse .navbar-inner{
+				background-image: url("public/img/pattern5.jpg");
+				box-shadow: none;
+			}
+			.navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus{
+				background: none;
+			}
+		</style>
+
+	</head>
+	<body>
+		<div class="container">
+
+			<div class="navbar  navbar-fixed-top navbar-inverse">
+				<div class="navbar-inner">
+					<div class="container">
+
+						<!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+						<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+
+						<!-- Be sure to leave the brand out there if you want it shown -->
+						<a class="brand hidden-desktop" href="#"><img src="public/img/logo-small.png" /></a>
+
+						<!-- Everything you want hidden at 940px or less, place within here -->
+						<div class="nav-collapse collapse">
+							<ul class="nav">
+								<li class="active">
+									<a href="#">Home</a>
+								</li>
+								<li>
+									<a href="#">Link</a>
+								</li>
+								<li>
+									<a href="#">Link</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="myCarousel" class="carousel slide">
+			<ol class="carousel-indicators">
+				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+			</ol>
+			<!-- Carousel items -->
+			<div class="carousel-inner">
+				<div class="active item" id="banner1">
+					<div>
+						<img src="public/img/logo-big.png" />
+						<p>
+							Interactive presentations based on node.js and impress.js
+						</p>
+					</div>
+
+				</div>
+			</div>
+			<!-- Carousel nav -->
+			<a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+			<a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+		</div>
+
+		<!-- Marketing messaging and featurettes
+		================================================== -->
+		<!-- Wrap the rest of the page in another container to center all the content. -->
+
+		<div class="container marketing">
+
+			<!-- WHAT IS IT? section -->
+
+			<section class="featurette" id="what-is-it">
+				<h2 class="featurette-heading">What is it?</h2>
+				<p>
+					ASQ does this and this and that.
+				</p>
+			</section>
+
+			<hr class="featurette-divider">
+
+			<!-- PEOPLE section -->
+
+			<section id="people">
+				<h2 class="featurette-heading">People</h2>
+				<!-- Three columns of text below the carousel -->
+				<div class="row">
+					<div class="span4">
+						<img class="img-circle" data-src="holder.js/140x140">
+						<h2>Cesare Pautasso</h2>
+						<p>
+							Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+						</p>
+						<p>
+							<a class="btn" href="#">View details &raquo;</a>
+						</p>
+					</div><!-- /.span4 -->
+					<div class="span4">
+						<img class="img-circle" data-src="holder.js/140x140">
+						<h2>Vasileios Triglianos</h2>
+						<p>
+							Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+						</p>
+						<p>
+							<a class="btn" href="#">View details &raquo;</a>
+						</p>
+					</div><!-- /.span4 -->
+					<div class="span4">
+						<img class="img-circle" data-src="holder.js/140x140">
+						<h2>Jacques Dafflon</h2>
+						<p>
+							Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+						</p>
+						<p>
+							<a class="btn" href="#">View details &raquo;</a>
+						</p>
+					</div><!-- /.span4 -->
+				</div><!-- /.row -->
+
+				<!-- Three columns of text below the carousel -->
+				<div class="row text-center">
+					<div class="span4">
+						<img class="img-circle" data-src="holder.js/140x140">
+						<h2>Margarita Grinvald</h2>
+						<p>
+							Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+						</p>
+						<p>
+							<a class="btn" href="#">View details &raquo;</a>
+						</p>
+					</div><!-- /.span4 -->
+					<div class="span4">
+						<img class="img-circle" data-src="holder.js/140x140">
+						<h2>Max von Bülow</h2>
+						<p>
+							Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+						</p>
+						<p>
+							<a class="btn" href="#">View details &raquo;</a>
+						</p>
+					</div><!-- /.span4 -->
+					<div class="span4">
+						<img class="img-circle" data-src="holder.js/140x140">
+						<h2>Georgios Kokosioulis</h2>
+						<p>
+							Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+						</p>
+						<p>
+							<a class="btn" href="#">View details &raquo;</a>
+						</p>
+					</div><!-- /.span4 -->
+				</div><!-- /.row -->
+			</section>
+
+			<hr class="featurette-divider">
+
+			<!-- PUBLICATIONS section -->
+
+			<section id="publications" class="featurette">
+				<h2 class="featurette-heading">Publications</h2>
+				<div class="span6">
+					<h5>2013</h5>
+					<ul>
+						<li>
+							Vasileios Triglianos and Cesare Pautasso. <strong>ASQ: Interactive web presentations for hybrid MOOCs.</strong>
+							Rio de Janeiro, Brazil, May 2013. ACM.
+							[&nbsp;<a href="asq_bib.html#triglian2013:www2013">bib</a>&nbsp;]
+						</li>
+					</ul>
+				</div><!-- /.span4 -->
+			</section>
+
+			<hr class="featurette-divider">
+
+			<section id="source" class="featurette">
+				<h2 class="featurette-heading">Source code</h2>
+				<p>
+					Soruce code goes here
+				</p>
+			</section>
+
+			<hr class="featurette-divider">
+
+			<section id="contact" class="featurette">
+				<h2 class="featurette-heading">Contact</span></h2>
+				<p>
+					Contact Information here
+				</p>
+			</section>
+
+			<hr class="featurette-divider">
+
+			<!-- /END THE FEATURETTES -->
+
+			<!-- FOOTER -->
+			<footer>
+				<p class="pull-right">
+					<a href="#">Back to top</a>
+				</p>
+				<p>
+					2013 University of Lugano, Faculty of <a href="http://www.inf.usi.ch/">Informatics</a>
+				</p>
+			</footer>
+
+		</div><!-- /.container -->
+		<script src="http://code.jquery.com/jquery.js"></script>
+		<script src="public/js/bootstrap.min.js"></script>
+	</body>
+</html>

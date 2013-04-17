@@ -14,7 +14,7 @@ var express = require('express')
   , routes = require('./routes')
   , flash = require('connect-flash')
   , passport = require('passport')
-  , jsdom = require('jsdom')
+  , phantom = require('phantom')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
   , editFunctions = require('./routes/edit')
@@ -242,6 +242,14 @@ app.get('/user/:username/edithtml', ensureAuthenticated, editFunctions.edithtml)
 app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyle);
 app.post('/user/:username/edithtml', ensureAuthenticated, editFunctions.savehtml);
 app.post('/user/:username/editstyle', ensureAuthenticated, editFunctions.savestyle);
+app.post('/user/:username/savedetails', ensureAuthenticated, editFunctions.saveDetails);
+
+//Render presentations in iframe for thumbnails
+app.get('/slidesInFrame/:id/', function(req,res){
+	res.render('slidesIFrame', {id: req.params.id, url: req.query.url});
+});
+app.get('/slidesRender/:id/', routes.slides.render);
+app.get('/slidesRender/:id/*', routes.slides.renderStatic);
 
 
 // Crash at start with node.js 0.10.10
