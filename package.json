@@ -28,18 +28,21 @@
         "unzip" : "0.1.x",
         "promised-io" : "0.3.x",
         "rimraf" :"2.1.x",
-		"adm-zip" : "0.2.x"
+		"adm-zip" : "0.2.x",
         "wrench" :"1.4.x",
         "jsdom": "0.5.x",
         "dust": "x.x.x",
-        "dustjs-linkedin" : "1.2.x"
+        "dustjs-linkedin" : "1.2.x",
+        "cheerio" : "0.10.8",
+        "sugar": "*",
+        "when" : "*"
     },
     "engines" : {
         "node" : "0.8.x",
         "npm" : "1.1.X"
     },
     "devDependencies":{
-        "mocha" : "1.8.x",
-        "chai" : "1.5.x"
+        "mocha" : "*",
+        "chai" : "*"
     }
 }
