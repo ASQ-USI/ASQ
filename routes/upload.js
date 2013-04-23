@@ -73,7 +73,7 @@ module.exports.post = function(req, res) {
                     }
                 );
 
-    // Check adn parse questions.json
+    // Check and parse questions.json
     var questions = pfs.readFile(folderPath + '/questions.json').then(
                     function(file) {
                         console.log('questions ok');

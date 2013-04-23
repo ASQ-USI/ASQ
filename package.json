@@ -42,6 +42,8 @@
     },
     "devDependencies":{
         "mocha" : "*",
-        "chai" : "*"
+        "mocha-as-promised" : "*",
+        "chai" : "*",
+        "chai-as-promised" : "*"
     }
 }
