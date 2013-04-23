@@ -1,80 +1,66 @@
-var sugar = require('sugar'),
+var fs = require('fs'), 
+  sugar = require('sugar'),
   chai = require('chai'),
+  chaiAsPromised = require("chai-as-promised"),
+  asqParser = require('../lib/asqParser'),
+  expected = require('./fixtures/multiple-choice'),
+  cheerio = require('cheerio'),
   assert = chai.assert,
-  asqParser = require('../lib/asqParser');
+  expect = chai.expect;
+
+require("mocha-as-promised")();
+chai.use(chaiAsPromised);
 
 
-var testString="";
-testString += "  <section class=\"step\" id=\"slide-02\">";
-testString += "        <article class=\"assessment multi-choice aa-0-n custom-1\" id=\"q-2\">";
-testString += "            <h3 class=\"stem\">The interface of a software component:<\/h3>";
-testString += "            <ol class=\"upper-alpha\">";
-testString += "                <li class=\"option\">";
-testString += "                    describes the internal features of the component’s";
-testString += "                <\/li>";
-testString += "                <li class=\"option\">";
-testString += "                    clearly separates the surface of the component from its internal implementation";
-testString += "                <\/li>";
-testString += "                <li class=\"option\">";
-testString += "                    describes the functionality provided by the component";
-testString += "                <\/li>";
-testString += "                <li class=\"option\">";
-testString += "                    references the required interfaces on which the component depends upon";
-testString += "                <\/li>";
-testString += "                <li class=\"option\">";
-testString += "                    needs to be kept as simple as possible";
-testString += "                <\/li>";
-testString += "            <\/ol>";
-testString += "          <\/article>";
-testString += "        <\/section>";
 
-
-//asqParser.parse(testString);
 
 
 describe('AsqParser', function() {
+
+  // assets for multiple question
+  var mCHtml = fs.readFileSync( "test/fixtures/multiple-choice.html" ),
+    htmlMCString    = cheerio.load( mCHtml ).html(),
+  //assets for multiple question without id
+    mCNoIDHtml = fs.readFileSync( "test/fixtures/multiple-choice-no-id.html" ),
+    htmlMCNoIDString    = cheerio.load( mCNoIDHtml ).html();
+
+   //callback tests
    describe('.parse(html, callback)', function(){
 
-    //var generated = 
-    asqParser.parse(testString, function(err, generated){
-      expected = [{"stem":"<h3 class=\"stem\">The interface of a software component:</h3>","type":"","options":[{"option":"                    describes the internal features of the component’s                ","classList":"option"},{"option":"                    clearly separates the surface of the component from its internal implementation                ","classList":"option"},{"option":"                    describes the functionality provided by the component                ","classList":"option"},{"option":"                    references the required interfaces on which the component depends upon                ","classList":"option"},{"option":"                    needs to be kept as simple as possible                ","classList":"option"}]}]
-
-      it("should return an array", function(){
-        assert.isArray(generated, "generated object should be an array");
+    asqParser.parse(htmlMCString, function(err, generated){
+      it("should return an array with a correct number of options that matches the reference object", function(){
+        expect(generated).to.be.an('Array')
+          .that.deep.equals(expected)
+          .with.deep.property("[0].options.length", 5);
       });
+    });  
 
-      it("should have correct number of options", function(){
-        assert.equal(generated[0].options.length, 5, "generated object should have 5 options");
+    asqParser.parse(htmlMCNoIDString, function(err, generated){
+      it("should return an error when there are is a question without id", function(){
+        expect(err).to.not.equal(null);
       });
-
-      it("should return an object that matches the spec example object", function(){
-       
-        assert.deepEqual(generated, expected, "generated object should be deepEqual to spec object");
-      }); 
-
+      it("should return null data when there are is a question without id", function(){
+        expect(generated).to.equal(null);
+      });
     });
-    
   });
 
+  // promise tests
   describe('.parse(html) with promise', function(){
+    var promise = asqParser.parse(htmlMCString);
 
-    //var generated = 
-    asqParser.parse(testString).then(function(generated){
+    it("should return an array with a correct number of options that matches the reference object", function(){
+      return expect(promise).to.eventually.be.an('Array')
+        .that.deep.equals(expected)
+        .with.deep.property("[0].options.length", 5);
+    });
 
-      expected = [{"stem":"<h3 class=\"stem\">The interface of a software component:</h3>","type":"","options":[{"option":"                    describes the internal features of the component’s                ","classList":"option"},{"option":"                    clearly separates the surface of the component from its internal implementation                ","classList":"option"},{"option":"                    describes the functionality provided by the component                ","classList":"option"},{"option":"                    references the required interfaces on which the component depends upon                ","classList":"option"},{"option":"                    needs to be kept as simple as possible                ","classList":"option"}]}]
-
-      it("should return an array", function(){
-        assert.isArray(generated, "generated object should be an array");
-      });
-
-      it("should have correct number of options", function(){
-        assert.equal(generated[0].options.length, 5, "generated object should have 5 options");
-      });
-
-      it("should return an object that matches the spec example object", function(){
-       
-        assert.deepEqual(generated, expected, "generated object should be deepEqual to spec object");
-      });
+    var promiseNoId = asqParser.parse(htmlMCNoIDString);
+    it("should reject the promise when there is a question without id", function(){
+      return expect(promiseNoId).to.be.rejected;
+    });
+    it("should return an array with errors data when there is a question without id", function(){
+      expect(promiseNoId).to.eventually.equal(null);
     });
   });
 
