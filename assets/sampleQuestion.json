@@ -1,0 +1,28 @@
+[
+   {
+      "stem":"<h3 class=\"stem\">The interface of a software component:</h3>",
+      "type":"",
+      "options":[
+         {
+            "option":"                    describes the internal features of the component’s                ",
+            "classList":"option"
+         },
+         {
+            "option":"                    clearly separates the surface of the component from its internal implementation                ",
+            "classList":"option"
+         },
+         {
+            "option":"                    describes the functionality provided by the component                ",
+            "classList":"option"
+         },
+         {
+            "option":"                    references the required interfaces on which the component depends upon                ",
+            "classList":"option"
+         },
+         {
+            "option":"                    needs to be kept as simple as possible                ",
+            "classList":"option"
+         }
+      ]
+   }
+]

@@ -135,9 +135,7 @@
 
 		<!-- Le javascript --->
 		<div id="asq-container" >
-			
-			
-		{>"../slides/515c7e6aa0f5e48c59000002/index.html"/}
+			{>"{path}" /}
 		</div>
 		<script>
 			$(function() {

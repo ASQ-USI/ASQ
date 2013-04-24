@@ -14,7 +14,10 @@ var schemas = require('../models/models.js')
   , all = promise.all
   , config = require('../config')
   , AdmZip = require('adm-zip')
-  , rimraf = require('rimraf');
+  , rimraf = require('rimraf')
+  , exec = require('child_process').exec
+  , cheerio = require('cheerio')
+  , asyncblock = require('asyncblock');
 
 module.exports.show = function(req, res) {
     res.render('upload', {username: req.user.name});
@@ -118,7 +121,9 @@ module.exports.post = function(req, res) {
             console.log('all ok');
             seq([
                 function() {
+                	
                     newSlideshow.save();
+                    createThumb(newSlideshow._id);
                 },
                 function() {
                     if (result[1]) pfs.unlink(folderPath + '/assets.json');
@@ -132,6 +137,8 @@ module.exports.post = function(req, res) {
                         pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
                     });
                 }]);
+                
+              
         },
         function() {
             console.log('something went wrong');
@@ -143,4 +150,29 @@ module.exports.post = function(req, res) {
                 pfs.unlink(req.files.upload.path).then(res.redirect('/'));
             });
         });
+}
+
+function createThumb(slidesID) {
+	fs.readFile("./slides/" + slidesID + "/index.html", 'utf-8', function(error, data) {
+		var ids = [];
+		$ = cheerio.load(data);
+		$('.step').each(function() {
+			var id = this.attr().id;
+			//If slide does not have id, use step-x instead (for url calling)
+			if(id == undefined){
+				ids.push("step-"+ (ids.length + 1));
+			} else {
+				ids.push(id);
+			}
+		});
+		
+		asyncblock(function(flow){
+  			for(var i = 0; i < ids.length; i++){
+  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i]);
+  				exec("/usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i], flow.add());
+  				flow.wait();
+  			}
+		});
+		
+	});
 }

@@ -40,6 +40,17 @@
 			{/session}
 
 			<!---   Seperating Headline   --->
+			
+				{^slidesByCourses}
+					<div class="row">
+						<div class="span12  headline">
+							<h2 class="pull-left">No courses available</h2>
+                        </div>
+						<div class="span12">
+							<p>Please upload a new presentation.</p>
+						</div>
+                    </div>
+				{/slidesByCourses}
 
 				{#slidesByCourses}
 				<div class="row">
@@ -52,7 +63,7 @@
 				<div class="span3">
 					<div class="thumb" >
 						<div class="info" >
-							<div class="bg" style="background-image: url('/thumbs/{_id}-thumb.png')"></div>
+							<div class="bg" style="background-image: url('/thumbs/{_id}-0-thumb.png')"></div>
 							<h4>{title}</h4>
 						</div>
 

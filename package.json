@@ -30,8 +30,9 @@
 		"adm-zip" : "0.2.x",
         "wrench" :"1.4.x",
         "dustjs-linkedin" : "1.2.x",
-		"cheerio": "0.10.8"
- 		
+       	"dustjs-helpers": "1.1.x",
+		"cheerio": "0.10.8",
+		"asyncblock": "*"
     },
     "engines" : {
         "node" : "0.8.x",

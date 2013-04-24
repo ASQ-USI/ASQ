@@ -4,53 +4,32 @@ var moment = require('moment');
 var sys = require('sys');
 var exec = require('child_process').exec;
 var cheerio = require('cheerio');
+var asyncblock = require('asyncblock');
 
-var queue = [];
-var MAX = 2;
-// only allow 20 simultaneous exec calls
-var count = 0;
-// holds how many execs are running
-var urls = []// long list of urls
-var slides;
-
-// our callback for each exec call
-function wget_callback(err, stdout, stderr) {
-	count -= 1;
-
-	if (queue.length > 0 && count < MAX) {// get next item in the queue!
-		count += 1;
-		var url = queue.shift();
-		exec("/usr/local/w2png -W 1024 -H 768 -T  --delay=2 -D public/thumbs -o " + slides + "-" + url + " -s 0.3 http://localhost:3000/slidesInFrame/" + slides + "/?url=" + url, wget_callback);
-	}
-}
 
 /*  --- Edit Slideshow ---*/
-function puts(error, stdout, stderr) {
-	sys.puts(stdout)
-}
-
 function createThumb(slidesID) {
 	fs.readFile("./slides/" + slidesID + "/index.html", 'utf-8', function(error, data) {
 		var ids = [];
 		$ = cheerio.load(data);
 		$('.step').each(function() {
 			var id = this.attr().id;
-			ids.push(id);
-
-		});
-		urls = ids;
-		slides = slidesID
-
-		exec("/usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[0], puts);
-
-		urls.forEach(function(url) {
-			if (count < MAX) {// go get the file!
-				count += 1;
-				exec("/usr/local/w2png -W 1024 -H 768  --delay=2 -T -D public/thumbs -o " + slides + "-" + url + " -s 0.3 http://localhost:3000/slidesInFrame/" + slides + "/?url=" + url, wget_callback);
-			} else {// queue it up...
-				queue.push(url);
+			//If slide does not have id, use step-x instead (for url calling)
+			if(id == undefined){
+				ids.push("step-"+ (ids.length + 1));
+			} else {
+				ids.push(id);
 			}
 		});
+		
+		asyncblock(function(flow){
+  			for(var i = 0; i < ids.length; i++){
+  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i]);
+  				exec("/usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i], flow.add());
+  				flow.wait();
+  			}
+		});
+		
 	});
 }
 

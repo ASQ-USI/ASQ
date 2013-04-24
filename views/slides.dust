@@ -36,13 +36,13 @@
 
 	<body class="impress-not-supported">
 		{?mode}
-			{>"slidesWelcome.ejs"/}
+			{>"slidesWelcome"/}
 			{>"adminQuestionPopup.ejs"/}
 			{>"adminAnswerPopup.ejs"/}
 		{:else}
-			<% include slidesWait %>
-			<% include viewerQuestionPopup %>
-			<% include viewerAnswerPopup %>
+			{> "slidesWait.ejs" /}
+			{> "viewerQuestionPopup.ejs" /}
+			{> "viewerAnswerPopup.ejs"/}
 		{/mode}
 		
 		<div id="asq-container">
@@ -89,13 +89,23 @@
 				});
 			</script>
 		{/mode}
-		<script src="/js/impress-{mode}.js"></script>
-		<script src="/js/{mode}.js"></script>
+		
+		
+		
+		{?mode}
+		<script src="/js/impress-admin.js"></script>
+		<script src="/js/admin.js"></script>
+		{:else}
+		<script src="/js/impress-viewer.js"></script>
+		<script src="/js/viewer.js"></script>
+		{/mode}
+		
+		
 		<script>
 			window.onload = function() {
-				impress().init();
-				$('#welcomeScreen').modal('show');
-				connect( "/{host}/" , {port} , "{id}");
+				impress().init();{~n}
+				$('#welcomeScreen').modal('show');{~n}
+				connect( "{host}" , {port} , "{id}");{~n}
 			}
 		</script>
 	</body>

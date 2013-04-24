@@ -156,6 +156,10 @@ app.get('/user/:username/start/:id', ensureAuthenticated, routes.slides.start);
 /** Stop a user current session **/
 app.get('/user/:username/stop', ensureAuthenticated, routes.slides.stop);
 
+/** Edit user account settings **/
+app.get('/user/settings', ensureAuthenticated, registration.settings);
+app.post('/user/settings', ensureAuthenticated, registration.saveSettings);
+
 /** Join the session of user */
 app.get('/live/:user/', routes.slides.live);
 app.get('/live/:user/*', routes.slides.liveStatic);

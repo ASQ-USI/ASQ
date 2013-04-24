@@ -17,7 +17,7 @@ module.exports.admin = function(req, res) {
                         '/?alert=You have no session running!&type=error');
         } else {
             var slideshow = session.slideshow;
-             res.render('slides', {title: slideshow.title, mode:'admin',
+             res.render('slides', {title: slideshow.title, mode:true,
                                   host: appHost, port: app.get('port'),
                                   user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
                                   path: path.relative(app.get('views'), slideshow.path + 'index.html'),
@@ -40,7 +40,7 @@ module.exports.adminControll = function(req, res) {
         } else {
             var slideshow = session.slideshow;
              res.render('slidesControll', {title: slideshow.title, 
-             					  mode: "admin",
+             					  mode: true,
                                   host: appHost, port: app.get('port'),
                                   user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
                                   path: path.relative(app.get('views'), slideshow.path + 'index.html'),
@@ -102,7 +102,7 @@ module.exports.live = function(req, res) {
         }
         if (session.slideshow) {
             var slideshow = session.slideshow
-            res.render('slides', {title: slideshow.title, mode:'viewer',
+            res.render('slides', {title: slideshow.title, mode:false,
                                   host:appHost, port: app.get('port'),
                                   user: req.params.user,
                                   path: path.relative(app.get('views'), slideshow.path + 'index.html'),

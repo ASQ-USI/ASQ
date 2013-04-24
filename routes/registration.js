@@ -347,6 +347,78 @@ function arrayEqual(array1, array2) {
 	return true;
 }
 
+exports.settings = function(req, res){
+	var users = db.model('User', schemas.userSchema);
+	var out = users.findById(req.user._id, function(err, user) {
+		if (user) {
+			res.render('settings', {
+				user: user
+			})
+			
+		}
+	});
+}
+
+exports.saveSettings = function(req, res){
+	var myRegxp = /^([a-zA-Z0-9_-]){3,10}$/;
+	if ((req.body.inputUsername.length >0 && myRegxp.test(req.body.inputUsername) == false) || (req.body.inputPassword.length > 0 && myRegxp.test(req.body.inputPassword) == false)) {
+		res.render('settings', {
+			alert : "Credentials must be only alphanumeric, between 3 and 10 characters",
+		});
+		return;
+	}
+	var myRegxp = /\S+@\S+\.\S+/;
+	if (req.body.inputEmail.length > 0 && myRegxp.test(req.body.inputEmail) == false) {
+		res.render('settings', {
+			alert : "Please insert a valid email adress",
+		});
+		return;
+	}
+	if (req.body.inputPassword != req.body.inputRePassword && req.body.inputPassword > 2) {
+		res.render('settings', {
+			alert : "The two passwords are not matching or are too short (min. 6 charrcaters)",
+		});
+		return;
+	}
+
+	var users = db.model('User', schemas.userSchema);
+	//Test if username already exists
+	var out = users.findOne({
+		name : req.body.inputUsername
+	}, function(err, user) {
+		if (user) {
+			res.render('settings', {
+				message : "Username already taken"
+			});
+		}
+		return;
+	});
+	
+	//Obejct with only changes
+	var newValues = {}
+	if(req.body.inputUsername.length > 0){
+		newValues.name = req.body.inputUsername;
+	}
+	if(req.body.inputPassword.length > 0){
+		newValues.password = req.body.inputPassword;
+	}
+	if(req.body.inputEmail.length > 0){
+		newValues.email = req.body.inputEmail;
+	}
+	
+	//update user
+	var out = users.findByIdAndUpdate(req.user._id, newValues, function(err, user) {
+		if (user) {
+			res.render('settings', {
+				user: newValues,
+				alert: "Acoount successfully updated!",
+				type: "success"
+			})
+		}
+	});
+	
+}
+
 exports.renderuser = function(req, res) {
 	if (req.params.username == req.user.name) {
 		var users = db.model('User', schemas.userSchema);
