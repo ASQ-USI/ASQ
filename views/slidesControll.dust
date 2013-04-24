@@ -5,10 +5,16 @@
 		<title>ASQ - Edit {title}</title>
 		<script src="/js/jquery.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+		<script src="/js/bootstrap.js"></script>
+		{?mode}
+			<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+		{/mode}
 
 	</head>
 
 	<body  onorientationchange="updateOrientation();">
+		
+	
 
 		<!---   top menu --->
 		{>menu/}
@@ -79,54 +85,14 @@
 				<!--- Slides Controll --->
 				<div id="controllThumbs" class="hidden-phone">
 					<div class="wrapper">
-
-						<div class="thumb">
-							<p>
-								HTML5 Presentations with real time user feedback
-							</p>
-							<span class="badge slidenr">1</span>
-						</div>
-
-						<div class="thumb">
-							<p>
-								What is ASQ?
-							</p>
-							<div>
-								<span class="label label-success"><i class="icon-question-sign icon-white"></i> What is ASQ about?</span>
-								<span class="label label-info"><i class="icon-exclamation-sign icon-white"></i> What is ASQ about?</span>
+						
+						{#slidesThumbs}
+							<div class="thumb {.}" style="background-image: url('/thumbs/{slidesId}-{$idx}-thumb.png')">
+							
 							</div>
-							<span class="badge slidenr">2</span>
-						</div>
+						{/slidesThumbs}
 
-						<div class="thumb active">
-							<p>
-								Objective
-							</p>
-							<span class="badge slidenr">3</span>
-						</div>
-
-						<div class="thumb">
-							<p>
-								Project planning in 4 Milestones
-							</p>
-							<span class="badge slidenr">4</span>
-						</div>
-
-						<div class="thumb">
-							<div>
-								<span class="label label-success"><i class="icon-question-sign icon-white"></i> Do you think this is...</span>
-								<span class="label label-info"><i class="icon-exclamation-sign icon-white"></i> Do you think this is...</span>
-							</div>
-							<span class="badge slidenr">5</span>
-						</div>
-
-						<div class="thumb">
-							<div>
-								<span class="label label-success"><i class="icon-question-sign icon-white"></i> Do you think this is...</span>
-								<span class="label label-info"><i class="icon-exclamation-sign icon-white"></i> Do you think this is...</span>
-							</div>
-							<span class="badge slidenr"></span>
-						</div>
+						
 
 					</div>
 				</div>
@@ -134,7 +100,7 @@
 
 
 		<!-- Le javascript --->
-		<div id="asq-container" >
+		<div id="asq-container" style="display: none">
 			{>"{path}" /}
 		</div>
 		<script>
@@ -170,14 +136,19 @@
 
 			updateOrientation();
 		</script>
-		<script src="/js/bootstrap.js"></script>
-		<script src="/js/impress-{mode}.js"></script>
-		<script src="/js/{mode}.js"></script>
+		
+			
+			<script src="/js/impress-admin.js"></script>
+			<script src="/js/admin.js"></script>
+		
+		
 		<script>
 			window.onload = function() {
-				impress().init();
-				connect('\{host}\',  {port}, '{id}');
+				impress().init();{~n}
+				$('#welcomeScreen').modal('show');{~n}
+				connect( "{host}" , {port} , "{id}");{~n}
 			}
 		</script>
+		
 	</body>
 </html>

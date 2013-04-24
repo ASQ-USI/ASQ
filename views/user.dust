@@ -72,13 +72,8 @@
 							<a href="statistics?id={_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
 							<a href="edit?id={_id}" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
 							<div class="dates">
-
-								<p>
-									<i class="icon-play"></i> {lastSession}
-								</p>
-								<p>
-									<i class="icon-pencil" ></i> {lastEdit}
-								</p>
+								<p><i class="icon-play"></i> {lastSession}</p>
+								<p><i class="icon-pencil" ></i> {lastEdit}</p>
 							</div>
 						</div>
 					</div>
