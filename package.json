@@ -45,6 +45,7 @@
         "mocha" : "*",
         "mocha-as-promised" : "*",
         "chai" : "*",
-        "chai-as-promised" : "*"
+        "chai-as-promised" : "*",
+        "supertest" : "*"
     }
 }

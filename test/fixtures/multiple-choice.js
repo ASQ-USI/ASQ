@@ -1,5 +1,5 @@
-module.exports = [
-  {
+module.exports = {
+  "q-2" : {
     "stem":"<h3 class=\"stem\">The interface of a software component:</h3>",
     "htmlId":"q-2",
     "type":"",
@@ -26,4 +26,4 @@ module.exports = [
       }
     ]
   }
-]
+}
