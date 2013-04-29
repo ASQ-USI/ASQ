@@ -89,6 +89,7 @@
   .carousel .item {
     height: 500px;
   }
+/*
   .carousel img {
     position: absolute;
     top: 0;
@@ -96,13 +97,15 @@
     min-width: 100%;
     height: 500px;
   }
-
+*/
   .carousel-caption {
     background-color: transparent;
     position: static;
-    max-width: 550px;
+    
     padding: 0 20px;
-    margin-top: 200px;
+    /* margin-top: 200px;
+     max-width: 550px;*/
+   margin-top: 180px;
   }
   .carousel-caption h1,
   .carousel-caption .lead {
@@ -182,10 +185,11 @@
     .carousel .item {
       height: 500px;
     }
+    /*
     .carousel img {
       width: auto;
       height: 500px;
-    }
+    }*/
 
     .featurette {
       height: auto;
@@ -217,9 +221,10 @@
     .carousel .item {
       height: 300px;
     }
+    /*
     .carousel img {
       height: 300px;
-    }
+    }*/
     .carousel-caption {
       width: 65%;
       padding: 0 70px;
@@ -246,3 +251,37 @@
     }
 
   }
+  /* Our special stuff
+  -------------------------------------------------- */
+ #myCarousel{
+ 	background-image: url('../img/pattern5.jpg');
+ }
+ .carousel-inner{
+ 	box-shadow: inset 0px -3px 15px black;
+ }
+  .carousel-inner .container{
+  	display: table;
+  }
+  #banner1{
+  	background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 61%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,0.1)), color-stop(61%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Opera 12+ */
+	background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* IE10+ */
+	background: radial-gradient(ellipse at center,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1affffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+  }
+ #banner1 img{
+ 	display: block;
+ 	margin: 0 auto 0 auto;
+ 	display: table-cell;
+ 	vertical-align: middle;
+ }
+ #banner1 p{
+ 	font-family: Georgia, sans-serif;
+ 	max-width: 700px;
+ 	padding-top: 20px;
+ 	margin: 0 auto;
+ 	text-align: center;
+ }
