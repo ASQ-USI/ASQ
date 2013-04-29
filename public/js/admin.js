@@ -4,7 +4,7 @@
 */
 
 /** Connect back to the server with a websocket */
-var connect = function(host, port, session) {
+var connect = function(host, port, session, mode) {
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/ctrl');
 
@@ -57,7 +57,12 @@ var connect = function(host, port, session) {
         });
 
         socket.on('asq:goto', function(event) {
-            impress().goto(event.slide);
+        	if(mode == 'controll'){
+				$('#controllThumbs .thumbsWrapper .active').removeClass('active');
+	        	$('#controllThumbs').scrollTo('.' + event.slide, 500, {offset:-150});
+	        	$('#controllThumbs .thumbsWrapper .'+event.slide).addClass("active");
+        	}
+        	impress().goto(event.slide);
         });
 
         socket.on('asq:gotosub', function(event) {

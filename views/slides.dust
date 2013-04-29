@@ -105,7 +105,7 @@
 			window.onload = function() {
 				impress().init();{~n}
 				$('#welcomeScreen').modal('show');{~n}
-				connect( "{host}" , {port} , "{id}");{~n}
+				connect( "{host}" , {port} , "{id}", "view");{~n}
 			}
 		</script>
 	</body>

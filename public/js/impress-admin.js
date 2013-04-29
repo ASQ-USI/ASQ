@@ -721,6 +721,7 @@
         }
 
     };
+
  
     var next = function () {
         var active = activeStep;

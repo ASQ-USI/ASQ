@@ -7,14 +7,12 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/js/bootstrap.js"></script>
 		{?mode}
-			<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+		<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
 		{/mode}
 
 	</head>
 
 	<body  onorientationchange="updateOrientation();">
-		
-	
 
 		<!---   top menu --->
 		{>menu/}
@@ -40,78 +38,84 @@
 					</button>
 					<br />
 					<br />
-					<p style="text-align: center"><a href="/admin/" class="btn" style="margin: 0 auto; display: inline; text-align: center;">Go to presentation view</a></p>
+					<p style="text-align: center">
+						<a href="/admin/" class="btn" style="margin: 0 auto; display: inline; text-align: center;">Go to presentation view</a>
+					</p>
 
 				</div>
 			</div>
 		</div>
 		<!-- /container -->
 
-			<div id="slidesControll" style="display: none">
-				<!---   Content area   --->
-				<div class="container" id="mainContainer" class="visiblephone">
-					<div class="controlls">
-						<div id="clock">
-							<div>
-								<img src="/img/clock.png"/>
-							</div>
-							<div class="btn-group" data-toggle="buttons-radio">
-								<button type="button" class="btn btn-inverse active">
-									Timer
-								</button>
-								<button type="button" class="btn btn-inverse">
-									Countdown
-								</button>
-								<button type="button" class="btn btn-inverse">
-									Clock
-								</button>
-							</div>
+		<div id="slidesControll" style="display: none">
+			<!---   Content area   --->
+			<div class="container" id="mainContainer" class="visiblephone">
+				<div class="controlls">
+					<div id="clock">
+						<div>
+							<img src="/img/clock.png"/>
 						</div>
-						<br />
-						<button class="btn btn-large btn-primary controllButton" type="button"  id="nextButton" onclick="impress().next()">
-							Next slide
-						</button>
-						<a href="slidesProfQuest.html" class="btn btn-info controllButton" style="width: 150px" onclick="impress().prev()">Previous slide</a>
-						<a href="slidesProfStats.html">
-						<button class="btn btn-success controllButton" type="button">
-							Statistics
-						</button></a>
-
+						<div class="btn-group" data-toggle="buttons-radio">
+							<button type="button" class="btn btn-inverse active">
+								Timer
+							</button>
+							<button type="button" class="btn btn-inverse">
+								Countdown
+							</button>
+							<button type="button" class="btn btn-inverse">
+								Clock
+							</button>
+						</div>
 					</div>
+					<br />
+					<button class="btn btn-large btn-primary controllButton" type="button"  id="nextButton" onclick="impress().next()">
+						Next slide
+					</button>
+					<a href="slidesProfQuest.html" class="btn btn-info controllButton" style="width: 150px" onclick="impress().prev()">Previous slide</a>
+					<a href="slidesProfStats.html">
+					<button class="btn btn-success controllButton" type="button">
+						Statistics
+					</button></a>
 
 				</div>
-				<!-- /container -->
 
-				<!--- Slides Controll --->
-				<div id="controllThumbs" class="hidden-phone">
-					<div class="wrapper">
-						
-						{#slidesThumbs}
-							<div class="thumb {.}" style="background-image: url('/thumbs/{slidesId}-{$idx}-thumb.png')">
-							
-							</div>
-						{/slidesThumbs}
+			</div>
+			<!-- /container -->
 
-						
+			<!--- Slides Controll --->
+			<div id="controllThumbs" class="hidden-phone">
+				<div class="thumbsWrapper">
 
+					{#slidesThumbs}
+
+					<div class="thumb {.}" style="background-image: url('/thumbs/{slidesId}-{$idx}-thumb.png')">
+						&nbsp;
 					</div>
+					{/slidesThumbs}
+
 				</div>
 			</div>
-
+		</div>
 
 		<!-- Le javascript --->
 		<div id="asq-container" style="display: none">
 			{>"{path}" /}
 		</div>
+
 		<script>
 			$(function() {
 				var width = 0;
 				$('#controllThumbs .thumb').each(function() {
 					width += $(this).outerWidth(true);
 				});
-				$('#controllThumbs .wrapper').css('width', width + "px");
+				width = width + 80;
+				$('#controllThumbs .thumbsWrapper').css('width', width + "px");
 			});
-
+			$('.thumbsWrapper .thumb').click(function() {
+				var go = $(".thumb").index(this);
+				impress().emitGoto(go);
+				console.log(go);
+			});
 		</script>
 
 		<script type="text/javascript" language="javascript">
@@ -136,19 +140,18 @@
 
 			updateOrientation();
 		</script>
-		
-			
-			<script src="/js/impress-admin.js"></script>
-			<script src="/js/admin.js"></script>
-		
-		
+
+		<script src="/js/impress-admin.js"></script>
+		<script src="/js/admin.js"></script>
+		<script src="/js/jquery.scrollTo.js"></script>
+
 		<script>
-			window.onload = function() {
-				impress().init();{~n}
-				$('#welcomeScreen').modal('show');{~n}
-				connect( "{host}" , {port} , "{id}");{~n}
-			}
+window.onload = function() {
+impress().init();{~n}
+$('#welcomeScreen').modal('show');{~n}
+connect( "{host}" , {port} , "{id}", "controll");{~n}
+}
 		</script>
-		
+
 	</body>
 </html>

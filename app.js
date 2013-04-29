@@ -14,7 +14,6 @@ var express = require('express')
   , routes = require('./routes')
   , flash = require('connect-flash')
   , passport = require('passport')
-  , phantom = require('phantom')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
   , editFunctions = require('./routes/edit')
