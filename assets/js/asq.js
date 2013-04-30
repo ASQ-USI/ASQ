@@ -1,36 +1,40 @@
 $(window).on('load', function () {
-  var $el = $('#small-logo');
-  $el.data('asq-affixed', false);
+  var $el = $('#small-logo').data('asq-affixed', false);
 
-  this.$window = $(window)
-    .on('resize.asq', function(){
-      checkPosition()
-    })
-    .on('scroll.asq', checkPosition);
-
+  //check for window resize to see if we need mobile layout
+  var $window = $(window)
+    .on('resize.asq', checkWidth);
 
   function checkWidth(){
     if($window.innerWidth() > 979){
-      $el.css({'opacity':'0' , "display":"none"});
-      checkPosition(0)
+      $window
+      .off('scroll.asq')
+      .on('scroll.asq',checkPosition);
+
+      if ($el.offset().top >214) {
+        $el.fadeIn().data('asq-affixed', true);
+      }else{
+        $el.fadeOut().data('asq-affixed', false);
+      }
     }else{
-      $el.css({'opacity':'1' , "display":"block"});
+      $window.off('scroll.asq');
+      $el.fadeIn().data('asq-affixed', true);
     }
   }
 
-  function checkPosition(event, duration){
-    var dur = duration? duration:400;
-
+  function checkPosition(){
     if($window.innerWidth() < 979){
-      return
+      return;
     }
 
-    if($el.offset().top >214 && $el.data('asq-affixed') == false  ){
-      $el.fadeIn(dur).data('asq-affixed', true)
-    }else if($el.offset().top <214 && $el.data('asq-affixed') == true){
-      $el.fadeOut(dur).data('asq-affixed', false)
+    var offsetTop = $el.offset().top;
+
+    if(offsetTop >214 && $el.data('asq-affixed') == false  ){
+      $el.fadeIn().data('asq-affixed', true);
+    }else if(offsetTop <214 && $el.data('asq-affixed') == true){
+      $el.fadeOut().data('asq-affixed', false);
     }
   }
 
-  checkPosition(0);
+  checkWidth();
 }); 
