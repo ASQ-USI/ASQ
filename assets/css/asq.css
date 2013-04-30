@@ -140,14 +140,19 @@
   ------------------------- */
 
   .featurette-divider {
-    margin: 80px 0; /* Space out the Bootstrap <hr> more */
+    margin: 40px 0; /* Space out the Bootstrap <hr> more */
   }
   .featurette {
     padding-top: 120px; /* Vertically center images part 1: add padding above and below text. */
     overflow: hidden; /* Vertically center images part 2: clear their floats. */
   }
+ .featurette:first-child {
+    padding-top: 0px; /* Vertically center images part 1: add padding above and below text. */
+    overflow: hidden; /* Vertically center images part 2: clear their floats. */
+  }
   .featurette-image {
     margin-top: -120px; /* Vertically center images part 3: negative margin up the image the same amount of the padding to center it. */
+   overflow: visible;
   }
 
   /* Give some space on the sides of the floated elements so text doesn't run right into it. */
@@ -166,12 +171,20 @@
     letter-spacing: -1px;
   }
 
-
+.navbar-inverse .navbar-inner{
+		background-image: url("../img/pattern5.jpg");
+	}
+.navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus{
+				background: none;
+			}	
 
   /* RESPONSIVE CSS
   -------------------------------------------------- */
 
   @media (max-width: 979px) {
+  	
+  	
+
 
     .container.navbar-wrapper {
       margin-bottom: 0;
@@ -226,7 +239,7 @@
       height: 300px;
     }*/
     .carousel-caption {
-      width: 65%;
+      /*width: 65%;*/
       padding: 0 70px;
       margin-top: 100px;
     }
@@ -272,11 +285,12 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1affffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
   }
- #banner1 img{
+ #banner1 img, #banner2 img{
  	display: block;
  	margin: 0 auto 0 auto;
  	display: table-cell;
  	vertical-align: middle;
+	max-height: 400px;
  }
  #banner1 p{
  	font-family: Georgia, sans-serif;
@@ -285,3 +299,8 @@
  	margin: 0 auto;
  	text-align: center;
  }
+ #banner2 .carousel-caption{
+ 	margin-top: 30px;
+ }
+#banner2 img{
+}
