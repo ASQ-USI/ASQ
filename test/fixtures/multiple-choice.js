@@ -2,7 +2,7 @@ module.exports = {
   "q-2" : {
     "stem":"<h3 class=\"stem\">The interface of a software component:</h3>",
     "htmlId":"q-2",
-    "type":"",
+    "formButtonType":"",
     "options":[
       {
         "option":"\n            describes the internal features of the component’s\n        ",

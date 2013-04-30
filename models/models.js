@@ -11,37 +11,30 @@ exports.userSchema = new Schema({
 	email: {type:String},
 	slides: {type: [ObjectId], default: []},
 	current: {type: ObjectId, default: null}
-
 });
 
-exports.questionSchema = new Schema({
-	stem : {type:String},
-	type : {}
-	body : {}
+mongoose.model("User",exports.userSchema);
+
+
+// exports.questionSchema = new Schema({
+// 	stem : {type:String},
+// 	type : {}
+// 	body : {}
+// });
+
+// exports
+
+var slideshowSchema= new Schema({
+	title: { type: String },
+	course: { type: String, default: "General" },
+	owner: { type: ObjectId },
+	questions: [ObjectId],
+	links: {type: Array, default: []},
+	lastSession: {type: Date, default: Date.now},
+	lastEdit: {type: Date, default: Date.now}
 });
 
-exports
-
-// var questionSchema=new Schema({
-// 	questionText: {type: String},
-// 	questionType: {type: String},
-// 	afterslide: {type: String},
-// 	answeroptions: {type: [ObjectId], ref: 'Option'}
-// });
-
-// exports.questionSchema=questionSchema;
-
-// var slideshowSchema= new Schema({
-// 	title: { type: String },
-// 	course: { type: String, default: "General" },
-// 	owner: { type: ObjectId },
-// 	questions: [ObjectId],
-// 	links: {type: Array, default: []},
-// 	lastSession: {type: Date, default: Date.now},
-// 	lastEdit: {type: Date, default: Date.now}
-// });
-
-// exports.slideshowSchema = slideshowSchema; 
+ exports.slideshowSchema = slideshowSchema; 
 
 // exports.slideshowSchema.virtual('path').get(function() {
 // 	return './slides/' + this._id + '/';

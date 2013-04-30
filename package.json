@@ -46,6 +46,10 @@
         "mocha-as-promised" : "*",
         "chai" : "*",
         "chai-as-promised" : "*",
-        "supertest" : "*"
+        "supertest" : "*",
+        "proxyquire" : "*"
+    },
+        "scripts": {
+        "test": "make test-unit"
     }
 }

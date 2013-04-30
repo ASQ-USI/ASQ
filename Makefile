@@ -1,7 +1,7 @@
 #copied from express.js
 
 MOCHA_OPTS= --check-leaks
-REPORTER = dot
+REPORTER = spec
 
 check: test
 
