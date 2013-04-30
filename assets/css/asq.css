@@ -25,7 +25,7 @@
 
   .navbar-wrapper.affix {
     position: fixed;
-    top: 0;
+    top: 200px;
     left: 0;
     right: 0;
     margin-top: 0px;
@@ -33,6 +33,11 @@
   }
   .navbar-wrapper .navbar {
 
+  }
+
+  /* Hide small log initially */
+  #small-logo{
+    display:none;
   }
 
   /* Remove border and change up box shadow for more contrast */
