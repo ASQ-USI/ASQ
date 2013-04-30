@@ -22,9 +22,8 @@ var express = require('express')
   , mongooseSessionStore = new SessionMongoose({
         url: "mongodb://127.0.0.1/login",
         interval: 120000
-    });
-
-  var config = require('./config');
+    })
+  ,config = require('./config');
 
   // save sessionStore to config for later access
   config.setSessionStore(mongooseSessionStore);
@@ -56,7 +55,7 @@ passport.deserializeUser(function(id, done) {
     });
 
 // Use the LocalStrategy within Passport.
-//   Strategies in passport require a `verify` function, which accept
+//   Strategies in passport require a `verify` function, which accepts
 //   credentials (in this case, a username and password), and invoke a callback
 //   with a user object.  In the real world, this would query a database;
 //   however, in this example we are using a baked-in set of users.
