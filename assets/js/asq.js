@@ -19,7 +19,6 @@ $(window).on('load', function () {
   }
 
   function checkPosition(event, duration){
-    console.log($el.offset());
     var dur = duration? duration:400;
 
     if($window.innerWidth() < 979){
@@ -28,12 +27,10 @@ $(window).on('load', function () {
 
     if($el.offset().top >214 && $el.data('asq-affixed') == false  ){
       $el.fadeIn(dur).data('asq-affixed', true)
-      console.log('should affix')
     }else if($el.offset().top <214 && $el.data('asq-affixed') == true){
       $el.fadeOut(dur).data('asq-affixed', false)
-      console.log('should defix');
     }
   }
 
-   checkPosition(0);
+  checkPosition(0);
 }); 
