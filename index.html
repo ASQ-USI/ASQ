@@ -31,7 +31,7 @@
 
     <!-- TOP RIGHT GITHUB RIBBON
     ================================================== -->
-    <div class="github-fork-ribbon-wrapper left">
+    <div class="github-fork-ribbon-wrapper left visible-desktop">
         <div class="github-fork-ribbon">
             <a href="https://github.com/ASQ-USI/ASQ">Fork me on GitHub</a>
         </div>
@@ -42,20 +42,21 @@
     ================================================== -->
     <div class="navbar-wrapper" data-spy="affix" data-offset-top="20">
       <!-- Wrap the .navbar in .container to center it within the absolutely positioned parent. -->
-      <div class="container">
+      
 
-        <div class="navbar navbar-inverse">
+        <div class="navbar navbar-fixed-top navbar-inverse">
           <div class="navbar-inner">
+          	<div class="container">
             <!-- Responsive Navbar Part 1: Button for triggering responsive navbar (not covered in tutorial). Include responsive CSS to utilize. -->
             <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="brand" href="index.html"><img width="80" src="assets/img/logo_small.png" alt="asq"></a>
+            <a class="brand hidden-desktop" href="index.html"><img width="80" src="assets/img/logo_small.png" alt="asq"></a>
             <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
             <div class="nav-collapse collapse">
-              <ul class="nav">
+              <ul class="nav pull-right">
                 <li class="active"><a href="#what-is-it">What is it?</a></li>
                 <li><a href="#people">People</a></li>
                 <li><a href="#publications">Publications</a></li>
@@ -81,6 +82,7 @@
             <div class="carousel-caption">
               <img src="assets/img/logo-big.png"/>
               <p class="lead">ASQ is an educational tool that supports many forms of assessment. Share presentations in real time, gather feedback, extract statistics.</p>
+              
             </div>
           </div>
         </div>
@@ -157,26 +159,13 @@
       <!-- Questions and Answers section -->
 
       <section class="featurette" id="qanda">
+      	<img class="featurette-image pull-left" src="assets/img/qanda.png" >
         <h2 class="featurette-heading">Questions and answers</h2>
         <p class="lead">ASQ logs answered questions together with timing meta-data and displays a statistical analysis about the feedback. This can be shown and discussed with the audience before moving on with the presentation. If participants have a question, they can enter it anytime through ASQ and associate it with the slide that provoked it. The teacher is notified and can decide to go back to the question either immediately or at the end of the lecture. </p>
       </section>
 
       <hr class="featurette-divider">
-      
-      <!-- Features section -->
-
-      <section class="featurette" id="features">
-        <h2 class="featurette-heading">Features</h2>
-        <ul class="lead">
-        	<li>Impress.js for authoring presentations</li>
-			<li>Easy syntax to embed questions in slides</li>
-			<li>Online editor to edit slides and questions</li>
-			<li>Statistics for questions</li>
-			<li>Multiple assessment modes</li>
-        </ul>
-      </section>
-
-      <hr class="featurette-divider">
+     
       
       
 
@@ -188,21 +177,20 @@
         <div class="row">
           <div class="span4">
             <img class="img-circle" data-src="holder.js/140x140">
-            <h2>Cesare Pautasso</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
+            <h2>Cesare Pautasso</h2><p>Professor in the Faculty of Informatics at the University of Lugano.</p>
+            <p><a class="btn" href="#http://www.pautasso.info/">Website</a></p>
           </div><!-- /.span4 -->
           <div class="span4">
             <img class="img-circle" data-src="holder.js/140x140">
             <h2>Vasileios Triglianos</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
+            <p>PhD Student in the Faculty of Informatics at the University of Lugano. <br />Lead of ASQ</p>
+            <p></p>
           </div><!-- /.span4 -->
           <div class="span4">
             <img class="img-circle" data-src="holder.js/140x140">
             <h2>Jacques Dafflon</h2>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
+            <p>Bachelor student in the Faculty of Informatics at the University of Lugano.<br /> Backend Developer</p>
+            <p><a class="btn" href="http://atelier.inf.usi.ch/~dafflonj/">Website</a></p>
           </div><!-- /.span4 -->
         </div><!-- /.row -->
 
@@ -211,20 +199,19 @@
           <div class="span4">
             <img class="img-circle" data-src="holder.js/140x140">
             <h2>Margarita Grinvald</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
+            <p>Bachelor Student in the Faculty of Informatics at the University of Lugano.<br />Lead of ASQ</p>
+            <p></p>
           </div><!-- /.span4 -->
           <div class="span4">
             <img class="img-circle" data-src="holder.js/140x140">
             <h2>Max von Bülow</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
+            <p>Bachelor student in the Faculty for Media-Informatics at LMU Munich.<br /> UX developer</p>
+            <p><a class="btn" href="http://www.maxmediapictures.de">Website</a></p>
           </div><!-- /.span4 -->
           <div class="span4">
             <img class="img-circle" data-src="holder.js/140x140">
             <h2>Georgios Kokosioulis</h2>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
+            <p>Bachelor Student at Athens. <br />Frontend developer</p>
           </div><!-- /.span4 -->
         </div><!-- /.row -->
       </section>
@@ -233,9 +220,10 @@
 
       <!-- PUBLICATIONS section -->
 
-      <section id="publications" class="featurette">
-        <h2 class="featurette-heading">Publications</h2>
-        <div class="span6">
+      <section id="publications">
+      	<div class="row">
+        <div class="span12">
+        	<h2 >Publications</h2>
           <h5>2013</h5>
           <ul>
             <li>Vasileios Triglianos and Cesare Pautasso.
@@ -244,12 +232,15 @@
                 [&nbsp;<a href="asq_bib.html#triglian2013:www2013">bib</a>&nbsp;]</li>
           </ul>
         </div><!-- /.span4 -->
+        </div>
       </section>
 
       <hr class="featurette-divider">
 
-	<section id="source" class="featurette">
-				<h2 class="featurette-heading">Source code</h2>
+	<section id="source" >
+		<div class="row">
+			<div class="span12">
+				<h2 >Source code</h2>
 				<p>
 					Grab the latest release
 				</p>
@@ -257,13 +248,29 @@
 
 				or fork us on <a href="https://github.com/ASQ-USI/ASQ">github</a>
 				<a href="#">Getting started guide</a>
+				<p> </p>
+				<hr class="featurette-divider">
+				<h2>Features</h2>
+		        <ul>
+		        	<li>Impress.js for authoring presentations</li>
+					<li>Easy syntax to embed questions in slides</li>
+					<li>Online editor to edit slides and questions</li>
+					<li>Statistics for questions</li>
+					<li>Multiple assessment modes</li>
+		        </ul>
+			</div>
+		</div>		
 	</section>
 
       <hr class="featurette-divider">
 
-      <section id="contact" class="featurette">
-        <h2 class="featurette-heading">Contact</span></h2>
-       	<p>Email us at asq-info at usi.ch</p>
+      <section id="contact">
+      	<div class="row">
+			<div class="span12">
+       			<h2>Contact</span></h2>
+       			<p>Email us at asq-info at usi.ch</p>
+       		</div>
+       	</div>
       </section>
 
       <hr class="featurette-divider">

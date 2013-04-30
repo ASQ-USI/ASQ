@@ -171,13 +171,6 @@
     letter-spacing: -1px;
   }
 
-.navbar-inverse .navbar-inner{
-		background-image: url("../img/pattern5.jpg");
-	}
-.navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus{
-				background: none;
-			}	
-
   /* RESPONSIVE CSS
   -------------------------------------------------- */
 
@@ -292,7 +285,7 @@
  	vertical-align: middle;
 	max-height: 400px;
  }
- #banner1 p{
+ #banner1 p, #banner a{
  	font-family: Georgia, sans-serif;
  	max-width: 700px;
  	padding-top: 20px;
@@ -304,3 +297,11 @@
  }
 #banner2 img{
 }
+
+	.navbar-inverse .navbar-inner{
+		background-image: url("../img/pattern5.jpg");
+	 	box-shadow: none;
+	}
+	.navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus{
+		background: none;
+	}
