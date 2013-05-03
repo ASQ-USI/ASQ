@@ -5,7 +5,7 @@ var Schema = mongoose.Schema,
 
 
 
-exports.userSchema = new Schema({
+userSchema = new Schema({
 	name: { type: String, unique:true },
 	password: { type: String },
 	email: {type:String},
@@ -13,7 +13,11 @@ exports.userSchema = new Schema({
 	current: {type: ObjectId, default: null}
 });
 
-mongoose.model("User",exports.userSchema);
+mongoose.model("User", userSchema);
+
+exports = {
+	userSchema : userSchema
+}
 
 
 // exports.questionSchema = new Schema({
@@ -24,17 +28,17 @@ mongoose.model("User",exports.userSchema);
 
 // exports
 
-var slideshowSchema= new Schema({
-	title: { type: String },
-	course: { type: String, default: "General" },
-	owner: { type: ObjectId },
-	questions: [ObjectId],
-	links: {type: Array, default: []},
-	lastSession: {type: Date, default: Date.now},
-	lastEdit: {type: Date, default: Date.now}
-});
+// var slideshowSchema= new Schema({
+// 	title: { type: String },
+// 	course: { type: String, default: "General" },
+// 	owner: { type: ObjectId },
+// 	questions: [ObjectId],
+// 	links: {type: Array, default: []},
+// 	lastSession: {type: Date, default: Date.now},
+// 	lastEdit: {type: Date, default: Date.now}
+// });
 
- exports.slideshowSchema = slideshowSchema; 
+//  exports.slideshowSchema = slideshowSchema; 
 
 // exports.slideshowSchema.virtual('path').get(function() {
 // 	return './slides/' + this._id + '/';

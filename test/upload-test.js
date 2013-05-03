@@ -1,17 +1,16 @@
-var sugar = require('sugar')
-, chai = require('chai')
-, chaiAsPromised = require("chai-as-promised")
-, assert = chai.assert
-, expect = chai.expect
-, request = require('supertest')
-, express = require('express')
-, upload = require('../routes/upload')
-, mongoose = require('mongoose')
-, schemas = ('../model/models')
-, passport = require('passport')
-, passportMock = require('./util/mock-passport-middleware')
-, proxyquire =  require('proxyquire')
-, configStub = {};
+var chai          = require('chai')
+, chaiAsPromised  = require("chai-as-promised")
+, expect          = chai.expect
+, request         = require('supertest')
+, express         = require('express')
+, upload          = require('../routes/upload')
+, schemas         = require('../models/models')
+, mongoose        = require('mongoose')
+, passport        = require('passport')
+, passportMock    = require('./util/mock-passport-middleware')
+, proxyquire      =  require('proxyquire')
+, configStub      = {}
+, path            = require('path')
 
 // support for promises
 require("mocha-as-promised")();
@@ -21,7 +20,7 @@ chai.use(chaiAsPromised);
 db = mongoose.createConnection('127.0.0.1', 'asq');
 
 // mock user
-var User = db.model('User', schemas.userSchema);
+var User = mongoose.model('User');
 var mockUser = new User({
   _id: mongoose.Types.ObjectId('4edd40c86762e0fb12000003'),
   name: "Alexandros Kontopides",
@@ -29,6 +28,7 @@ var mockUser = new User({
   email : 'user@domain.com'
 });
 
+// setup a small app for the upload test
 var app = express();
 app.configure(function() {
   app.use(express.bodyParser({uploadDir: './slides/'}));
@@ -42,7 +42,7 @@ app.configure(function() {
 });
 
 //mock config object
-var upload = proxyquire('../routes/upload', { '../config': {rootPath: __dirname + '/..'} });
+var upload = proxyquire('../routes/upload', { '../config': { rootPath: path.join( __dirname + '/..') } });
 
 //upload root
 app.post('/user/username/upload/', upload.post);
@@ -61,7 +61,7 @@ describe('upload', function() {
       request(app)
       .post('/user/username/upload/')
       .set('Accept', 'application/json')
-      .attach('upload', 'test/fixtures/sample_presentation_no_questions.zip', 'upload')      
+      .attach('upload', 'test/fixtures/sample_presentation_valid_questions.zip', 'upload')      
       .expect('Content-Type', /json/)
       .expect(200)
       .end(function(err, res){
