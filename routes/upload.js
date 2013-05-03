@@ -4,22 +4,21 @@
     TODO Handle upload of incrrect slideshows and their removal from the server.
     */
 
-var schemas = require('../models/models')
-, fs        = require('fs')
-, unzip     = require('unzip')
-, pfs       = require('promised-io/fs')
-, promise   = require('promised-io/promise')
-, when      = promise.when
-, seq       = promise.seq
-, all       = promise.all
-, config    = require('../config')
-, AdmZip    = require('adm-zip')
-, rimraf    = require('rimraf')
-, logger    = require('../lib/logger')
-, asqParser = require('../lib/asqParser')
-, cheerio   = require('cheerio')
+var slideshow     = require('../models/slideshow')
+, questionModel  = require('../models/question')
+, fs              = require('fs')
+, unzip           = require('unzip')
+, pfs             = require('promised-io/fs')
+, cheerio         = require('cheerio')
+, AdmZip          = require('adm-zip')
+, rimraf          = require('rimraf')
+, logger          = require('../lib/logger')
+, asqParser       = require('../lib/asqParser')
+, config          = require('../config')
+, fsUtil          = require('../lib/fs-util')
 
-logger.setLogLevel(4);
+
+logger.setLogLevel(0);
 
 module.exports.show = function(req, res) {
   res.render('upload', {username: req.user.name});
@@ -36,12 +35,13 @@ module.exports.post = function(req, res) {
 
 /**
   STEPS TO CREATE A NEW SLIDESHOW
-  1) unzip files
-  2) make sure index html exists
-  3) parse questions
-  4) create new questions if they exist
-  5) update the slide information for each question
-  6) store new slideshow object
+  1) create new Slideshow model
+  2) unzip files
+  3) make sure at least one html exists
+  4) parse questions
+  5) create new questions if they exist
+  6) update the slide information for each question
+  7) store new slideshow object
 
 
 readfile()
@@ -52,64 +52,53 @@ readfile()
 
   */
 
+  // STEPS TO CREATE A NEW SLIDESHOW
 
-  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+  // 1) create new Slideshow model
+  var Slideshow = db.model('Slideshow', slideshow.slideshowSchema);
 
   var newSlideshow = new Slideshow({
     title:req.files.upload.name,
     owner: req.user._id
   });
 
-
+  // 2) unzip files
   var folderPath = config.rootPath + '/slides/' + newSlideshow._id;
   var zip = new AdmZip(req.files.upload.path);
   zip.extractAllTo(folderPath);
 
-  var index = pfs.readFile(folderPath + '/index.html').then(    
-    function(file) {
-      logger.log(folderPath + '/index.html')
-      logger.log('index.html ok');
-      logger.log('parsing file for questions...');
+  // make sure at least one html exists
+  fsUtil.getFirstHtmlFile(folderPath)
+    .then(
+      function(filePath){
+        logger.log('will use ' + filePath + ' for main presentation file...');
+        return pfs.readFile(filePath)
+    })
 
-      asqParser.parse(cheerio.load(file))
-        .then(function(questions){
-          logger.log(JSON.stringify(questions))
-          logger.log('questions successfully parsed');
-          res.send(200, JSON.stringify(questions));
-        },
-        function(error){
-          logger.error(error);
-        })
+    //4) parse questions
+    .then(    
+      function(file) {
+        logger.log('parsing main .html file for questions...');
+        return asqParser.parse(file);
 
-      
-      
-      return true;
+    })
+
+    //5) create new questions if they exist
+    .then(
+      function(questionsJSON){
+
+      logger.log('questions successfully parsed');
+      questionModel.createlo(questionsJSON, function(err){
+      //   console.log( "I am here" )
+         res.send(200, JSON.stringify(questionsJSON));
+      })
+     
     },
-    function() {
-      logger.error('index.html is missing');
-      reject(new Error('index.html is missing'));
-      return false;
-    }
-  );
 
-    // Check and parse assets.json
-    // var assets = pfs.readFile(folderPath + '/assets.json').then(
-    //   function(file) {
-    //     console.log('assets ok');
-    //     var assets = JSON.parse(file);
-    //     newSlideshow.title = assets.title;
-    //     newSlideshow.course = "General course";
-    //     newSlideshow.links = assets.links || [];
-    //     console.log(assets);
-    //     return true;
-    //   },
-    //   function(error) {
-    //     console.log(__dirname)
-    //     console.log(error)
-    //     console.log('error: assets.json');
-    //     return false;
-    //   }
-    //   );
+    function(error){
+      logger.error(error);
+    });
+
 
     // Check and parse questions.json
     // var questions = pfs.readFile(folderPath + '/questions.json').then(
