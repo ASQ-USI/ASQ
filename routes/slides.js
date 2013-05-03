@@ -70,7 +70,8 @@ module.exports.adminControll = function(req, res) {
 					id : session.id,
 					date : session.date,
 					slidesId : slideshow._id,
-					slidesThumbs : ids
+					slidesThumbs : ids,
+					slideshow: slideshow
 				});
 			});
 		}
@@ -92,11 +93,16 @@ module.exports.render = function(req, res) {
 	var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 
 	Slideshow.findById(id, function(err, slideshow) {
+		if(slideshow){
 		res.render('slidesRender', {
-			title : slideshow.title,
+			
 			path : path.relative(app.get('views'), slideshow.path + 'index.html'),
 			links : slideshow.links,
 		});
+		}else{
+			res.send(404, "Slideshow not found");
+		}
+		
 	})
 }
 /** Serves slides for slideshow rendering */

@@ -3,155 +3,125 @@
 	<head>
 		{>htmlHead/}
 		<title>ASQ - Edit {title}</title>
-		<script src="/js/jquery.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/js/bootstrap.js"></script>
-		{?mode}
 		<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
-		{/mode}
-
 	</head>
 
-	<body  onorientationchange="updateOrientation();">
+	<body onorientationchange="updateOrientation();">
 
-		<!---   top menu --->
+		<!---   Top menu --->
 		{>menu/}
 
-		<!---   Content area   --->
+		<!---   Content of start screen   --->
 		<div class="container-fluid" id="mainContainer">
-
-			<!--- Edit menu --->
-			<div class="row-fluid" id="waitingScreen">
-				<div class="span12 headline">
-					<h1 style="text-align: center;">{title}</h1>
-					<h5 style="text-align: center;" >Please open this link to follow the presentation</h5>
-
-					<a href="http://{host}:{port}/live/{user}/"><h2 style="text-align: center;">http://{host}:{port}/live/{user}/</h2></a>
-				</div>
-				<div class="span3 offset4">
-					<p id="viewers" style="text-align: left; width: 185px; margin: 0 auto 0 auto;"></p>
-					<p id="numViewers" style="text-align: center;" class="muted">
-						Waiting for viewers
-					</p>
-					<button class="btn btn-primary btn-large"  data-dismiss="modal" onclick="impress().start()" style="margin: 0 auto; display: block">
-						Start presentation
-					</button>
-					<br />
-					<br />
-					<p style="text-align: center">
-						<a href="/admin/" class="btn" style="margin: 0 auto; display: inline; text-align: center;">Go to presentation view</a>
-					</p>
-
-				</div>
-			</div>
+			{>slidesControllStart/}
 		</div>
-		<!-- /container -->
+		<!-- /start screen -->
 
+		<!---  Controlls for runnig presentation --->
 		<div id="slidesControll" style="display: none">
-			<!---   Content area   --->
-			<div class="container" id="mainContainer" class="visiblephone">
-				<div class="controlls">
-					<div id="clock">
-						<div>
-							<img src="/img/clock.png"/>
-						</div>
-						<div class="btn-group" data-toggle="buttons-radio">
-							<button type="button" class="btn btn-inverse active">
-								Timer
-							</button>
-							<button type="button" class="btn btn-inverse">
-								Countdown
-							</button>
-							<button type="button" class="btn btn-inverse">
-								Clock
-							</button>
-						</div>
-					</div>
-					<br />
-					<button class="btn btn-large btn-primary controllButton" type="button"  id="nextButton" onclick="impress().next()">
-						Next slide
-					</button>
-					<a href="slidesProfQuest.html" class="btn btn-info controllButton" style="width: 150px" onclick="impress().prev()">Previous slide</a>
-					<a href="slidesProfStats.html">
-					<button class="btn btn-success controllButton" type="button">
-						Statistics
-					</button></a>
-
-				</div>
-
-			</div>
-			<!-- /container -->
-
-			<!--- Slides Controll --->
-			<div id="controllThumbs" class="hidden-phone">
-				<div class="thumbsWrapper">
-
-					{#slidesThumbs}
-
-					<div class="thumb {.}" style="background-image: url('/thumbs/{slidesId}-{$idx}-thumb.png')">
-						&nbsp;
-					</div>
-					{/slidesThumbs}
-
-				</div>
-			</div>
+			{>slidesControllRunning/}
 		</div>
 
-		<!-- Le javascript --->
+		<!-- Non visible presentation --->
 		<div id="asq-container" style="display: none">
 			{>"{path}" /}
 		</div>
 
 		<script>
+		var slidesId = '{slideshow._id}';
+		var sessionStart =new Date('{slideshow.lastSession}');
+			/*  Add thumbnails and adjust size */
 			$(function() {
 				var width = 0;
-				$('#controllThumbs .thumb').each(function() {
+				
+				/* Add space for every thumbnail */
+				$('.controlThumbs .thumb').each(function() {
 					width += $(this).outerWidth(true);
 				});
+				
+				/* Add extra space for bigger active thumbnail */
 				width = width + 80;
-				$('#controllThumbs .thumbsWrapper').css('width', width + "px");
+				
+				$('.thumbsWrapper').css('width', width + "px");
 			});
+			
+			
+			/* Click handler for thumbnails */
 			$('.thumbsWrapper .thumb').click(function() {
 				var go = $(".thumb").index(this);
 				impress().emitGoto(go);
-				console.log(go);
+				/*console.log(go);*/
 			});
-		</script>
-
-		<script type="text/javascript" language="javascript">
+			
+			
+			/* Show or hide thumbnails on mobile devices depending on orientation */
 			function updateOrientation() {
-				var displayStr = "Orientation : ";
-
 				switch(window.orientation) {
 					case 0:
 					case 180:
 						$("#mainContainer").removeClass("hidden-phone");
-						$("#controllThumbs").addClass("hidden-phone");
+						$(".controlBottom").addClass("hidden-phone");
 						break;
 
 					case -90:
 					case 90:
 						$("#mainContainer").addClass("hidden-phone");
-						$("#controllThumbs").removeClass("hidden-phone");
+						$("#.controlBottom").removeClass("hidden-phone");
 						break;
 				}
-
 			}
-
 			updateOrientation();
+			
+			/* Manually toggle thumbnails */
+			$('#controlToggle').click(function() {
+				if( $('.controlBottom').hasClass('hideThumbs') ){
+					$('.controlBottom').removeClass('hideThumbs');
+					$('.controlBottom').css('bottom', '-260px');
+					$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
+				}else{
+					$('.controlBottom').addClass('hideThumbs');
+					$('.controlBottom').css('bottom', '0px');
+					$('#controlToggle a').html('<i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i>');
+				}
+			});
+			
+			
+			/* Clock */
+			setInterval( function() {
+				
+				var newDate = Math.abs(new Date() - sessionStart);
+				
+				var hours = Math.floor( ((newDate/1000) / 60 ) / 60);
+				var minutes = Math.floor(((newDate/1000)/60)%60);
+				var seconds = Math.floor((newDate/1000)%60);
+				
+				$("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+				$("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
+				$("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+				},1000); 
+				
+			/* Reset Clock */
+			
+			$('#resetClock').click(function(){
+				sessionStart = new Date();
+			});	
+			
 		</script>
+
 
 		<script src="/js/impress-admin.js"></script>
 		<script src="/js/admin.js"></script>
 		<script src="/js/jquery.scrollTo.js"></script>
 
 		<script>
-window.onload = function() {
-impress().init();{~n}
-$('#welcomeScreen').modal('show');{~n}
-connect( "{host}" , {port} , "{id}", "controll");{~n}
-}
+			/* Load impress and set up sockets */
+			window.onload = function() {
+				impress().init(); {~n}
+				$('#welcomeScreen').modal('show'); {~n}
+				connect( "{host}" , {port} , "{id}", "controll"); {~n}
+			}
 		</script>
-
 	</body>
 </html>

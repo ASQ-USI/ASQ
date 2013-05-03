@@ -1,0 +1,24 @@
+<!--- Edit menu --->
+<div class="row-fluid" id="waitingScreen">
+	<div class="span12 headline">
+		<h1 style="text-align: center;">{title}</h1>
+		<h5 style="text-align: center;" >Please open this link to follow the presentation</h5>
+
+		<a href="http://{host}:{port}/live/{user}/"><h2 style="text-align: center;">http://{host}:{port}/live/{user}/</h2></a>
+	</div>
+	<div class="span3 offset4">
+		<p id="viewers" style="text-align: left; width: 185px; margin: 0 auto 0 auto;"></p>
+		<p id="numViewers" style="text-align: center;" class="muted">
+			Waiting for viewers
+		</p>
+		<button class="btn btn-primary btn-large"  data-dismiss="modal" onclick="impress().start()" style="margin: 0 auto; display: block">
+			Start presentation
+		</button>
+		<br />
+		<br />
+		<p style="text-align: center">
+			<a href="/admin/" class="btn" style="margin: 0 auto; display: inline; text-align: center;">Go to presentation view</a>
+		</p>
+
+	</div>
+</div>

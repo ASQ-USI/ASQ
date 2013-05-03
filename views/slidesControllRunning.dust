@@ -1,0 +1,57 @@
+<!---   Content area   --->
+<div class="container controls visiblephone">
+
+	<div class="row-fluid">
+		<div class="span7">
+			<h4>Active slide</h4>
+			<iframe id="thisSlideFrame" src="http://{host}:{port}/live/{user}" width="100%" height="340px" ></iframe>
+		</div>
+		<div class="span5">
+			<h4>Next slide</h4>
+			<iframe id="nextSlideFrame" src="/slidesRender/{slidesId}/#/step-3" width="100%" height="260px"></iframe>
+			<div id="clock">
+				<p>
+					<span id="hours"></span> : <span id="min"></span> : <span id="sec"></span>   
+					<a class="btn btn-small btn-inverse" id="resetClock"><i class="icon-repeat icon-white"> </i> Reset timer</a>
+				</p>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="row" id="buttons">
+		<div class="span4">
+			<a href="/admin/statistics" class="btn btn-small btn-inverse">Show statistics</a>
+			<a href="/admin" class="btn btn-small btn-inverse">Go to presentation view</a>
+		</div>
+		<div class="span2">
+			<button class="btn btn-info" onclick="impress().prev()">Previous slide</button>
+		</div>
+		<div class="span2">
+			<button class="btn btn-large btn-primary" type="button" id="nextButton" onclick="impress().next();">Next slide</button>
+			
+		</div>
+	</div>
+</div>
+
+<!-- /container -->
+
+<!--- Thumbnails controllThumbs --->
+
+<div class="controlBottom hidden-phone">
+	
+	<div id="controlToggle" class="hidden-phone">
+		<a href="#"><i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i></a>
+	</div>
+	
+	<div class="controlThumbs">
+		<div class="thumbsWrapper">
+			{#slidesThumbs}
+			<div class="thumb {.}" style="background-image: url('/thumbs/{slidesId}-{$idx}-thumb.png')">
+				&nbsp;
+			</div>
+			{/slidesThumbs}
+		</div>
+	</div>
+	
+</div>

@@ -58,9 +58,12 @@ var connect = function(host, port, session, mode) {
 
         socket.on('asq:goto', function(event) {
         	if(mode == 'controll'){
-				$('#controllThumbs .thumbsWrapper .active').removeClass('active');
-	        	$('#controllThumbs').scrollTo('.' + event.slide, 500, {offset:-150});
-	        	$('#controllThumbs .thumbsWrapper .'+event.slide).addClass("active");
+				$('.controlThumbs .thumbsWrapper .active').removeClass('active');
+	        	$('.controlThumbs').scrollTo('.' + event.slide, 500, {offset:-150});
+	        	$('.controlThumbs .thumbsWrapper .' + event.slide).addClass("active");
+	        	
+	        	var next = $('#' + event.slide).next().attr('id');
+	        	$('#nextSlideFrame').attr('src','/slidesRender/'+slidesId+'/#/'+ next);
         	}
         	impress().goto(event.slide);
         });
