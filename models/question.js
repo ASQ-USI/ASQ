@@ -1,3 +1,7 @@
+/** @module models/question
+    @description the Questions Model
+*/
+
 var mongoose = require('mongoose')
 , Schema = mongoose.Schema;
 
@@ -21,17 +25,22 @@ var questionOptionSchema = new Schema({
 mongoose.model("QuestionOption",questionOptionSchema);
 
 
-var createlo =  function(doc, cb){
-  console.log(doc)
-  var Question = mongoose.model("Question");
+var create =  function(doc, cb){
+  var Question = db.model("Question");
+
   Question.create(doc, function(err){
     console.log("Error: " + err)
-    console.log("KOble: " +koble)
+    //  for (var i=1; i<arguments.length; ++i) {
+    //     var question = arguments[i];
+    //     console.log(question)
+    //     // do some stuff with candy
+    // }
+    cb();
   });
 }
 
 module.exports =  {
   questionSchema          : questionSchema,
   questionOptionSchema    : questionOptionSchema,
-  createlo                  : createlo
+  create                  : create
 }

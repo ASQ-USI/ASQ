@@ -11,13 +11,15 @@ var chai          = require('chai')
 , proxyquire      =  require('proxyquire')
 , configStub      = {}
 , path            = require('path')
+, fsUtil          = require('../lib/fs-util')
+, _               = require('underscore')
 
 // support for promises
 require("mocha-as-promised")();
 chai.use(chaiAsPromised);
 
 // mongodb connection
-db = mongoose.createConnection('127.0.0.1', 'asq');
+db = mongoose.createConnection('127.0.0.1', 'test-asq');
 
 // mock user
 var User = mongoose.model('User');
@@ -53,8 +55,39 @@ describe('upload', function() {
    //callback tests
    describe('.post(req, res)', function(){
 
-    after(function(){
-      db.close();
+    after(function(done){
+      var Slideshow = db.model('Slideshow');
+
+      Slideshow.find({}, function(err, docs ){
+        var uploadPath = path.join( __dirname + '/../slides/');
+          var totalDirs = docs.length;
+          if(totalDirs==0){
+            done(new Error("totalDirs shouldn't be 0"))
+          }
+
+          _.each(docs, function(doc){
+          fsUtil.removeRecursive(uploadPath, function(err,done){
+            if(err){
+              done(err)
+            }
+            if(--totalDirs ==0){
+              Slideshow.remove({}, function(err){
+                if(err){
+                  done(err)
+                }
+                var Question = db.model('Question')
+                Question.remove({}, function(err){
+                  if(err){
+                    done(err)
+                  }
+                   db.close()
+                   done();
+                });
+              });           
+            }
+          });
+        });
+      });
     });
 
     it("should return a json object ", function(done){

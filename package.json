@@ -34,7 +34,8 @@
         "dustjs-linkedin" : "1.2.x",
         "cheerio" : "0.10.8",
         "sugar": "*",
-        "when" : "*"
+        "when" : "*",
+        "underscore" : "*"
     },
     "engines" : {
         "node" : "0.8.x",

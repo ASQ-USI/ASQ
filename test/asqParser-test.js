@@ -23,7 +23,10 @@ describe('AsqParser', function() {
    //callback tests
    describe('.parse(html, callback)', function(){
 
-    asqParser.parse(htmlMCString, function(err, generated){
+    it.skip("should have tested options");
+    it.skip("have the next test rewritten propely");
+
+    asqParser.parse(htmlMCString, {outputFormat:'Object'} ,function(err, generated){
       it("should return an object with a correct number of options that matches the reference object", function(){
         expect(generated).to.deep.equals(expected)
           .with.deep.property("q-2.options.length", 5);
@@ -42,9 +45,9 @@ describe('AsqParser', function() {
 
   // promise tests
   describe('.parse(html) with promise', function(){
-    var promise = asqParser.parse(htmlMCString);
+    var promise = asqParser.parse(htmlMCString, {outputFormat: 'Object'});
 
-    it("should return an array with a correct number of options that matches the reference object", function(){
+    it("should return an object with a correct number of options that matches the reference object", function(){
       return expect(promise).to.eventually.deep.equals(expected)
         .with.deep.property("q-2.options.length", 5);
     });
