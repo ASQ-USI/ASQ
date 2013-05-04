@@ -85,12 +85,12 @@ readfile()
 
     //5) create new questions if they exist
     .then(
-      function(questionsJSON){
+      function(questions){
 
       logger.log('questions successfully parsed');
-      questionModel.createlo(questionsJSON, function(err){
-      //   console.log( "I am here" )
-         res.send(200, JSON.stringify(questionsJSON));
+      questionModel.create(questions, function(err){
+        newSlideshow.save();
+        res.send(200, JSON.stringify(questions));
       })
      
     },
