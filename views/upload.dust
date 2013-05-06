@@ -7,22 +7,22 @@
 	</head>
 	<body>
 
-		<!---   top menu --->
+		<!--   top menu -->
 		{>menu/}
 
-		<!---   Content area   --->
+		<!--   Content area   -->
 		<div class="container" id="mainContainer">
 
 			<div class="row">
-				<!---   Seperating Headline   --->
-				<div class="span12 headline"">
+				<!--   Seperating Headline   -->
+				<div class="span12 headline">
 					<h2>Upload new presentation</h2>
 				</div>
 
 			</div>
 			<div class="row">
 				<div class="span12">
-					<form method="POST" action="upload/" enctype="multipart/form-data" class="form-inline">
+					<form method="POST" action="./" enctype="multipart/form-data" class="form-inline">
 						<input id="lefile" type="file" name="upload" size="40" maxlength="100000" style="display:none">
 						<div class="input-append">
 							<input id="photoCover" class="input-large" type="text">

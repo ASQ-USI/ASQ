@@ -46,52 +46,54 @@ exports = {
 
 // exports.slideshowSchema.set('toJSON', { virtuals: true });
 
-// var answerSchema = new Schema({
-// 	question: {type: ObjectId, ref:'Question'},
-// 	answers: [{
-// 		user: {type: String}, 
-// 		content: {type: Array, default: []} ,
-// 		final: {type: Boolean, default: true}
-// 	}]
-// })
+var answerSchema = new Schema({
+	question: {type: ObjectId, ref:'Question'},
+	answers: [{
+		user: {type: String}, 
+		content: {type: Array, default: []} ,
+		final: {type: Boolean, default: true}
+	}]
+})
+mongoose.model("Answer", answerSchema);
+exports.answerSchema = answerSchema;
 
-// exports.answerSchema = answerSchema;
+var sessionSchema = new Schema({
+	presenter: { type: ObjectId, ref: 'User'},
+	slides: { type: ObjectId },
+	activeSlide: { type: String, default: '0' },
+	date: {type: Date, default: Date.now },
+	viewers: {type: Array, default: []},
+	answers: {type:[ObjectId], ref: 'Answer'},
+	showingQuestion: {type: Boolean, default: false},
+	showingAnswer: {type: Boolean, default: false},
+	started: {type: Boolean, default: false},
+	questionsDisplayed: {type: [ObjectId], ref: 'Question'}
+});
 
-// var sessionSchema = new Schema({
-// 	presenter: { type: ObjectId, ref: 'User'},
-// 	slides: { type: ObjectId },
-// 	activeSlide: { type: String, default: '0' },
-// 	date: {type: Date, default: Date.now },
-// 	viewers: {type: Array, default: []},
-// 	answers: {type:[ObjectId], ref: 'Answer'},
-// 	showingQuestion: {type: Boolean, default: false},
-// 	showingAnswer: {type: Boolean, default: false},
-// 	started: {type: Boolean, default: false},
-// 	questionsDisplayed: {type: [ObjectId], ref: 'Question'}
-// });
-
-// sessionSchema.methods.question = function(callback) {
-// 	var that = this;
-// 	var Slideshow = db.model('Slideshow', slideshowSchema);
-// 	Slideshow.findById(this.slides, function(err, slideshow) {
-// 		if (slideshow) {
-// 			var Question = db.model('Question', questionSchema);
-// 		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
-// 						afterslide: that.activeSlide},
-// 				        function(err, question) {
-// 							console.log('question');
-// 							console.log(question);
-// 							console.log(that.activeSlide);
-// 							callback(err, question);
-// 						});
-// 		}
+sessionSchema.methods.question = function(callback) {
+	var that = this;
+	var Slideshow = db.model('Slideshow', slideshowSchema);
+	Slideshow.findById(this.slides, function(err, slideshow) {
+		if (slideshow) {
+			var Question = db.model('Question', questionSchema);
+		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
+						afterslide: that.activeSlide},
+				        function(err, question) {
+							console.log('question');
+							console.log(question);
+							console.log(that.activeSlide);
+							callback(err, question);
+						});
+		}
 		
-// 	});
-// }
+	});
+}
 
-// sessionSchema.set('toJSON', { virtuals: true });
+sessionSchema.set('toJSON', { virtuals: true });
 
-// exports.sessionSchema = sessionSchema;
+mongoose.model("Session", sessionSchema);
+
+exports.sessionSchema = sessionSchema;
 
 // var optionSchema = new Schema( {
 // 	optionText: {type: String},

@@ -3,8 +3,9 @@
     TODO Handle upload of incrrect slideshows and their removal from the server.
     */
 
-var slideshow     = require('../models/slideshow')
-, questionModel  = require('../models/question')
+var schema        = require('../models/models')
+, slideshow       = require('../models/slideshow')
+, questionModel   = require('../models/question')
 , fs              = require('fs')
 , unzip           = require('unzip')
 , pfs             = require('promised-io/fs')
@@ -52,8 +53,7 @@ module.exports.post = function(req, res) {
   var zip = new AdmZip(req.files.upload.path);
   zip.extractAllTo(folderPath);
 
-  // make sure at least one html exists
-
+  //3) make sure at least one html exists
   fsUtil.getFirstHtmlFile(folderPath)
     .then(
       function(filePath){
@@ -103,16 +103,22 @@ module.exports.post = function(req, res) {
         logger.log('new slideshow saved to db');
         return pfs.unlink(req.files.upload.path);         
     })
-    // 10) redirect to user
+    //10) update slideshows for user
+    .then(function(){
+      var User = db.model('User');
+          return User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }).exec();
+    })
+    //11) redirect to user profile page
     .then(
-      function(){
+      function(user){
       logger.log('upload zip file unlinked');
       logger.log('upload complete!');
       res.redirect('/user/')
     },
 
+      // Error handling for all the above promises
       function(err){
-        res.redirect('/user/error?we_have_an_error')
+        pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
         logger.error(err);
     });
 
