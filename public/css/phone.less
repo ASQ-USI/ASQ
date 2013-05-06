@@ -13,6 +13,13 @@ body{
 .navbar .btn-navbar{
     margin-top: 12px;
 }
+.navbar .brand{
+  line-height: 34px;
+    img{
+      height: 34px;
+    }
+}
+
 
 /* -- Alert -- */
 .alert button{
@@ -25,7 +32,8 @@ body{
 h2{
   border-bottom: 1px solid #000;
   box-shadow:  0 1px 0 #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  margin-top: 20px;
   width: 100%;
   .controls{
     color: #FFF;
@@ -46,7 +54,7 @@ h2{
   box-shadow: 0 3px 6px #000;
   margin-top: 20px;
   color: #000;
-
+  
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 1s;  
   position: relative;
@@ -140,50 +148,99 @@ h2{
 }
 
 /* --- Controlls --- */
-#nextButton{
-  clear: both;
-  height: 90px;
-  width: 250px;
-}
-.controlls{
+
+.controls{
+    iframe{
+      border: 3px #ccc solid;
+      box-shadow: 0px 2px 8px black;
+    }
+    #nextSlideFrame{
+      opacity: 0.5;
+    }
     #clock{
-        margin: 0 auto 0 auto;
-        width: 259px;
-        .btn-group{
-            width: 221px;
-            margin: 0 auto 0 auto;
-            display: block;
+      margin-top: 30px;
+      float: left;
+      p{
+        font-size: 24px;
+        
+        span{
+          background-image: url('/img/clockBg.png');
+          background-repeat: no-repeat;
+          padding: 16px;
+          background-position: center;
         }
+      }
     } 
     .controllButton{
         margin: 20px auto 0 auto;
         display: block;
-    }
+    }   
+    
+  #buttons{
+    margin-top: 30px;
+  }
 }
-#controllThumbs{
-  background-color: #222;
+  
+.hideThumbs{
+  bottom: -300px;
+}
+.controlBottom{
+  -webkit-transition: all .3s ease-in-out;
+  box-shadow: inset 0 0 20px black;
   background-image: none;
-  box-shadow: inset 0 5px 10px black;
-  overflow: scroll;
-  overflow-y: hidden;
+  background-color: #111;
+  background: -moz-linear-gradient(top, #111 0%, #222 71%, #333 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#111), color-stop(71%,#222), color-stop(100%,#333)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #111 0%,#333 71%,#333 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #111 0%,#222 71%,#333 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #111 0%,#222 71%,#333 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #111 0%,#222 71%,#333 100%); /* W3C */
+  
   position: absolute;
   bottom:0;
   left: 0;
   right:0;
   width: 100%;
-  height: 250px;
+  height: 270px;
+  #controlToggle{
+    width: 100%;
+    position: relative;
+    top: -25px;
+    a{
+      padding: 3px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      width: 180px;
+      background-color: #020202;
+      color: #fff;
+      text-align: center;
+      display: block;
+      margin: 0 auto 0 auto;
+    }
+  }
+  
+  .controlThumbs{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    
   .thumb{
-    box-shadow: 0 3px 6px #000;
+    -webkit-transition: all .2s ease-in-out;
+    box-shadow: 0 3px 8px #000, inset 2px 2px 0px #ccc, inset -2px -2px 0px #ccc;
     float: left;
     height: 150px;
     width: 200px;
     margin: 40px 10px 40px 10px;
     background-color: #EFEFEF; 
     color: #999;
+    background-size: contain;
+    opacity: 0.5;
   }
   .active{
+    opacity: 1;
     height: 210px;
     width: 280px;
     margin: 10px 10px 10px 10px;
+    box-shadow: 0 3px 12px #000, inset 3px 3px 0px #fff, inset -3px -3px 0px #fff;
   }
+}
 }
