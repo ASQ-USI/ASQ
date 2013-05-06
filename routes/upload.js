@@ -1,5 +1,4 @@
 /** @module routes/upload
-    @author Jacques Dafflon jacques.dafflon@gmail.com
     @description Functions handling upload of new slideshows.
     TODO Handle upload of incrrect slideshows and their removal from the server.
     */
@@ -22,7 +21,7 @@ var slideshow     = require('../models/slideshow')
 , _               = require('underscore')
 
 
-logger.setLogLevel(0);
+logger.setLogLevel(4);
 
 module.exports.show = function(req, res) {
   res.render('upload', {username: req.user.name});
@@ -30,33 +29,12 @@ module.exports.show = function(req, res) {
 
 /*
  * Handle a POST request to the server to upload a new slideshow.
- * This function checks the slideshow is in the correct format in order to work
- * Some checks and handling still need to be done...
- * Handling for stats is long and complex and need to be optimized.
+ * This function does all the necessary steps to create a new slideshow
+ * with questions
  */
 module.exports.post = function(req, res) {
 
-
-/**
-  STEPS TO CREATE A NEW SLIDESHOW
-  1) create new Slideshow model
-  2) unzip files
-  3) make sure at least one html exists
-  4) parse questions
-  5) create new questions if they exist
-  6) update the slide information for each question
-  7) store new slideshow object
-
-
-readfile()
-  .then(extractquestions)
-  .then(check for new questions)
-  .then(insert new questions)
-  .then(update slide show information for new questions)
-
-  */
-
-  // STEPS TO CREATE A NEW SLIDESHOW
+  //STEPS TO CREATE A NEW SLIDESHOW
 
   // 1) create new Slideshow model
   var Slideshow = db.model('Slideshow');
@@ -91,142 +69,53 @@ readfile()
         logger.log('parsing main .html file for questions...');
         return asqParser.parse(slideShowFile);
     })
-
+    //5) render questions inside to slideshow's html into memory
     .then(
       function(questions){
         slideShowQuestions = questions;
         logger.log('questions successfully parsed');
         return asqRenderer.render(slideShowFile, questions)
     })
-
+    //6) store new html with questions to file
     .then(
       function(newHtml){
-       // console.log(newHtml)
         var processed =  folderPath + '/' + path.basename(slideShowFilePath, '.html') + '.asq.html'
         return pfs.writeFile(processed, newHtml)
 
     })
-
-    //5) create new questions 
+    //7) create new questions for database
     // TODO: create questions only if they exist
     .then(
       function(){
-        //console.log()
-        logger.log('questions successfully rendered');
-
-        // var QuestionOption = db.model("QuestionOption");
-
-        //   _.each(slideShowQuestions, function(question){
-        //     _.each( question.questionOptions, function(option){
-        //       option = new QuestionOption(option)
-        //       console.log(option)
-        //     });
-        //    // console.log(question)
-        //    // console.log(question.questionOptions)
-        //   });
+        logger.log('questions successfully rendered to file');
         return questionModel.create(slideShowQuestions)
     })
-
-    //6) add questions to slideshow and save
+    //8) add questions to slideshow and persist
     .then(
       function(docs){
 
         newSlideshow.questions = docs
         return newSlideshow.saveWithPromise();
     })
-
-    //7) remove zip folder
+    //9) remove zip folder
     .then(
       function(doc){
+        logger.log('new slideshow saved to db');
         return pfs.unlink(req.files.upload.path);         
     })
-
-    // 8) redirect to user
+    // 10) redirect to user
     .then(
       function(){
+      logger.log('upload zip file unlinked');
+      logger.log('upload complete!');
       res.redirect('/user/')
     },
 
       function(err){
+        res.redirect('/user/error?we_have_an_error')
         logger.error(err);
     });
 
-
-    // Check and parse questions.json
-    // var questions = pfs.readFile(folderPath + '/questions.json').then(
-    //   function(file) {
-    //     console.log('questions ok');
-    //     var questions = JSON.parse(file);
-    //     for (var i=0; i<questions.length;i++) {
-    //      var questionDB= db.model('Question', schemas.questionSchema);
-    //      var newQuestion=new questionDB({
-    //       questionText:questions[i].questionText,
-    //       questionType: questions[i].questionType,
-    //       afterslide: questions[i].afterslide
-    //     });
-    //      newQuestion.save();
-    //      newSlideshow.questions.push(newQuestion._id);
-
-    //      var optionDB=db.model('Option', schemas.optionSchema);
-    //      for (var j=0;j< questions[i].options.length;j++) {
-    //       newOptionDB=new optionDB( {
-    //         optionText: questions[i].options[j].optionText,
-    //         correct: questions[i].options[j].correct
-    //       });
-    //       newOptionDB.save();
-    //       newQuestion.answeroptions.push(newOptionDB._id);
-    //       newQuestion.save();
-
-    //     }
-
-
-    //   }
-
-    //   return true;
-    // },
-    // function() {
-    //   console.log('error: questions.json');
-    //   newSlideshow.questions = [];
-    //   return false;
-    // }
-    // );
-
-// var group = all(index, assets, questions);
-// var done = when(group,
-//   function(result) {
-//     console.log('index result is ' + result[0]);
-//     console.log('assets result is ' + result[1]);
-//     console.log('questions result is ' + result[2]);
-//     console.log('all ok');
-//     seq([
-//       function() {
-//         newSlideshow.save();
-//       },
-//       function() {
-//         if (result[1]) pfs.unlink(folderPath + '/assets.json');
-//       },
-//       function() {
-//         if (result[2]) pfs.unlink(folderPath + '/questions.json');
-//       },
-//       function() {
-//         var User = db.model('User', schemas.userSchema);
-//         User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }, function(err, user) {
-//           pfs.unlink(req.files.upload.path)
-//           //.then(res.redirect('/user/'));
-//         });
-//       }]);
-//   },
-//   function() {
-//     console.log('something went wrong');
-
-//             //Remove the extracted folder
-//             rimraf(folderPath, function(err) {
-//               if(err) throw err;
-//                 // Remove the downloaded archive (zip file).
-//                 pfs.unlink(req.files.upload.path)
-//                 //.then(res.redirect('/'));
-//               });
-//           });
 }
 
 function createThumb(slidesID) {
