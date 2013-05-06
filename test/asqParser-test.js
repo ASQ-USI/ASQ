@@ -29,7 +29,7 @@ describe('AsqParser', function() {
     asqParser.parse(htmlMCString, {outputFormat:'Object'} ,function(err, generated){
       it("should return an object with a correct number of options that matches the reference object", function(){
         expect(generated).to.deep.equals(expected)
-          .with.deep.property("q-2.options.length", 5);
+          .with.deep.property("q-2.questionOptions.length", 5);
       });
     });  
 
@@ -49,7 +49,7 @@ describe('AsqParser', function() {
 
     it("should return an object with a correct number of options that matches the reference object", function(){
       return expect(promise).to.eventually.deep.equals(expected)
-        .with.deep.property("q-2.options.length", 5);
+        .with.deep.property("q-2.questionOptions.length", 5);
     });
 
     var promiseNoId = asqParser.parse(htmlMCNoIDString);
