@@ -14,8 +14,12 @@ var slideshow     = require('../models/slideshow')
 , rimraf          = require('rimraf')
 , logger          = require('../lib/logger')
 , asqParser       = require('../lib/asqParser')
+, asqRenderer     = require('../lib/asqQuestionRenderer')
 , config          = require('../config')
 , fsUtil          = require('../lib/fs-util')
+, when            = require('when')
+, path            = require('path')
+, _               = require('underscore')
 
 
 logger.setLogLevel(0);
@@ -55,7 +59,10 @@ readfile()
   // STEPS TO CREATE A NEW SLIDESHOW
 
   // 1) create new Slideshow model
-  var Slideshow = db.model('Slideshow', slideshow.slideshowSchema);
+  var Slideshow = db.model('Slideshow');
+  var slideShowFilePath;
+  var slideShowFile;
+  var slideShowQuestions
 
   var newSlideshow = new Slideshow({
     title:req.files.upload.name,
@@ -68,9 +75,11 @@ readfile()
   zip.extractAllTo(folderPath);
 
   // make sure at least one html exists
+
   fsUtil.getFirstHtmlFile(folderPath)
     .then(
       function(filePath){
+        slideShowFilePath = filePath
         logger.log('will use ' + filePath + ' for main presentation file...');
         return pfs.readFile(filePath)
     })
@@ -78,25 +87,68 @@ readfile()
     //4) parse questions
     .then(    
       function(file) {
+        slideShowFile = file;
         logger.log('parsing main .html file for questions...');
-        return asqParser.parse(file);
+        return asqParser.parse(slideShowFile);
+    })
+
+    .then(
+      function(questions){
+        slideShowQuestions = questions;
+        logger.log('questions successfully parsed');
+        return asqRenderer.render(slideShowFile, questions)
+    })
+
+    .then(
+      function(newHtml){
+       // console.log(newHtml)
+        var processed =  folderPath + '/' + path.basename(slideShowFilePath, '.html') + '.asq.html'
+        return pfs.writeFile(processed, newHtml)
 
     })
 
-    //5) create new questions if they exist
+    //5) create new questions 
+    // TODO: create questions only if they exist
     .then(
-      function(questions){
+      function(){
+        //console.log()
+        logger.log('questions successfully rendered');
 
-      logger.log('questions successfully parsed');
-      questionModel.create(questions, function(err){
-        newSlideshow.save();
-        res.send(200, JSON.stringify(questions));
-      })
-     
+        // var QuestionOption = db.model("QuestionOption");
+
+        //   _.each(slideShowQuestions, function(question){
+        //     _.each( question.questionOptions, function(option){
+        //       option = new QuestionOption(option)
+        //       console.log(option)
+        //     });
+        //    // console.log(question)
+        //    // console.log(question.questionOptions)
+        //   });
+        return questionModel.create(slideShowQuestions)
+    })
+
+    //6) add questions to slideshow and save
+    .then(
+      function(docs){
+
+        newSlideshow.questions = docs
+        return newSlideshow.saveWithPromise();
+    })
+
+    //7) remove zip folder
+    .then(
+      function(doc){
+        return pfs.unlink(req.files.upload.path);         
+    })
+
+    // 8) redirect to user
+    .then(
+      function(){
+      res.redirect('/user/')
     },
 
-    function(error){
-      logger.error(error);
+      function(err){
+        logger.error(err);
     });
 
 

@@ -3,25 +3,25 @@ module.exports = {
     "stem":"<h3 class=\"stem\">The interface of a software component:</h3>",
     "htmlId":"q-2",
     "formButtonType":"",
-    "options":[
+    "questionOptions":[
       {
-        "option":"\n            describes the internal features of the component’s\n        ",
+        "text":"\n            describes the internal features of the component’s\n        ",
         "classList":"option"
       },
       {
-        "option":"\n            clearly separates the surface of the component from its internal implementation\n        ",
+        "text":"\n            clearly separates the surface of the component from its internal implementation\n        ",
         "classList":"option"
       },
       {
-        "option":"\n            describes the functionality provided by the component\n        ",
+        "text":"\n            describes the functionality provided by the component\n        ",
         "classList":"option"
       },
       {
-        "option":"\n            references the required interfaces on which the component depends upon\n        ",
+        "text":"\n            references the required interfaces on which the component depends upon\n        ",
         "classList":"option"
       },
       {
-        "option":"\n            needs to be kept as simple as possible\n        ",
+        "text":"\n            needs to be kept as simple as possible\n        ",
         "classList":"option"
       }
     ]

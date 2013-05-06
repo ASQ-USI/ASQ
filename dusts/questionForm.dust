@@ -1,0 +1,10 @@
+<form action="">
+  <ol>
+    {+listContent/}
+  </ol>
+  
+  <p class="text-right">
+    <button type="button" class="btn btn-small btn-primary" class>Modify</button> 
+    <button type="submit" class="btn btn-small btn-success">Submit</button>
+  </p>
+</form>
