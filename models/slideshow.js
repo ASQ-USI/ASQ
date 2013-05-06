@@ -1,7 +1,8 @@
 var mongoose= require('mongoose');
 
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+var Schema = mongoose.Schema
+, ObjectId = Schema.ObjectId
+, when     = require('when');
 
 var slideshowSchema= new Schema({
   title: { type: String },
@@ -17,6 +18,26 @@ var slideshowSchema= new Schema({
 // Array arr should be populated with questionIDs
 slideshowSchema.methods.addQuestions = function(arr, cb){
   return this.update({$addToSet: {questions: {$each: arr}}});
+}
+
+// saves object and returns a promise
+slideshowSchema.methods.saveWithPromise = function(){
+  //we cant use mongoose promises because the
+  // save operation returns undefined
+  // see here: https://github.com/LearnBoost/mongoose/issues/1431
+  // so we construct our own promise
+  // to maintain code readability
+
+  var deferred = when.defer();
+  this.save(function(err, doc){
+    if (err) {
+      deferred.reject(err);
+      return;
+    }
+    deferred.resolve(doc);
+  });
+
+  return deferred.promise;
 }
 
 mongoose.model("Slideshow", slideshowSchema);

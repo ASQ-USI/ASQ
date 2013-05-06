@@ -56,29 +56,31 @@ describe('upload', function() {
    describe('.post(req, res)', function(){
 
     after(function(done){
+      // cleanup db and files
       var Slideshow = db.model('Slideshow');
 
       Slideshow.find({}, function(err, docs ){
         var uploadPath = path.join( __dirname + '/../slides/');
-          var totalDirs = docs.length;
-          if(totalDirs==0){
-            done(new Error("totalDirs shouldn't be 0"))
-          }
+        var totalDocs = docs.length;
 
-          _.each(docs, function(doc){
-          fsUtil.removeRecursive(uploadPath, function(err,done){
+        if(totalDocs == 0){
+          return done(new Error("totalDocs shouldn't be 0"));
+        }
+
+        _.each(docs, function(doc){
+          fsUtil.removeRecursive(uploadPath + doc.id, function(err, success){
             if(err){
-              done(err)
+              return done(err)
             }
-            if(--totalDirs ==0){
+            if(--totalDocs ==0){
               Slideshow.remove({}, function(err){
                 if(err){
-                  done(err)
+                  return done(err)
                 }
                 var Question = db.model('Question')
                 Question.remove({}, function(err){
                   if(err){
-                    done(err)
+                    return done(err)
                   }
                    db.close()
                    done();
@@ -89,14 +91,20 @@ describe('upload', function() {
         });
       });
     });
+    
+    
+    
+    it.skip("should extract the questions and add them to the database");
+    it.skip("should create a file");
+    it.skip("with the correct markup for questions");
+    it.skip("should save the slideshow");
 
-    it("should return a json object ", function(done){
+    it("should redirect to the users page ", function(done){
       request(app)
       .post('/user/username/upload/')
       .set('Accept', 'application/json')
       .attach('upload', 'test/fixtures/sample_presentation_valid_questions.zip', 'upload')      
-      .expect('Content-Type', /json/)
-      .expect(200)
+      .expect(302)
       .end(function(err, res){
         if (err) return done(err);
         done()
