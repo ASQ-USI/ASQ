@@ -265,6 +265,7 @@
   /* Our special stuff
   -------------------------------------------------- */
  #myCarousel{
+ 	background-color: #333;
  	background-image: url('../img/pattern5.jpg');
  }
  .carousel-inner{
