@@ -1,4 +1,5 @@
 var schemas = require("../models/models.js");
+var Slideshow = require("../models/slideshow")
 var fs = require("fs");
 var moment = require('moment');
 var dust = require('dustjs-linkedin');
@@ -424,7 +425,7 @@ exports.renderuser = function(req, res) {
 		var users = db.model('User', schemas.userSchema);
 		var out = users.findById(req.user._id, function(err, user) {
 			if (user) {
-				var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
+				var slideshowDB = db.model('Slideshow', Slideshow.slideshowSchema);
 				slideshowDB.find({
 					_id : {
 						$in : user.slides
