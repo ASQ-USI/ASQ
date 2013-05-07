@@ -1,7 +1,7 @@
 {
     "name" : "ASQ",
     "version" : "0.1.0",
-    "author" : "Jacques DAFFLON <jacques.dafflon@gmail.com>, Margarita GRINVALD <margarita.grinvald@usi.ch>, Max VON BUELOW",
+    "author" : "Jacques DAFFLON <jacques.dafflon@gmail.com>, Margarita GRINVALD <margarita.grinvald@usi.ch>, Max VON BUELOW, Vasileios Triglianos <vasileios.triglianos@usi.ch>",
     "description" : "Synchronous slideshow mixed with a classroom clicker.",
     "repository": {
         "type": "git",
@@ -36,7 +36,8 @@
         "sugar": "*",
         "when" : "*",
         "underscore" : "*",
-        "dustfs" : "*"
+        "dustfs" : "*",
+        "asyncblock": "*"
     },
     "engines" : {
         "node" : "0.8.x",

@@ -72,10 +72,10 @@ var sessionSchema = new Schema({
 
 sessionSchema.methods.question = function(callback) {
 	var that = this;
-	var Slideshow = db.model('Slideshow', slideshowSchema);
+	var Slideshow = db.model('Slideshow');
 	Slideshow.findById(this.slides, function(err, slideshow) {
 		if (slideshow) {
-			var Question = db.model('Question', questionSchema);
+			var Question = db.model('Question');
 		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
 						afterslide: that.activeSlide},
 				        function(err, question) {

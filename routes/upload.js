@@ -140,7 +140,7 @@ function createThumb(slidesID) {
 		$ = cheerio.load(data);
 		$('.step').each(function() {
 			var id = this.attr().id;
-			//If slide does not have id, use step-x instead (for url calling)
+			//If slide does not have id, use step-n instead (for url calling)
 			if(id == undefined){
 				ids.push("step-"+ (ids.length + 1));
 			} else {
