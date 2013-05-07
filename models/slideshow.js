@@ -17,6 +17,11 @@ var slideshowSchema= new Schema({
   lastEdit: {type: Date, default: Date.now}
 });
 
+//get the path of the slideshow. Usefull to server static files
+slideshowSchema.virtual('path').get(function() {
+  return './slides/' + this._id + '/';
+});
+
 // Adds an array of questionIDs to the slideshow
 // Array arr should be populated with questionIDs
 slideshowSchema.methods.addQuestions = function(arr, cb){

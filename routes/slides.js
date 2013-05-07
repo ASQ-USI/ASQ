@@ -9,30 +9,25 @@ var path = require('path'), schemas = require('../models/models.js');
 
 /** Renders the slideshow for admins */
 module.exports.admin = function(req, res) {
-	var userId = req.user._id;
-	sessionFromUserId(userId, function(err, session) {
-		if (err)
-			throw err;
-		if (!session.id) {
-			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
-		} else {
-			var slideshow = session.slideshow;
-
-			res.render('slides', {
-				title : slideshow.title,
-				mode : true,
-				host : appHost,
-				port : app.get('port'),
-				user : req.user.name,
-				pass : '&bull;&bull;&bull;&bull;&bull;&bull;',
-				path : path.relative(app.get('views'), slideshow.path + 'index.html'),
-				links : slideshow.links,
-				id : session.id,
-				date : session.date
-			});
-
-		}
-	});
+    var userId = req.user._id;
+    sessionFromUserId(userId, function(err, session) {
+        if (err) throw err;
+        if (!session.id) {
+            res.redirect('/user/' + req.user.name +
+                        '/?alert=You have no session running!&type=error');
+        } else {
+            var slideshow = session.slideshow;
+            res.sendfile(slideshow.teacherFile)
+             // res.render('slides', {title: slideshow.title, mode:'admin',
+             //                      host: appHost, port: app.get('port'),
+             //                      user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
+             //                      path: path.relative(app.get('views'), slideshow.path + 'index.html'),
+             //                      links: slideshow.links,
+             //                      id: session.id,
+             //                      date: session.date
+             //                     });
+        }
+    });
 }
 /** Renders the controll view for admins */
 module.exports.adminControll = function(req, res) {
@@ -116,31 +111,29 @@ module.exports.renderStatic = function(req, res) {
 }
 /** Renders the slideshow for viewers */
 module.exports.live = function(req, res) {
-	var userName = req.params.user;
-	sessionFromUserName(userName, function(err, session) {
-		if (err) {
-			if (err.message === 'User does not exist')
-				res.send(404, err.message);
-			else
-				throw err;
-			return;
-		}
-		if (session.slideshow) {
-			var slideshow = session.slideshow
-			res.render('slides', {
-				title : slideshow.title,
-				mode : false,
-				host : appHost,
-				port : app.get('port'),
-				user : req.params.user,
-				path : path.relative(app.get('views'), slideshow.path + 'index.html'),
-				links : slideshow.links,
-				id : session.id
-			});
-		} else {
-			res.send(404, 'User does not have a session running');
-		}
-	});
+    var userName = req.params.user;
+    sessionFromUserName(userName, function (err, session) {
+        if (err) {
+            if (err.message === 'User does not exist')
+                res.send(404, err.message);
+            else
+                throw err;
+            return;
+        }
+        if (session.slideshow) {
+            var slideshow = session.slideshow
+            res.sendfile(slideshow.studentFile)
+            // res.render('slides', {title: slideshow.title, mode:'viewer',
+            //                       host:appHost, port: app.get('port'),
+            //                       user: req.params.user,
+            //                       path: path.relative(app.get('views'), slideshow.path + 'index.html'),
+            //                       links: slideshow.links,
+            //                       id: session.id
+            //                      });
+        } else {
+            res.send(404, 'User does not have a session running');
+        }
+    });
 }
 /** Serve slideshow files for viewers **/
 module.exports.liveStatic = function(req, res) {
