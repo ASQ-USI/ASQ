@@ -7,6 +7,9 @@ var Schema = mongoose.Schema
 var slideshowSchema= new Schema({
   title: { type: String },
   course: { type: String, default: "General" },
+  originalFile:{type:String},
+  teacherFile:{type:String},
+  studentFile:{type:String},
   owner: { type: ObjectId },
   questions: [ObjectId],
   links: {type: Array, default: []},

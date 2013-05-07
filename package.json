@@ -5,7 +5,7 @@
     "description" : "Synchronous slideshow mixed with a classroom clicker.",
     "repository": {
         "type": "git",
-        "url": "https://github.com/jacquesd/ASQ"
+        "url": "https://github.com/ASQ-USI/ASQ"
     },
     "dependencies" : {
         "express" : "3.x",
