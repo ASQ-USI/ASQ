@@ -1,10 +1,10 @@
-{>"questionForm.dust"/}
+{>"questionForm-student.dust"/}
 
 {<listContent}
   {#questionOptions}
     <li class="{classList}" >
       <label class="{question.formButtonType}">
-        <input type="{formButtonType}" name="{htmlId}" value=""> {questionOption.text|s}
+        <input type="{formButtonType}" name="{htmlId}" value=""> {text|s}
       </label>
     </li>{~n}
   {/questionOptions}

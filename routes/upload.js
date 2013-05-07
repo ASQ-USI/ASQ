@@ -39,8 +39,7 @@ module.exports.post = function(req, res) {
 
   // 1) create new Slideshow model
   var Slideshow = db.model('Slideshow');
-  var slideShowFilePath;
-  var slideShowFile;
+  var slideShowFileHtml;
   var slideShowQuestions
 
   var newSlideshow = new Slideshow({
@@ -57,7 +56,7 @@ module.exports.post = function(req, res) {
   fsUtil.getFirstHtmlFile(folderPath)
     .then(
       function(filePath){
-        slideShowFilePath = filePath
+        newSlideshow.originalFile = filePath
         logger.log('will use ' + filePath + ' for main presentation file...');
         return pfs.readFile(filePath)
     })
@@ -65,22 +64,33 @@ module.exports.post = function(req, res) {
     //4) parse questions
     .then(    
       function(file) {
-        slideShowFile = file;
+        slideShowFileHtml = file;
         logger.log('parsing main .html file for questions...');
-        return asqParser.parse(slideShowFile);
+        return asqParser.parse(slideShowFileHtml);
     })
     //5) render questions inside to slideshow's html into memory
     .then(
       function(questions){
         slideShowQuestions = questions;
         logger.log('questions successfully parsed');
-        return asqRenderer.render(slideShowFile, questions)
+        return when.all([
+          asqRenderer.render(slideShowFileHtml, questions, "teacher"),
+          asqRenderer.render(slideShowFileHtml, questions, "student")
+          ]);
     })
     //6) store new html with questions to file
     .then(
       function(newHtml){
-        var processed =  folderPath + '/' + path.basename(slideShowFilePath, '.html') + '.asq.html'
-        return pfs.writeFile(processed, newHtml)
+        var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
+        newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.html';
+        newSlideshow.studentFile =  fileNoExt + '.asq-student.html';
+        
+        var filePromises = [
+          pfs.writeFile(newSlideshow.teacherFile, newHtml[0]),
+          pfs.writeFile(newSlideshow.studentFile, newHtml[1])
+         ];
+
+        return  require("promised-io/promise").all(filePromises);
 
     })
     //7) create new questions for database
