@@ -146,7 +146,8 @@ body{
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 1s;  
   position: relative;
- 
+ white-space: wrap;
+  word-wrap: break-word;
 
   .bg{
     background-size: cover;
@@ -161,18 +162,22 @@ body{
   h4{
     color: #ccc;
     text-align: center;
-    margin-top: 90px;
     z-index: 100;
     width: 100%;
-    position: absolute;
     -webkit-backface-visibility: hidden;
     text-shadow: 0px 0px 40px black;
     display: none;
+    vertical-align: middle;
+     word-wrap: break-word;
+     padding: 10px;
     }
   div{
     position: absolute;
     .100WidthHeight;
     -webkit-backface-visibility: hidden;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
   }
   .info{
     background-color: #000;
@@ -223,7 +228,7 @@ body{
     .hoverBorder;
     }
   h4{
-    display: block;
+    display: table-cell;
   }
 }
 .flipped{
