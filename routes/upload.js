@@ -20,6 +20,8 @@ var schema        = require('../models/models')
 , when            = require('when')
 , path            = require('path')
 , _               = require('underscore')
+, asyncblock      = require('asyncblock')
+, exec            = require('child_process').exec;
 
 
 logger.setLogLevel(4);
@@ -111,6 +113,9 @@ module.exports.post = function(req, res) {
     .then(
       function(doc){
         logger.log('new slideshow saved to db');
+        //create thumbs
+        logger.log('creating thumbnails')
+        createThumb(newSlideshow);
         return pfs.unlink(req.files.upload.path);         
     })
     //10) update slideshows for user
@@ -134,10 +139,10 @@ module.exports.post = function(req, res) {
 
 }
 
-function createThumb(slidesID) {
-	fs.readFile("./slides/" + slidesID + "/index.html", 'utf-8', function(error, data) {
+function createThumb(slideshow) {
+	fs.readFile(slideshow.studentFile, 'utf-8', function(error, data) {
 		var ids = [];
-		$ = cheerio.load(data);
+		var $ = cheerio.load(data);
 		$('.step').each(function() {
 			var id = this.attr().id;
 			//If slide does not have id, use step-n instead (for url calling)
@@ -150,8 +155,8 @@ function createThumb(slidesID) {
 		
 		asyncblock(function(flow){
   			for(var i = 0; i < ids.length; i++){
-  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i]);
-  				exec("/usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i], flow.add());
+  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slideshow._id + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
+  				exec("/usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slideshow._id + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());
   				flow.wait();
   			}
 		});
