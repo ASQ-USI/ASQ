@@ -89,11 +89,7 @@ module.exports.render = function(req, res) {
 
 	Slideshow.findById(id, function(err, slideshow) {
 		if(slideshow){
-		res.render('slidesRender', {
-			
-			path : path.relative(app.get('views'), slideshow.path + 'index.html'),
-			links : slideshow.links,
-		});
+		res.sendfile(slideshow.studentFile)
 		}else{
 			res.send(404, "Slideshow not found");
 		}

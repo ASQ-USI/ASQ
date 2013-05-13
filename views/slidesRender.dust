@@ -7,16 +7,17 @@
 
 		<script src="/js/jquery.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-		{#links}
+		<script src="/js/less-1.3.1.min.js" type="text/javascript"></script>
+		{#slideshow.links}
 			<link href="{.}" rel="stylesheet" />
-		{/links}
+		{/slideshow.links}
 		
 
 	</head>
 
 	<body class="impress-not-supported">
 		<div id="asq-container">
-			{>"{path}" /}
+			{>"{slideshow.studentFile}" /}
 		</div>
 		<script src="/js/impress.js"></script>
 
@@ -27,6 +28,7 @@
 		</script>
 		<!-- Modernizr -->
 		<script src="/js/modernizr.js"></script>
+		 <script src="/js/jquery.js"></script>
 	</body>
 
 </html>
