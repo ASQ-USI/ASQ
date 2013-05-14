@@ -123,6 +123,23 @@
     margin-top: 10px;
   }
 
+/*www 2013 section*/
+#www2013 h2{
+  color: #fff;
+}
+
+#www2013-logo {
+  height : 300px;
+  margin-top: -80px;
+  margin-right: -20px;
+}
+
+#asq-www2013{
+width: 110px;
+height: auto;
+margin-top: -3px;
+margin-right: auto;
+}
 
 
   /* MARKETING CONTENT
