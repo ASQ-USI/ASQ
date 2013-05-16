@@ -103,7 +103,7 @@ describe('upload', function() {
       request(app)
       .post('/user/username/upload/')
       .set('Accept', 'application/json')
-      .attach('upload', 'test/fixtures/sample_presentation_valid_questions.zip', 'upload')      
+      .attach('upload', 'test/fixtures/sample_presentation_valid_questions_stats.zip', 'upload')      
       .expect(302)
       .end(function(err, res){
         if (err) return done(err);
