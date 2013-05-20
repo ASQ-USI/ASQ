@@ -96,7 +96,7 @@
 		    $(this).parent().parent().parent().siblings().siblings().siblings().find(".thumb").removeClass("flipped");
 		    $(this).parent().parent().parent().siblings().siblings().siblings().css("z-index", "1");
 		    $(this).addClass("flipped");
-		    $(this).parent().css("z-index", "100");
+		    $(this).parent().css("z-index", "10");
 		});
 		
 		
