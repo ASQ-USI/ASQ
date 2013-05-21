@@ -10,21 +10,21 @@
 
 	<body onorientationchange="updateOrientation();">
 
-		<!---   Top menu --->
+		<!---   Top menu -->
 		{>menu/}
 
-		<!---   Content of start screen   --->
+		<!---   Content of start screen   -->
 		<div class="container-fluid" id="mainContainer">
 			{>slidesControllStart/}
 		</div>
 		<!-- /start screen -->
 
-		<!---  Controlls for runnig presentation --->
+		<!---  Controlls for runnig presentation -->
 		<div id="slidesControll" style="display: none">
 			{>slidesControllRunning/}
 		</div>
 
-		<!-- Non visible presentation --->
+		<!-- Non visible presentation -->
 		<div id="asq-container" style="display: none">
 			{>"{path}" /}
 		</div>
