@@ -4,7 +4,7 @@
 		<h1 style="text-align: center;">{title}</h1>
 		<h5 style="text-align: center;" >Please open this link to follow the presentation</h5>
 
-		<a href="http://{host}:{port}/live/{user}/"><h4 style="text-align: center;">http://{host}:{port}/live/{user}/</h4></a>
+		<a href="http://{slideshow.host}:{slideshow.port}/live/{user}/"><h4 style="text-align: center;">http://{host}:{port}/live/{user}/</h4></a>
 	</div>
 	<div class="span12">
 		<p id="viewers" style="text-align: left; width: 185px; margin: 0 auto 0 auto;"></p>

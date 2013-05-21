@@ -6,6 +6,6 @@
 <div class="progress" >
   <div class="bar" id="progessbar" style="width: 30%;"></div>
   </div>
-  <h5 class="pull-left" id="progressNum">Waiting for answers!</h5>
-  <button class="btn" id ="show-stats">Show answers</button>
+  <h5 class="pull-right" id="progressNum">Waiting for answers!</h5>
+  <button class="btn btn-large" id ="show-stats">Show answers</button>
 </form>

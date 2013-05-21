@@ -253,6 +253,9 @@ app.get('/slidesInFrame/:id/', function(req,res){
 app.get('/slidesRender/:id/', routes.slides.render);
 app.get('/slidesRender/:id/*', routes.slides.renderStatic);
 
+//Show splash screen for starting presentations
+app.get('/slidesSplashScreen', routes.slides.splashScreen)
+
 
 // Crash at start with node.js 0.10.10
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);

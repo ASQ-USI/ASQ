@@ -90,13 +90,36 @@ module.exports.render = function(req, res) {
 
 	Slideshow.findById(id, function(err, slideshow) {
 		if(slideshow){
-			res.sendfile(slideshow.teacherFile)
+			//res.sendfile(slideshow.teacherFile)
+			res.render(slideshow.teacherFile, {title: slideshow.title, mode:'admin'});
 		}else{
 			res.send(404, "Slideshow not found");
+			
 		}
 		
 	})
 }
+
+/** Shows a splash screen to start presentation */
+module.exports.splashScreen = function (req, res) {
+	var userId = req.user._id;
+	sessionFromUserId(userId, function(err, session) {
+		if (err)
+			throw err;
+		if (!session.id) {
+			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
+		} else {
+			var slideshow = session.slideshow;
+  			res.render('slidesSplashScreen',{
+  					title : slideshow.title,
+					host : appHost,
+					port : app.get('port'),
+					user : req.user.name}
+					);
+  		}
+  });
+}
+
 /** Serves slides for slideshow rendering */
 module.exports.renderStatic = function(req, res) {
 	var id = req.params.id;
@@ -188,7 +211,7 @@ module.exports.start = function(req, res) {
 			User.findByIdAndUpdate(req.user._id, {
 				current : newSession._id
 			}, function(err, user) {
-				res.redirect(302, '/admincontroll');
+				res.redirect(302, '/slidesSplashScreen');
 			});
 
 		});
