@@ -3,7 +3,8 @@ body{
     background-image: url("../img/pattern5.jpg");
     color: #FFF;
     height: 100%;
-
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .modal{
@@ -22,9 +23,11 @@ body{
 
 
 /* -- Alert -- */
-.alert button{
-    margin-top: 10px;
+.alert .btn{
     width: 100%;
+    max-width: 200px;
+    display: block;
+    margin: 10px 0;
 }
 
 
@@ -43,7 +46,11 @@ h2{
 }
 
 /* -- Style for presentation thumbnails -- */
-.span3{
+.thumbContainer{
+  margin: 0 40px 0 0px;
+  width: 100%;
+  max-width: 300px;
+  float: left;
   -webkit-perspective: 800px;
   position: relative;
   z-index: 1;
@@ -54,38 +61,57 @@ h2{
   box-shadow: 0 3px 6px #000;
   margin-top: 20px;
   color: #000;
-  
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 1s;  
   position: relative;
+
+
+  .bg{
+    background-size: cover;
+    background-position: center; 
+    background-repeat:  no-repeat;
+    position: absolute;
+    z-index: 15;
+    -webkit-transition: opacity 0.3s;
+        box-shadow: inset 3px 3px 0px #ccc, 
+        inset -3px -3px 0px #ccc,
+        inset 0px 0px 8px #000;
+      }
   h4{
-    background-color: blue;
+    color: #ccc;
     text-align: center;
-    margin-top: 60px;
-  }
+    z-index: 20;
+    width: 100%;
+    text-shadow: 0px 0px 40px black;
+    display: table-cell;
+    vertical-align: middle;
+    word-wrap: break-word;
+    padding: 10px;
+    }
   div{
     position: absolute;
     .100WidthHeight;
     -webkit-backface-visibility: hidden;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
   }
-  .bg{
-    background-size: cover;
-    background-position:center; 
-    background-repeat:  no-repeat;
-    position: absolute;
-    z-index: 1;
+  .info{
     box-shadow: inset 3px 3px 0px #ccc, 
         inset -3px -3px 0px #ccc,
         inset 0px 0px 8px #000;
-  }
-  .info{
-    background-color: #000;   
+
+    z-index: 101;
+    background-color: #000;
+    text-shadow: black 0px 0px 500px;
   }
   .buttons{
     -webkit-transform: rotateY( 180deg );
-    background-color: #fff; 
-    box-shadow: 0px 50px 150px black;
+    background-color: #efefef; 
+    box-shadow: 0px 50px 100px black;
     height: 195px;
+    display: table;
+    position: absolute;
     a{
       display: block;
       margin: 5px auto 5px auto;
@@ -93,22 +119,20 @@ h2{
     }
     a:first-child{
       display: block;
-       margin: 25px auto 5px auto;
+      margin: 40px auto 5px auto;
     }
-  }
-    p{
-    text-align: center;
   }
   .dates{
     background-color: rgba(0,0,0,0.2);
     height: 30px;
-    display: table-cell;
-    margin-top: 20px;
+    bottom: 0px;
+    position: absolute;
     p{
       font-size: 13px;
       display: inline;
       padding: 5px;
       float: left;
+      margin: 0;
     }
     p:last-child{
       float: right;
@@ -121,23 +145,28 @@ h2{
 }
 .hoverBorder{
   box-shadow: inset 3px 3px 0px #6666CC,inset -3px -3px 0px #6666CC;
+  box-shadow: inset 3px 3px 0px #FFF,inset -3px -3px 0px #FFF;
 }
-.thumb .info:hover{
-  .hoverBorder;
-  background-color: #FFF;
+.thumb:hover{
+  .bg {
+    opacity: 0.1;
+    .hoverBorder;
+    }
+  h4{
+    display: table-cell;
+  }
 }
 .flipped{
   -webkit-transform: rotateY( 180deg ) translateZ(-100px);
-  z-index: 100;
+  z-index: 10;
 }
-
-/* --- Waiting Box ---*/
+/* --- Waiting Box ---
 .centerContainer{
   display: table;
   height: 100%;
 }
-.waiting{
-
+#waitingScreen{
+    
     text-align: center;
     display: table-cell;
     vertical-align: top;
@@ -147,8 +176,19 @@ h2{
         box-shadow:  0 1px 0 #333;
     }
 }
+*/
+
 
 /* --- Controlls --- */
+#waitingScreen{
+  word-wrap: break-word;
+  h1{
+    font-size: 24px;
+  }
+  h2{
+    font-size: 18px;
+  }
+}
 
 .controls{
     iframe{
@@ -159,11 +199,11 @@ h2{
       opacity: 0.5;
     }
     #clock{
-      margin-top: 30px;
-      float: left;
+      margin: 30px auto 0 auto;
       p{
+        text-align: center;
         font-size: 24px;
-        
+        font-weight: bold;
         span{
           background-image: url('/img/clockBg.png');
           background-repeat: no-repeat;
@@ -172,13 +212,24 @@ h2{
         }
       }
     } 
-    .controllButton{
-        margin: 20px auto 0 auto;
-        display: block;
-    }   
+ #resetClock{
+    width: 130px;
+    display: block;
+    margin: 30px auto 0 auto;
+}
     
   #buttons{
+    text-align: center;
     margin-top: 30px;
+    a{
+      margin: 5px;
+    }
+    button{
+      margin-top: 30px;
+    }
+    #nextButton{
+    
+    }
   }
 }
   
@@ -198,31 +249,26 @@ h2{
   background: linear-gradient(to bottom, #111 0%,#222 71%,#333 100%); /* W3C */
   
   position: absolute;
-  bottom:0;
   left: 0;
   right:0;
+  top: 0;
+  table-layout: fixed;
+  
   width: 100%;
-  height: 270px;
-  #controlToggle{
-    width: 100%;
-    position: relative;
-    top: -25px;
-    a{
-      padding: 3px;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      width: 180px;
-      background-color: #020202;
-      color: #fff;
-      text-align: center;
-      display: block;
-      margin: 0 auto 0 auto;
+  height: 100%;
+  display: table;
+  
+    #controlToggle{
+      display: none;
     }
-  }
   
   .controlThumbs{
     overflow-x: scroll;
     overflow-y: hidden;
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
+    
     
   .thumb{
     -webkit-transition: all .2s ease-in-out;
@@ -230,17 +276,18 @@ h2{
     float: left;
     height: 150px;
     width: 200px;
-    margin: 40px 10px 40px 10px;
+    margin: 15px 10px 15px 10px;
     background-color: #EFEFEF; 
     color: #999;
-    background-size: contain;
+    background-size: cover;
     opacity: 0.5;
+    line-height: 100%;
   }
   .active{
     opacity: 1;
-    height: 210px;
-    width: 280px;
-    margin: 10px 10px 10px 10px;
+    height: 180px;
+    width: 250px;
+    margin: 0px 10px 0px 10px;
     box-shadow: 0 3px 12px #000, inset 3px 3px 0px #fff, inset -3px -3px 0px #fff;
   }
 }

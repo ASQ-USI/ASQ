@@ -39,7 +39,7 @@ module.exports.adminControll = function(req, res) {
 			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
 		} else {
 			var slideshow = session.slideshow;
-			fs.readFile("./slides/" + slideshow._id + "/index.html", 'utf-8', function(error, data) {
+			fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
 				console.log(data);
 				var ids = [];
 				$ = cheerio.load(data);
@@ -60,7 +60,6 @@ module.exports.adminControll = function(req, res) {
 					port : app.get('port'),
 					user : req.user.name,
 					pass : '&bull;&bull;&bull;&bull;&bull;&bull;',
-					path : path.relative(app.get('views'), slideshow.path + 'index.html'),
 					links : slideshow.links,
 					id : session.id,
 					date : session.date,
@@ -89,7 +88,7 @@ module.exports.render = function(req, res) {
 
 	Slideshow.findById(id, function(err, slideshow) {
 		if(slideshow){
-		res.sendfile(slideshow.studentFile)
+			res.sendfile(slideshow.teacherFile)
 		}else{
 			res.send(404, "Slideshow not found");
 		}

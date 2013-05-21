@@ -1,4 +1,4 @@
-<!---   Top menu --->  
+
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
           </button>
             
-          <a class="brand pull-right" href="#"><img src="/img/ASQBlack.svg" height="34px" /></a>
+          <a class="brand pull-right" href="/user"><img src="/img/ASQBlack.svg" height="34px" /></a>
             
           <div class="nav-collapse collapse">
             <ul class="nav">

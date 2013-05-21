@@ -132,19 +132,25 @@ body{
 
 
 /* -- Style for presentation thumbnails on startpage -- */
-.span3{
+.thumbContainer{
+  width: 260px;
+  margin: 0px 15px 15px 15px;
+  float: left;
   -webkit-perspective: 800px;
+  -moz-perspective: 800px;
   position: relative;
   z-index: 1;
 }
 
 .thumb {
-  height: 195px;
+  height: 190px;
   box-shadow: 0 3px 6px #000;
   margin-top: 20px;
   color: #000;
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 1s;  
+  -moz-transform-style: preserve-3d;
+  -moz-transition: -webkit-transform 1s;  
   position: relative;
 
 
@@ -155,10 +161,11 @@ body{
     position: absolute;
     z-index: 15;
     -webkit-transition: opacity 0.3s;
-        box-shadow: inset 3px 3px 0px #ccc, 
-        inset -3px -3px 0px #ccc,
-        inset 0px 0px 8px #000;
-      }
+    -moz-transition: opacity 0.3s;
+    box-shadow: inset 3px 3px 0px #ccc, 
+    inset -3px -3px 0px #ccc,
+    inset 0px 0px 8px #000;
+  }
   h4{
     color: #ccc;
     text-align: center;
@@ -174,6 +181,7 @@ body{
     position: absolute;
     .100WidthHeight;
     -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
     display: table;
     width: 100%;
     table-layout: fixed;
@@ -189,6 +197,7 @@ body{
   }
   .buttons{
     -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
     background-color: #efefef; 
     box-shadow: 0px 50px 100px black;
     height: 195px;
@@ -237,6 +246,7 @@ body{
 }
 .flipped{
   -webkit-transform: rotateY( 180deg ) translateZ(-100px);
+  -moz-transform: rotateY( 180deg ) translateZ(-100px);
   z-index: 10;
 }
 
@@ -324,11 +334,9 @@ body{
   }
 }
   
-.hideThumbs{
-  bottom: -300px;
-}
 .controlBottom{
   -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
   box-shadow: inset 0 0 20px black;
   background-image: none;
   background-color: #111;
@@ -367,6 +375,7 @@ body{
     overflow-y: hidden;
     
   .thumb{
+    -moz-transition: all .2s ease-in-out;
     -webkit-transition: all .2s ease-in-out;
     box-shadow: 0 3px 8px #000, inset 2px 2px 0px #ccc, inset -2px -2px 0px #ccc;
     float: left;

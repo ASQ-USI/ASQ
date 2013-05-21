@@ -2,10 +2,11 @@
 <html lang="en">
 	<head>
 		{>htmlHead/}
-		<title>ASQ - Edit {title}</title>
+		<title>ASQ - {title}</title>
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/js/bootstrap.js"></script>
 		<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+		<script src="/js/jquery.touchwipe.min.js"></script>
 	</head>
 
 	<body onorientationchange="updateOrientation();">
@@ -17,21 +18,31 @@
 		<div class="container-fluid" id="mainContainer">
 			{>slidesControllStart/}
 		</div>
-		<!-- /start screen -->
+		<!-- /Content of start screen -->
 
 		<!---  Controlls for runnig presentation --->
 		<div id="slidesControll" style="display: none">
 			{>slidesControllRunning/}
 		</div>
-
+		<!-- /Controlls for runnig presentation -->
+		
 		<!-- Non visible presentation --->
 		<div id="asq-container" style="display: none">
-			{>"{path}" /}
+			{>"{slideshow.teacherFile}" /}
 		</div>
 
 		<script>
 		var slidesId = '{slideshow._id}';
 		var sessionStart =new Date('{slideshow.lastSession}');
+		
+		/* Hide thumbnails if page height is less than 1000px */
+		if(window.innerHeight < 860){
+			$('.controlBottom').addClass('hiddenThumbs');
+			$('.controlBottom').css('bottom', '-260px');
+			$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
+		}
+		
+	
 			/*  Add thumbnails and adjust size */
 			$(function() {
 				var width = 0;
@@ -61,14 +72,14 @@
 				switch(window.orientation) {
 					case 0:
 					case 180:
-						$("#mainContainer").removeClass("hidden-phone");
+						$(".controls").removeClass("hidden-phone");
 						$(".controlBottom").addClass("hidden-phone");
 						break;
 
 					case -90:
 					case 90:
-						$("#mainContainer").addClass("hidden-phone");
-						$("#.controlBottom").removeClass("hidden-phone");
+						$(".controls").addClass("hidden-phone");
+						$(".controlBottom").removeClass("hidden-phone");
 						break;
 				}
 			}
@@ -76,14 +87,15 @@
 			
 			/* Manually toggle thumbnails */
 			$('#controlToggle').click(function() {
-				if( $('.controlBottom').hasClass('hideThumbs') ){
-					$('.controlBottom').removeClass('hideThumbs');
-					$('.controlBottom').css('bottom', '-260px');
-					$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
-				}else{
-					$('.controlBottom').addClass('hideThumbs');
+				if( $('.controlBottom').hasClass('hiddenThumbs') ){
+					$('.controlBottom').removeClass('hiddenThumbs');
 					$('.controlBottom').css('bottom', '0px');
 					$('#controlToggle a').html('<i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i>');
+				}else{	
+					$('.controlBottom').addClass('hiddenThumbs');
+					$('.controlBottom').css('bottom', '-260px');
+					$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
+
 				}
 			});
 			
@@ -107,6 +119,17 @@
 			$('#resetClock').click(function(){
 				sessionStart = new Date();
 			});	
+			
+			/* Swipe to controll presentations for ios and android */
+			$("#buttons").touchwipe({
+			     wipeLeft: function() { alert("left"); },
+			     wipeRight: function() { alert("right"); },
+			     wipeUp: function() { alert("up"); },
+			     wipeDown: function() { alert("down"); },
+			     min_move_x: 20,
+			     min_move_y: 20,
+			     preventDefaultEvents: true
+			});
 			
 		</script>
 
