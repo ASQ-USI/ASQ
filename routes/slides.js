@@ -17,20 +17,21 @@ module.exports.admin = function(req, res) {
                         '/?alert=You have no session running!&type=error');
         } else {
             var slideshow = session.slideshow;
-            res.sendfile(slideshow.teacherFile)
-             // res.render('slides', {title: slideshow.title, mode:'admin',
-             //                      host: appHost, port: app.get('port'),
-             //                      user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
-             //                      path: path.relative(app.get('views'), slideshow.path + 'index.html'),
-             //                      links: slideshow.links,
-             //                      id: session.id,
-             //                      date: session.date
-             //                     });
+           // res.sendfile(slideshow.teacherFile)
+            res.render(slideshow.teacherFile, {title: slideshow.title, mode:'admin',
+                                host: appHost, port: app.get('port'),
+                                user:req.user.name, pass:'&bull;&bull;&bull;&bull;&bull;&bull;',
+                                path: path.relative(app.get('views'), slideshow.path + 'index.html'),
+                                links: slideshow.links,
+                                id: session.id,
+                                date: session.date
+                               });
         }
     });
 }
 /** Renders the controll view for admins */
 module.exports.adminControll = function(req, res) {
+	console.log("adminControll")
 	var userId = req.user._id;
 	sessionFromUserId(userId, function(err, session) {
 		if (err)
@@ -73,6 +74,7 @@ module.exports.adminControll = function(req, res) {
 }
 /** Serve slideshow files for admin **/
 module.exports.adminStatic = function(req, res) {
+	console.log("adminStatic")
 	var userId = req.user._id;
 	sessionFromUserId(userId, function(err, session) {
 		if (session.slideshow)
@@ -117,14 +119,14 @@ module.exports.live = function(req, res) {
         }
         if (session.slideshow) {
             var slideshow = session.slideshow
-            res.sendfile(slideshow.studentFile)
-            // res.render('slides', {title: slideshow.title, mode:'viewer',
-            //                       host:appHost, port: app.get('port'),
-            //                       user: req.params.user,
-            //                       path: path.relative(app.get('views'), slideshow.path + 'index.html'),
-            //                       links: slideshow.links,
-            //                       id: session.id
-            //                      });
+            //res.sendfile(slideshow.studentFile)
+            res.render(slideshow.studentFile, {title: slideshow.title, mode:'viewer',
+                                  host:appHost, port: app.get('port'),
+                                  user: req.params.user,
+                                  path: path.relative(app.get('views'), slideshow.path + 'index.html'),
+                                  links: slideshow.links,
+                                  id: session.id
+                                 });
         } else {
             res.send(404, 'User does not have a session running');
         }

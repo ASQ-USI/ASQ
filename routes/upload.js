@@ -84,8 +84,8 @@ module.exports.post = function(req, res) {
     .then(
       function(newHtml){
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
-        newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.html';
-        newSlideshow.studentFile =  fileNoExt + '.asq-student.html';
+        newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
+        newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
         
         var filePromises = [
           pfs.writeFile(newSlideshow.teacherFile, newHtml[0]),

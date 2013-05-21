@@ -11,16 +11,16 @@
 
 	<body onorientationchange="updateOrientation();">
 
-		<!---   Top menu --->
+		<!---   Top menu -->
 		{>menu/}
 
-		<!---   Content of start screen   --->
+		<!---   Content of start screen   -->
 		<div class="container-fluid" id="mainContainer">
 			{>slidesControllStart/}
 		</div>
 		<!-- /Content of start screen -->
 
-		<!---  Controlls for runnig presentation --->
+		<!---  Controlls for runnig presentation -->
 		<div id="slidesControll" style="display: none">
 			{>slidesControllRunning/}
 		</div>
