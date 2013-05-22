@@ -27,7 +27,7 @@
           </div>
           <div class="span5 hidden-phone">
             <h4>Next slide</h4>
-            <iframe id="nextSlideFrame" src="/slidesRender/{slidesId}/#/step-3" width="100%" height="260px" ></iframe>
+            <iframe id="nextSlideFrame" src="/slidesRender/{slidesId}/" width="100%" height="260px" ></iframe>
           </div>
           <div class="span5">
             <div id="clock">
