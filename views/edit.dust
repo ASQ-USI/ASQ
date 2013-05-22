@@ -43,7 +43,7 @@
 					
 					{#slides slideshowID=slideshow._id}
 						<div class="add"></div>
-						<div class="slide {.}" style="background-image: url('/thumbs/{slideshowID}-{$idx}-thumb.png');">
+						<div class="slide {.}" style="background-image: url('/slides/{slideshowID}/thumbs/{$idx}-thumb.png');">
 							<div class="labelContainer">
 								<div class="labels"> </div>
 							</div> 

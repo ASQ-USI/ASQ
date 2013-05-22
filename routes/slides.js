@@ -129,6 +129,17 @@ module.exports.renderStatic = function(req, res) {
 		res.sendfile(slideshow.path + req.params[0]);
 	})
 }
+
+/** Serves thumbnails */
+module.exports.serveThumbs = function(req, res) {
+	var id = req.params.id;
+	var file = req.params.file;
+	var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+
+	Slideshow.findById(id, function(err, slideshow) {
+		res.sendfile(slideshow.path + "/thumbs/"+file);
+	})
+}
 /** Renders the slideshow for viewers */
 module.exports.live = function(req, res) {
     var userName = req.params.user;

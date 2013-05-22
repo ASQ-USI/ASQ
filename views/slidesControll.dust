@@ -74,7 +74,7 @@
         <div class="controlThumbs">
           <div class="thumbsWrapper">
             {#slidesThumbs}
-            <div class="thumb {.}" style="background-image: url('/thumbs/{slidesId}-{$idx}-thumb.png')">
+            <div class="thumb {.}" style="background-image: url('/slides/{slidesId}/thumbs/{$idx}-thumb.png')">
               &nbsp;
             </div>
             {/slidesThumbs}
