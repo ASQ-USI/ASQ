@@ -55,42 +55,42 @@ describe('upload', function() {
    //callback tests
    describe('.post(req, res)', function(){
 
-    after(function(done){
-      // cleanup db and files
-      var Slideshow = db.model('Slideshow');
+    // after(function(done){
+    //   // cleanup db and files
+    //   var Slideshow = db.model('Slideshow');
 
-      Slideshow.find({}, function(err, docs ){
-        var uploadPath = path.join( __dirname + '/../slides/');
-        var totalDocs = docs.length;
+    //   Slideshow.find({}, function(err, docs ){
+    //     var uploadPath = path.join( __dirname + '/../slides/');
+    //     var totalDocs = docs.length;
 
-        if(totalDocs == 0){
-          return done(new Error("totalDocs shouldn't be 0"));
-        }
+    //     if(totalDocs == 0){
+    //       return done(new Error("totalDocs shouldn't be 0"));
+    //     }
 
-        _.each(docs, function(doc){
-          fsUtil.removeRecursive(uploadPath + doc.id, function(err, success){
-            if(err){
-              return done(err)
-            }
-            if(--totalDocs ==0){
-              Slideshow.remove({}, function(err){
-                if(err){
-                  return done(err)
-                }
-                var Question = db.model('Question')
-                Question.remove({}, function(err){
-                  if(err){
-                    return done(err)
-                  }
-                   db.close()
-                   done();
-                });
-              });           
-            }
-          });
-        });
-      });
-    });
+    //     _.each(docs, function(doc){
+    //       fsUtil.removeRecursive(uploadPath + doc.id, function(err, success){
+    //         if(err){
+    //           return done(err)
+    //         }
+    //         if(--totalDocs ==0){
+    //           Slideshow.remove({}, function(err){
+    //             if(err){
+    //               return done(err)
+    //             }
+    //             var Question = db.model('Question')
+    //             Question.remove({}, function(err){
+    //               if(err){
+    //                 return done(err)
+    //               }
+    //                db.close()
+    //                done();
+    //             });
+    //           });           
+    //         }
+    //       });
+    //     });
+    //   });
+    // });
     
     
     
@@ -103,7 +103,8 @@ describe('upload', function() {
       request(app)
       .post('/user/username/upload/')
       .set('Accept', 'application/json')
-      .attach('upload', 'test/fixtures/sample_presentation_valid_questions_stats.zip', 'upload')      
+      //.attach('upload', 'test/fixtures/sample_presentation_valid_questions_stats.zip', 'upload') 
+      .attach('upload', 'assets/SamplePresentation.zip', 'upload')      
       .expect(302)
       .end(function(err, res){
         if (err) return done(err);
