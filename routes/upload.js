@@ -75,6 +75,7 @@ module.exports.post = function(req, res) {
       function(questions){
         slideShowQuestions = questions;
         logger.log('questions successfully parsed');
+        logger.log('rendering questions...');
         return when.all([
           asqRenderer.render(slideShowFileHtml, questions, "teacher"),
           asqRenderer.render(slideShowFileHtml, questions, "student")
@@ -83,6 +84,8 @@ module.exports.post = function(req, res) {
     //6) store new html with questions to file
     .then(
       function(newHtml){
+        logger.log('questions successfully rendered');
+        logger.log('saving templates with questions...');
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
         newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
