@@ -64,7 +64,7 @@
 						<div class="thumbContainer">
 							<div class="thumb" >
 								<div class="info" >
-									<div class="bg" style="background-image: url('/slides/{_id}/thumbs/0-thumb.png')"></div>
+									<div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"></div>
 									<h4>{title}</h4>
 								</div>
 		

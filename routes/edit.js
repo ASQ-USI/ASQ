@@ -23,9 +23,10 @@ function createThumb(slidesID) {
 		});
 		
 		asyncblock(function(flow){
+  			fs.mkdirSync('slides/thumbs/' + slideshow._id);
   			for(var i = 0; i < ids.length; i++){
-  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i]);
-  				exec("/usr/local/w2png -W 1024 -H 768 -T -D public/thumbs -o " + slidesID + "-" + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slidesID + "/?url=" + ids[i], flow.add());
+  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
+  				                exec("/usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());
   				flow.wait();
   			}
 		});

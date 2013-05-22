@@ -137,7 +137,7 @@ module.exports.serveThumbs = function(req, res) {
 	var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 
 	Slideshow.findById(id, function(err, slideshow) {
-		res.sendfile(slideshow.path + "/thumbs/"+file);
+		res.sendfile('slides/thumbs/' + id + '/' + file);
 	})
 }
 /** Renders the slideshow for viewers */

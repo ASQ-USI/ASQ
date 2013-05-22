@@ -196,7 +196,7 @@ app.post('/user', passport.authenticate('local', { failureRedirect: '/', failure
 app.get('/user/:username/', ensureAuthenticated, registration.renderuser);
 
 //Serves thumbnails 
-app.get('/slides/:id/thumbs/:file', ensureAuthenticated, routes.slides.serveThumbs)
+app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
 
 app.get('/user/:username/edit/', ensureAuthenticated, function (req,res) {
     res.redirect("/user/"+req.params.username+"/edit")

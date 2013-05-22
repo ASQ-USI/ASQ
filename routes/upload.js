@@ -75,7 +75,6 @@ module.exports.post = function(req, res) {
       function(questions){
         slideShowQuestions = questions;
         logger.log('questions successfully parsed');
-        logger.log('rendering questions...');
         return when.all([
           asqRenderer.render(slideShowFileHtml, questions, "teacher"),
           asqRenderer.render(slideShowFileHtml, questions, "student")
@@ -84,8 +83,6 @@ module.exports.post = function(req, res) {
     //6) store new html with questions to file
     .then(
       function(newHtml){
-        logger.log('questions successfully rendered');
-        logger.log('saving templates with questions...');
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
         newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
@@ -157,10 +154,10 @@ function createThumb(slideshow) {
 		});
 		
 		asyncblock(function(flow){
-			fs.mkdirSync('slides/'+slideshow._id +'/thumbs');
+			fs.mkdirSync('slides/thumbs/' + slideshow._id);
   			for(var i = 0; i < ids.length; i++){
-  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D slides/" + slideshow._id + "/thumbs -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
-  				                exec("/usr/local/w2png -W 1024 -H 768 -T -D slides/" + slideshow._id + "/thumbs -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());
+  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
+  				                exec("/usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());
   				flow.wait();
   			}
 		});
