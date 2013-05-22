@@ -10,6 +10,7 @@
     <meta name="description" content="This is a basic sample presentation showing the featues of ASQ" />
     <meta name="author" content="Max von Bülow" />
 
+		<link href="css/bootstrap.min.presentation.css" type="text/css" rel="stylesheet"/>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700' rel='stylesheet' type='text/css'>
     <link href="css/ASQBasicImpress.css" type="text/css" rel="stylesheet"/>
 
@@ -28,9 +29,9 @@
 
     <div id="impress">
 
-      <section class="step" data-x="0" data-y="0">
+      <section class="step" id="slide01" data-x="0" data-y="0">
         <article class="welcome-screen">
-          <h1>This is a sample ASQ presentation</h1>
+          <h1>A sample ASQ presentation</h1>
           <h3>Here goes a subheadline</h3>
           <hr />
           <p>
@@ -44,14 +45,21 @@
       </section>
       <br />
 
-      <div class="step" data-x="1500" data-y="0" data-z="500">
+      <div class="step" id="slide02" data-x="1500" data-y="0" data-z="500">
         <h1>A sample presentation</h1>
         <p>
-          This is a sample presentation which demonstates features of ASQ
+          This is a sample presentation which demonstates features of ASQ. </p>
+          <p>
+          It contains the following questions:
         </p>
+        <ul>
+        	<li>A multiple choice question with one correct answer.</li>
+        	<li>A multiple choice question with multiple correct answers.</li>
+        	<li>One slide with multipe multiple choice questions.</li>
+        </ul>
       </div>
 
-      <section class="step" data-x="3000" data-y="0" data-z="1000" data-rotate="0">
+      <section class="step" id="slide03" data-x="3000" data-y="0" data-z="1000">
         <article class="assessment multi-choice choose-1" id="q-1">
           <h3 class="stem">Lugano is located in...</h3>
           <ol >
@@ -70,8 +78,90 @@
           </ol>
         </article>
       </section>
+      
+       <section class="step" id="slide04" data-x="3750" data-y="0" data-z="2000" data-scale="1.0" data-rotate="0">
+        <article class="stats" data-target-assessment="q-1" id="stats-q-1">
+        </article>
+      </section>
+      
+      <section class="step" id="slide05" data-x="4500" data-y="0" data-z="1000">
+        <article class="assessment multi-choice choose-0-n custom-1" id="q-2">
+          <h3 class="stem">Which are the official languages of Switzerland?</h3>
+          <p class="muted">Please select all correct options. It is possible that no option is correct.</p>
+          <ol class="upper-alpha">
+            <li class="option">
+             German
+            </li>
+            <li class="option">
+              French
+            </li>
+            <li class="option">
+              Italian
+            </li>
+            <li class="option">
+              English
+            </li>
+            <li class="option">
+             Rumantsch
+            </li>
+          </ol>
+        </article>
+      </section>
+      
+     <section class="step" id="slide06" data-x="5250" data-y="0" data-z="2000" data-scale="1.0" data-rotate="0">
+        <article class="stats" data-target-assessment="q-2" id="stats-q-2">
+        </article>
+      </section>
+      
+      <section class="step" id="slide07" data-x="6000" data-y="0" data-z="1000" >
+        <h5>Please select all correct answers!</h5>
+ 				<p class="muted">Please select all correct options. It is possible that no option is correct.</p>
+        <article class="assessment multi-choice choose-1-n pull-left" id="q-3">
+          <h3 class="stem"><img width="200" alt="target1" src="img/rect.png"></h3>
+          <ol class="smaller">
+            <li class="option">
+              This figure is a square.
+            </li>
+            <li class="option">
+              This figure is a circle.
+            </li>
+            <li class="option">
+              This figure is symetric.
+            </li>
+            <li class="option">
+              This figure has four corners.
+            </li>
+          </ol>
+        </article>
 
-      <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10"></div>
+
+        <article class="assessment multi-choice choose-1-n pull-right" id="q-6">
+          <h3 class="stem"><img width="200" alt="target1" src="img/shape.png"></h3>
+          <ol class="smaller">
+            <li class="option">
+              This figure is a square.
+            </li>
+            <li class="option">
+              This figure is a circle.
+            </li>
+            <li class="option">
+              This figure is symetric.
+            </li>
+            <li class="option">
+              This figure has four corners.
+            </li>
+          </ol>
+        </article>
+
+      </section>
+      
+      <section class="step" id="slide08" data-x="6750" data-y="0" data-z="2000" data-scale="1.0" data-rotate="0">
+        <article class="stats" data-target-assessment="q-3" id="stats-q-3">
+        </article>
+      </section>
+      
+
+      <div id="overview" class="step" data-x="3000" data-y="0" data-scale="5"></div>
 
     </div>
 

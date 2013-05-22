@@ -6,8 +6,14 @@ footer, header, hgroup, menu, nav, section {
 body {
     line-height: 1;
 }
-ol, ul {
-    list-style: none;
+ul, ol{
+	margin: 1em 0 0.5em 0; 
+}
+li {
+	margin-bottom: 0.8em;
+}
+input{
+	vertical-align: middle;
 }
 blockquote, q {
     quotes: none;
@@ -28,10 +34,15 @@ body {
     font-family: 'Open Sans', sans-serif;
     min-height: 740px;
     
-    color: #FFF;
-    background: #333a44;
+    color: #333;
+    background: #efefef;
 }
-
+.pull-left{
+	float: left;
+}
+.pull-right{
+	float: right;
+}
 
 /*
     Because the main point behind the impress.js demo is to demo impress.js
@@ -124,11 +135,26 @@ h2{
 	margin-top: 0.5em;
 }
 h3{
-	font-size: 224pem;
+	font-size: 1.3em;
 	font-weight: 400;
+	margin: 0.5em 0 0.5em 0;
+}
+h4{
+	font-size: 1.0em;
+	font-weight: 400;
+	margin: 0.5em 0 0.5em 0;
 }
 
+p{
+	font-size: 1em;
+	margin: 0.5em 0 0.5em 0;
+}
 
+.muted{
+	font-size: 0.8em;
+	opacity: 0.6;
+	margin: 0;
+}
 /*
     These 'slide' step styles were heavily inspired by HTML5 Slides:
     http://html5slides.googlecode.com/svn/trunk/styles.css
