@@ -3,6 +3,7 @@
   <head>
     {>htmlHead/}
     <title>ASQ - {title}</title>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/bootstrap.js"></script>
     <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
@@ -16,9 +17,9 @@
 
 
     <!---  Controlls for runnig presentation -->
-    <div id="slidesControll">
+    <div class="container" id="slidesControll">
       <!---   Content area   --->
-      <div class="container controls">
+      <div class="controls">
 
         <div class="row">
           <div class="span7 hidden-phone">
@@ -32,7 +33,7 @@
           <div class="span5">
             <div id="clock">
               <p>
-                <span id="hours"></span> : <span id="min"></span> : <span id="sec"></span>
+                <span id="hours">00</span> : <span id="min">00</span> : <span id="sec"></span>
                 <button class="btn btn-small btn-inverse" id="resetClock">
                   <i class="icon-repeat icon-white"> </i> Reset timer
                 </button>
