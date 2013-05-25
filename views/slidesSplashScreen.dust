@@ -14,8 +14,8 @@
     {>menu/}
 
     <!---   Content of start screen   -->
-    <div class="container-fluid" id="mainContainer">
-      <div class="row-fluid" id="waitingScreen">
+    <div class="container" id="mainContainer">
+      <div class="row" id="waitingScreen">
         <div class="span12 headline">
           <h1 style="text-align: center;">{title}</h1>
           <h5 style="text-align: center;" >Please open this link to follow the presentation</h5>
