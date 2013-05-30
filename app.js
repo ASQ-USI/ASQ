@@ -266,7 +266,7 @@ app.get('/stats/getStats', statistics.getStats)
 
 
 //Render test page
-app.get('/test/perQuestion',function(req, res){ res.render('test', {})});
+app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: req.query.questionId})});
 
 // Crash at start with node.js 0.10.10
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);

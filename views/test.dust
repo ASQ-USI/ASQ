@@ -12,6 +12,7 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script type="text/javascript">
+    var questioId = {questionId};
 		google.load("visualization", "1", {
 			packages : ["corechart"]
 		});
@@ -34,17 +35,17 @@
 
 		function drawChart() {
 			/* Right vs Wrong chart */
-			rightVsWrongData = google.visualization.arrayToDataTable([['Correctness', 'Number of submissions'], ['Correct answers', 19], ['Wrong answers', 4]]);
+			//rightVsWrongData = google.visualization.arrayToDataTable([['Correctness', 'Number of submissions'], ['Correct answers', 19], ['Wrong answers', 4]]);
 			rightVsWrongChart = new google.visualization.PieChart(document.getElementById('rightVsWrongChart'));
 			rightVsWrongChart.draw(rightVsWrongData, rightVsWrongOptions);
 
 			/* Participation chart */
-			participationData = google.visualization.arrayToDataTable([['Participation', 'Number of submissions'], ['Answer received', 23], ['No answer', 1]]);
+			//participationData = google.visualization.arrayToDataTable([['Participation', 'Number of submissions'], ['Answer received', 23], ['No answer', 1]]);
 			participationChart = new google.visualization.PieChart(document.getElementById('participationChart'));
 			participationChart.draw(participationData, participationOptions);
 
 			/* Compare answers */
-			distinctOptionsData = google.visualization.arrayToDataTable([['Option', 'Correct answers', 'Wrong answers'], ['Switzerland', 19, 0], ['Italy', 0, 3], ['France', 0, 1], ['Europe', 23, 0]]);
+			//distinctOptionsData = google.visualization.arrayToDataTable([['Option', 'Correct answers', 'Wrong answers'], ['Switzerland', 19, 0], ['Italy', 0, 3], ['France', 0, 1], ['Europe', 23, 0]]);
 			distinctOptionsOptions = {
 				title : 'How often was an option selected',
 				isStacked : true,
@@ -57,7 +58,7 @@
 			distinctOptionsChart.draw(distinctOptionsData, distinctOptionsOptions);
 
 			/* Multiple Choice statistics */
-			distinctAnswersData = google.visualization.arrayToDataTable([['Submission', 'Correct answers', 'Wrong answers'], ['Europe & Switzerland', 19, 0], ['Europe & Italy', 0, 3], ['Europe & France', 0, 1]]);
+			//distinctAnswersData = google.visualization.arrayToDataTable([['Submission', 'Correct answers', 'Wrong answers'], ['Europe & Switzerland', 19, 0], ['Europe & Italy', 0, 3], ['Europe & France', 0, 1]]);
 			distinctAnswersOptions = {
 				title : 'How often was a group of options selected',
 				isStacked : true,
@@ -71,11 +72,17 @@
 		}
 
 		function loadStatsData(){
-			rightVsWrongData = google.visualization.arrayToDataTable([['Correctness', 'Number of submissions'], ['Correct answers', 19], ['Wrong answers', 4]]);
+			//rightVsWrongData = google.visualization.arrayToDataTable([['Correctness', 'Number of submissions'], ['Correct answers', 19], ['Wrong answers', 4]]);
 			participationData = google.visualization.arrayToDataTable([['Participation', 'Number of submissions'], ['Answer received', 23], ['No answer', 1]]);
 			distinctOptionsData = google.visualization.arrayToDataTable([['Option', 'Correct answers', 'Wrong answers'], ['Switzerland', 19, 0], ['Italy', 0, 3], ['France', 0, 1], ['Europe', 23, 0]]);
 			distinctAnswersData = google.visualization.arrayToDataTable([['Submission', 'Correct answers', 'Wrong answers'], ['Europe & Switzerland', 19, 0], ['Europe & Italy', 0, 3], ['Europe & France', 0, 1]]);
 
+			rightVsWrongData = new google.visualization.DataTable();
+			rightVsWrongData.addColumn('string', 'Correctness');
+			rightVsWrongData.addColumn('number', 'Number of submissions');
+			rightVsWrongData.addRow(['Correct answers', ]);
+			rightVsWrongData.addRow(['Wrong answers', ]);
+			
 		}
     </script>
 

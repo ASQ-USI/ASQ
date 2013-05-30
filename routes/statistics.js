@@ -119,22 +119,46 @@ exports.getStats = function(req, res){
 		} 
 		//Claculate answers only if there are more than 1 submissions
 		else if(answers.length > 0){
-			//res.send(200, calcRightVsWrong(answers));
-			if(searchObj.question != undefined && searchObj.question.$in.length == 1){
-				questionDB.findById(searchObj.question.$in[0], function(err, question){
-					if(err){
-						console.log(err);
-						res.send(500, "Error in search query.");
-					}else if(question){
-						res.send(200, calcDistictAnswers(answers, question));
-					}else{
-						console.log("Question not found");
-						res.send(404, "Question not found");
-					}
-				});
-			} else{
-				console.log("Question object missiong or multiple objects given")
+			
+			//Send stats 
+			if(req.query.metric == "rightVsWrong"){
+				res.send(200, calcRightVsWrong(answers));
 			}
+			else if(req.query.metric == "distinctOptions"){
+				if(searchObj.question != undefined && searchObj.question.$in.length == 1){
+					questionDB.findById(searchObj.question.$in[0], function(err, question){
+						if(err){
+							console.log(err);
+							res.send(500, "Error in search query.");
+						}else if(question){
+							res.send(200, calcDistictOptions(answers, question));
+						}else{
+							console.log("Question not found");
+							res.send(404, "Question not found");
+						}
+					});
+				} else{
+					console.log("Question object missiong or multiple objects given")
+				}
+			}
+			else if(req.query.metric == "distinctAnswers"){
+				if(searchObj.question != undefined && searchObj.question.$in.length == 1){
+					questionDB.findById(searchObj.question.$in[0], function(err, question){
+						if(err){
+							console.log(err);
+							res.send(500, "Error in search query.");
+						}else if(question){
+							res.send(200, calcDistictAnswers(answers, question));
+						}else{
+							console.log("Question not found");
+							res.send(404, "Question not found");
+						}
+					});
+				} else{
+					console.log("Question object missiong or multiple objects given")
+				}
+			}
+			
 			
 		} 
 		//Return nothing if no answers found
@@ -158,12 +182,12 @@ function calcRightVsWrong(answers){
 	 }
 	 
 	//Return empty element if no answer provided
-	if(answers.length < 0 ){
+	if(answers.length == 0 ){
 		return result;
 	}
 	
 	//Iterate over array and update return object
-	for(var i=0; i < submission.length; i++){
+	for(var i=0; i < answers.length; i++){
 		if(answers[i].correctness == 100){
 			result.correct++;
 		}else{
