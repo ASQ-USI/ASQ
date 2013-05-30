@@ -45,7 +45,7 @@ exports = {
 // });
 
 // exports.slideshowSchema.set('toJSON', { virtuals: true });
-
+/**
 var answerSchema = new Schema({
 	question: {type: ObjectId, ref:'Question'},
 	answers: [{
@@ -54,9 +54,10 @@ var answerSchema = new Schema({
 		final: {type: Boolean, default: true}
 	}]
 })
+
 mongoose.model("Answer", answerSchema);
 exports.answerSchema = answerSchema;
-
+*/
 var sessionSchema = new Schema({
 	presenter: { type: ObjectId, ref: 'User'},
 	slides: { type: ObjectId },
@@ -126,3 +127,32 @@ exports.sessionSchema = sessionSchema;
 // }
 
 // exports.questionSchema = questionSchema;
+
+
+var answerSchema = new Schema({
+  question   	: {type: ObjectId, ref:'Question'},
+  answeree   	: String, // student that answered the question
+  session		: {type: ObjectId, ref:'Session'},
+  submission 	: {},
+  correctness	: { type: Number, min: 0, max: 100 },
+  logData 		: [answerLogSchema]
+});
+
+mongoose.model("Answer", answerSchema);
+
+var answerLogSchema = new Schema({
+  startTime:{},
+  endTime:{},
+  totalTime:{},
+  keystrokes:{},
+  pageactive:{}
+  
+})
+
+mongoose.model("AnswerLog",answerLogSchema);
+
+module.exports =  {
+  answerSchema    : answerSchema,
+  answerLogSchema : answerLogSchema
+}
+

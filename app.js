@@ -226,7 +226,7 @@ app.get('/user/:username/delete', ensureAuthenticated, editFunctions.deletequest
 
 app.get('/user/:username/deleteslideshow', ensureAuthenticated, editFunctions.deleteslideshow);
 
-app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
+//app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 
 //The user logs out, and get redirected
 app.get('/logout/', function(req, res){
@@ -240,7 +240,7 @@ app.get('/logout/', function(req, res){
 //Serving static files
 //app.get('/images/:path/', registration.get);
 
-app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
+//app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
 
 app.get('/user/:username/edithtml', ensureAuthenticated, editFunctions.edithtml);
 app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyle);
@@ -258,6 +258,15 @@ app.get('/slidesRender/:id/*', routes.slides.renderStatic);
 //Show splash screen for starting presentations
 app.get('/slidesSplashScreen', routes.slides.splashScreen)
 
+//Test call to create sample stats data
+app.get('/stats/createSampleData', statistics.createSampleData)
+
+//Request statistical data for Google Chart
+app.get('/stats/getStats', statistics.getStats)
+
+
+//Render test page
+app.get('/test/perQuestion',function(req, res){ res.render('test', {})});
 
 // Crash at start with node.js 0.10.10
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);
