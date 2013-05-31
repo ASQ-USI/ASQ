@@ -120,11 +120,15 @@ exports.getStats = function(req, res){
 		//Claculate answers only if there are more than 1 submissions
 		else if(answers.length > 0){
 			
-			//Send stats 
+			//Right vs wrong stats
 			if(req.query.metric == "rightVsWrong"){
 				res.send(200, calcRightVsWrong(answers));
 			}
+			
+			//Distict options stats 
 			else if(req.query.metric == "distinctOptions"){
+				
+				//Test if question objects exists and if only one question is given (this metric works only with one question)
 				if(searchObj.question != undefined && searchObj.question.$in.length == 1){
 					questionDB.findById(searchObj.question.$in[0], function(err, question){
 						if(err){
@@ -138,10 +142,13 @@ exports.getStats = function(req, res){
 						}
 					});
 				} else{
-					console.log("Question object missiong or multiple objects given")
+					console.log("Question object missing or multiple objects given")
+					res.send("Question object missing or multiple objects given")
 				}
 			}
+			//Distinct answers stats
 			else if(req.query.metric == "distinctAnswers"){
+				//Test if question objects exists and if only one question is given (this metric works only with one question)
 				if(searchObj.question != undefined && searchObj.question.$in.length == 1){
 					questionDB.findById(searchObj.question.$in[0], function(err, question){
 						if(err){
@@ -155,8 +162,11 @@ exports.getStats = function(req, res){
 						}
 					});
 				} else{
-					console.log("Question object missiong or multiple objects given")
+					console.log("Question object missing or multiple objects given")
+					res.send("Question object missing or multiple objects given")
 				}
+			}else{
+				res.send(404, "Metric is missing try &metric=distinctAnswers or &metric=distinctOptions or &metric=rightVsWrong")
 			}
 			
 			
@@ -325,6 +335,8 @@ function calcDistictAnswers(answers, question){
 						}
 					};
 					var text = text + "- " + selected.join(", ");
+					
+					//push new answer to results
 			  		result.push({
 			  			submission: answers[i].submission,
 						text: text,

@@ -222,7 +222,7 @@ module.exports.start = function(req, res) {
 			User.findByIdAndUpdate(req.user._id, {
 				current : newSession._id
 			}, function(err, user) {
-				res.redirect(302, '/slidesSplashScreen');
+				res.redirect(302, '/admincontroll');
 			});
 
 		});
