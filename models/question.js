@@ -9,11 +9,12 @@ var mongoose  = require('mongoose')
 // allowed form button types
 var formButtonTypes = 'checkbox radio'.split(' ');
 // allowed question types
-var questionTypes = 'multi-choice'.split(' ');
+var questionTypes = 'multi-choice text-input'.split(' ');
 
 var questionSchema = new Schema({
   htmlId: {type:String},
   stem: {type: String},
+  stemText: {type: String},
   questionType: {type:String, enum:questionTypes},
   formButtonType: {type:String, enum:formButtonTypes},
   questionOptions: [questionOptionSchema]

@@ -1,7 +1,6 @@
 <form action="">
-  <ol>
-    {+listContent/}
-  </ol>
+  
+  {+questionContent/}
   
   <p class="text-right">
     <button type="button" class="btn btn-primary">Modify</button> 

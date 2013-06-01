@@ -1,7 +1,5 @@
 <form action="">
-  <ol>
-    {+listContent/}
-  </ol>
+  {+questionContent/}
   
 <div class="progress" >
   <div class="bar" id="progessbar" style="width: 30%;"></div>
