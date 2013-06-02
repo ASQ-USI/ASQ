@@ -193,7 +193,8 @@ body{
     box-shadow: inset 3px 3px 0px #ccc, 
         inset -3px -3px 0px #ccc,
         inset 0px 0px 8px #000;
-
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
     z-index: 101;
     background-color: #000;
     text-shadow: black 0px 0px 500px;
@@ -215,16 +216,16 @@ body{
     }
   }
   .dates{
-    background-color: rgba(0,0,0,0.2);
-    height: 30px;
-    //display: table-cell;
-    margin-top: 25px;
-    box-shadow: none;
+    background-color: #ddd;
+    height: 20px;
+    position: absolute;
+    bottom: 0;
     p{
       font-size: 13px;
       display: inline;
       padding: 5px;
       float: left;
+      margin: 0;
     }
     p:last-child{
       float: right;
