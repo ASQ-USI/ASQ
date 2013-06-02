@@ -36,7 +36,6 @@
                   <i class="icon-repeat icon-white"> </i> Reset timer
                 </button>
               </p>
-
             </div>
           </div>
         </div>
@@ -55,7 +54,9 @@
             <button class="btn btn-large btn-primary" type="button" id="nextButton" onclick="impress().next();">
               Next slide
             </button>
-
+          </div>
+          <div class="span2 pull-right">
+          	<p class="connected-viewers-number">Waiting for viewers.</p>
           </div>
         </div>
       </div>

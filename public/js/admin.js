@@ -11,26 +11,27 @@ var connect = function(host, port, session, mode) {
     var updateViewersCount = function(event){
         if (!event.users) return;
         var connectedViewers = event.users;
-
         // Draw icons for the first 50 viewers
         var lim = connectedViewers < 50 ? connectedViewers : 50;
-        $('#viewers').empty();
+        $('.connected-viewers-icons').empty();
         for (var i = 0; i < lim; i++) {
-            if(connectedViewers % 10 == 0)
-                $('#viewers').append('<br/>');
-            else if(connectedViewers % 5 == 0)
-                $('#viewers').append('<span>&nbsp;&nbsp;</span>');
-            $('#viewers').append('<i class="icon-user"></i> ');
+            if(i % 10 == 0){
+                $('.connected-viewers-icons').append('<br />');}
+            else if(i % 5 == 0){
+                $('.connected-viewers-icons').append('<span>&nbsp;&nbsp;</span>');}
+            $('.connected-viewers-icons').append('<i class="icon-user"> </i> ');
         }
 
         //update viewers count
-        $("#numViewers").text(connectedViewers + " viewers");
-        $('#numConnectedViewers').text(connectedViewers + '');
+        $(".connected-viewers-number").text(connectedViewers + " viewers");
+        //$('#numConnectedViewers').text(connectedViewers + '');
         console.log('New viewer connected');
     }
     socket.on('connect', function(event) {
         socket.emit('asq:admin', {session:session});
-
+		
+		$('.connected-viewers-number').text("0 viewers connected")
+		
         /**
           Handle socket event 'new'
           Notifies the admin of a new connection to the presentation.

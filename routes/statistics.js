@@ -9,29 +9,42 @@ module.exports.createSampleData = function(req, res) {
 	
 	
 	//Create sample Question 
-	var newQuestion = new Question({
-		stem : "<h3 class=\"stem\">Lugano is located in...</h3>",
-		htmlId : "q-1",
-		questionType : "multi-choice",
-		formButtonType : "radio",
-		questionOptions : [{
-			correct : true,
-			classList : "option",
-			text : "Switzerland"
-		}, {
-			correct : false,
-			classList : "option",
-			text : "Italy"
-		}, {
-			correct : false,
-			classList : "option",
-			text : "France"
-		}, {
-			correct : true,
-			classList : "option",
-			text : "Germany"
-		}]
-	}); 
+	// var newQuestion = new Question({
+		// stem : "<h3 class=\"stem\">Lugano is located in...</h3>",
+		// htmlId : "q-1",
+		// questionType : "multi-choice",
+		// formButtonType : "radio",
+		// questionOptions : [{
+			// correct : true,
+			// classList : "option",
+			// text : "Switzerland"
+		// }, {
+			// correct : false,
+			// classList : "option",
+			// text : "Italy"
+		// }, {
+			// correct : false,
+			// classList : "option",
+			// text : "France"
+		// }, {
+			// correct : true,
+			// classList : "option",
+			// text : "Germany"
+		// }]
+	// }); 
+
+	//Create sample text Question 
+		 var newQuestion = new Question({
+			stem : "<h3 class=\"stem\">Lugano is located in...</h3>",
+			htmlId : "q-1",
+			questionType : "text-input",
+			formButtonType : "radio",
+			questionOptions : [{
+				correct : true,
+				text : "Switzerland"
+			}]
+		}); 
+
 
 
 	//Create sample Slideshow
@@ -54,15 +67,23 @@ module.exports.createSampleData = function(req, res) {
 			answeree : "Student" + i,
 			question: newQuestion._id
 		});
+		//mmultiple choice 
+		// if(i % 2 == 0){
+			// newAnswer.submission  = [true,false,false,false];
+			// newAnswer.correctness = 100;
+		// }else{
+			// newAnswer.submission  = [false,true,false,true];
+			// newAnswer.correctness = 0;
+		// }
 		
+		//text
 		if(i % 2 == 0){
-			newAnswer.submission  = [true,false,false,false];
-			newAnswer.correctness = 100;
-		}else{
-			newAnswer.submission  = [false,true,false,true];
+			newAnswer.submission  = ["Italy"];
 			newAnswer.correctness = 0;
+		}else{
+			newAnswer.submission  = ["Switzerland"];
+			newAnswer.correctness = 100;
 		}
-
 		newAnswer.save();
 	}
 
@@ -150,6 +171,7 @@ exports.getStats = function(req, res){
 			else if(req.query.metric == "distinctAnswers"){
 				//Test if question objects exists and if only one question is given (this metric works only with one question)
 				if(searchObj.question != undefined && searchObj.question.$in.length == 1){
+					console.log(searchObj.question.$in[0]);
 					questionDB.findById(searchObj.question.$in[0], function(err, question){
 						if(err){
 							console.log(err);

@@ -12,6 +12,7 @@ var connect = function(host, port, session) {
     var socket = io.connect('http://' + host + ':' + port + '/folo');
     socket.on('connect', function(event) {
         socket.emit('asq:viewer', {session:session});
+        $('.asq-welcome-screen h4').text("You are connected to the presentation.");
 
         socket.on('asq:start', function(event) {
             if (!started) {
@@ -54,7 +55,7 @@ var connect = function(host, port, session) {
 
     .on('connect_failed', function (reason) {
         console.error('unable to connect to namespace', reason);
-        $('#socket-error').css('display', 'block');
+        $('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
     });
     
     document.addEventListener('local:submit', function(event) {
