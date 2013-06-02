@@ -153,6 +153,9 @@ p{
 .nav li{
 	font-size: 0.7em;
 }
+.nav a{
+	text-decoration: none;
+}
 .nav{
 	padding-left: 0;
 	margin-bottom: 0;
@@ -171,6 +174,13 @@ p{
 }
 #progressNum{
 	margin: 15px;
+}
+.connected-viewers-number{
+	font-size: 0.8em;
+	color: #666;
+}
+.asq-welcome-screen{
+	text-align: center;
 }
 /*
     These 'slide' step styles were heavily inspired by HTML5 Slides:
