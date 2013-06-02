@@ -148,7 +148,9 @@ body{
   margin-top: 20px;
   color: #000;
   -webkit-transform-style: preserve-3d;
-  -webkit-transition: -webkit-transform 1s;  
+  -webkit-transition: -webkit-transform 1s; 
+  transform-style: preserve-3d;
+  transition: transform 1s; 
   -moz-transform-style: preserve-3d;
   -moz-transition: -webkit-transform 1s;  
   position: relative;
@@ -182,6 +184,7 @@ body{
     .100WidthHeight;
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
     display: table;
     width: 100%;
     table-layout: fixed;
@@ -214,7 +217,7 @@ body{
   .dates{
     background-color: rgba(0,0,0,0.2);
     height: 30px;
-    display: table-cell;
+    //display: table-cell;
     margin-top: 25px;
     box-shadow: none;
     p{
@@ -248,6 +251,7 @@ body{
 .flipped{
   -webkit-transform: rotateY( 180deg ) translateZ(-100px);
   -moz-transform: rotateY( 180deg ) translateZ(-100px);
+  transform: rotateY( 180deg ) translateZ(-100px);
   z-index: 10;
 }
 

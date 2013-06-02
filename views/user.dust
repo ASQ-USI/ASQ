@@ -64,12 +64,12 @@
 						<div class="thumbContainer">
 							<div class="thumb" >
 								<div class="info" >
-									<div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"></div>
+									<div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
 									<h4>{title}</h4>
 								</div>
 		
 								<div class="buttons">
-									<a href="start/{_id}" class="btn btn-primary start" data-id="{_id}"><i class="icon-play icon-white"> </i> Start Presentation</a>
+									<a href="start/{_id}" class="btn btn-primary start"><i class="icon-play icon-white"> </i> Start Presentation</a>
 									<a href="statistics?id={_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
 									<a href="edit?id={_id}" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
 									<div class="dates">
@@ -104,15 +104,16 @@
 		
 		$(".buttons a").click(function (event) {
 		    
-		    //window.alert(window.navigator.standalone);
+		    
+		    event.preventDefault();
+		    window.location = $(this).attr("href");
+		    window.alert(window.navigator.standalone);
 		    if($(this).hasClass("start") && !(window.navigator.standalone == true)){
 		    	var slideshow = window.open("/admin", '_blank');
 		    	window.open("/admin", '');
 		    	slideshow.blur();
 					window.focus();
 		    }
-		    event.preventDefault();
-		    window.location = $(this).attr("href");
 		});
 		
 		
