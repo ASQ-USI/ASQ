@@ -1,0 +1,13 @@
+{>"questionForm-student.dust"/}
+
+{<questionContent}
+  <ol>
+  {#questionOptions}
+    <li class="{classList}" >
+      <label class="{question.formButtonType}">
+        <input type="{formButtonType}" name="{htmlId}" value=""> {text|s}
+      </label>
+    </li>{~n}
+  {/questionOptions}
+</ol>
+{/questionContent}

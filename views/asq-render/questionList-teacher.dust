@@ -1,0 +1,9 @@
+{>"questionForm-teacher.dust"/}
+
+{<questionContent}
+  <ol>
+  {#questionOptions}
+    <li class="{classList}" >{text|s}</li>{~n}
+  {/questionOptions}
+  </ol>
+{/questionContent}
