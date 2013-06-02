@@ -103,13 +103,10 @@
 		});
 		
 		$(".buttons a").click(function (event) {
-		    
-		    
 		    event.preventDefault();
 		    window.location = $(this).attr("href");
-		    window.alert(window.navigator.standalone);
+		    console.log(window.navigator.standalone);
 		    if($(this).hasClass("start") && !(window.navigator.standalone == true)){
-		    	var slideshow = window.open("/admin", '_blank');
 		    	window.open("/admin", '');
 		    	slideshow.blur();
 					window.focus();

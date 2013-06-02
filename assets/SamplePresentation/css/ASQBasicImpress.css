@@ -150,10 +150,27 @@ p{
 	margin: 0.5em 0 0.5em 0;
 }
 
+.nav li{
+	font-size: 0.7em;
+}
+.nav{
+	padding-left: 0;
+	margin-bottom: 0;
+}
+.tab-content{
+	padding-top: 0;
+	background-color: #ffffff;
+	border: 1px solid #ddd;
+	border-top: none;
+}
 .muted{
 	font-size: 0.8em;
 	opacity: 0.6;
 	margin: 0;
+	clear:both;
+}
+#progressNum{
+	margin: 15px;
 }
 /*
     These 'slide' step styles were heavily inspired by HTML5 Slides:
