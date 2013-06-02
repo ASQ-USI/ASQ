@@ -13,8 +13,8 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li><a href="/user">My Presentations</a></li>
-              <li><a href="/questions">My Questions</a></li>
-              <li><a href="upload">Create Presentation</a></li>
+              <!-- <li><a href="/questions">My Questions</a></li> -->
+              <li><a href="/user/upload">Upload Presentation</a></li>
               
             </ul>
             <ul class="nav pull-right">
