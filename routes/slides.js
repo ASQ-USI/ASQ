@@ -148,7 +148,11 @@ module.exports.serveThumbs = function(req, res) {
 }
 /** Renders the slideshow for viewers */
 module.exports.live = function(req, res) {
-    var userName = req.params.user;
+    var userName = req.params.user
+    , mode = (req.query.mode && (req.query.mode=='viewer' || req.query.mode=='invisible')) ? req.query.mode : 'viewer';
+
+    console.log('the master said: '+ mode)
+
     sessionFromUserName(userName, function (err, session) {
         if (err) {
             if (err.message === 'User does not exist')
@@ -160,7 +164,7 @@ module.exports.live = function(req, res) {
         if (session.slideshow) {
             var slideshow = session.slideshow
             //res.sendfile(slideshow.studentFile)
-            res.render(slideshow.studentFile, {title: slideshow.title, mode:'viewer',
+            res.render(slideshow.studentFile, {title: slideshow.title, mode:mode,
                                   host:appHost, port: app.get('port'),
                                   user: req.params.user,
                                   path: path.relative(app.get('views'), slideshow.path + 'index.html'),

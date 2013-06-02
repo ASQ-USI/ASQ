@@ -7,11 +7,11 @@
 var questionId = null;
 
 /** Connect back to the server with a websocket */
-var connect = function(host, port, session) {
+var connect = function(host, port, session, mode) {
     var started = false;
     var socket = io.connect('http://' + host + ':' + port + '/folo');
     socket.on('connect', function(event) {
-        socket.emit('asq:viewer', {session:session});
+        socket.emit('asq:viewer', {session:session, mode:mode});
         $('.asq-welcome-screen h4').text("You are connected to the presentation.");
 
         socket.on('asq:start', function(event) {
