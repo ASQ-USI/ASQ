@@ -41,8 +41,10 @@ module.exports.adminControll = function(req, res) {
 		} else {
 			var slideshow = session.slideshow;
 			fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
-				console.log(data);
+				//console.log(data);
 				var ids = [];
+				var presentationSkeleton;
+				
 				$ = cheerio.load(data);
 				$('.step').each(function() {
 					var id = this.attr().id;
@@ -53,7 +55,11 @@ module.exports.adminControll = function(req, res) {
 						ids.push(id);
 					}
 				});
-
+				presentationSkeleton ='<div class="step" id="'+ ids.join('"></div><div class="step" id="') + '"></div>';
+				//presentationSkeleton = $('#impress');
+				
+				//console.log(presentationSkeleton);
+				
 				res.render('slidesControll', {
 					title : slideshow.title,
 					mode : true,
@@ -61,12 +67,12 @@ module.exports.adminControll = function(req, res) {
 					port : app.get('port'),
 					user : req.user.name,
 					pass : '&bull;&bull;&bull;&bull;&bull;&bull;',
-					links : slideshow.links,
 					id : session.id,
 					date : session.date,
 					slidesId : slideshow._id,
 					slidesThumbs : ids,
-					slideshow: slideshow
+					slideshow: slideshow, 
+					presenationSkeleton: presentationSkeleton,
 				});
 			});
 		}
@@ -91,7 +97,7 @@ module.exports.render = function(req, res) {
 	Slideshow.findById(id, function(err, slideshow) {
 		if(slideshow){
 			//res.sendfile(slideshow.teacherFile)
-			res.render(slideshow.teacherFile, {title: slideshow.title, mode:'admin'});
+			res.sendfile(slideshow.originalFile);
 		}else{
 			res.send(404, "Slideshow not found");
 			

@@ -33,7 +33,7 @@
 					You have a live session running. Do you want to see it?
 				</p>
 				<p>
-					<a class="btn btn-primary"  href="/admin">Go to presentation</a>
+					<a class="btn btn-primary"  href="/admincontroll">Go to presentation</a>
 					<a class="btn btn-danger" href="stop/"> Stop presentation </a>
 				</p>
 			</div>
@@ -103,15 +103,16 @@
 		});
 		
 		$(".buttons a").click(function (event) {
-		    event.preventDefault();
-		    window.location = $(this).attr("href");
-		    window.alert(window.navigator.standalone);
+		    
+		    //window.alert(window.navigator.standalone);
 		    if($(this).hasClass("start") && !(window.navigator.standalone == true)){
 		    	var slideshow = window.open("/admin", '_blank');
 		    	window.open("/admin", '');
 		    	slideshow.blur();
 					window.focus();
 		    }
+		    event.preventDefault();
+		    window.location = $(this).attr("href");
 		});
 		
 		

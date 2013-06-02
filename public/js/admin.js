@@ -57,7 +57,7 @@ var connect = function(host, port, session, mode) {
         });
 
         socket.on('asq:goto', function(event) {
-        	if(mode == 'controll'){
+        	if(mode == 'control'){
 				$('.controlThumbs .thumbsWrapper .active').removeClass('active');
 	        	$('.controlThumbs').scrollTo('.' + event.slide, 500, {offset:-150});
 	        	$('.controlThumbs .thumbsWrapper .' + event.slide).addClass("active");
@@ -73,6 +73,7 @@ var connect = function(host, port, session, mode) {
         });
 
         socket.on('asq:question', function(event) {
+        	window.alert("Question");
             showQuestion(event.question);
         });
 

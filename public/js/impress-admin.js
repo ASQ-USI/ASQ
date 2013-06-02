@@ -21,6 +21,10 @@
 
 // You are one of those who like to know how thing work inside?
 // Let me show you the cogs that make impress.js run...
+
+
+//Changes by Max: Removed blacklisting of iOS and Android. They are said not to work actually they do.
+
 (function ( document, window ) {
     'use strict';
     
@@ -174,12 +178,12 @@
                            
                           // and `classList` and `dataset` APIs
                            ( body.classList ) &&
-                           ( body.dataset ) &&
+                           ( body.dataset );// &&
                            
                           // but some mobile devices need to be blacklisted,
                           // because their CSS 3D support or hardware is not
                           // good enough to run impress.js properly, sorry...
-                           ( ua.search(/(iphone)|(ipod)|(android)/) === -1 );
+                          // ( ua.search(/(iphone)|(ipod)|(android)/) === -1 );
     
     if (!impressSupported) {
         // we can't be sure that `classList` is supported
@@ -1008,12 +1012,13 @@
         document.addEventListener("touchstart", function ( event ) {
             if (event.touches.length === 1) {
                 var x = event.touches[0].clientX,
+                	y = event.touches[0].clientY,
                     width = window.innerWidth * 0.3,
                     result = null;
                     
-                if ( x < width ) {
+                if ( x < width && y > 100) {
                     result = api.prev();
-                } else if ( x > window.innerWidth - width ) {
+                } else if ( x > window.innerWidth - width && y > 50) {
                     result = api.next();
                 }
                 

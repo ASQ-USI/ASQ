@@ -3,11 +3,9 @@
   <head>
     {>htmlHead/}
     <title>ASQ - {title}</title>
-    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/bootstrap.js"></script>
-    <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
-    <script src="/js/jquery.touchwipe.min.js"></script>
   </head>
 
   <body onorientationchange="updateOrientation();">
@@ -24,7 +22,7 @@
         <div class="row">
           <div class="span7 hidden-phone">
             <h4>Active slide</h4>
-            <iframe id="thisSlideFrame" src="http://{host}:{port}/live/{user}" width="100%" height="340px" ></iframe>
+           <iframe id="thisSlideFrame" src="http://{host}:{port}/live/{user}" width="100%" height="340px" ></iframe>
           </div>
           <div class="span5 hidden-phone">
             <h4>Next slide</h4>
@@ -69,7 +67,7 @@
       <div class="controlBottom hidden-phone">
 
         <div id="controlToggle" class="hidden-phone">
-          <a href="#"><i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i></a>
+          <a href="#" ><i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i></a>
         </div>
 
         <div class="controlThumbs">
@@ -88,128 +86,25 @@
     <!-- /Controlls for runnig presentation -->
 
     <!-- Non visible presentation --->
-    <div id="asq-container" style="display: none">
-      {>"{slideshow.teacherFile}" /}
+    <div id="impress" style="display: none">
+      {presenationSkeleton|s}
     </div>
 
-    <script>
-		var slidesId = '{slideshow._id}';
-		var sessionStart = new Date('{slideshow.lastSession}');
-
-		/* Hide thumbnails if page height is less than 1000px */
-		if (window.innerHeight < 860) {
-			$('.controlBottom').addClass('hiddenThumbs');
-			$('.controlBottom').css('bottom', '-260px');
-			$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
-		}
-
-		/*  Add thumbnails and adjust size */
-		$(function() {
-			var width = 0;
-
-			/* Add space for every thumbnail */
-			$('.controlThumbs .thumb').each(function() {
-				width += $(this).outerWidth(true);
-			});
-
-			/* Add extra space for bigger active thumbnail */
-			width = width + 80;
-
-			$('.thumbsWrapper').css('width', width + "px");
-		});
-
-		/* Click handler for thumbnails */
-		$('.thumbsWrapper .thumb').click(function() {
-			var go = $(".thumb").index(this);
-			impress().emitGoto(go);
-			/*console.log(go);*/
-		});
-
-		/* Show or hide thumbnails on mobile devices depending on orientation */
-		function updateOrientation() {
-			switch(window.orientation) {
-				case 0:
-				case 180:
-					$(".controls").removeClass("hidden-phone");
-					$(".controlBottom").addClass("hidden-phone");
-					break;
-
-				case -90:
-				case 90:
-					$(".controls").addClass("hidden-phone");
-					$(".controlBottom").removeClass("hidden-phone");
-					break;
-			}
-		}
-
-		updateOrientation();
-
-		/* Manually toggle thumbnails */
-		$('#controlToggle').click(function() {
-			if ($('.controlBottom').hasClass('hiddenThumbs')) {
-				$('.controlBottom').removeClass('hiddenThumbs');
-				$('.controlBottom').css('bottom', '0px');
-				$('#controlToggle a').html('<i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i>');
-			} else {
-				$('.controlBottom').addClass('hiddenThumbs');
-				$('.controlBottom').css('bottom', '-260px');
-				$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
-
-			}
-		});
-
-		/* Clock */
-		setInterval(function() {
-
-			var newDate = Math.abs(new Date() - sessionStart);
-
-			var hours = Math.floor(((newDate / 1000) / 60 ) / 60);
-			var minutes = Math.floor(((newDate / 1000) / 60) % 60);
-			var seconds = Math.floor((newDate / 1000) % 60);
-
-			$("#hours").html((hours < 10 ? "0" : "" ) + hours);
-			$("#min").html((minutes < 10 ? "0" : "" ) + minutes);
-			$("#sec").html((seconds < 10 ? "0" : "" ) + seconds);
-		}, 1000);
-
-		/* Reset Clock */
-
-		$('#resetClock').click(function() {
-			sessionStart = new Date();
-		});
-
-		/* Swipe to controll presentations for ios and android */
-		$("#buttons").touchwipe({
-			wipeLeft : function() {
-				alert("left");
-			},
-			wipeRight : function() {
-				alert("right");
-			},
-			wipeUp : function() {
-				alert("up");
-			},
-			wipeDown : function() {
-				alert("down");
-			},
-			min_move_x : 20,
-			min_move_y : 20,
-			preventDefaultEvents : true
-		});
-
-    </script>
+  
 
     <script src="/js/impress-admin.js"></script>
     <script src="/js/admin.js"></script>
-    <script src="/js/jquery.scrollTo.js"></script>
-
-    <script>
-		/* Load impress and set up sockets */
-window.onload = function() {
-impress().init(); {~n}
-$('#welcomeScreen').modal('show'); {~n}
-connect( "{host}" , {port} , "{id}", "controll"); {~n}
-}
-    </script>
+	  <script>
+	  var slidesId = '{slideshow._id}';
+		var sessionStart = new Date('{slideshow.lastSession}');
+		var mode = "controll";
+	  window.onload = function() {
+	  	impress().init();
+	  	connect( "{host}" , {port} , "{id}", "control");
+	  	impress().start();}
+	  </script>
+	  <script src="/js/jquery.js"></script>
+	  <script src="/js/admincontroll.js"></script>
+	  <script src="/js/jquery.scrollTo.js"></script>
   </body>
 </html>

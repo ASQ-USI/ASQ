@@ -99,7 +99,8 @@ app = express();
 //app.engine('ejs', engine);
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
-appHost = process.argv[2] || '127.0.0.1';
+appHost ='10.62.33.2';
+//appHost = process.argv[2] || '127.0.0.1';
 clientsLimit = process.argv[3] || 50;
 console.log(appHost + ' clients: ' + clientsLimit);
 
@@ -240,7 +241,7 @@ app.get('/logout/', function(req, res){
 //Serving static files
 //app.get('/images/:path/', registration.get);
 
-//app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
+app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
 
 app.get('/user/:username/edithtml', ensureAuthenticated, editFunctions.edithtml);
 app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyle);
@@ -252,7 +253,7 @@ app.post('/user/:username/savedetails', ensureAuthenticated, editFunctions.saveD
 app.get('/slidesInFrame/:id/', function(req,res){
 	res.render('slidesIFrame', {id: req.params.id, url: req.query.url});
 });
-app.get('/slidesRender/:id/', routes.slides.render);
+app.get('/slidesRender/:id', routes.slides.render);
 app.get('/slidesRender/:id/*', routes.slides.renderStatic);
 
 //Show splash screen for starting presentations

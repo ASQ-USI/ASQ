@@ -57,7 +57,7 @@ exports.signup = function(req, res) {
 				email : req.body.signupemail
 			});
 			newUser.save();
-			res.render('registered', null);
+			res.render('index', {message: "Account was created"} );
 		}
 	});
 

@@ -8,10 +8,10 @@ var asyncblock = require('asyncblock');
 
 
 /*  --- Edit Slideshow ---*/
-function createThumb(slidesID) {
-	fs.readFile("./slides/" + slidesID + "/index.html", 'utf-8', function(error, data) {
+function createThumb(slideshow) {
+	fs.readFile(slideshow.studentFile, 'utf-8', function(error, data) {
 		var ids = [];
-		$ = cheerio.load(data);
+		var $ = cheerio.load(data);
 		$('.step').each(function() {
 			var id = this.attr().id;
 			//If slide does not have id, use step-n instead (for url calling)
@@ -23,7 +23,7 @@ function createThumb(slidesID) {
 		});
 		
 		asyncblock(function(flow){
-  			fs.mkdirSync('slides/thumbs/' + slideshow._id);
+			fs.mkdirSync('slides/thumbs/' + slideshow._id);
   			for(var i = 0; i < ids.length; i++){
   				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
   				                exec("/usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());
@@ -33,6 +33,7 @@ function createThumb(slidesID) {
 		
 	});
 }
+
 
 exports.editslideshow = function(req, res) {
 
@@ -129,7 +130,7 @@ exports.edithtml = function(req, res) {
 			console.log(err);
 		} else {
 			var folderHTML = './slides/' + req.query.id + '/index.html';
-			fs.readFile(folderHTML, 'utf-8', function(error, data) {
+			fs.readFile(slideshow.originalFile, 'utf-8', function(error, data) {
 				//console.log(req.query.id + " "+ data);
 				res.render('edithtml', {
 					username : req.user.name,
@@ -147,7 +148,7 @@ exports.edithtml = function(req, res) {
 exports.savehtml = function(req, res) {
 	//console.log(req.query.id);
 	//console.log(req.body.editorvalue);
-	createThumb(req.query.id);
+	
 
 	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
 	//Update last edit date
@@ -162,11 +163,11 @@ exports.savehtml = function(req, res) {
 			console.log(err);
 		} else {
 			var folderHTML = './slides/' + req.query.id + '/index.html';
-			fs.writeFile(folderHTML, req.body.editorvalue, function(err) {
+			fs.writeFile(slideshow.originalFile, req.body.editorvalue, function(err) {
 				if (err) {
 					console.log(err);
 				} else {
-
+					//createThumb(req.query.id);
 					res.render('edithtml', {
 						username : req.user.name,
 						html : req.body.editorvalue,

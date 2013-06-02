@@ -40,7 +40,7 @@ var connect = function(host, port, session) {
          */
         socket.on('asq:goto', function(event) {
             impress().goto(event.slide);
-            $('#answer').modal('hide');
+            //$('#answer').modal('hide');
         });
 
         /**
