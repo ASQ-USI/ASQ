@@ -1,6 +1,7 @@
 {>"questionForm-student.dust"/}
 
-{<listContent}
+{<questionContent}
+  <ol>
   {#questionOptions}
     <li class="{classList}" >
       <label class="{question.formButtonType}">
@@ -8,4 +9,5 @@
       </label>
     </li>{~n}
   {/questionOptions}
-{/listContent}
+</ol>
+{/questionContent}
