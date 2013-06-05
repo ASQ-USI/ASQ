@@ -247,7 +247,7 @@ function calcDistictOptions(answers, question){
 	
 	
 	//If questiion is a multiple choice question -> submission is array of boolean
-	if(question.questionType = "multi-choice"){
+	//if(question.questionType = "multi-choice"){
 		
 		//All submissions must have same amount of options 
 		var optionsLength = question.questionOptions.length;
@@ -277,13 +277,13 @@ function calcDistictOptions(answers, question){
 			};
 		  
 		};
-	}
+	//}
 	
 	//Else (missing or unknown question type) log error
-	else{
-		console.log("Error in calculating disctinct options: question type is unknown or mission: ");
-		console.log(question.questionType)
-	}
+	//else{
+	//	console.log("Error in calculating disctinct options: question type is unknown or mission: ");
+	//	console.log(question.questionType)
+	//}
 	
 	return result;
 }
@@ -303,16 +303,17 @@ function calcDistictAnswers(answers, question){
 	var result = new Array();
 	
 	
-	//If questiion is a multiple choice question -> submission is array of boolean
-	if(question.questionType = "multi-choice"){
-		
 		//All submissions must have same amount of options 
 		var optionsLength = question.questionOptions.length;
 		
 		//Get correct answer
 		var solution = new Array();
 		for (var i=0; i < optionsLength; i++) {
-		  solution.push(question.questionOptions[i].correct);
+			if(question.questionType == "multi-choice"){
+		  		solution.push(question.questionOptions[i].correct);
+		  	}else{
+		  		solution.push(question.questionOptions[i].text);
+		  	}
 		};
 	
 		
@@ -339,108 +340,45 @@ function calcDistictAnswers(answers, question){
 			 };
 			 //If still new anser add to reluts
 			 if(newAnswer){
-			  		var correct;
-			  		//Check if new answer is correct
-			  		if(arrayEqual(answers[i], solution)){
-			  			correct = true;
-			  		}else{
-			  			correct = false;
-			  		}
 			  		
+			  		//Check if new answer is correct
+			  		var correct = arrayEqual(answers[i].submission, solution);
+			  		
+			  		//text for each dataset
+			  		var optionText = "";
 			  		//text that contains all selected answer option texts
-			  		var text = "";
-			  		var selected = new Array();
-			  		for (var k=0; k < answers[i].submission.length; k++) {
+			  		
+				  	var selected = new Array();
+				  	for (var k=0; k < answers[i].submission.length; k++) {
 						if(answers[i].submission[k]==true){
 							selected.push(question.questionOptions[k].text);
-							text = text + String.fromCharCode(65 + k) + " ";
+							optionText = optionText + String.fromCharCode(65 + k) + " ";
 						}
 					};
-					var text = text + "- " + selected.join(", ");
+						
+					if(question.questionType == "multi-choice"){	
+						 optionText = optionText + "- " + selected.join(", ");
+					}else{
+						console.log("Qswefrgth");
+						 optionText = selected.join(", ");
+					}
 					
 					//push new answer to results
 			  		result.push({
 			  			submission: answers[i].submission,
-						text: text,
+						text: optionText,
 						correct: correct,
 						quantity: 1 //How often option was selected
 					});
 			  	}
 		  
 		};
-	}
-	//Else if text-question
-	else if(question.questionType = "text"){
-		
-		//All submissions must have same amount of options 
-		var optionsLength = question.questionOptions.length;
-		
-		//Get correct answer
-		var solution = new Array();
-		for (var i=0; i < optionsLength; i++) {
-		  solution.push(question.questionOptions[i].correct);
-		};
-	
-		
-		
-		//Iterate over answers
-		for (var i=0; i < answers.length; i++) {
-			//Check if answer has the correct amount of options
-			if(answers[i].submission.length != optionsLength){
-				console.log("Error in calculating disctinct options: Multiple choice options differ in length. This can't be as every answer has to have the same length.")
-			}
-		
-			//Remember id answer is not part of results yet
-			var newAnswer = true		
-			
-			//Check if answer was seen before. If yes increase quantity, if no add to results.
-			
-			for (var j=0; j < result.length; j++) {	
-				//Check if answer alreday exists in results and if yes increase quantity
-			  	if(arrayEqual(result[j].submission, answers[i].submission)){
-			  		result[j].quantity++;
-			  		newAnswer = false;
-			  		break;
-			  	}
-			 };
-			 //If still new anser add to reluts
-			 if(newAnswer){
-			  		var correct;
-			  		//Check if new answer is correct
-			  		if(arrayEqual(answers[i], solution)){
-			  			correct = true;
-			  		}else{
-			  			correct = false;
-			  		}
-			  		
-			  		//text that contains all selected answer option texts
-			  		var text = "";
-			  		var selected = new Array();
-			  		for (var k=0; k < answers[i].submission.length; k++) {
-						if(answers[i].submission[k]==true){
-							selected.push(question.questionOptions[k].text);
-							text = text + String.fromCharCode(65 + k) + " ";
-						}
-					};
-					var text = selected.join(", ");
-					
-					//push new answer to results
-			  		result.push({
-			  			submission: answers[i].submission,
-						text: text,
-						correct: correct,
-						quantity: 1 //How often option was selected
-					});
-			  	}
-		  
-		};
-	}
-	
+	//}
 	//Else (missing or unknown question type) log error
-	else{
-		console.log("Error in calculating disctinct options: question type is unknown or mission: ");
-		console.log(question.questionType)
-	}
+	//else{
+	//	console.log("Error in calculating disctinct options: question type is unknown or mission: ");
+	//	console.log(question.questionType)
+	//}
 	
 	return result;
 }
@@ -448,8 +386,7 @@ function calcDistictAnswers(answers, question){
 //Compares two arrys. Ignores capitalisation.
 function arrayEqual(array1, array2) {
 	if (array1.length !== array2.length) {
-		console.log(array1.length + " " + array2.length)
-		console.log("wrong length")
+		console.log("arrayEqual wrong length: "+ array1.length + " " + array2.length)
 		return false;
 	} else {
 		for (var i = 0; i < array1.length; i++) {

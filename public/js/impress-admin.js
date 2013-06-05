@@ -1010,7 +1010,12 @@
         // touch handler to detect taps on the left and right side of the screen
         // based on awesome work of @hakimel: https://github.com/hakimel/reveal.js
         document.addEventListener("touchstart", function ( event ) {
-            if (event.touches.length === 1) {
+        	var isLandscape = window.innerWidth > window.innerHeight;
+        	
+        	//window.alert(mode != "controll");
+        	if(isLandscape && mode == "controll"){
+        		
+        	}else if (event.touches.length === 1 ) {
                 var x = event.touches[0].clientX,
                 	y = event.touches[0].clientY,
                     width = window.innerWidth * 0.3,
@@ -1018,7 +1023,7 @@
                     
                 if ( x < width && y > 100) {
                     result = api.prev();
-                } else if ( x > window.innerWidth - width && y > 50) {
+                } else if ( x > window.innerWidth - width && y > 100) {
                     result = api.next();
                 }
                 

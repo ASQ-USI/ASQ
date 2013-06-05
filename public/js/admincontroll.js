@@ -31,20 +31,42 @@ $('.thumbsWrapper .thumb').click(function() {
 
 /* Show or hide thumbnails on mobile devices depending on orientation */
 function updateOrientation() {
-	switch(window.orientation) {
-		case 0:
-		case 180:
-			$(".controls").removeClass("hidden-phone");
-			$(".controlBottom").addClass("hidden-phone");
-			break;
-
-		case -90:
-		case 90:
-			$(".controls").addClass("hidden-phone");
-			$(".controlBottom").removeClass("hidden-phone");
-			break;
+	if(screen.width < 500 || screen.height < 500){
+		switch(window.orientation) {
+			case 0:
+			case 180:
+				$(".controls").removeClass("hidden-phone");
+				$(".controlBottom").addClass("hidden-phone");
+				$(".thisSlideFrame").addClass("hidden-phone");
+				break;
+	
+			case -90:
+				// $(".thisSlideFrame").removeClass("hidden-phone");
+// 				
+				// $(".thisSlideFrame").css("position", "absolute");
+				// $(".thisSlideFrame").css("display", "block");
+				// $(".thisSlideFrame").css("top", "0");
+				// $(".thisSlideFrame").css("width", window.innerWidth +"px");
+				// $("#thisSlideFrame").attr("width", "100%");
+				// $("#thisSlideFrame").css("display", "block");
+				// $(".thisSlideFrame").css("left", "0");
+				// $(".thisSlideFrame").css("height", window.innerHeight +"px");
+				// $("#thisSlideFrame").attr("height", "100%");
+			// break;
+			case 90:
+			$(".thisSlideFrame").addClass("hidden-phone");
+				$(".controls").addClass("hidden-phone");
+				$(".controlBottom").removeClass("hidden-phone");
+				break;
+		}
 	}
 }
+/*Hide iframes on tablest and phones */
+var userAgent = navigator.userAgent.toLowerCase();
+if(userAgent.indexOf("android")  > 0 || userAgent.indexOf("iphone") > 0  || userAgent.indexOf("ipod") > 0 ){
+	$("iframe").css("display", "none");
+}
+
 
 updateOrientation();
 
