@@ -4,7 +4,7 @@
     */
 
 var schema        = require('../models/models')
-, slideshow       = require('../models/slideshow')
+, slideshowModel  = require('../models/slideshow')
 , questionModel   = require('../models/question')
 , fs              = require('fs')
 , unzip           = require('unzip')
@@ -21,7 +21,8 @@ var schema        = require('../models/models')
 , path            = require('path')
 , _               = require('underscore')
 , asyncblock      = require('asyncblock')
-, exec            = require('child_process').exec;
+, exec            = require('child_process').exec
+, mkdirp          = require('mkdirp');
 
 
 logger.setLogLevel(4);
@@ -42,7 +43,8 @@ module.exports.post = function(req, res) {
   // 1) create new Slideshow model
   var Slideshow = db.model('Slideshow');
   var slideShowFileHtml;
-  var slideShowQuestions
+  var slideShowQuestions;
+  var parsedQuestions;
 
   var newSlideshow = new Slideshow({
     title:req.files.upload.name,
@@ -70,17 +72,30 @@ module.exports.post = function(req, res) {
         logger.log('parsing main .html file for questions...');
         return asqParser.parse(slideShowFileHtml);
     })
-    //5) render questions inside to slideshow's html into memory
+    //5) create new questions for database
+    // TODO: create questions only if they exist
     .then(
       function(questions){
-        slideShowQuestions = questions;
+        parsedQuestions = questions
+        return questionModel.create(questions)
+    })
+    //6) render questions inside to slideshow's html into memory
+    .then(
+      function(dbQuestions){
         logger.log('questions successfully parsed');
+
+        //copy objectIDs created from mongoose
+        _.each(parsedQuestions, function(parsedQuestion, index){
+          parsedQuestion.id = dbQuestions[index].id;
+        })
+
+        slideShowQuestions = dbQuestions;
         return when.all([
-          asqRenderer.render(slideShowFileHtml, questions, "teacher"),
-          asqRenderer.render(slideShowFileHtml, questions, "student")
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
           ]);
     })
-    //6) store new html with questions to file
+    //7) store new html with questions to file
     .then(
       function(newHtml){
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
@@ -95,18 +110,13 @@ module.exports.post = function(req, res) {
         return  require("promised-io/promise").all(filePromises);
 
     })
-    //7) create new questions for database
-    // TODO: create questions only if they exist
-    .then(
-      function(){
-        logger.log('questions successfully rendered to file');
-        return questionModel.create(slideShowQuestions)
-    })
     //8) add questions to slideshow and persist
     .then(
-      function(docs){
-
-        newSlideshow.questions = docs
+      function(){
+        newSlideshow.questions = slideShowQuestions
+        // remember: parsedQuestions now have the ObjectID created 
+        // when the slideShowQuestions were created
+        newSlideshow.questionsPerSlide = slideshowModel.createQuestionsPerSlide(parsedQuestions)
         return newSlideshow.saveWithPromise();
     })
     //9) remove zip folder
@@ -154,7 +164,7 @@ function createThumb(slideshow) {
 		});
 		
 		asyncblock(function(flow){
-			fs.mkdirSync('slides/thumbs/' + slideshow._id);
+			mkdirp.sync('slides/thumbs/' + slideshow._id);
   			for(var i = 0; i < ids.length; i++){
   				console.log("Calling: /usr/local/w2png -W 1024 -H 768 --delay=1 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
   				                exec("/usr/local/w2png -W 1024 -H 768 --delay=1 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());

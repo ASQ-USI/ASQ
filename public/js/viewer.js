@@ -4,12 +4,15 @@
 */
 
 // Save current question id;
-var questionId = null;
+var questionId = null
+, socket
+, session;
 
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session, mode) {
     var started = false;
-    var socket = io.connect('http://' + host + ':' + port + '/folo');
+    session = session;
+    socket = io.connect('http://' + host + ':' + port + '/folo');
     socket.on('connect', function(event) {
         socket.emit('asq:viewer', {session:session, mode:mode});
         $('.asq-welcome-screen h4').text("You are connected to the presentation.");
@@ -58,9 +61,11 @@ var connect = function(host, port, session, mode) {
         $('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
     });
     
-    document.addEventListener('local:submit', function(event) {
-        socket.emit('asq:submit', {session:session, answers:event.detail.answers, questionId:questionId});
-    });
+    // document.addEventListener('local:submit', function(event) {
+    //     console.log(event)
+    //     //socket.emit('asq:submit', {session:session, answers:event.detail.answers, questionId:questionId});
+    //     //socket.emit('asq:submit', {session:session, answers:event.detail.serializedForm, questionId:event.detail.questionId});
+    // });
 
     document.addEventListener('local:resubmit', function(event) {
         socket.emit('asq:resubmit', {questionId:questionId});
@@ -160,3 +165,25 @@ var changeAnswer = function(){
     $('#changeAnswer').css("display", "none");
     $('#sendanswers').removeAttr("disabled");
 }
+
+
+$(function(){
+
+    // form submission events
+    $(document).on('submit', '.assessment form', function(event){
+        event.preventDefault();
+      
+       // var myEvent = new CustomEvent("local:submit", {
+       //      "detail" : {
+       //          "questionId" : $(this).find('input[type="hidden"][name="question-id"]').val(),
+       //          "serializedForm" : $(this).serializeArray()
+       //      }
+       //  });
+       // document.dispatchEvent(myEvent); 
+
+        var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
+        socket.emit('asq:submit', {session:session, answers:$(this).serializeArray(), questionId:questionId});
+        console.log('submitted')
+    })
+
+})

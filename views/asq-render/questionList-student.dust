@@ -5,7 +5,7 @@
   {#questionOptions}
     <li class="{classList}" >
       <label class="{question.formButtonType}">
-        <input type="{formButtonType}" name="{htmlId}" value=""> {text|s}
+        <input type="{formButtonType}" name="{htmlId}" value="{$idx}"> {text|s}
       </label>
     </li>{~n}
   {/questionOptions}
