@@ -27,6 +27,8 @@ answerSchema.methods.saveWithPromise = function(){
 
 
   var deferred = when.defer();
+  console.log(this)
+
   this.save(function(err, doc){
     if (err) {
       deferred.reject(err);
