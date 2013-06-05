@@ -1,7 +1,7 @@
 <form action="">
   
   {+questionContent/}
-  
+  <input type="hidden" name="question-id" value={id}>
   <p class="text-right">
     <button type="button" class="btn btn-primary">Modify</button> 
     <button type="submit" class="btn btn-success">Submit</button>

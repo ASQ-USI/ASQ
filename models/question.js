@@ -12,7 +12,7 @@ var formButtonTypes = 'checkbox radio'.split(' ');
 var questionTypes = 'multi-choice text-input'.split(' ');
 
 var questionSchema = new Schema({
-  htmlId: {type:String},
+  // htmlId: {type:String},
   stem: {type: String},
   stemText: {type: String},
   questionType: {type:String, enum:questionTypes},

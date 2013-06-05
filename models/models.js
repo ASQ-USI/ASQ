@@ -1,7 +1,7 @@
-var mongoose= require('mongoose');
-
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+var mongoose  = require('mongoose')
+, Schema      = mongoose.Schema
+, ObjectId    = Schema.ObjectId
+, when        = require('when');
 
 
 
@@ -65,30 +65,69 @@ var sessionSchema = new Schema({
 	date: {type: Date, default: Date.now },
 	viewers: {type: Array, default: []},
 	answers: {type:[ObjectId], ref: 'Answer'},
-	showingQuestion: {type: Boolean, default: false},
-	showingAnswer: {type: Boolean, default: false},
-	started: {type: Boolean, default: false},
-	questionsDisplayed: {type: [ObjectId], ref: 'Question'}
+	showingQuestion: {type: Boolean, default: false}, //maybe don't need it
+	showingAnswer: {type: Boolean, default: false}, //maybe don't need it
+	started: {type: Boolean, default: false}, 
+	questionsDisplayed: {type: [ObjectId], ref: 'Question'}, //maybe don't need it
+  activeQuestions: [ObjectId]
 });
 
-sessionSchema.methods.question = function(callback) {
-	var that = this;
-	var Slideshow = db.model('Slideshow');
-	Slideshow.findById(this.slides, function(err, slideshow) {
-		if (slideshow) {
-			var Question = db.model('Question');
-		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
-						afterslide: that.activeSlide},
-				        function(err, question) {
-							console.log('question');
-							console.log(question);
-							console.log(that.activeSlide);
-							callback(err, question);
-						});
-		}
-		
-	});
+sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
+
+  var deferred = when.defer()
+  , Slideshow = db.model('Slideshow');
+
+  Slideshow.findById(this.slides).exec()
+    .then(function(slideshow){
+      deferred.resolve(slideshow.getQuestionsForSlide(slideHtmlId));
+    }
+   ,function(err, slideshow) {
+      throw err;  
+  });
+
+  return deferred.promise;
 }
+
+/**
+* @ function isQuestionInSlide
+* @description Checks if the questionId is inside a slide
+* with an id of slideHtmlId, in the session;
+*/
+
+sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
+
+  var deferred = when.defer();
+
+  this.questionsForSlide(slideHtmlId)
+    .then(function(questions){
+      for (var i=0; i<questions.length; i++){
+        if(questions[i]== questionId){
+           deferred.resolve(true);
+        }
+      }
+      deferred.resolve(false);
+    })
+  return deferred.promise;
+}
+
+// sessionSchema.methods.question = function(callback) {
+// 	var that = this;
+// 	var Slideshow = db.model('Slideshow');
+// 	Slideshow.findById(this.slides, function(err, slideshow) {
+// 		if (slideshow) {
+// 			var Question = db.model('Question');
+// 		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
+// 						afterslide: that.activeSlide},
+// 				        function(err, question) {
+// 							console.log('question');
+// 							console.log(question);
+// 							console.log(that.activeSlide);
+// 							callback(err, question);
+// 						});
+// 		}
+		
+// 	});
+// }
 
 sessionSchema.set('toJSON', { virtuals: true });
 
@@ -129,30 +168,30 @@ exports.sessionSchema = sessionSchema;
 // exports.questionSchema = questionSchema;
 
 
-var answerSchema = new Schema({
-  question   	: {type: ObjectId, ref:'Question'},
-  answeree   	: String, // student that answered the question
-  session		: {type: ObjectId, ref:'Session'},
-  submission 	: {},
-  correctness	: { type: Number, min: 0, max: 100 },
-  logData 		: [answerLogSchema]
-});
+// var answerSchema = new Schema({
+//   question   	: {type: ObjectId, ref:'Question'},
+//   answeree   	: String, // student that answered the question
+//   session		: {type: ObjectId, ref:'Session'},
+//   submission 	: {},
+//   correctness	: { type: Number, min: 0, max: 100 },
+//   logData 		: [answerLogSchema]
+// });
 
-mongoose.model("Answer", answerSchema);
+// mongoose.model("Answer", answerSchema);
 
-var answerLogSchema = new Schema({
-  startTime:{},
-  endTime:{},
-  totalTime:{},
-  keystrokes:{},
-  pageactive:{}
+// var answerLogSchema = new Schema({
+//   startTime:{},
+//   endTime:{},
+//   totalTime:{},
+//   keystrokes:{},
+//   pageactive:{}
   
-})
+// })
 
-mongoose.model("AnswerLog",answerLogSchema);
+// mongoose.model("AnswerLog",answerLogSchema);
 
-module.exports =  {
-  answerSchema    : answerSchema,
-  answerLogSchema : answerLogSchema
-}
+// module.exports =  {
+//   answerSchema    : answerSchema,
+//   answerLogSchema : answerLogSchema
+// }
 

@@ -2,7 +2,7 @@
   {+questionContent/}
   
 <div class="progress" >
-  <div class="bar" id="progessbar" style="width: 30%;"></div>
+  <div class="bar" id="progessbar" style="width: 0%;"></div>
   </div>
   <h5 class="pull-right progressNum" id="progressNum">Waiting for answers!</h5>
   <button class="btn btn-large pull-left" id ="show-stats">Show answers</button>
