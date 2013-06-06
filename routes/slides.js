@@ -44,22 +44,48 @@ module.exports.adminControll = function(req, res) {
 				//console.log(data);
 				var ids = [];
 				var presentationSkeleton;
+				//Array with one field per slide. Each field has questions and stats
+				var slides = [];
 				
 				$ = cheerio.load(data);
 				$('.step').each(function() {
+					//Get questions on this slide. Get their text and push it into an array
+					var questionsOnSlide = new Array();
+					$(this).find('.assessment').each(function(el) {
+						var text =  $(this).find('.stem').first().text()
+						if(text == undefined || text.length == 0){
+							text = "Missing question text";
+						}
+						questionsOnSlide.push(text);
+						//console.log(text);
+					});
+					
+					//Get stats on this slide. Get their text and push it into an array
+					var statsOnSlide = new Array();
+					$(this).find('.stats').each(function(el) {
+						var text =  $(this).find('.stem').first().text()
+						if(text == undefined || text.length == 0){
+							text = "Missing question text";
+						}
+						statsOnSlide.push(text);
+						//console.log(text);
+					});
+					
 					var id = this.attr().id;
 					//If slide does not have id, use step-x instead (for url calling)
 					if (id == undefined) {
-						ids.push("step-" + (ids.length + 1));
-					} else {
-						ids.push(id);
-					}
+						id =="step-" + (ids.length + 1);
+					} 
+					ids.push(id);
+					slides.push({
+						id: id,
+						questions: questionsOnSlide,
+						stats: statsOnSlide
+					});
+
 				});
 				presentationSkeleton ='<div class="step" id="'+ ids.join('"></div><div class="step" id="') + '"></div>';
-				//presentationSkeleton = $('#impress');
-				
-				//console.log(presentationSkeleton);
-				
+
 				res.render('slidesControll', {
 					title : slideshow.title,
 					mode : true,
@@ -70,7 +96,7 @@ module.exports.adminControll = function(req, res) {
 					id : session.id,
 					date : session.date,
 					slidesId : slideshow._id,
-					slidesThumbs : ids,
+					slidesThumbs : slides,
 					slideshow: slideshow, 
 					presenationSkeleton: presentationSkeleton,
 				});
@@ -107,24 +133,24 @@ module.exports.render = function(req, res) {
 }
 
 /** Shows a splash screen to start presentation */
-module.exports.splashScreen = function (req, res) {
-	var userId = req.user._id;
-	sessionFromUserId(userId, function(err, session) {
-		if (err)
-			throw err;
-		if (!session.id) {
-			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
-		} else {
-			var slideshow = session.slideshow;
-  			res.render('slidesSplashScreen',{
-  					title : slideshow.title,
-					host : appHost,
-					port : app.get('port'),
-					user : req.user.name}
-					);
-  		}
-  });
-}
+// module.exports.splashScreen = function (req, res) {
+	// var userId = req.user._id;
+	// sessionFromUserId(userId, function(err, session) {
+		// if (err)
+			// throw err;
+		// if (!session.id) {
+			// res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
+		// } else {
+			// var slideshow = session.slideshow;
+  			// res.render('slidesSplashScreen',{
+  					// title : slideshow.title,
+					// host : appHost,
+					// port : app.get('port'),
+					// user : req.user.name}
+					// );
+  		// }
+  // });
+// }
 
 /** Serves slides for slideshow rendering */
 module.exports.renderStatic = function(req, res) {

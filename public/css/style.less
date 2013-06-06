@@ -390,15 +390,14 @@ body{
   .thumb{
     -moz-transition: all .2s ease-in-out;
     -webkit-transition: all .2s ease-in-out;
-    box-shadow: 0 3px 8px #000, inset 2px 2px 0px #ccc, inset -2px -2px 0px #ccc;
-    float: left;
     height: 150px;
     width: 200px;
     margin: 40px 10px 40px 10px;
-    background-color: #EFEFEF; 
-    color: #999;
-    background-size: contain;
     opacity: 0.5;
+    .slideInclude; 
+     .label{
+      max-width: 170px;
+    }
   }
   .active{
     opacity: 1;
@@ -441,53 +440,46 @@ body{
 }
 
 #slidesOverview .slide {
-  float: left;
-  width: 255px;
-  height: 175px;
-  background-size: contain;  
-  background-color: black;
-  
+  width: 275px;
+  height: 206px;
+
   margin: 10px 0px 40px 0px; 
-  padding: 15px 10px 15px 10px;
+  .slideInclude;
+  .labels{
+    max-width: 255px;
+  }
+}
+
+/* --- Slides thumbnail prototype for admincontroll and edit ---*/
+.slideInclude{
+  float: left;
+  background-size: contain;  
+  background-color: #ccc;
+  background-repeat: no-repeat;
   box-shadow: 0 3px 6px #000, inset 3px 3px 0px #ccc, inset -3px -3px 0px #ccc;
-  overflow: hidden;
-  .innerText{
+  position: relative;
+  
+  .labelsContainer{
     position: absolute;
-    width: 230px;
-    height: 115px;
-    display: table-cell; 
-    overflow: hidden;
-  }
-  p{
-    font-size: 20px;
-    line-height: 28px;
-    vertical-align: middle; 
-    text-align: center; 
-    color: #999;
-    overflow: hidden;
-    height: 115px;
-  }
-  .labelContainer{
-    position: absolute;
-    width: 247px;
-    height: 180px;
     display: table;
-    overflow: hidden;
-  }
-  .label{
-    overflow: hidden;
-    max-width: 247px;
-    margin-bottom: 3px;
-    
+    table-layout: strict;
+    left: 15px;
+    bottom: 15px;
   }
   .labels{
+    position: relative;
     vertical-align: bottom;
     display: table-cell;
-    text-align: left;
+    overflow: hidden;
+    table-layout: strict;
    }
-  .slidenr{
+  .label{
+    margin-bottom: 3px;
+    overflow: hidden;
+  }
+  .slideNr{
     position: absolute;
-    top: 170px;
-    left: 220px;
+    right: 15px;
+    top: 15px;
   }
 }

@@ -43,12 +43,19 @@
 					
 					{#slides slideshowID=slideshow._id}
 						<div class="add"></div>
-						<div class="slide {.}" style="background-image: url('/slides/thumbs/{slideshowID}/{$idx}-thumb.png');">
-							<div class="labelContainer">
-								<div class="labels"> </div>
+						<div class="slide" style="background-image: url('/slides/thumbs/{slideshowID}/{$idx}-thumb.png');">
+							<div class="labelsContainer">
+								<div class="labels"> 
+								{#questions}
+									<span class="label label-success"><i class="icon-question-sign icon-white"></i> {.}</span>
+								{/questions}
+								{#stats}
+									<span class="label label-info"><i class="icon-signal icon-white"></i> {.}</span>
+								{/stats}
+								</div>
 							</div> 
-						</div>
-						
+							<span class="badge badge-inverse slideNr">{$idx}</span>
+						</div>	
 					{/slides}
 				</div>
 			</div>

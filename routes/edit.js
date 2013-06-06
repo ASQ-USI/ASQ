@@ -6,7 +6,6 @@ var exec = require('child_process').exec;
 var cheerio = require('cheerio');
 var asyncblock = require('asyncblock');
 
-
 /*  --- Edit Slideshow ---*/
 function createThumb(slideshow) {
 	fs.readFile(slideshow.studentFile, 'utf-8', function(error, data) {
@@ -15,25 +14,24 @@ function createThumb(slideshow) {
 		$('.step').each(function() {
 			var id = this.attr().id;
 			//If slide does not have id, use step-n instead (for url calling)
-			if(id == undefined){
-				ids.push("step-"+ (ids.length + 1));
+			if (id == undefined) {
+				ids.push("step-" + (ids.length + 1));
 			} else {
 				ids.push(id);
 			}
 		});
-		
-		asyncblock(function(flow){
+
+		asyncblock(function(flow) {
 			fs.mkdirSync('slides/thumbs/' + slideshow._id);
-  			for(var i = 0; i < ids.length; i++){
-  				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
-  				                exec("/usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());
-  				flow.wait();
-  			}
+			for (var i = 0; i < ids.length; i++) {
+				console.log("Calling: /usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i]);
+				exec("/usr/local/w2png -W 1024 -H 768 -T -D slides/thumbs/" + slideshow._id + " -o " + i + " -s 0.3 http://localhost:3000/slidesInFrame/" + slideshow._id + "/?url=" + ids[i], flow.add());
+				flow.wait();
+			}
 		});
-		
+
 	});
 }
-
 
 exports.editslideshow = function(req, res) {
 
@@ -45,33 +43,48 @@ exports.editslideshow = function(req, res) {
 			console.log(err);
 		} else {
 			/* Load presentation html file */
-			var folderHTML = './slides/' + req.query.id + '/index.html';
-			fs.readFile(folderHTML, 'utf-8', function(error, data) {
-				
-				var ids = [];
-				$ = cheerio.load(data);
-				$('.step').each(function() {
-					var id = this.attr().id;
-					ids.push(id);
 
+			fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
+
+				//Array with one field per slide. Each field has questions and stats
+				var slides = [];
+
+				$ = cheerio.load(data);
+				$('.step').each(function(slide) {
+					//Get questions on this slide. Get their text and push it into an array
+					var questionsOnSlide = new Array();
+					$(this).find('.assessment').each(function(el) {
+						var text =  $(this).find('.stem').first().text()
+						if(text == undefined || text.length == 0){
+							text = "Missing question text";
+						}
+						questionsOnSlide.push(text);
+						//console.log(text);
+					});
+					
+					//Get stats on this slide. Get their text and push it into an array
+					var statsOnSlide = new Array();
+					$(this).find('.stats').each(function(el) {
+						var text =  $(this).find('.stem').first().text()
+						if(text == undefined || text.length == 0){
+							text = "Missing question text";
+						}
+						statsOnSlide.push(text);
+						//console.log(text);
+					});
+
+					//Push questions and stats on this slide into array
+					slides.push({questions: questionsOnSlide,
+								 stats: statsOnSlide
+					});
 				});
 
-				var questions = [];
-				for (var i = 0; i < slideshow.questions.length; i++) {
-					questionDB.findById(slideshow.questions[i], function(err, question) {
-						if (question) {
-							questions.push(question);
-						}
-						if (questions.length  == slideshow.questions.length) {
-							res.render('edit', {
-								title : slideshow.title,
-								slides : ids,
-								slideshow : slideshow,
-								questions: questions
-							});
-						}
-					});
-				}
+				res.render('edit', {
+					title : slideshow.title,
+					slides : slides,
+					slideshow : slideshow,
+					
+				})
 			});
 
 		}
@@ -148,7 +161,6 @@ exports.edithtml = function(req, res) {
 exports.savehtml = function(req, res) {
 	//console.log(req.query.id);
 	//console.log(req.body.editorvalue);
-	
 
 	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
 	//Update last edit date

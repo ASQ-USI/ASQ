@@ -26,7 +26,7 @@ $(function() {
 $('.thumbsWrapper .thumb').click(function() {
 	var go = $(".thumb").index(this);
 	impress().emitGoto(go);
-	/*console.log(go);*/
+	//console.log(go);
 });
 
 /* Show or hide thumbnails on mobile devices depending on orientation */

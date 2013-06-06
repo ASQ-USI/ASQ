@@ -13,7 +13,6 @@
     <!---   Top menu -->
     {>menu/}
 
-
     <!---  Controlls for runnig presentation -->
     <div class="container" id="slidesControll">
       <!---   Content area   -->
@@ -23,7 +22,7 @@
           <div class="span7 hidden-phone">
             <h4>Active slide</h4>
             {! TODO: security for invisible user !}
-           <iframe id="thisSlideFrame" src="http://{host}:{port}/live/{user}?mode=invisible" width="100%" height="340px" ></iframe>
+            <iframe id="thisSlideFrame" src="http://{host}:{port}/live/{user}?mode=invisible" width="100%" height="340px" ></iframe>
           </div>
           <div class="span5 hidden-phone">
             <h4>Next slide</h4>
@@ -57,7 +56,9 @@
             </button>
           </div>
           <div class="span2 pull-right">
-          	<p class="connected-viewers-number">Waiting for viewers.</p>
+            <p class="connected-viewers-number">
+              Waiting for viewers.
+            </p>
           </div>
         </div>
       </div>
@@ -75,8 +76,17 @@
         <div class="controlThumbs">
           <div class="thumbsWrapper">
             {#slidesThumbs}
-            <div class="thumb {.}" style="background-image: url('/slides/thumbs/{slidesId}/{$idx}-thumb.png')">
-              &nbsp;
+            <div class="thumb {id}" style="background-image: url('/slides/thumbs/{slidesId}/{$idx}-thumb.png')">
+              <div class="labelsContainer">
+                <div class="labels">
+                  {#questions}
+                  <span class="label label-success"><i class="icon-question-sign icon-white"></i> {.}</span>
+                  {/questions}
+                  {#stats}
+                  <span class="label label-info"><i class="icon-signal icon-white"></i> {.}</span>
+                  {/stats}
+                </div>
+              </div>
             </div>
             {/slidesThumbs}
           </div>
@@ -92,21 +102,19 @@
       {presenationSkeleton|s}
     </div>
 
-  
-
     <script src="/js/impress-admin.js"></script>
     <script src="/js/admin.js"></script>
-	  <script>
-	  var slidesId = '{slideshow._id}';
-		var sessionStart = new Date('{slideshow.lastSession}');
-		var mode = "controll";
-	  window.onload = function() {
-	  	impress().init();
-	  	connect( "{host}" , {port} , "{id}", "control");
-	  	impress().start();}
-	  </script>
-	  <script src="/js/jquery.js"></script>
-	  <script src="/js/admincontroll.js"></script>
-	  <script src="/js/jquery.scrollTo.js"></script>
+    <script>
+			var slidesId = '{slideshow._id}';
+			var sessionStart = new Date('{slideshow.lastSession}');
+			var mode = "controll";
+			window.onload = function() {
+			impress().init();
+			connect( "{host}" , {port} , "{id}", "control");
+			impress().start();}
+    </script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/admincontroll.js"></script>
+    <script src="/js/jquery.scrollTo.js"></script>
   </body>
 </html>
