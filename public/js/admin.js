@@ -331,17 +331,22 @@ function drawChart() {
 $('a[data-toggle="tab"]').on('shown', function(e) {
 	var questionId = $(this).parent().parent().parent().data('target-assessment-id');
 	//console.log(questionId);
-	$.getJSON('/stats/getStats?question='+ questionId +'&metric=rightVsWrong', function(data) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=rightVsWrong', function(data) {
 		rightVsWrongData[questionId] = google.visualization.arrayToDataTable(data);
 		rightVsWrongChart[questionId].draw(rightVsWrongData[questionId], rightVsWrongOptions);
 	});
-	$.getJSON('/stats/getStats?question='+ questionId +'&metric=distinctOptions', function(data) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
 		distinctOptionsData[questionId] = google.visualization.arrayToDataTable(data);
 		distinctOptionsChart[questionId].draw(distinctOptionsData[questionId], distinctOptionsOptions);
 	});
-	$.getJSON('/stats/getStats?question='+ questionId +'&metric=distinctAnswers', function(data) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctAnswers', function(data) {
 		distinctAnswersData[questionId] = google.visualization.arrayToDataTable(data);
 		distinctAnswersChart[questionId].draw(distinctAnswersData[questionId], distinctAnswersOptions);
 	});
 
 });
+
+
+function updateStats(questionId){
+	
+}
