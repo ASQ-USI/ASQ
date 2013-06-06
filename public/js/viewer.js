@@ -184,13 +184,24 @@ $(function() {
 		$('[data-question-id="' + questionId + '"] form button').attr('disabled', 'true');
 		$('[data-question-id="' + questionId + '"] form').after('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>');
 		$('[data-question-id="' + questionId + '"] form button').fadeOut( function(){
-			$('[data-question-id="' + questionId + '"] .changeAnswer').fadeIn();
+		$('[data-question-id="' + questionId + '"] .changeAnswer').fadeIn();
 		});
-		
+
+		//aggregate answers
+		var answers = [];
+		$(this).find('input[type=checkbox], input[type=radio]').each(function(){
+			answers.push($(this).is(":checked"));
+		})
+
+		$(this).find('input[type=text]').each(function(){
+			answers.push($(this).val());
+		})
+
+		console.log(answers)
 		
 		socket.emit('asq:submit', {
 			session : session,
-			answers : $(this).serializeArray(),
+			answers : answers,
 			questionId : questionId
 		});
 		console.log('submitted')

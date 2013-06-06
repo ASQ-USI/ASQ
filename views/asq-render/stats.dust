@@ -1,29 +1,29 @@
-{stem|s}
-<ul class="nav nav-tabs" id="myTab">
-  <li class="active"><a href="#answersolutions"  data-toggle="tab">Correct Answer</a></li>
-  <li><a href="#rvsw" data-toggle="tab">Right vs. Wrong</a></li>
-  <li><a href="#mscstats" data-toggle="tab">Multiple Choice Statistics</a></li>
-  <li><a href="#diffAns" data-toggle="tab">Different answers</a></li>
+{question.stem|s}
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#answersolutions-{statId}"  data-toggle="tab">Correct Answer</a></li>
+  <li><a href="#rvsw-{statId}" data-toggle="tab">Right vs. Wrong</a></li>
+  <li><a href="#mscstats-{statId}" data-toggle="tab">Multiple Choice Statistics</a></li>
+  <li><a href="#diffAns-{statId}" data-toggle="tab">Different answers</a></li>
 </ul>
      
 <div class="tab-content">
 
   <!--  Displays correct solution -->
-  <div class="tab-pane active" id='answersolutions'>                    
+  <div class="tab-pane active" id='answersolutions-{statId}'>                    
   </div>    
       
   <!-- Displays Pie-Chart Right vs. Wrong -->
-  <div class="tab-pane" id="rvsw">
+  <div class="tab-pane" id="rvsw-{statId}">
     <div id="rvswChart" class="rvswChart" style="width: 100%; height: 500px;"></div>
   </div>
       
   <!-- Display multiple choice stats -->
-  <div class="tab-pane" id="mscstats">
+  <div class="tab-pane" id="mscstats-{statId}">
     <div id="mscstatChart" class="distinctAnswers" style="height:500px"></div>
   </div>
   
   <!-- Display different aswers  -->
-  <div class="tab-pane" id="diffAns">
+  <div class="tab-pane" id="diffAns-{statId}">
     <div id="diffAnsChart" class="distinctOptions" style="height:500px"></div>
   </div>
 </div>  

@@ -30,7 +30,6 @@ var questionOptionSchema = new Schema({
 
 mongoose.model("QuestionOption",questionOptionSchema);
 
-
 var create =  function(docs){
   //we cant use mongoose promises because the
   // save operation returns undefined

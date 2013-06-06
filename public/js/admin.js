@@ -42,6 +42,7 @@ var connect = function(host, port, session, mode) {
 		 */
 		socket.on('asq:submit', function(event) {
 			console.log("You've got an answer!");
+			console.log(event);
 			updateParticipation(event.submitted, event.users, event.questionId);
 		});
 
