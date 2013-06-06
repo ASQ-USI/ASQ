@@ -271,17 +271,16 @@ h2{
     
     
   .thumb{
+    -moz-transition: all .2s ease-in-out;
     -webkit-transition: all .2s ease-in-out;
-    box-shadow: 0 3px 8px #000, inset 2px 2px 0px #ccc, inset -2px -2px 0px #ccc;
-    float: left;
     height: 150px;
     width: 200px;
-    margin: 15px 10px 15px 10px;
-    background-color: #EFEFEF; 
-    color: #999;
-    background-size: cover;
+    margin: 40px 10px 40px 10px;
     opacity: 0.5;
-    line-height: 100%;
+    .slideInclude; 
+     .label{
+      max-width: 170px;
+    }
   }
   .active{
     opacity: 1;
@@ -291,4 +290,37 @@ h2{
     box-shadow: 0 3px 12px #000, inset 3px 3px 0px #fff, inset -3px -3px 0px #fff;
   }
 }
+}
+/* --- Slides thumbnail prototype for admincontroll and edit ---*/
+.slideInclude{
+  float: left;
+  background-size: contain;  
+  background-color: #ccc;
+  background-repeat: no-repeat;
+  box-shadow: 0 3px 6px #000, inset 3px 3px 0px #ccc, inset -3px -3px 0px #ccc;
+  position: relative;
+  
+  .labelsContainer{
+    position: absolute;
+    display: table;
+    table-layout: strict;
+    left: 15px;
+    bottom: 15px;
+  }
+  .labels{
+    position: relative;
+    vertical-align: bottom;
+    display: table-cell;
+    overflow: hidden;
+    table-layout: strict;
+   }
+  .label{
+    margin-bottom: 3px;
+    overflow: hidden;
+  }
+  .slideNr{
+    position: absolute;
+    right: 15px;
+    top: 15px;
+  }
 }

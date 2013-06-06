@@ -163,9 +163,9 @@ exports.getStats = function(req, res) {
 							var result = [['Option', 'Correct answers', 'Wrong answers']];
 							for (var i = 0; i < data.length; i++) {
 								if (data[i].correct) {
-									result.push([data[i].text, 0, data[i].quantity]);
-								} else {
 									result.push([data[i].text, data[i].quantity, 0]);
+								} else {
+									result.push([data[i].text, 0, data[i].quantity]);
 								}
 							};
 							res.send(200, result);

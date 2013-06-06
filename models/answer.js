@@ -3,9 +3,11 @@
 */
 
 var mongoose  = require('mongoose')
+, questionModel = require('./question')
 , Schema      = mongoose.Schema
 , ObjectId    = Schema.ObjectId
-, when        = require('when');
+, when        = require('when')
+, arrayEqual  = require('../lib/utils').arrayEqual;
 
 
 var answerSchema = new Schema({
@@ -26,19 +28,35 @@ answerSchema.methods.saveWithPromise = function(){
   // to maintain code readability
 
 
-  var deferred = when.defer();
-  console.log(this)
+  var deferred = when.defer(),
+  Question = db.model('Question', questionModel.questionSchema);
+  //console.log(this)
 
   this.save(function(err, doc){
     if (err) {
       deferred.reject(err);
       return;
     }
-    deferred.resolve(doc);
+   
+    Question.findById(doc.question, function(err, question){
+    	 if(arrayEqual(doc.submission, question.getSolution(question))){
+    	 	doc.correct = 100;
+    	 }else{
+    	 	doc.correct = 0;
+    	 }
+    	 console.log(doc.correct);
+    	 deferred.resolve(doc);
+    })
+
+   
+    
+   
   });
 
   return deferred.promise;
 }
+
+
 
 mongoose.model("Answer", answerSchema);
 

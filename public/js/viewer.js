@@ -207,3 +207,85 @@ $(function() {
 		console.log('submitted')
 	})
 })
+
+
+google.load("visualization", "1", {
+	packages : ["corechart"]
+});
+
+google.setOnLoadCallback(drawChart);
+
+var rightVsWrongOptions ={
+	width : 800,
+};
+
+distinctAnswersOptions = {
+	title : 'How often was a group of options selected',
+	width : 800,
+	isStacked : true,
+	legend : {
+		position : 'top',
+		alignment : 'center'
+	}
+};
+
+distinctOptionsOptions = {
+	title : 'How often was an option selected',
+	isStacked : true,
+	width : 800,
+	legend : {
+		position : 'top',
+		alignment : 'center'
+	}
+};
+
+var rightVsWrongData = new Array();
+var rightVsWrongChart = new Array();
+
+var participationData = new Array();
+var participationChart= new Array();
+
+var distinctOptionsData = new Array();
+var distinctOptionsChart = new Array();
+
+var distinctAnswersData = new Array();
+var distinctAnswersChart = new Array();
+
+function drawChart() {
+	$('.stats').each(function(el) {
+		var questionId = $(this).data('target-assessment-id');
+		//var sampler = google.visualization.arrayToDataTable([['Correctness', 'Number of submissions'], ['Correct answers', 19], ['Wrong answers', 4]]);
+		//var sampleo = google.visualization.arrayToDataTable([['Option', 'Correct answers', 'Wrong answers'], ['Switzerland', 19, 0], ['Italy', 0, 3], ['France', 0, 1], ['Europe', 23, 0]]);
+		//var samplea = google.visualization.arrayToDataTable([['Submission', 'Correct answers', 'Wrong answers'], ['Europe & Switzerland', 19, 0], ['Europe & Italy', 0, 3], ['Europe & France', 0, 1]]);
+		//RightVsWrongData[questionId] = sampler;
+		//distinctOptionsData[questionId] = sampleo;
+		//distinctAnswersData[questionId] = samplea;
+		rightVsWrongChart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+		distinctOptionsChart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+		distinctAnswersChart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+	})
+}
+
+
+$('a[data-toggle="tab"]').on('shown', function(e) {
+	var questionId = $(this).parent().parent().parent().data('target-assessment-id');
+	//console.log(questionId);
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=rightVsWrong', function(data) {
+		rightVsWrongData[questionId] = google.visualization.arrayToDataTable(data);
+		rightVsWrongChart[questionId].draw(rightVsWrongData[questionId], rightVsWrongOptions);
+	});
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		distinctOptionsData[questionId] = google.visualization.arrayToDataTable(data);
+		distinctOptionsChart[questionId].draw(distinctOptionsData[questionId], distinctOptionsOptions);
+	});
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctAnswers', function(data) {
+		distinctAnswersData[questionId] = google.visualization.arrayToDataTable(data);
+		distinctAnswersChart[questionId].draw(distinctAnswersData[questionId], distinctAnswersOptions);
+	});
+
+});
+
+
+function updateStats(questionId){
+	
+}

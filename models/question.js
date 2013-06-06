@@ -20,14 +20,29 @@ var questionSchema = new Schema({
   questionOptions: [questionOptionSchema]
 });
 
-mongoose.model("Question",questionSchema);
-
 var questionOptionSchema = new Schema({
   text:{type:String},
   classList: {type:String},
   correct:{type: Boolean}
 })
 
+//Returns array with solution
+questionSchema.methods.getSolution = function(){
+	
+			var result = new Array;
+			if(this.questionType == "multi-choice"){
+				for (var i=0; i < this.questionOptions.length; i++) {
+			  		result.push(this.questionOptions[i].correct);
+				};
+			}else{
+				result.push(this.correctAnswer);
+			}
+			console.log(result);
+			return result;
+
+}
+
+mongoose.model("Question",questionSchema);
 mongoose.model("QuestionOption",questionOptionSchema);
 
 var create =  function(docs){
