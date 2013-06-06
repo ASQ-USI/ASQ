@@ -17,6 +17,7 @@ var questionSchema = new Schema({
   stemText: {type: String},
   questionType: {type:String, enum:questionTypes},
   formButtonType: {type:String, enum:formButtonTypes},
+  correctAnswer: {type:String},
   questionOptions: [questionOptionSchema]
 });
 
