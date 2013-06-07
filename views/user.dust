@@ -85,7 +85,7 @@
 			{/slidesByCourses}
 
 		</div>
-		<div id="iOSWebAppInfo" data-content='Install ASQ as a web app on your device. Tab on this item and select "Add to Home Screen".'></div>
+		<div id="iOSWebAppInfo" data-content='Tab on <img src="/img/iOS-action.png"/> item and select "Add to Home Screen".'></div>
 		<!-- /container -->
 
 		<!-- Le javascript --->

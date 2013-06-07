@@ -6,6 +6,8 @@
     <link href="/css/bootstrap-responsive.min.css" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/bootstrap.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
   </head>
 
   <body onorientationchange="updateOrientation();">
