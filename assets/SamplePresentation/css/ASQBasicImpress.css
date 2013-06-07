@@ -223,9 +223,7 @@ p{
 .slide q strong {
     white-space: nowrap;
 }
-#slide07 .assessment{
-	width: 430px;
-}
+
 /*
     Now, when we have all the steps styled let's give users a hint how to navigate
     around the presentation.
