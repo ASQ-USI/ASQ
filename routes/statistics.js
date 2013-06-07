@@ -100,6 +100,7 @@ exports.getStats = function(req, res) {
 	var answerDB = db.model('Answer', schemas.answerSchema);
 
 	// /stats/question...&metric=
+	console.log(req.query);
 
 	//Create search object - This object will be filled with all the stuff we want to search for
 	var searchObj = {};
@@ -260,45 +261,73 @@ function calcDistictOptions(answers, question) {
 
 	//Prepare return object
 	var result = [];
-
 	//If questiion is a multiple choice question -> submission is array of boolean
-	//if(question.questionType = "multi-choice"){
+	if (question.questionType == "multi-choice") {
 
-	//All submissions must have same amount of options
-	var optionsLength = question.questionOptions.length;
+		//All submissions must have same amount of options
+		var optionsLength = question.questionOptions.length;
 
-	//Fill return object with
-	for (var i = 0; i < optionsLength; i++) {
-		result.push({
-			text : question.questionOptions[i].text,
-			correct : question.questionOptions[i].correct,
-			quantity : 0 //How often option was selected
-		});
-	}
-
-	//Iterate over answers
-	for (var i = 0; i < answers.length; i++) {
-		//Check if answer has the correct amount of options
-		if (answers[i].submission.length != optionsLength) {
-			console.log("Error in calculating disctinct options: Multiple choice options differ in length. This can't be as every answer has to have the same length.")
+		//Fill return object with
+		for (var i = 0; i < optionsLength; i++) {
+			result.push({
+				text : question.questionOptions[i].text,
+				correct : question.questionOptions[i].correct,
+				quantity : 0 //How often option was selected
+			});
 		}
 
-		//Update return object
-		//For every option in submission of an answer check if selected and if true increase value in return object
-		for (var j = 0; j < optionsLength; j++) {
-			if (answers[i].submission[j] == true) {
-				result[j].quantity++;
+		//Iterate over answers
+		for (var i = 0; i < answers.length; i++) {
+			//Check if answer has the correct amount of options
+			if (answers[i].submission.length != optionsLength) {
+				console.log("Error in calculating disctinct options: Multiple choice options differ in length. This can't be as every answer has to have the same length.")
+				console.log(answers[i].submission);
+				console.log(optionsLength);
+			}
+
+			//Update return object
+			//For every option in submission of an answer check if selected and if true increase value in return object
+			for (var j = 0; j < optionsLength; j++) {
+				if (answers[i].submission[j] == true) {
+					result[j].quantity++;
+				}
+			};
+
+		};
+	}
+	//Text questions
+	else if (question.questionType = "text-input") {
+		for (var i = 0; i < answers.length; i++) {
+			//Test if answer is new, if no increase quantity in results
+			var isNewAnswer = true;
+			for (var j = 0; j < result.length; j++) {
+				if (arrayEqual(result[j].submission, answers[i].submission)) {
+					isNewAnswer = false;
+					result[j].quantity++;
+				}
+			};
+
+			//If new answer push to results
+			if (isNewAnswer) {
+				var newAnswer = {
+					submission : answers[i].submission,
+					text : answers[i].submission.join(),
+					correct : false,
+					quantity : 1 //How often option was selected
+				}
+				if (answers[i].correctness == 100) {
+					newAnswer.correct = true;
+				}
+				result.push(newAnswer)
 			}
 		};
+	}
 
-	};
-	//}
-
-	//Else (missing or unknown question type) log error
-	//else{
-	//	console.log("Error in calculating disctinct options: question type is unknown or mission: ");
-	//	console.log(question.questionType)
-	//}
+	// Else (missing or unknown question type) log error
+	else {
+		console.log("Error in calculating disctinct options: question type is unknown or mission: ");
+		console.log(question.questionType)
+	}
 
 	return result;
 }
@@ -315,76 +344,105 @@ function calcDistictAnswers(answers, question) {
 	//Prepare return object
 	var result = new Array();
 
-	//All submissions must have same amount of options
-	var optionsLength = question.questionOptions.length;
+	if (question.questionType == "multi-choice") {
+		//All submissions must have same amount of options
+		var optionsLength = question.questionOptions.length;
 
-	//Get correct answer
-	var solution = new Array();
-	for (var i = 0; i < optionsLength; i++) {
-		if (question.questionType == "multi-choice") {
-			solution.push(question.questionOptions[i].correct);
-		} else {
-			solution.push(question.questionOptions[i].text);
-		}
-	};
-	console.log(solution);
-
-	//Iterate over answers
-	for (var i = 0; i < answers.length; i++) {
-		//Check if answer has the correct amount of options
-		if (answers[i].submission.length != optionsLength) {
-			console.log("Error in calculating disctinct options: Multiple choice options differ in length. This can't be as every answer has to have the same length.")
-		}
-
-		//Remember id answer is not part of results yet
-		var newAnswer = true
-
-		//Check if answer was seen before. If yes increase quantity, if no add to results.
-
-		for (var j = 0; j < result.length; j++) {
-			//Check if answer alreday exists in results and if yes increase quantity
-			if (arrayEqual(result[j].submission, answers[i].submission)) {
-				result[j].quantity++;
-				newAnswer = false;
-				break;
+		//Get correct answer
+		var solution = new Array();
+		for (var i = 0; i < optionsLength; i++) {
+			if (question.questionType == "multi-choice") {
+				solution.push(question.questionOptions[i].correct);
+			} else {
+				solution.push(question.questionOptions[i].text);
 			}
 		};
-		//If still new anser add to reluts
-		if (newAnswer) {
+		console.log(solution);
 
-			//Check if new answer is correct
-			var correct = arrayEqual(answers[i].submission, solution);
+		//Iterate over answers
+		for (var i = 0; i < answers.length; i++) {
+			//Check if answer has the correct amount of options
+			if (answers[i].submission.length != optionsLength) {
+				console.log("Error in calculating disctinct options: Multiple choice options differ in length. This can't be as every answer has to have the same length.")
+			}
 
-			//text for each dataset
-			var optionText = "";
-			//text that contains all selected answer option texts
+			//Remember id answer is not part of results yet
+			var newAnswer = true
 
-			var selected = new Array();
-			for (var k = 0; k < answers[i].submission.length; k++) {
-				if (answers[i].submission[k] == true) {
-					selected.push(question.questionOptions[k].text);
-					optionText = optionText + String.fromCharCode(65 + k) + " ";
+			//Check if answer was seen before. If yes increase quantity, if no add to results.
+
+			for (var j = 0; j < result.length; j++) {
+				//Check if answer alreday exists in results and if yes increase quantity
+				if (arrayEqual(result[j].submission, answers[i].submission)) {
+					result[j].quantity++;
+					newAnswer = false;
+					break;
+				}
+			};
+			//If still new anser add to reluts
+			if (newAnswer) {
+
+				//Check if new answer is correct
+				var correct = arrayEqual(answers[i].submission, solution);
+
+				//text for each dataset
+				var optionText = "";
+				//text that contains all selected answer option texts
+
+				var selected = new Array();
+				for (var k = 0; k < answers[i].submission.length; k++) {
+					if (answers[i].submission[k] == true) {
+						selected.push(question.questionOptions[k].text.trim());
+						optionText = optionText + String.fromCharCode(65 + k) + " ";
+					}
+				};
+
+				if (question.questionType == "multi-choice") {
+					optionText = optionText + "- " + selected.join(", ");
+
+				} else {
+					console.log("Qswefrgth");
+					optionText = selected.join(", ");
+				}
+
+				//push new answer to results
+				result.push({
+					submission : answers[i].submission,
+					text : optionText,
+					correct : correct,
+					quantity : 1 //How often option was selected
+				});
+			}
+
+		};
+	}
+	//Text questions
+	else if (question.questionType = "text-input") {
+		for (var i = 0; i < answers.length; i++) {
+			//Test if answer is new, if no increase quantity in results
+			var isNewAnswer = true;
+			for (var j = 0; j < result.length; j++) {
+				if (arrayEqual(result[j].submission, answers[i].submission)) {
+					isNewAnswer = false;
+					result[j].quantity++;
 				}
 			};
 
-			if (question.questionType == "multi-choice") {
-				optionText = optionText + "- " + selected.join(", ");
-			} else {
-				console.log("Qswefrgth");
-				optionText = selected.join(", ");
+			//If new answer push to results
+			if (isNewAnswer) {
+				var newAnswer = {
+					submission : answers[i].submission,
+					text : answers[i].submission.join(),
+					correct : false,
+					quantity : 1 //How often option was selected
+				}
+				if (answers[i].correctness == 100) {
+					newAnswer.correct = true;
+				}
+				result.push(newAnswer)
 			}
-
-			//push new answer to results
-			result.push({
-				submission : answers[i].submission,
-				text : optionText,
-				correct : correct,
-				quantity : 1 //How often option was selected
-			});
-		}
-
-	};
-	//}
+		};
+	}
 	//Else (missing or unknown question type) log error
 	//else{
 	//	console.log("Error in calculating disctinct options: question type is unknown or mission: ");

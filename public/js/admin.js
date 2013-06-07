@@ -44,6 +44,7 @@ var connect = function(host, port, session, mode) {
 			console.log("You've got an answer!");
 			console.log(event);
 			updateParticipation(event.submitted, event.users, event.questionId);
+			updateStats(event.questionId);
 		});
 
 		/**
@@ -349,5 +350,16 @@ $('a[data-toggle="tab"]').on('shown', function(e) {
 
 
 function updateStats(questionId){
-	
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=rightVsWrong', function(data) {
+		rightVsWrongData[questionId] = google.visualization.arrayToDataTable(data);
+		rightVsWrongChart[questionId].draw(rightVsWrongData[questionId], rightVsWrongOptions);
+	});
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		distinctOptionsData[questionId] = google.visualization.arrayToDataTable(data);
+		distinctOptionsChart[questionId].draw(distinctOptionsData[questionId], distinctOptionsOptions);
+	});
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctAnswers', function(data) {
+		distinctAnswersData[questionId] = google.visualization.arrayToDataTable(data);
+		distinctAnswersChart[questionId].draw(distinctAnswersData[questionId], distinctAnswersOptions);
+	});
 }

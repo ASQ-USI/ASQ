@@ -27,33 +27,26 @@ answerSchema.methods.saveWithPromise = function(){
   // so we construct our own promise
   // to maintain code readability
 
-
+  var that = this;
   var deferred = when.defer(),
+  
   Question = db.model('Question', questionModel.questionSchema);
-  //console.log(this)
-
-  this.save(function(err, doc){
-    if (err) {
-      deferred.reject(err);
-      return;
+  Question.findById(that.question, function(err, question){
+    if(arrayEqual(that.submission, question.getSolution(question))){
+      that.correctness = 100;
+    }else{
+      that.correctness = 0;
     }
    
-    Question.findById(doc.question, function(err, question){
-    	 if(arrayEqual(doc.submission, question.getSolution(question))){
-    	 	doc.correct = 100;
-    	 }else{
-    	 	doc.correct = 0;
-    	 }
-    	 console.log(doc.correct);
-    	 deferred.resolve(doc);
-    })
 
-   
-    
-   
+    that.save(function(err, doc){
+      if (err) {
+        deferred.reject(err);
+        return;
+      } deferred.resolve(doc);
+    });
+    return deferred.promise;
   });
-
-  return deferred.promise;
 }
 
 
