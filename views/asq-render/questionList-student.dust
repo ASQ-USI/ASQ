@@ -2,12 +2,12 @@
 
 {<questionContent}
   <ol>
-  {#questionOptions}
+  {#question.questionOptions formButtonType=question.formButtonType htmlId=question.htmlId}
     <li class="{classList}" >
-      <label class="{question.formButtonType}">
+      <label class="{formButtonType}">
         <input type="{formButtonType}" name="{htmlId}" value="{$idx}"> {text|s}
       </label>
     </li>{~n}
-  {/questionOptions}
+  {/question.questionOptions}
 </ol>
 {/questionContent}

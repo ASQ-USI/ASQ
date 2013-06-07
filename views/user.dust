@@ -7,13 +7,13 @@
 
 	<body>
 
-		<!---   top menu --->
+		<!---   top menu -->
 		{>menu/}
 
-		<!---   Content area   --->
+		<!---   Content area   -->
 		<div class="container" id="mainContainer">
 
-			<!--- Alert --->
+			<!--- Alert -->
 			<!-- Show notification fo user feedback based on query alert and type-->
 
 			{?alert}
@@ -22,7 +22,7 @@
 			</div>
 			{/alert}
 
-			<!---   Seperating Headline   --->
+			<!---   Seperating Headline   -->
 			{?session}
 			<div class="alert alert-block">
 				<button type="button" class="close" data-dismiss="alert">
@@ -39,7 +39,7 @@
 			</div>
 			{/session}
 
-			<!---   Seperating Headline   --->
+			<!---   Seperating Headline   -->
 			
 				{^slidesByCourses}
 					<div class="row">
@@ -88,7 +88,7 @@
 		<div id="iOSWebAppInfo" data-content='Tab on <img src="/img/iOS-action.png"/> item and select "Add to Home Screen".'></div>
 		<!-- /container -->
 
-		<!-- Le javascript --->
+		<!-- Le javascript -->
 		<script src="/js/bootstrap.js"></script>
 		<script>
 		
