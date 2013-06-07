@@ -125,31 +125,7 @@ var showAnswer = function(question) {
 	});
 	$('#question').modal('hide');
 }
-var send = function() {
-	var answers = [];
-	for (var i = 0; i < $('#answeroptions').children().size() - 1; i++) {
-		if ($('#textbox').length > 0) {
-			answers[i] = $('#textbox').val();
-		} else {
-			if ($('#checkbox' + i).is(':checked')) {
-				answers[i] = true;
-			} else {
-				answers[i] = false;
-			}
-		}
 
-	}
-	var myEvent = new CustomEvent("local:submit", {
-		"detail" : {
-			"answers" : answers
-		}
-	});
-	document.dispatchEvent(myEvent);
-
-	$('#blockOptions').css("display", "block");
-	$('#changeAnswer').removeAttr("style");
-	$('#sendanswers').attr("disabled", "disabled");
-}
 $(function() {
 
 	$(document).on("click", ".changeAnswer" ,function(event) {
@@ -169,23 +145,25 @@ $(function() {
 	// form submission events
 	$(document).on('submit', '.assessment form', function(event) {
 		event.preventDefault();
+		var $this = $(this); 
 
-		// var myEvent = new CustomEvent("local:submit", {
-		//      "detail" : {
-		//          "questionId" : $(this).find('input[type="hidden"][name="question-id"]').val(),
-		//          "serializedForm" : $(this).serializeArray()
-		//      }
-		//  });
-		// document.dispatchEvent(myEvent);
+		var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
 
+
+		$this.children().css('opacity', '0.5')
+			.end()
+			.find('input')
+				.attr('disabled', 'true')
+				.end()
+			.find('button:not(.changeanswer .btn)')
+				.attr('disabled', 'true')
+				.fadeOut( function(){
+					$this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
+					$this.find('.changeAnswer').fadeIn();
+				});
+
+		//get question id
 		var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
-		$('[data-question-id="' + questionId + '"] form').css('opacity', '0.5');
-		$('[data-question-id="' + questionId + '"] form input').attr('disabled', 'true');
-		$('[data-question-id="' + questionId + '"] form button').attr('disabled', 'true');
-		$('[data-question-id="' + questionId + '"] form').after('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>');
-		$('[data-question-id="' + questionId + '"] form button').fadeOut( function(){
-		$('[data-question-id="' + questionId + '"] .changeAnswer').fadeIn();
-		});
 
 		//aggregate answers
 		var answers = [];
@@ -196,15 +174,13 @@ $(function() {
 		$(this).find('input[type=text]').each(function(){
 			answers.push($(this).val());
 		})
-
-		console.log(answers)
 		
 		socket.emit('asq:submit', {
 			session : session,
 			answers : answers,
 			questionId : questionId
 		});
-		console.log('submitted')
+		console.log('submitted answer for question with id:' + questionId)
 	})
 })
 
@@ -215,77 +191,69 @@ google.load("visualization", "1", {
 
 google.setOnLoadCallback(drawChart);
 
-var rightVsWrongOptions ={
-	width : 800,
-};
+var statsTypes={
 
-distinctAnswersOptions = {
-	title : 'How often was a group of options selected',
-	width : 800,
-	isStacked : true,
-	legend : {
-		position : 'top',
-		alignment : 'center'
+	rightVsWrong: {
+		metric : "rightVsWrong",
+		data : [],
+		chart: [],
+		options: {
+			width : 800,
+		}
+	},
+
+	distinctOptions: {
+		metric : "distinctOptions",
+		data : [],
+		chart: [],
+		options: {
+			title : 'How often was a group of options selected',
+			width : 800,
+			isStacked : true,
+			legend : {
+				position : 'top',
+				alignment : 'center'
+			}
+		}
+	},
+
+	distinctAnswers: {
+		metric : "distinctAnswers",
+		data : [],
+		chart: [],
+		options: {
+			title : 'How often was an option selected',
+			isStacked : true,
+			width : 800,
+			legend : {
+				position : 'top',
+				alignment : 'center'
+			}
+		}
 	}
 };
-
-distinctOptionsOptions = {
-	title : 'How often was an option selected',
-	isStacked : true,
-	width : 800,
-	legend : {
-		position : 'top',
-		alignment : 'center'
-	}
-};
-
-var rightVsWrongData = new Array();
-var rightVsWrongChart = new Array();
-
-var participationData = new Array();
-var participationChart= new Array();
-
-var distinctOptionsData = new Array();
-var distinctOptionsChart = new Array();
-
-var distinctAnswersData = new Array();
-var distinctAnswersChart = new Array();
 
 function drawChart() {
 	$('.stats').each(function(el) {
 		var questionId = $(this).data('target-assessment-id');
-		//var sampler = google.visualization.arrayToDataTable([['Correctness', 'Number of submissions'], ['Correct answers', 19], ['Wrong answers', 4]]);
-		//var sampleo = google.visualization.arrayToDataTable([['Option', 'Correct answers', 'Wrong answers'], ['Switzerland', 19, 0], ['Italy', 0, 3], ['France', 0, 1], ['Europe', 23, 0]]);
-		//var samplea = google.visualization.arrayToDataTable([['Submission', 'Correct answers', 'Wrong answers'], ['Europe & Switzerland', 19, 0], ['Europe & Italy', 0, 3], ['Europe & France', 0, 1]]);
-		//RightVsWrongData[questionId] = sampler;
-		//distinctOptionsData[questionId] = sampleo;
-		//distinctAnswersData[questionId] = samplea;
-		rightVsWrongChart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-		distinctOptionsChart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-		distinctAnswersChart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+		statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+		statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+		statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
 	})
 }
 
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
-	var questionId = $(this).parent().parent().parent().data('target-assessment-id');
-	//console.log(questionId);
-	$.getJSON('/stats/getStats?question=' + questionId + '&metric=rightVsWrong', function(data) {
-		rightVsWrongData[questionId] = google.visualization.arrayToDataTable(data);
-		rightVsWrongChart[questionId].draw(rightVsWrongData[questionId], rightVsWrongOptions);
-	});
-	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
-		distinctOptionsData[questionId] = google.visualization.arrayToDataTable(data);
-		distinctOptionsChart[questionId].draw(distinctOptionsData[questionId], distinctOptionsOptions);
-	});
-	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctAnswers', function(data) {
-		distinctAnswersData[questionId] = google.visualization.arrayToDataTable(data);
-		distinctAnswersChart[questionId].draw(distinctAnswersData[questionId], distinctAnswersOptions);
-	});
+	var questionId = $(this).parents().find(".stats").data('target-assessment-id');
 
+	for (var key in statsTypes){
+		requestStats(questionId , statsTypes[key])
+	}
 });
 
-
-function updateStats(questionId){
-	
+function requestStats(questionId, obj){
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
+		obj.data[questionId] = google.visualization.arrayToDataTable(data);
+		obj.chart[questionId].draw(obj.data[questionId], obj.Options);
+	});
 }
