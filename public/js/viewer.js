@@ -135,13 +135,6 @@ $(function() {
 		var questionId = $(this).parent().parent().find('input[type="hidden"][name="question-id"]').val();
 		var resubmitEvent = new CustomEvent('local:resubmit', {});
 		document.dispatchEvent(resubmitEvent);
-		// $('[data-question-id="' + questionId + '"] form').css('opacity', '1');
-		// $('[data-question-id="' + questionId + '"] form input').removeAttr('disabled');
-		// $('[data-question-id="' + questionId + '"] form button').removeAttr('disabled');
-		// $('[data-question-id="' + questionId + '"] .changeAnswer').fadeOut( function(){
-			// $('[data-question-id="' + questionId + '"] form button').fadeIn();
-			// $('[data-question-id="' + questionId + '"] .changeAnswer').remove();
-		// });
 		
 		$this.children().css('opacity', '1')
 			.end()
