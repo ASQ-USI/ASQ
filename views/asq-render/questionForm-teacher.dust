@@ -5,5 +5,4 @@
   <div class="bar" id="progessbar" style="width: 0%;"></div>
   </div>
   <h5 class="pull-right progressNum">Waiting for answers!</h5>
-  <button class="btn btn-large pull-left show-stats">Show answers</button>
 </form>
