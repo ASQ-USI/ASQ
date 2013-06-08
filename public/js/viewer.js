@@ -60,12 +60,6 @@ var connect = function(host, port, session, mode) {
 		$('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
 	});
 
-	// document.addEventListener('local:submit', function(event) {
-	//     console.log(event)
-	//     //socket.emit('asq:submit', {session:session, answers:event.detail.answers, questionId:questionId});
-	//     //socket.emit('asq:submit', {session:session, answers:event.detail.serializedForm, questionId:event.detail.questionId});
-	// });
-
 	document.addEventListener('local:resubmit', function(event) {
 		socket.emit('asq:resubmit', {
 			questionId : questionId
