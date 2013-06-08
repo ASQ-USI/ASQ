@@ -114,25 +114,26 @@ exports.getStats = function(req, res) {
 
 	//If search is by session add array of sessionIds to search object
 	if (req.query.session != undefined) {
-		searchObj.question = {
-			$in : req.query.question.split(",")
+		searchObj.session = {
+			$in : req.query.session.split(",")
 		};
 	}
 
 	//If search is by user add array of userIds to search object
 	if (req.query.user != undefined) {
-		searchObj.question = {
-			$in : req.query.question.split(",")
+		searchObj.user = {
+			$in : req.query.user.split(",")
 		};
 	}
 
 	//If search is by slideshow add array of slideshowIds to search object
 	if (req.query.slideshow != undefined) {
-		searchObj.question = {
-			$in : req.query.question.split(",")
+		searchObj.slideshow = {
+			$in : req.query.slideshow.split(",")
 		};
 	}
-
+	console.log("Search Object "+ searchObj);
+	console.log(searchObj);
 	//Search answerDB with search object
 	answerDB.find(searchObj, function(err, answers) {
 		//If error is encountered

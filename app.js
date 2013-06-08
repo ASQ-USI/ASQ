@@ -242,7 +242,7 @@ app.get('/logout/', function(req, res){
 //Serving static files
 //app.get('/images/:path/', registration.get);
 
-app.get('/user/:username/statistics', ensureAuthenticated,  statistics.getSessionStats);
+app.get('/user/statistics', ensureAuthenticated,  statistics.getSessionStats);
 
 app.get('/user/:username/edithtml', ensureAuthenticated, editFunctions.edithtml);
 app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyle);

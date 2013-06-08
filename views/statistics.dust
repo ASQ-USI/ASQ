@@ -20,7 +20,7 @@
       <!--- Edit menu --->
       <div class="row" >
         <div class="span12 headline">
-          <h3 class="pull-left">Statistics presentation</h3>
+          <h3 class="pull-left">Statistics of {title}</h3>
           <form class="pull-right controls edit">
             <select id="session">
               <option value="null">Choose session</option>
@@ -70,7 +70,7 @@
                   <p>
                     <strong>{text}</strong>
                   </p>
-                  {>"asq-render/questionList-backend.dust"/}
+                  {>"asq-render/questionList-stats.dust"/}
                   {?question.correctAnswer}
                   <p>
                     Solution: {question.correctAnswer}

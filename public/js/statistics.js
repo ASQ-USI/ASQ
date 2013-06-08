@@ -70,6 +70,7 @@ $("#session").change(function() {
 	for (var key in statsTypes) {
 		requestStats(questionId, statsTypes[key])
 	}
+	console.log("newdata")
 	drawChart();
 });
 
