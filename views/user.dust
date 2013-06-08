@@ -85,7 +85,7 @@
 			{/slidesByCourses}
 
 		</div>
-		<div id="iOSWebAppInfo" data-content='Tab on <img src="/img/iOS-action.png"/> item and select "Add to Home Screen".'></div>
+		<div id="iOSWebAppInfo" data-content='Tab on &nbsp;<img width="20px" src="/img/iOS-action.png"/>&nbsp; and select<br/> "Add to Home Screen".'></div>
 		<!-- /container -->
 
 		<!-- Le javascript -->
@@ -96,7 +96,8 @@
 		if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
 			$('#iOSWebAppInfo').popover({
 				placement: "top",
-				title: "Install ASQ as Web-app"
+				title: "Install ASQ as Web-app",
+				html: true,
 			});
 			$('#iOSWebAppInfo').popover('show');
 		}
@@ -108,10 +109,10 @@
 			$('#iOSWebAppInfo').popover('show');
 		}
 		
-		
-		$('.popover').on("click", function(el) {
+		document.addEventListener("touchstart", hidePopover, false);
+		function hidePopover(){
 			$('#iOSWebAppInfo').popover('destroy');
-		});
+		}
 		
 	  $('.thumb').click(function (evt) {
 				

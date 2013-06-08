@@ -129,17 +129,32 @@ var showAnswer = function(question) {
 $(function() {
 
 	$(document).on("click", ".changeAnswer" ,function(event) {
-		console.log("ha");
+		event.preventDefault();
+		var $this = $(this).parents("form"); 
+		
 		var questionId = $(this).parent().parent().find('input[type="hidden"][name="question-id"]').val();
 		var resubmitEvent = new CustomEvent('local:resubmit', {});
 		document.dispatchEvent(resubmitEvent);
-		$('[data-question-id="' + questionId + '"] form').css('opacity', '1');
-		$('[data-question-id="' + questionId + '"] form input').removeAttr('disabled');
-		$('[data-question-id="' + questionId + '"] form button').removeAttr('disabled');
-		$('[data-question-id="' + questionId + '"] .changeAnswer').fadeOut( function(){
-			$('[data-question-id="' + questionId + '"] form button').fadeIn();
-			$('[data-question-id="' + questionId + '"] .changeAnswer').remove();
-		});
+		// $('[data-question-id="' + questionId + '"] form').css('opacity', '1');
+		// $('[data-question-id="' + questionId + '"] form input').removeAttr('disabled');
+		// $('[data-question-id="' + questionId + '"] form button').removeAttr('disabled');
+		// $('[data-question-id="' + questionId + '"] .changeAnswer').fadeOut( function(){
+			// $('[data-question-id="' + questionId + '"] form button').fadeIn();
+			// $('[data-question-id="' + questionId + '"] .changeAnswer').remove();
+		// });
+		
+		$this.children().css('opacity', '1')
+			.end()
+			.find('input')
+				.removeAttr('disabled')
+				.end()
+			.find('.changeAnswer')
+				.fadeOut(function(){
+					$(this).remove();
+					$this.find('button')
+						.removeAttr('disabled')
+						.fadeIn()
+				});		
 	});
 
 	// form submission events
@@ -148,7 +163,7 @@ $(function() {
 		var $this = $(this); 
 
 		var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
-
+		console.log("QuestionID= " +questionId);
 
 		$this.children().css('opacity', '0.5')
 			.end()

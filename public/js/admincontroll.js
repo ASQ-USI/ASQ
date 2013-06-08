@@ -31,7 +31,7 @@ $('.thumbsWrapper .thumb').click(function() {
 
 /* Show or hide thumbnails on mobile devices depending on orientation */
 function updateOrientation() {
-	if(navigator.userAgent.match(/({iPhone|iPod|Android)/g) ? true : false ){
+	if(screen.width < 500 || screen.height < 500 ){
 		switch(window.orientation) {
 			case 0:
 			case 180:
@@ -47,7 +47,7 @@ function updateOrientation() {
 				$(".controlBottom").removeClass("hidden-phone");
 				break;
 		}
-	}
+	}else{}
 }
 /*Hide iframes on tablest and phones */
 var userAgent = navigator.userAgent.toLowerCase();

@@ -32,13 +32,16 @@ answerSchema.methods.saveWithPromise = function(){
   
   Question = db.model('Question', questionModel.questionSchema);
   Question.findById(that.question, function(err, question){
+  	if(err){
+  		deffered.reject(err); 
+  	}
+  	
     if(arrayEqual(that.submission, question.getSolution(question))){
       that.correctness = 100;
     }else{
       that.correctness = 0;
     }
    
-
     that.save(function(err, doc){
       if (err) {
         deferred.reject(err);
