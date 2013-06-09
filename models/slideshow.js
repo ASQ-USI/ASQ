@@ -13,6 +13,7 @@ var slideshowSchema= new Schema({
   owner: { type: ObjectId },
   questions: [ObjectId],
   questionsPerSlide: [questionsPerSlideSchema],
+  statsPerSlide: [statsPerSlideSchema],
   links: {type: Array, default: []},
   lastSession: {type: Date, default: Date.now},
   lastEdit: {type: Date, default: Date.now}
@@ -29,11 +30,22 @@ slideshowSchema.methods.addQuestions = function(arr, cb){
   return this.update({$addToSet: {questions: {$each: arr}}});
 }
 
-// gets all the questios for a specific slide html id
+// gets all the questions for a specific slide html id
 slideshowSchema.methods.getQuestionsForSlide = function(slideHtmlId){
   for (var i=0; i < this.questionsPerSlide.length; i++){
     if(this.questionsPerSlide[i].slideHtmlId == slideHtmlId){
       return this.questionsPerSlide[i].questions;
+    }
+  }
+  return [];
+}
+
+// gets all the questions used for stats for a specific slide html id
+slideshowSchema.methods.getStatQuestionsForSlide = function(slideHtmlId){
+
+  for (var i=0; i < this.statsPerSlide.length; i++){
+    if(this.statsPerSlide[i].slideHtmlId == slideHtmlId){
+      return this.statsPerSlide[i].statQuestions;
     }
   }
   return [];
@@ -85,11 +97,40 @@ var createQuestionsPerSlide =  function(questions){
   return qPerSlidesArray;
 }
 
+var statsPerSlideSchema = new Schema({
+  slideHtmlId:{type:String},
+  statQuestions: [ObjectId]
+})
+
+var createStatsPerSlide =  function(statsForQuestions){
+
+  var StatsPerSlide = db.model("StatsPerSlide");
+
+  var sPerSlidesObj = {};
+  for ( var i=0; i < statsForQuestions.length; i++){
+    if (! sPerSlidesObj[statsForQuestions[i].slideHtmlId]){
+      sPerSlidesObj[statsForQuestions[i].slideHtmlId] = [];
+    }
+    sPerSlidesObj[statsForQuestions[i].slideHtmlId].push(statsForQuestions[i].questionId)
+  }
+
+  //convert to array
+  var sPerSlidesArray = [];
+
+  for (var key in sPerSlidesObj){
+    sPerSlidesArray.push(new StatsPerSlide({slideHtmlId : key, statQuestions: sPerSlidesObj[key]}));
+  }
+  return sPerSlidesArray;
+}
+
 mongoose.model("Slideshow", slideshowSchema);
 mongoose.model("QuestionsPerSlide", questionsPerSlideSchema);
+mongoose.model("StatsPerSlide", statsPerSlideSchema);
 
 module.exports =  {
   slideshowSchema             : slideshowSchema,
   questionsPerSlideSchema     : questionsPerSlideSchema,
-  createQuestionsPerSlide     : createQuestionsPerSlide
+  createQuestionsPerSlide     : createQuestionsPerSlide,
+  statsPerSlideSchema         : statsPerSlideSchema,
+  createStatsPerSlide         : createStatsPerSlide
 }

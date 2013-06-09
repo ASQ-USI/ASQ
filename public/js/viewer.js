@@ -55,6 +55,13 @@ var connect = function(host, port, session, mode) {
 		socket.on('asq:gotosub', function(event) {
 			impress().gotoSub(event.substepIndex);
 		});
+
+		socket.on('asq:stat', function(event) {
+			console.log(event)
+		});
+
+
+
 	}).on('connect_failed', function(reason) {
 		console.error('unable to connect to namespace', reason);
 		$('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");

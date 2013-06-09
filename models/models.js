@@ -69,7 +69,8 @@ var sessionSchema = new Schema({
 	showingAnswer: {type: Boolean, default: false}, //maybe don't need it
 	started: {type: Boolean, default: false}, 
 	questionsDisplayed: {type: [ObjectId], ref: 'Question'}, //maybe don't need it
-  activeQuestions: [ObjectId]
+  activeQuestions: [ObjectId],
+  activeStatsQuestions : [ObjectId]
 });
 
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
@@ -80,6 +81,22 @@ sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
   Slideshow.findById(this.slides).exec()
     .then(function(slideshow){
       deferred.resolve(slideshow.getQuestionsForSlide(slideHtmlId));
+    }
+   ,function(err, slideshow) {
+      throw err;  
+  });
+
+  return deferred.promise;
+}
+
+sessionSchema.methods.statQuestionsForSlide = function(slideHtmlId) {
+
+  var deferred = when.defer()
+  , Slideshow = db.model('Slideshow');
+
+  Slideshow.findById(this.slides).exec()
+    .then(function(slideshow){
+      deferred.resolve(slideshow.getStatQuestionsForSlide(slideHtmlId));
     }
    ,function(err, slideshow) {
       throw err;  

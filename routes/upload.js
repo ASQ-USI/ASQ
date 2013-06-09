@@ -41,10 +41,11 @@ module.exports.post = function(req, res) {
   //STEPS TO CREATE A NEW SLIDESHOW
 
   // 1) create new Slideshow model
-  var Slideshow = db.model('Slideshow');
-  var slideShowFileHtml;
-  var slideShowQuestions;
-  var parsedQuestions;
+  var Slideshow = db.model('Slideshow')
+  , slideShowFileHtml
+  , slideShowQuestions
+  , parsedQuestions
+  , parsedStats
 
   var newSlideshow = new Slideshow({
     title:req.files.upload.name,
@@ -75,9 +76,10 @@ module.exports.post = function(req, res) {
     //5) create new questions for database
     // TODO: create questions only if they exist
     .then(
-      function(questions){
-        parsedQuestions = questions
-        return questionModel.create(questions)
+      function(parsed){
+        parsedQuestions = parsed.questions;
+        parsedStats = parsed.stats;
+        return questionModel.create(parsedQuestions)
     })
     //6) render questions inside to slideshow's html into memory
     .then(
@@ -87,8 +89,14 @@ module.exports.post = function(req, res) {
         //copy objectIDs created from mongoose
         _.each(parsedQuestions, function(parsedQuestion, index){
           parsedQuestion.id = dbQuestions[index].id;
-        })
 
+           // push questions mongo ids to corresponding questions
+          _.each(parsedStats, function(parsedStat){
+            if(parsedStat.questionHtmlId == parsedQuestion.htmlId){
+              parsedStat.questionId = parsedQuestion.id;
+            }
+          });
+        });
         slideShowQuestions = dbQuestions;
         return when.all([
           asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
@@ -114,9 +122,11 @@ module.exports.post = function(req, res) {
     .then(
       function(){
         newSlideshow.questions = slideShowQuestions
-        // remember: parsedQuestions now have the ObjectID created 
-        // when the slideShowQuestions were created
+        // remember: parsedQuestions and parsedStats now have the question ObjectID
+        // created when the mongo questions were created
         newSlideshow.questionsPerSlide = slideshowModel.createQuestionsPerSlide(parsedQuestions)
+        newSlideshow.statsPerSlide = slideshowModel.createStatsPerSlide(parsedStats)
+
         return newSlideshow.saveWithPromise();
     })
     //9) remove zip folder
