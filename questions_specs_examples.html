@@ -1,0 +1,336 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta charset=utf-8>
+  <title>ASQ Questions template</title>
+  <link rel="stylesheet" href="assets/css/bootstrap-responsive.css">
+  <link rel="stylesheet" href="assets/css/bootstrap.css">
+  <link rel="stylesheet" href="assets/css/prettify.css"/>
+  <link rel="stylesheet" href="assets/css/questions.css">
+  <link rel="stylesheet" href="assets/css/asq-default-theme.css">
+ 
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav affix">
+          <li><a href="#introduction"><i class="icon-chevron-right"></i> Introduction</a></li>
+          <li class=""><a href="#microformat"><i class="icon-chevron-right"></i> Microformat</a></li>
+          <li class=""><a href="#iar"><i class="icon-chevron-right"></i> IAR</a></li>
+        </ul>
+      </div>
+
+      <div class="span9">
+
+        <section id="introduction">
+          <div class="page-header">
+            <h1>Introduction</h1>
+          </div>
+          <h2 id="asq-questions">Question representation in ASQ</h2>
+          <p>Questions or even better <strong>Assessment</strong> instances, can be inserted in a presentation through an HTML microformat or through the ASQ editor. HTML presentations that contains assessment instances in microformat are parsed and the questions are extracted and persisted. </p>
+        </section>
+
+        <section id="microformat">
+          <div class="page-header">
+            <h1>Microformat</h1>
+          </div>
+          <h2 id="asq-questions">Format</h2>
+          <h4>Root Class Name</h4>
+          <p>The root class name for assessment instances is <code>assessment</code>. This should be followed by a second classname that indicates the type of the assessment instance</p>
+          <h4>Assessment instance types</h4>
+          <ol>
+            <li><code>multi-choice</code></li>
+            <li><code>text-input</code></li>
+          </ol>
+          <h4>Properties and Subproperties</h4>
+          <p>The properties of an assessment instance are represented by elements inside the assessment instance. Elements with class names of the listed properties represent the values of those properties. Some properties have sub-properties, and those are represented by elements inside the elements for properties.</p>
+          <h4>Property List</h4>
+          <dl class="dl-horizontal">
+            <dt><code>stem</code></dt>
+            <dd>The stem is the beginning part of the item that presents the item as a problem to be solved, a question asked of the respondent, or an incomplete statement to be completed, as well as any other relevant information</dd>
+            <dt><code>option</code></dt>
+            <dd>An element with the class attribute <code>option</code> defines a possible answer option for the assessment instance</dd>
+          </dl>
+          
+          <h4>multi-choice</h4>
+          <p><code>multi-choice</code> assessments specify the number of acceptable answers using the classes <code>.choose&lt;cardinality&gt;</code>. The available classes are:</p>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Instance type</th>
+                <th>Class</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="3"><code>multi-choice</code></td>
+                <td><code>.choose-1</code></td>
+                <td>only one of the provided options can be selected</td>
+              </tr>
+              <tr>
+                <td><code>.choose-0-n</code></td>
+                <td>0 to n options can be selected</td>
+              </tr>
+              <tr>
+                <td><code>.choose-1</code></td>
+                <td>1 to n options can be selected</td>
+              </tr>
+            </tbody>
+          </table>
+
+          
+          <h4>text-input stem</h4>
+          <p>The element with class <code>.stem</code> of a <code>text-input</code> assessment can have an attribute <code>data-correct-answer='&lt;value&gt;'</code> that specifies the correct answer.</p>
+
+          <h4>option</h4>
+          <p>Options can have a <code>data-correct="{true,false}"</code> attribute that specifies if the option is considered correct or wrong. The default value is <code>false</code>.</p>
+          
+          <h3>Examples</h3>
+          <h4>multi-choice</h4>
+          <div class="asq-docs-render">
+
+            <article class="assessment multi-choice choose-0-n custom-1" id="q-1" data-question-id="51b4e09a5acd320dbb000003">
+              <h3 class="stem">Which are the official languages of Switzerland?</h3>
+              <form action="">
+                <ol>
+                  <li class="option"><label class="checkbox"><input type="checkbox" name="q-2" value="0"> 
+                    German
+                    </label>
+                  </li>
+                  <li class="option"><label class="checkbox"><input type="checkbox" name="q-2" value="1"> 
+                    French
+                    </label>
+                  </li>
+                  <li class="option"><label class="checkbox"><input type="checkbox" name="q-2" value="2"> 
+                    Italian
+                    </label>
+                  </li>
+                  <li class="option"><label class="checkbox"><input type="checkbox" name="q-2" value="3"> 
+                    English
+                    </label>
+                  </li>
+                  <li class="option"><label class="checkbox"><input type="checkbox" name="q-2" value="4"> 
+                    Rumantsch
+                    </label>
+                  </li>
+                </ol>
+                <input type="hidden" name="question-id" value="51b4e09a5acd320dbb000003">
+                <p class="text-right"><button type="submit" class="btn btn-success">Submit</button></p>
+              </form>
+              <p class="muted">
+                Please select all correct options. It is possible that no option is correct.
+              </p>
+            </article>
+          </div>
+
+          <ul class="nav nav-tabs" id="myTab">
+          <li class="active"><a href="#html-microformat"  data-toggle="tab">HTML-Microformat</a></li>
+          <li><a href="#html-generated" data-toggle="tab">HTML-Generated</a></li>
+          <li><a href="#css" data-toggle="tab">CSS</a></li>
+        </ul>
+     
+        <div class="tab-content">
+
+          <div class="tab-pane active" id='html-microformat'>
+            <pre class="prettyprint">
+&lt;article class=&quot;assessment multi-choice choose-0-n custom-1&quot; id=&quot;q-1&quot;&gt;
+  &lt;h3 class=&quot;stem&quot;&gt;Which are the official languages of Switzerland?&lt;/h3&gt;
+  &lt;p class=&quot;muted&quot;&gt;
+    Please select all correct options. It is possible that no option is correct.
+  &lt;/p&gt;
+  &lt;ol class=&quot;upper-alpha&quot;&gt;
+    &lt;li class=&quot;option&quot; data-correct=&quot;true&quot;&gt;
+      German
+    &lt;/li&gt;
+    &lt;li class=&quot;option&quot; data-correct=&quot;true&quot;&gt;
+      French
+    &lt;/li&gt;
+    &lt;li class=&quot;option&quot; data-correct=&quot;true&quot;&gt;
+      Italian
+    &lt;/li&gt;
+    &lt;li class=&quot;option&quot;&gt;
+      English
+    &lt;/li&gt;
+    &lt;li class=&quot;option&quot; data-correct=&quot;true&quot;&gt;
+      Rumantsch
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/article&gt;
+            </pre>                    
+         </div>    
+
+        <div class="tab-pane" id="html-generated">
+            <pre class="prettyprint">
+&lt;article class=&quot;assessment multi-choice choose-0-n custom-1&quot; id=&quot;q-1&quot; data-question-id=&quot;51b4e09a5acd320dbb000003&quot;&gt;
+  &lt;h3 class=&quot;stem&quot;&gt;Which are the official languages of Switzerland?&lt;/h3&gt;
+  &lt;form action=&quot;&quot;&gt;
+    &lt;ol&gt;
+      &lt;li class=&quot;option&quot;&gt;&lt;label class=&quot;checkbox&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;q-2&quot; value=&quot;0&quot;&gt; 
+        German
+        &lt;/label&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;option&quot;&gt;&lt;label class=&quot;checkbox&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;q-2&quot; value=&quot;1&quot;&gt; 
+        French
+        &lt;/label&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;option&quot;&gt;&lt;label class=&quot;checkbox&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;q-2&quot; value=&quot;2&quot;&gt; 
+        Italian
+        &lt;/label&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;option&quot;&gt;&lt;label class=&quot;checkbox&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;q-2&quot; value=&quot;3&quot;&gt; 
+        English
+        &lt;/label&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;option&quot;&gt;&lt;label class=&quot;checkbox&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;q-2&quot; value=&quot;4&quot;&gt; 
+        Rumantsch
+        &lt;/label&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;question-id&quot; value=&quot;51b4e09a5acd320dbb000003&quot;&gt;
+    &lt;p class=&quot;text-right&quot;&gt;&lt;button type=&quot;submit&quot; class=&quot;btn btn-success&quot;&gt;Submit&lt;/button&gt;&lt;/p&gt;
+  &lt;/form&gt;
+  &lt;p class=&quot;muted&quot;&gt;
+    Please select all correct options. It is possible that no option is correct.
+  &lt;/p&gt;
+&lt;/article&gt;
+            </pre>  
+        </div>
+            
+        <!-- Display multiple choice stats -->
+        <div class="tab-pane" id="css">
+          <pre class="prettyprint">
+.custom-1 .stem {
+  color: #dd1183;
+}
+.custom-1 ol {
+  counter-reset: li;
+  /* Initiate a counter */
+
+  margin-left: 0;
+  /* Remove the default left margin */
+
+  padding-left: 0;
+  /* Remove the default left padding */
+
+}
+.custom-1 ol > li {
+  position: relative;
+  /* Create a positioning context */
+
+  margin: 0 0 6px 2em;
+  /* Give each list item a left margin to make room for the numbers */
+
+  padding: 4px 8px;
+  /* Add some spacing around the content */
+
+  list-style: none;
+  /* Disable the normal item numbering */
+
+  background-color: #f2f7fd;
+}
+.custom-1 ol > li:before {
+  content: counter(li);
+  /* Use the counter as content */
+
+  counter-increment: li;
+  /* Increment the counter by 1 */
+
+  /* Position and style the number */
+
+  position: absolute;
+  top: 0px;
+  left: -2em;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 2em;
+  height: 100%;
+  line-height: 100%;
+  /* Some space between the number and the content in browsers that support
+         generated content but not positioning it (Camino 2 is one example) */
+
+  margin-right: 8px;
+  padding: 4px;
+  color: #fff;
+  background: #666;
+  font-weight: bold;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-align: center;
+}
+.custom-1 li ol,
+.custom-1 li ul {
+  margin-top: 6px;
+}
+.custom-1 ol ol li:last-child {
+  margin-bottom: 0;
+}
+.custom-1 ol.upper-alpha > li:before {
+  content: counter(li, upper-alpha);
+}
+ 
+          </pre>
+        </div>
+
+          <h4>text-input</h4>
+          <div class="asq-docs-render">
+            <article class="assessment text-input custom-1" id="q-2" data-question-id="51b4e09a5acd320dbb000006">
+              <h3 class="stem" data-correct-answer="3">What is the square root of 9?</h3>
+              <form action="">
+                <label class="control-label" for="inputText">Your solution:</label><input type="text" class="" id="inputText" placeholder="Capitalization will be ignored"><input type="hidden" name="question-id" value="51b4e09a5acd320dbb000006">
+                <p class="text-right"><button type="submit" class="btn btn-success">Submit</button></p>
+              </form>
+            </article>
+
+          </div>
+
+          <ul class="nav nav-tabs" id="myTab">
+          <li class="active"><a href="#html-microformat"  data-toggle="tab">HTML-Microformat</a></li>
+          <li><a href="#html-generated" data-toggle="tab">HTML-Generated</a></li>
+          <li><a href="#css" data-toggle="tab">CSS</a></li>
+        </ul>
+     
+        <div class="tab-content">
+
+          <div class="tab-pane active" id='html-microformat'>
+            <pre class="prettyprint">
+&lt;article class=&quot;assessment text-input custom-1&quot; id=&quot;q-2&quot;&gt;
+  &lt;h3 class=&quot;stem&quot; data-correct-answer=&quot;3&quot;&gt;What is the square root of 9?&lt;/h3&gt;
+&lt;/article&gt;
+            </pre>                    
+         </div>    
+
+        <div class="tab-pane" id="html-generated">
+            <pre class="prettyprint">
+&lt;article class=&quot;assessment text-input custom-1&quot; id=&quot;q-2&quot; data-question-id=&quot;51b4e09a5acd320dbb000006&quot;&gt;
+  &lt;h3 class=&quot;stem&quot; data-correct-answer=&quot;3&quot;&gt;What is the square root of 9?&lt;/h3&gt;
+  &lt;form action=&quot;&quot;&gt;
+    &lt;label class=&quot;control-label&quot; for=&quot;inputText&quot;&gt;Your solution:&lt;/label&gt;&lt;input type=&quot;text&quot; class=&quot;&quot; id=&quot;inputText&quot; placeholder=&quot;Capitalization will be ignored&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;question-id&quot; value=&quot;51b4e09a5acd320dbb000006&quot;&gt;
+    &lt;p class=&quot;text-right&quot;&gt;&lt;button type=&quot;submit&quot; class=&quot;btn btn-success&quot;&gt;Submit&lt;/button&gt;&lt;/p&gt;
+  &lt;/form&gt;
+&lt;/article&gt;
+
+            </pre>  
+        </div>
+            
+        <!-- Display multiple choice stats -->
+        <div class="tab-pane" id="css">
+          <pre class="prettyprint">
+.custom-1 .stem {
+  color: #dd1183;
+} 
+          </pre>
+        </div>
+
+        </section>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="assets/js/jquery.js"></script>
+  <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="assets/js/prettify.js"></script>
+  <script type="text/javascript" src="assets/js/app.js"></script>
+</body>
+</html>
