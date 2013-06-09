@@ -100,8 +100,8 @@ app = express();
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
 //appHost ='10.145.45.254';
-appHost = '192.168.3.30';
-//appHost = process.argv[2] || '127.0.0.1';
+//appHost = '192.168.3.30';
+appHost = process.argv[2] || '127.0.0.1';
 clientsLimit = process.argv[3] || 50;
 console.log(appHost + ' clients: ' + clientsLimit);
 
