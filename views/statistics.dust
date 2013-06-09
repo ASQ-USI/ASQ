@@ -9,7 +9,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target=".question-list">
 
     <!---   top menu --->
     {>menu/}
@@ -17,82 +17,83 @@
     <!---   Content area   --->
     <div class="container" id="mainContainer">
 
-      <!--- Edit menu --->
-      <div class="row" >
-        <div class="span12 headline">
-          <h3 class="pull-left">Statistics of {title}</h3>
-          <form class="pull-right controls edit">
-            <select id="session">
-              <option value="null">Choose session</option>
-              {#session} <option value="{sessionId}">{time}</option>{/session}
-            </select>
-          </form>
-        </div>
-      </div>
-
       <div class="row">
-        <div class="span3" data-spy="affix" data-offset-top="00">
-          <ul class="nav nav-tabs nav-stacked showNumber">
-            {#questions}
-            <li>
-              <a href="#{questionId}">{text}</a>
-            </li>
-            {/questions}
-          </ul>
-        </div>
-        <div class="span9 pull-right">
-          {#questions}
-          <div class="row stats" id="{questionId}" data-target-assessment-id={questionId}>
-            <div class="span9">
-              <h2>{text}</h2>
+        <div class="span4 offset8  hidden-phone" headline"" data-spy="affix" data-offset="0">
+          <div class="headline">
+            <h3>Session: &nbsp;
+            <select id="session" class="input-medium">
+              <option value="null">All sessions</option>
+              {#session}
+              <option value="{sessionId}">{time}</option>
+              {/session}
+            </select></h3>
+          </div>
+          <div class="question-list">
+            <div class="headline">
+              <h4>Questions</h4>
             </div>
+            <ul class="nav nav-tabs nav-stacked">
+              {#questions}
+              <li>
+                <a href="#{questionId}">{text}</a>
+              </li>
+              {/questions}
+            </ul>
+          </div>
+        </div>
 
-            <div class="span9">
-              <ul class="nav nav-tabs">
-                <li class="active">
-                  <a href="#answersolutions-{questionId}"  data-toggle="tab">Correct Answer</a>
-                </li>
-                <li>
-                  <a href="#rvsw-{questionId}" data-toggle="tab">Right vs. Wrong</a>
-                </li>
-                <li>
-                  <a href="#mscstats-{questionId}" data-toggle="tab">Multiple Choice Statistics</a>
-                </li>
-                <li>
-                  <a href="#diffAns-{questionId}" data-toggle="tab">Different answers</a>
-                </li>
-              </ul>
+        <div class="span8">
+          <div class="headline">
+            <h3>Statistics of {title}</h3>
+          </div>
+          
+          {#questions}
+          <div class="stats" id="{questionId}" data-target-assessment-id={questionId}>
+            <h2>{text}</h2>
 
-              <div class="tab-content">
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a href="#answersolutions-{questionId}"  data-toggle="tab">Correct Answer</a>
+              </li>
+              <li>
+                <a href="#rvsw-{questionId}" data-toggle="tab">Right vs. Wrong</a>
+              </li>
+              <li>
+                <a href="#mscstats-{questionId}" data-toggle="tab">Multiple Choice Statistics</a>
+              </li>
+              <li>
+                <a href="#diffAns-{questionId}" data-toggle="tab">Different answers</a>
+              </li>
+            </ul>
 
-                <!--  Displays correct solution -->
-                <div class="tab-pane active" id='answersolutions-{questionId}'>
-                  <p>
-                    <strong>{text}</strong>
-                  </p>
-                  {>"asq-render/questionList-stats.dust"/}
-                  {?question.correctAnswer}
-                  <p>
-                    Solution: {question.correctAnswer}
-                  </p>
-                  <br/>
-                  {/question.correctAnswer}
-                </div>
+            <div class="tab-content">
+              <!--  Displays correct solution -->
+              <div class="tab-pane active" id='answersolutions-{questionId}'>
+                <p>
+                  <strong>{text}</strong>
+                </p>
+                {>"asq-render/questionList-stats.dust"/}
+                {?question.correctAnswer}
+                <p>
+                  Solution: {question.correctAnswer}
+                </p>
+                <br/>
+                {/question.correctAnswer}
+              </div>
 
-                <!-- Displays Pie-Chart Right vs. Wrong -->
-                <div class="tab-pane" id="rvsw-{questionId}">
-                  <div id="rvswChart-{questionId}" class="rvswChart-{questionId}" style="width: 100%; height: 500px;"></div>
-                </div>
+              <!-- Displays Pie-Chart Right vs. Wrong -->
+              <div class="tab-pane" id="rvsw-{questionId}">
+                <div id="rvswChart-{questionId}" class="rvswChart-{questionId}" style="width: 100%; height: 500px;"></div>
+              </div>
 
-                <!-- Display multiple choice stats -->
-                <div class="tab-pane" id="mscstats-{questionId}">
-                  <div id="mscstatChart-{questionId}" class="distinctAnswers-{questionId}" style="height:500px"></div>
-                </div>
+              <!-- Display multiple choice stats -->
+              <div class="tab-pane" id="mscstats-{questionId}">
+                <div id="mscstatChart-{questionId}" class="distinctAnswers-{questionId}" style="height:500px"></div>
+              </div>
 
-                <!-- Display different aswers  -->
-                <div class="tab-pane" id="diffAns-{questionId}">
-                  <div id="diffAnsChart-{questionId}" class="distinctOptions-{questionId}" style="height:500px"></div>
-                </div>
+              <!-- Display different aswers  -->
+              <div class="tab-pane" id="diffAns-{questionId}">
+                <div id="diffAnsChart-{questionId}" class="distinctOptions-{questionId}" style="height:500px"></div>
               </div>
             </div>
           </div>
@@ -105,9 +106,6 @@
     <!-- /container -->
 
     <!-- Le javascript --->
-
-    <script src="/js/jquery.js"></script>
-    <script src="/js/bootstrap.js"></script>
     <script src="/js/statistics.js"></script>
   </body>
 </html>

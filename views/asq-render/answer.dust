@@ -9,7 +9,15 @@
 <div class="tab-content">
 
   <!--  Displays correct solution -->
-  <div class="tab-pane active" id='answersolutions-{statId}'>                    
+  <div class="tab-pane active" id='answersolutions-{statId}'>
+  	    {?question.correctAnswer}
+    <p>
+      Solution: {question.correctAnswer}
+    </p>
+    <br/>
+    {:else}
+    	{>"asq-render/questionList-stats.dust"/}
+    {/question.correctAnswer}                    
   </div>    
       
   <!-- Displays Pie-Chart Right vs. Wrong -->

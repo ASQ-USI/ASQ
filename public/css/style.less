@@ -3,10 +3,11 @@ body{
     height: 100%;
     color: #FFF;
     background-color: #333;
+    padding-top: 90px;
 }
 
 #mainContainer{
-  margin-top: 90px;
+  
 }
 ::-webkit-scrollbar {
   height: 12px;
@@ -31,6 +32,10 @@ body{
 .navbar .nav > li > a{
     padding-left:0px;
     padding-right: 30px;
+}
+.navbar .nav.pull-right > li > a{
+    padding-left:10px;
+    padding-right: 15px;
 }
 .navbar .nav > .active > a{
     background: none;
@@ -86,11 +91,13 @@ body{
   border-bottom: 1px solid #000;
   border-radius: 0px;
   color: #ccc;
-  
-  .active{
+}
+.nav-tabs.nav-stacked>.active>a, .nav-tabs.nav-stacked>.active>a:hover{
+    color: white;
     font-weight: bold;
-  }
-  
+    background: none;
+    border: none;
+    border-bottom: 1px solid #000;
 }
 .nav-tabs.nav-stacked>li{
 
@@ -135,6 +142,9 @@ body{
     color: #FFF;
     font-size: 15px;
     margin: 12px 0 0 20px;
+  }
+  select{
+    vertical-align: bottom;
   }
 }
 
@@ -343,7 +353,7 @@ h2{
 
 /* --- Controls --- */
 #slidesControll{
-  padding-top: 80px;
+  //padding-top: 80px;
 }
 .controls{
     iframe{
@@ -464,14 +474,6 @@ h2{
 
 #slidesOverview .add:first-child{
   display: none;
-}
-#slidesOverview .add:first-child:before{
-  content: '▶';
-  position: relative;
-  top: -8px;
-  left: 17px;
-  color: rgb(140,140,140);
-  font-size: 16px;
 }
 
 #slidesOverview .slide {

@@ -42,7 +42,7 @@
  			{/alert}
 
 		 	<!--- Edit menu --->
-	        <div class="row" >
+	     <div class="row" >
 				<div class="span12"><h3>Edit HTML-Code</h3></div>
 	  			{>editSubmenu/}
 	  		</div>
@@ -73,11 +73,6 @@
 	    var editor = ace.edit("editor");
 	    editor.setTheme("ace/theme/vibrant_ink");
 	    editor.getSession().setMode("ace/mode/html");
-	</script>
-	<script>
-		$('.edit').each(function() {
-			$(this).attr('href', $(this).attr('href')+window.location.search);
-		});
 	</script>
 	</body>
 </html>
