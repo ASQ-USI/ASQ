@@ -27,7 +27,11 @@ var statsTypes = {
 				position : 'top',
 				alignment : 'center'
 			}
-		}
+		},
+		animation:{
+        	duration: 1000,
+        	easing: 'out'
+      },
 	},
 
 	distinctAnswers : {
@@ -42,7 +46,11 @@ var statsTypes = {
 				position : 'top',
 				alignment : 'center'
 			}
-		}
+		},
+		animation:{
+        	duration: 1000,
+        	easing: 'out'
+      },
 	}
 };
 

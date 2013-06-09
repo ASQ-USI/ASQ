@@ -91,262 +91,262 @@ function preload(jsonFile) {
 
 }
 
-exports.sendstats = function(req, res) {
+// exports.sendstats = function(req, res) {
+// 
+	// var questionDB = db.model('Question', schemas.questionSchema);
+	// var optionDB = db.model('Option', schemas.optionSchema);
+// 
+	// questionDB.findById(req.params.id, function(err, question) {
+		// optionDB.find({
+			// _id : {
+				// $in : question.answeroptions
+			// }
+		// }, function(err, options) {
+			// if (err)
+				// throw err;
+// 
+			// getQuestionStats(req.params.id, function(err, stats) {
+// 
+				// var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
+// 
+				// var countedMcOptions = [[question.questionText, "Number of answers"]]
+				// for (ans in stats.equalAnswers) {
+					// //console.log("###########");
+					// countedMcOptions.push([options[ans].optionText, stats.countedMcOptions[ans]]);
+				// }
+// 
+				// var equalAnswers = [['Different answers', 'Number of answers']]
+				// for (ans in stats.equalAnswers) {
+					// //console.log("###########");
+					// equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+				// }
+// 
+				// //console.log(countedMcOptions);
+				// res.send(200, {
+					// correct : correct,
+					// countedMcOptions : countedMcOptions,
+					// equalAnswers : equalAnswers
+				// });
+// 
+			// });
+		// });
+	// });
+// 
+// }
 
-	var questionDB = db.model('Question', schemas.questionSchema);
-	var optionDB = db.model('Option', schemas.optionSchema);
+// exports.getStats = function(questionId, sessionId, callback) {
+	// var Question = db.model('Question', schemas.questionSchema);
+	// Question.findById(questionId).populate('answeroptions').exec(function(err, question) {
+		// if (err)
+			// callback(err);
+		// getQuestionStats(questionId, sessionId, function(err, stats) {
+			// if (err) {
+				// callback(err);
+				// return;
+			// }
+			// if (stats === null) {
+				// callback(null, {
+					// correct : {},
+					// countedMcOptions : {},
+					// equalAnswers : {}
+				// });
+				// return;
+			// }
+// 
+			// var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
+// 
+			// var countedMcOptions = [[question.questionText, "Number of answers"]]
+			// if (question.questionType === "Multiple choice") {
+				// var lim = stats.countedMcOptions.length < question.answeroptions.length ? stats.countedMcOptions.length : question.answeroptions.length;
+				// for (var ans = 0; ans < lim; ans++) {
+					// //console.log("###########");
+					// //This is what went wrong during the M4 demo
+					// //The check below can prevent the same mistake
+					// //But I don't know how it affects the expected result
+					// if (question.answeroptions[ans])
+						// countedMcOptions.push([question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
+				// }
+			// }
+// 
+			// var equalAnswers = [['Different answers', 'Number of answers']]
+			// for (ans in stats.equalAnswers) {
+				// //console.log("###########");
+				// equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
+			// }
+			// callback(null, {
+				// correct : correct,
+				// countedMcOptions : countedMcOptions,
+				// equalAnswers : equalAnswers
+			// });
+		// });
+	// });
+// }
+// function getQuestionStats(questionId, sessionId, callback) {
+	// var answerDB = db.model('Answer', schemas.answerSchema);
+	// var questionDB = db.model('Question', schemas.questionSchema);
+	// var optionDB = db.model('Option', schemas.optionSchema);
+	// var sessionDB = db.model('Session', schemas.sessionSchema);
+// 
+	// //console.log("------------" + sessionId)
+// 
+	// questionDB.findById(questionId).populate('answeroptions').exec(function(err, question) {
+		// sessionDB.findById(sessionId, function(err, session) {
+			// answerDB.findOne({
+				// _id : {
+					// $in : session.answers
+				// },
+				// question : questionId
+			// }, function(err, answer) {
+				// if (err) {
+					// callback(err);
+					// return;
+				// }
+				// if (!answer) {
+					// callback(null, null);
+					// return;
+				// }
+				// // console.log("#### Answers")
+				// // console.log(answer);
+				// // console.log(answer.answers);
+				// // console.log("--- Answers")
+				// var result = {
+					// questionText : "",
+					// questionOptions : ["Lorem", "Ipsum", "Dolor", "Sit amet"],
+					// questionType : "Multiple choice",
+					// total : answer.answers.length,
+					// correct : 1,
+					// wrong : 1,
+					// equalAnswers : null,
+					// countedMcOptions : null,
+				// }
+// 
+				// //Set question data
+				// result.questionText = question.questionText;
+				// result.questionType = question.questionType;
+				// result.questionOptions = question.answeroptions;
+// 
+				// //Get array of correct answers
+				// var correctWrong = getCorrectAnswers(answer.answers, question.answeroptions);
+				// result.correct = correctWrong[0];
+				// result.wrong = correctWrong[1];
+// 
+				// // Counting equal answers
+				// result.equalAnswers = getEqualAnswers(answer.answers);
+// 
+				// // Counting selectet options for multiple choice
+				// if (question.questionType === "Multiple choice") {
+					// result.countedMcOptions = getCountedMCOptions(answer.answers, question);
+				// }
+// 
+				// console.log(result);
+				// callback(null, result);
+			// });
+		// });
+	// });
+// 
+// }
 
-	questionDB.findById(req.params.id, function(err, question) {
-		optionDB.find({
-			_id : {
-				$in : question.answeroptions
-			}
-		}, function(err, options) {
-			if (err)
-				throw err;
+// function getNumberOfAnswers(questionId) {
+	// answerDB.findOne({
+		// question : questionId
+	// }, function(err, answer) {
+		// return answer.answers.length();
+// 
+	// });
+// }
 
-			getQuestionStats(req.params.id, function(err, stats) {
+// function getCorrectAnswers(answers, answerOptions) {
+	// var correctAnswer = new Array();
+	// for (var ans = 0; ans < answerOptions.length; ans++) {
+		// if (answerOptions[ans].correct == true) {
+			// correctAnswer.push(true);
+		// } else if (answerOptions[ans].correct == false) {
+			// correctAnswer.push(false);
+		// } else if (answerOptions[ans].correct !== undefined) {
+			// correctAnswer.push(answerOptions[ans].correct);
+			// //console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
+		// }
+// 
+	// }
+	// console.log("Correct ans " + correctAnswer);
+// 
+	// //Check for correct answers
+	// var correct = 0;
+	// var wrong = 0;
+	// for (var i = 0; i < answers.length; i++) {
+		// //console.log(answers[i]);
+		// console.log(answers[i].content + " " + correctAnswer[i] + " " + arrayEqual(answers[i].content, correctAnswer))
+		// if (arrayEqual(answers[i].content, correctAnswer)) {
+			// correct++;
+		// } else {
+			// wrong++;
+		// }
+	// }
+	// return [correct, wrong];
+// }
+// 
+// function getEqualAnswers(answers) {
+	// var equalAnswers = new Array();
+// 
+	// for (var i = 0; i < answers.length; i++) {
+		// var newAnswer = true;
+// 
+		// //Chack all already grouped equal answers
+		// for (exAns in equalAnswers) {
+			// //Anwer already exists
+			// if (arrayEqual(answers[i].content, equalAnswers[exAns].ansContent)) {
+				// equalAnswers[exAns].count++;
+				// newAnswer = false;
+			// }
+// 
+		// }
+		// if (newAnswer) {
+			// equalAnswers.push({
+				// ansContent : answers[i].content,
+				// count : 1
+			// })
+		// }
+	// }
+	// return equalAnswers;
+// }
 
-				var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
-
-				var countedMcOptions = [[question.questionText, "Number of answers"]]
-				for (ans in stats.equalAnswers) {
-					//console.log("###########");
-					countedMcOptions.push([options[ans].optionText, stats.countedMcOptions[ans]]);
-				}
-
-				var equalAnswers = [['Different answers', 'Number of answers']]
-				for (ans in stats.equalAnswers) {
-					//console.log("###########");
-					equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
-				}
-
-				//console.log(countedMcOptions);
-				res.send(200, {
-					correct : correct,
-					countedMcOptions : countedMcOptions,
-					equalAnswers : equalAnswers
-				});
-
-			});
-		});
-	});
-
-}
-
-exports.getStats = function(questionId, sessionId, callback) {
-	var Question = db.model('Question', schemas.questionSchema);
-	Question.findById(questionId).populate('answeroptions').exec(function(err, question) {
-		if (err)
-			callback(err);
-		getQuestionStats(questionId, sessionId, function(err, stats) {
-			if (err) {
-				callback(err);
-				return;
-			}
-			if (stats === null) {
-				callback(null, {
-					correct : {},
-					countedMcOptions : {},
-					equalAnswers : {}
-				});
-				return;
-			}
-
-			var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
-
-			var countedMcOptions = [[question.questionText, "Number of answers"]]
-			if (question.questionType === "Multiple choice") {
-				var lim = stats.countedMcOptions.length < question.answeroptions.length ? stats.countedMcOptions.length : question.answeroptions.length;
-				for (var ans = 0; ans < lim; ans++) {
-					//console.log("###########");
-					//This is what went wrong during the M4 demo
-					//The check below can prevent the same mistake
-					//But I don't know how it affects the expected result
-					if (question.answeroptions[ans])
-						countedMcOptions.push([question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
-				}
-			}
-
-			var equalAnswers = [['Different answers', 'Number of answers']]
-			for (ans in stats.equalAnswers) {
-				//console.log("###########");
-				equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
-			}
-			callback(null, {
-				correct : correct,
-				countedMcOptions : countedMcOptions,
-				equalAnswers : equalAnswers
-			});
-		});
-	});
-}
-function getQuestionStats(questionId, sessionId, callback) {
-	var answerDB = db.model('Answer', schemas.answerSchema);
-	var questionDB = db.model('Question', schemas.questionSchema);
-	var optionDB = db.model('Option', schemas.optionSchema);
-	var sessionDB = db.model('Session', schemas.sessionSchema);
-
-	//console.log("------------" + sessionId)
-
-	questionDB.findById(questionId).populate('answeroptions').exec(function(err, question) {
-		sessionDB.findById(sessionId, function(err, session) {
-			answerDB.findOne({
-				_id : {
-					$in : session.answers
-				},
-				question : questionId
-			}, function(err, answer) {
-				if (err) {
-					callback(err);
-					return;
-				}
-				if (!answer) {
-					callback(null, null);
-					return;
-				}
-				// console.log("#### Answers")
-				// console.log(answer);
-				// console.log(answer.answers);
-				// console.log("--- Answers")
-				var result = {
-					questionText : "",
-					questionOptions : ["Lorem", "Ipsum", "Dolor", "Sit amet"],
-					questionType : "Multiple choice",
-					total : answer.answers.length,
-					correct : 1,
-					wrong : 1,
-					equalAnswers : null,
-					countedMcOptions : null,
-				}
-
-				//Set question data
-				result.questionText = question.questionText;
-				result.questionType = question.questionType;
-				result.questionOptions = question.answeroptions;
-
-				//Get array of correct answers
-				var correctWrong = getCorrectAnswers(answer.answers, question.answeroptions);
-				result.correct = correctWrong[0];
-				result.wrong = correctWrong[1];
-
-				// Counting equal answers
-				result.equalAnswers = getEqualAnswers(answer.answers);
-
-				// Counting selectet options for multiple choice
-				if (question.questionType === "Multiple choice") {
-					result.countedMcOptions = getCountedMCOptions(answer.answers, question);
-				}
-
-				console.log(result);
-				callback(null, result);
-			});
-		});
-	});
-
-}
-
-function getNumberOfAnswers(questionId) {
-	answerDB.findOne({
-		question : questionId
-	}, function(err, answer) {
-		return answer.answers.length();
-
-	});
-}
-
-function getCorrectAnswers(answers, answerOptions) {
-	var correctAnswer = new Array();
-	for (var ans = 0; ans < answerOptions.length; ans++) {
-		if (answerOptions[ans].correct == true) {
-			correctAnswer.push(true);
-		} else if (answerOptions[ans].correct == false) {
-			correctAnswer.push(false);
-		} else if (answerOptions[ans].correct !== undefined) {
-			correctAnswer.push(answerOptions[ans].correct);
-			//console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
-		}
-
-	}
-	console.log("Correct ans " + correctAnswer);
-
-	//Check for correct answers
-	var correct = 0;
-	var wrong = 0;
-	for (var i = 0; i < answers.length; i++) {
-		//console.log(answers[i]);
-		console.log(answers[i].content + " " + correctAnswer[i] + " " + arrayEqual(answers[i].content, correctAnswer))
-		if (arrayEqual(answers[i].content, correctAnswer)) {
-			correct++;
-		} else {
-			wrong++;
-		}
-	}
-	return [correct, wrong];
-}
-
-function getEqualAnswers(answers) {
-	var equalAnswers = new Array();
-
-	for (var i = 0; i < answers.length; i++) {
-		var newAnswer = true;
-
-		//Chack all already grouped equal answers
-		for (exAns in equalAnswers) {
-			//Anwer already exists
-			if (arrayEqual(answers[i].content, equalAnswers[exAns].ansContent)) {
-				equalAnswers[exAns].count++;
-				newAnswer = false;
-			}
-
-		}
-		if (newAnswer) {
-			equalAnswers.push({
-				ansContent : answers[i].content,
-				count : 1
-			})
-		}
-	}
-	return equalAnswers;
-}
-
-function getCountedMCOptions(answers, question) {
-	var countetMcOptions = new Array();
-	if (question.questionType == "Multiple choice") {
-		//init array with 0
-		for (var i = 0; i < answers[0].content.length; i++) {
-			countetMcOptions.push(0);
-		}
-
-		for (var j = 0; j < answers.length; j++) {
-
-			for (var k = 0; k < answers[j].content.length; k++) {
-				if (answers[j].content[k] == true)
-					countetMcOptions[k]++;
-			}
-
-		}
-	} else {
-		return null;
-	}
-	return countetMcOptions;
-}
-
-function arrayEqual(array1, array2) {
-	if (array1.length !== array2.length) {
-		console.log(array1.length + " " + array2.length)
-		console.log("wrong length")
-		return false;
-	} else {
-		for (var i = 0; i < array1.length; i++) {
-			if (array1[i].toString() != array2[i].toString()) {
-				console.log( typeof (array1[i]) + " - " + typeof (array2[i]))
-				return false;
-			}
-		}
-	}
-	return true;
-}
+// function getCountedMCOptions(answers, question) {
+	// var countetMcOptions = new Array();
+	// if (question.questionType == "Multiple choice") {
+		// //init array with 0
+		// for (var i = 0; i < answers[0].content.length; i++) {
+			// countetMcOptions.push(0);
+		// }
+// 
+		// for (var j = 0; j < answers.length; j++) {
+// 
+			// for (var k = 0; k < answers[j].content.length; k++) {
+				// if (answers[j].content[k] == true)
+					// countetMcOptions[k]++;
+			// }
+// 
+		// }
+	// } else {
+		// return null;
+	// }
+	// return countetMcOptions;
+// }
+// 
+// function arrayEqual(array1, array2) {
+	// if (array1.length !== array2.length) {
+		// console.log(array1.length + " " + array2.length)
+		// console.log("wrong length")
+		// return false;
+	// } else {
+		// for (var i = 0; i < array1.length; i++) {
+			// if (array1[i].toString() != array2[i].toString()) {
+				// console.log( typeof (array1[i]) + " - " + typeof (array2[i]))
+				// return false;
+			// }
+		// }
+	// }
+	// return true;
+// }
 
 exports.settings = function(req, res){
 	var users = db.model('User', schemas.userSchema);

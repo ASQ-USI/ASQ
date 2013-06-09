@@ -151,10 +151,10 @@ app.configure('development', function(){
  });
 
 /** Initialize a new session with slides matching the id */
-app.get('/user/:username/start/:id', ensureAuthenticated, routes.slides.start);
+app.get('/user/start/:id', ensureAuthenticated, routes.slides.start);
 
 /** Stop a user current session **/
-app.get('/user/:username/stop', ensureAuthenticated, routes.slides.stop);
+app.get('/user/stop', ensureAuthenticated, routes.slides.stop);
 
 /** Edit user account settings **/
 app.get('/user/settings', ensureAuthenticated, registration.settings);
@@ -200,33 +200,33 @@ app.get('/user/:username/', ensureAuthenticated, registration.renderuser);
 //Serves thumbnails 
 app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
 
-app.get('/user/:username/edit/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/"+req.params.username+"/edit")
+app.get('/user/edit/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/edit")
 });
 
-app.get('/user/:username/edithtml/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/"+req.params.username+"/edit")
+app.get('/user/edithtml/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/edit")
 });
 
-app.get('/user/:username/editstyle/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/"+req.params.username+"/edit")
+app.get('/user/editstyle/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/edit")
 });
-app.get('/user/:username/editquestions/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/"+req.params.username+"/edit")
+app.get('/user/editquestions/', ensureAuthenticated, function (req,res) {
+    res.redirect("/user/edit")
 });
 
 
-app.get('/user/:username/edit', ensureAuthenticated, editFunctions.editslideshow);
+app.get('/user/edit/:id', ensureAuthenticated, editFunctions.editslideshow);
 
-app.get('/user/:username/editquestions', ensureAuthenticated, editFunctions.editquestions);
+app.get('/user/editquestions/:id', ensureAuthenticated, editFunctions.editquestions);
 
-app.post('/user/:username/edit', ensureAuthenticated, editFunctions.addquestion);
+//app.post('/user/edit/:id', ensureAuthenticated, editFunctions.addquestion);
 
-app.post('/user/:username/editquestions', ensureAuthenticated, editFunctions.addquestion);
+//app.post('/user/editquestions/:id', ensureAuthenticated, editFunctions.addquestion);
 
-app.get('/user/:username/delete', ensureAuthenticated, editFunctions.deletequestion);
+//app.get('/user/delete/:id', ensureAuthenticated, editFunctions.deletequestion);
 
-app.get('/user/:username/deleteslideshow', ensureAuthenticated, editFunctions.deleteslideshow);
+app.get('/user/deleteslideshow:id', ensureAuthenticated, editFunctions.deleteslideshow);
 
 //app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 
@@ -242,13 +242,13 @@ app.get('/logout/', function(req, res){
 //Serving static files
 //app.get('/images/:path/', registration.get);
 
-app.get('/user/statistics', ensureAuthenticated,  statistics.getSessionStats);
+app.get('/user/statistics/:id', ensureAuthenticated,  statistics.getSessionStats);
 
-app.get('/user/:username/edithtml', ensureAuthenticated, editFunctions.edithtml);
-app.get('/user/:username/editstyle', ensureAuthenticated, editFunctions.editstyle);
-app.post('/user/:username/edithtml', ensureAuthenticated, editFunctions.savehtml);
-app.post('/user/:username/editstyle', ensureAuthenticated, editFunctions.savestyle);
-app.post('/user/:username/savedetails', ensureAuthenticated, editFunctions.saveDetails);
+app.get('/user/edithtml/:id', ensureAuthenticated, editFunctions.edithtml);
+app.get('/user/editstyle/:id', ensureAuthenticated, editFunctions.editstyle);
+app.post('/user/edithtml/:id', ensureAuthenticated, editFunctions.savehtml);
+app.post('/user/editstyle/:id', ensureAuthenticated, editFunctions.savestyle);
+app.post('/user/savedetails/:id', ensureAuthenticated, editFunctions.saveDetails);
 
 //Render presentations in iframe for thumbnails
 app.get('/slidesInFrame/:id/', function(req,res){

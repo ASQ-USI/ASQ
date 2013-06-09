@@ -1,33 +1,35 @@
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-            
-          <a class="brand pull-right" href="/user"><img src="/img/ASQBlack.svg" height="34px" /></a>
-            
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li><a href="/user">My Presentations</a></li>
-              <!-- <li><a href="/questions">My Questions</a></li> -->
-              <li><a href="/user/upload">Upload Presentation</a></li>
-              
-            </ul>
-            <ul class="nav pull-right">
-                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome! <b class="caret"></b></a>
-                    <ul class="dropdown-menu pull-right">
-                        <li><a href="/user/settings">Settings</a></li>
-                        <li class="divider"></li>
-                        <li><a href="/logout/">Log out</a></li>
-                    </ul>
-                </li>
-            </ul>
-          </div>
-        </div>
+      <a class="brand pull-right" href="/user"><img src="/img/ASQBlack.svg" height="34px" /></a>
+
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li>
+            <a href="/user">My Presentations</a>
+          </li>
+          <!-- <li><a href="/questions">My Questions</a></li> -->
+          <li>
+            <a href="/user/upload">Upload Presentation</a>
+          </li>
+
+        </ul>
+        <ul class="nav pull-right">
+          <li>
+            <a href="/user/settings">Settings</a>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <a href="/logout/">Log out</a>
+          </li>
+        </ul>
       </div>
     </div>
+  </div>
+</div>

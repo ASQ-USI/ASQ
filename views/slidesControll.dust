@@ -44,7 +44,7 @@
 
         <div class="row" id="buttons">
           <div class="span4">
-            <a href="/user/statistics?id={slideshow._id}" class="btn btn-small btn-inverse">Show statistics</a>
+            <a href="/user/statistics/{slideshow._id}" class="btn btn-small btn-inverse">Show statistics</a>
             <a href="/admin" class="btn btn-small btn-inverse">Go to presentation view</a>
           </div>
           <div class="span2">
@@ -115,7 +115,6 @@
 			connect( "{host}" , {port} , "{id}", "control");
 			impress().start();}
     </script>
-    <script src="/js/jquery.js"></script>
     <script src="/js/admincontroll.js"></script>
     <script src="/js/jquery.scrollTo.js"></script>
   </body>

@@ -21,7 +21,7 @@
 	  		</div>
 			
 			<!---   Seperating Headline   --->       
-			<form action="savedetails?id={slideshow._id}" method="post">
+			<form action="/user/savedetails/{slideshow._id}" method="post">
 			  <fieldset>
 			    <label>Name of presentation</label>
 			    <input type="text" name="presentationName" value="{slideshow.title}">
@@ -67,25 +67,5 @@
 
 		 
 		 <script src="/js/bootstrap.js"></script>
-		 <script>
-		 $('.edit').each(function() {
-			$(this).attr('href', $(this).attr('href')+window.location.search);	
-		 });
-		 $('#more').popover({title: "All questions for slide 3"});
-		 $('#more').popover('show');
-		 </script>
-		 
-		 <script>
-		 	var questions = [ 
-		 		{#questions}
-		 		{ afterslide: "{afterslide}" ,
-		 		 text: "{questionText}" },
-		 		{/questions} 
-		 	];
-		 	for(var i = 0; i < questions.length; i++){
-		 		console.log("haha");
-		 		$("." + questions[i].afterslide + " > .labelContainer > .labels").append('<span class="label"><i class="icon-question-sign icon-white"></i> '+questions[i].text+'</span>');
-		 	}
-		 </script>
   </body>
 </html>

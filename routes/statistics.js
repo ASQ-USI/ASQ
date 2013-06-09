@@ -474,14 +474,14 @@ exports.getSessionStats = function(req, res) {
 	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
 	var questionDB = db.model('Question', schemas.questionSchema);
 
-	slideshowDB.findById(req.query.id, function(err, slideshow) {
+	slideshowDB.findById(req.params.id, function(err, slideshow) {
 		if (err) {
 			console.log(err);
 		} else {
 
 			//Find all sessions for this slideshow
 			sessionDB.find({
-				slides : req.query.id
+				slides : req.params.id
 			}, function(err, allSessions) {
 
 				//Get dates of all sessions
@@ -521,7 +521,7 @@ exports.getSessionStats = function(req, res) {
 				//If session is slected load data
 				if (req.query.session != null) {
 					//find questions for slideshow
-					slideshowDB.findById(req.query.id, function(err, slideshow) {
+					slideshowDB.findById(req.params.id, function(err, slideshow) {
 						//repeat for every question in slideshow
 						for (var quest = 0; quest < question.length; quest++) {
 							getStats(questionId, req.query.session, function(err, stats) {
