@@ -32,7 +32,7 @@ else {
 }
 
 if ( !window.location.search.match(/preview/) ) {
-	iAPI.showMenu();
+	//iAPI.showMenu();
 }
 	
 

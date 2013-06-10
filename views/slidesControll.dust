@@ -45,7 +45,7 @@
         <div class="row" id="buttons">
           <div class="span4">
             <a href="/user/statistics/{slideshow._id}" class="btn btn-small btn-inverse">Show statistics</a>
-            <a href="/admin" class="btn btn-small btn-inverse">Go to presentation view</a>
+            <a href="/admin" class="btn btn-small btn-inverse hidden-phone">Go to presentation view</a>
           </div>
           <div class="span2">
             <button class="btn btn-info" onclick="impress().prev()">

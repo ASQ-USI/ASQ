@@ -331,7 +331,7 @@ function drawChart() {
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
 	var questionId = $(this).parents().find(".stats").data('target-assessment-id');
-
+	console.log("huzza");
 	for (var key in statsTypes){
 		requestStats(questionId , statsTypes[key])
 	}
@@ -340,6 +340,6 @@ $('a[data-toggle="tab"]').on('shown', function(e) {
 function requestStats(questionId, obj){
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
 		obj.data[questionId] = google.visualization.arrayToDataTable(data);
-		obj.chart[questionId].draw(obj.data[questionId], obj.Options);
+		obj.chart[questionId].draw(obj.data[questionId], obj.options);
 	});
 }

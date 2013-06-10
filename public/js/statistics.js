@@ -90,6 +90,6 @@ function requestStats(questionId, obj) {
 	};
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric + session, function(data) {
 		obj.data[questionId] = google.visualization.arrayToDataTable(data);
-		obj.chart[questionId].draw(obj.data[questionId], obj.Options);
+		obj.chart[questionId].draw(obj.data[questionId], obj.options);
 	});
 }

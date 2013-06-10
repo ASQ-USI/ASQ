@@ -1,0 +1,559 @@
+<html lang="en" style="height: 100%;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Introduction</title>
+
+    <meta name="description" content="Introduction to Software Architecture and Design">
+    <meta name="author" content="Cesare Pautasso">
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/font.css" rel="stylesheet">
+    <link href="css/default.css" rel="stylesheet">
+    <link href="css/builder.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <script src="js/jquery.1.7.1.min.js"></script>
+    <script src="js/img-svg.js"></script>
+  </head>
+
+  <body>
+    <div class="fallback-message">
+      <p>
+        Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.
+      </p>
+      <p>
+        For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.
+      </p>
+    </div>
+
+    <div id="canvas"></div>
+
+    <div id="impress" data-transition-duration="500">
+    	<section class="step" id="slide01" data-x="0" data-y="0">
+        <h1>This is a sample ASQ presentation</h1>
+        <h3>Here goes a subheadline</h3>
+        <hr />
+        <article class="asq-welcome-screen"></article>
+      </section>
+
+      <div class="step" id="slide02" data-x="1500" data-y="0" data-z="500">
+        <h1>A sample presentation</h1>
+        <p>
+          This is a sample presentation which demonstates features of ASQ.
+        </p>
+        <p>
+          It contains the following questions:
+        </p>
+        <ul>
+          <li>
+            A multiple choice question with one correct answer.
+          </li>
+          <li>
+            A multiple choice question with multiple correct answers.
+          </li>
+          <li>
+            One slide with multipe multiple choice questions.
+          </li>
+          <li>
+            A text input question
+          </li>
+        </ul>
+      </div>
+
+      <section class="step" id="slide03" data-x="3000" data-y="0" data-z="1000">
+        <article class="assessment multi-choice choose-1" id="q-1">
+          <h3 class="stem">Lugano is located in...</h3>
+          <ol >
+            <li class="option" data-correct="true">
+              Switzerland
+            </li>
+            <li class="option">
+              Italy
+            </li>
+            <li class="option">
+              France
+            </li>
+            <li class="option">
+              Germany
+            </li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="step" id="slide04" data-x="3750" data-y="0" data-z="2000" data-scale="1.0" data-rotate="0">
+        <article class="stats" data-target-assessment="q-1" id="stats-q-1"></article>
+      </section>
+
+      <section class="step" id="slide05" data-x="4500" data-y="0" data-z="1000">
+        <article class="assessment multi-choice choose-0-n custom-1" id="q-2">
+          <h3 class="stem">Which are the official languages of Switzerland?</h3>
+          <p class="muted">
+            Please select all correct options. It is possible that no option is correct.
+          </p>
+          <ol class="upper-alpha">
+            <li class="option" data-correct="true">
+              German
+            </li>
+            <li class="option" data-correct="true">
+              French
+            </li>
+            <li class="option" data-correct="true">
+              Italian
+            </li>
+            <li class="option">
+              English
+            </li>
+            <li class="option" data-correct="true">
+              Rumantsch
+            </li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="step" id="slide06" data-x="5250" data-y="0" data-z="2000" data-scale="1.0" data-rotate="0">
+        <article class="stats" data-target-assessment="q-2" id="stats-q-2"></article>
+      </section>
+
+      <section class="step" id="slide07" data-x="6000" data-y="0" data-z="1000" >
+        <h5>Please select all correct answers!</h5>
+        <p class="muted">
+          Please select all correct options. It is possible that no option is correct.
+        </p>
+        <article class="assessment multi-choice choose-0-n pull-left" style="width: 430px" id="q-3">
+          <h3 class="stem"><img width="200" alt="target1" src="img/rect.png"></h3>
+          <ol class="smaller">
+            <li class="option" data-correct="true">
+              This figure is a square.
+            </li>
+            <li class="option">
+              This figure is a circle.
+            </li>
+            <li class="option" data-correct="true">
+              This figure is symetric.
+            </li>
+            <li class="option" data-correct="true">
+              This figure has four corners.
+            </li>
+          </ol>
+        </article>
+
+        <article class="assessment multi-choice choose-0-n pull-right" style="width: 430px" id="q-6">
+          <h3 class="stem"><img width="200" alt="target1" src="img/shape.png"></h3>
+          <ol class="smaller">
+            <li class="option">
+              This figure is a square.
+            </li>
+            <li class="option">
+              This figure is a circle.
+            </li>
+            <li class="option">
+              This figure is symetric.
+            </li>
+            <li class="option">
+              This figure has four corners.
+            </li>
+          </ol>
+        </article>
+
+      </section>
+
+      <section class="step" id="slide08" data-x="6750" data-y="0" data-z="2000" data-scale="1.0" data-rotate="0">
+        <article class="stats" data-target-assessment="q-3" id="stats-q-3"></article>
+      </section>
+
+      <section class="step" id="slide09" data-x="7500" data-y="0" data-z="1000">
+        <article class="assessment text-input custom-1" id="q-7">
+          <h3 class="stem" data-correct-answer="3">What is the square root of 9?</h3>
+        </article>
+      </section>
+
+      <section class="step" id="slide10" data-x="8250" data-y="0" data-z="2000" data-scale="1.0" data-rotate="0">
+        <article class="stats" data-target-assessment="q-7" id="stats-q-7"></article>
+      </section>
+    	
+
+
+      <div id="sarch" class="step very bigtitle" data-x="1000" data-y="0" data-scale="0.33" data-rotate="0">
+        <h1><span class="substep exit">Software</span> Architecture</h1>
+      </div>
+
+      <div id="arch-f" class="step very bigtitle flash" data-x="1500" data-y="0" data-scale="0.5" data-rotate="0">
+        <h1>Firmitatis</h1>
+      </div>
+      <div id="arch-v" class="step very bigtitle flash" data-x="1500" data-y="50" data-scale="0.5" data-rotate="0">
+        <h1>Venustatis</h1>
+      </div>
+      <div id="arch-u" class="step very bigtitle flash" data-x="1500" data-y="70" data-scale="0.5" data-rotate="0">
+        <h1>Utilitatis</h1>
+      </div>
+
+      <div id="dearch" class="step" data-x="2500" data-y="0" data-scale="0.5" data-rotate="0">
+        <h3>De Architectura</h3>
+        <ul>
+          <li>
+            <b>Durability</b> the building should last for a long time without falling down on the people inside it.
+          </li>
+          <li>
+            <b>Utility</b> the building should be useful for the people living in it
+          </li>
+          <li>
+            <b>Beauty</b> the building should look good and raise the spirits of its inhabitants
+          </li>
+        </ul>
+        <p class="credit">
+          Vitruvio, 23BC
+        </p>
+      </div>
+
+      <div id="cage" class="step" data-x="2550" data-y="0" data-scale="0.5" data-rotate="0"></div>
+
+      <div id="infoQuest" class="step" data-x="2500" data-y="-500" data-scale="0.2" data-rotate="0">
+        <article class="assessment auto multi-choice choose-0-n" id="q-info">
+          <h3 class="stem">Did the architect of our informatics building a good job?</h3>
+            <ol>
+              <li>
+                Yes, this building is a good example how durability, utility and beaty can be combined.
+              </li>
+              <li>
+                It is really beautiful!
+              </li>
+              <li>
+               No windows? - I like not to be bothered with nature while studying!
+              </li>
+              <li>
+                No, the layout of this building is counterproductive.
+              </li>
+              <li>
+               When I look at this building my spirits are not raised.
+              </li>
+            </ol>
+        </article>
+      </div>
+      
+       <div id="infoAnswer" class="step" data-x="3000" data-y="-500" data-scale="0.2" data-rotate="0">
+        <article class="stats" data-target-assessment="q-info" id="s-info">
+          
+        </article>
+      </div>
+
+      <div id="cage" class="step" data-x="2550" data-y="0" data-scale="0.5" data-rotate="0"></div>
+
+      <div id="arch" class="step" data-x="1000" data-y="-1000" data-scale="0.75" data-rotate="0">
+        <h3>The Art and Science of Building</h3>
+        <ul>
+          <li>
+            Architects are not concerned with the creation of building technologies and materials—making glass with better thermal qualities or stronger concrete.
+          </li>
+          <li class="substep">
+            Architects are concerned with how building materials can be <b>put together</b> in desirable ways to achieve a building <b>suited to its purpose</b>.
+          </li>
+          <li class="substep">
+            The design process that assembles the parts into a useful, pleasing (hopefully) and cost-effective (sometime) whole that is called “architecture”.
+          </li>
+        </ul>
+      </div>
+
+      <div id="arch-q" class="step" data-x="2000" data-y="-1000" data-scale="0.75" data-rotate="0">
+        <p>
+          Architecting, the planning and building of structures, is as old as human societies – and as modern as the exploration of the solar system
+        </p>
+        <p class="credit">
+          Eberhardt Rechtin, 1991
+        </p>
+      </div>
+
+      <div id="forces" class="step" data-x="3000" data-y="-1000" data-scale="0.75" data-rotate="0">
+        <h2>Forces</h2>
+        <img src="img/arch.svg" class="svg"/>
+      </div>
+
+      <div id="when" class="step bigtitle" data-x="0" data-y="-1000" data-scale="0.75" data-rotate="0">
+        <h1>When do you need an architect?</h1>
+      </div>
+
+      <div id="w-small" class="step" data-x="-779.5" data-y="-1488" data-scale="0.25" data-rotate="0">
+        <h2>Small</h2>
+        <img src="img/a-doghouse-plan.png" style="float:right" width="40%">
+        <p>
+          One Person can build it
+        </p>
+        <ul>
+          <li>
+            Minimal planning
+          </li>
+          <li>
+            Basic tools
+          </li>
+          <li>
+            Simple process
+          </li>
+        </ul>
+
+      </div>
+
+      <div id="w-medium" class="step" data-x="-466" data-y="-1498" data-scale="0.25" data-rotate="0">
+        <h2>Medium</h2>
+        <p>
+          An experienced team can build it
+        </p>
+        <ul>
+          <li>
+            Modeling plans
+          </li>
+          <li>
+            Power tools
+          </li>
+          <li>
+            Well-defined process
+          </li>
+        </ul>
+      </div>
+
+      <div id="w-large" class="step" data-x="-262.5" data-y="-1523" data-scale="0.25" data-rotate="0">
+        <h2>Large</h2>
+        <p>
+          Do not try this without an architect
+        </p>
+      </div>
+
+      <div id="w-ularge" class="step bigtitle" data-x="228" data-y="-1543" data-scale="0.5" data-rotate="0">
+        <h1>Ultra-Large</h1>
+        <p>
+          Was this designed by an architect?
+        </p>
+      </div>
+
+      <div id="codecity" class="step bigtitle" data-x="693" data-y="-1523" data-scale="0.25" data-rotate="0">
+        <p>
+          CodeCity, Richard Wettel
+        </p>
+      </div>
+
+      <div id="large" class="step flash" data-x="0" data-y="-2000" data-scale="0.5" data-rotate="0">
+        <h2>How Large?</h2>
+        <p>
+          Always choose the appropriate tools for the size of the project you are working on
+        </p>
+        <div style="text-align:center">
+          <img src="img/a-doghouse.png" style="vertical-align: baseline; width:25%"><img src="img/a-dubai.png" style="width:40%; padding-left:128px">
+        </div>
+      </div>
+
+      <div id="large2" class="step flash" data-x="0" data-y="-2000" data-scale="0.5" data-rotate="0">
+        <h2>How Large?</h2>
+        <ul>
+          <li>
+            How much <b>time to build</b> it?
+          </li>
+          <li>
+            <b>How many people</b> in the project?
+          </li>
+          <li>
+            How much did it <b>cost?</b>
+          </li>
+        </ul>
+        <p>
+          Not easy to measure software size: LOC, GB, $
+        </p>
+      </div>
+
+      <div id="large-ex" class="step flash" data-x="0" data-y="-2000" data-scale="0.5" data-rotate="0">
+        <h2>How Large?</h2>
+        <table style="width:50%">
+          <tbody>
+            <tr>
+              <td></td><td>MLOC</td>
+            </tr>
+            <tr>
+              <td>OS/X 10.4</td><td>86</td>
+            </tr>
+            <tr>
+              <td>Windows Vista</td><td>50</td>
+            </tr>
+            <tr>
+              <td>Windows XP</td><td>40</td>
+            </tr>
+            <tr>
+              <td>Debian 4.0</td><td>283</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="swarch" class="step" data-x="-1225" data-y="0" data-scale="0.75" data-rotate="0">
+        <h3>Software Architecture</h3>
+        <img src="img/arch.png" style="float:right; width:40%">
+        <p>
+          As the size and complexity of a software system increase, the <b>design decisions</b> and the <b>global structure</b> of a system become more important than
+          the selection of specific <em>algorithms</em> and <em>data structures</em>.
+        </p>
+      </div>
+
+      <div id="swarch" class="step" data-x="-2225" data-y="0" data-scale="0.75" data-rotate="0">
+        <h3>Context</h3>
+        <img src="img/context.svg" class="svg">
+      </div>
+
+      <div id="why" class="step flash bigtitle" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h1>Why Software Architecture?</h1>
+      </div>
+
+      <div id="why-c" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Hiding Complexity</h3>
+        <img src="img/complexity.png" style="width:90%">
+      </div>
+
+      <div id="why-a" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Abstraction</h3>
+        <img src="img/maps.png" style="width:100%">
+        <p>
+          The difficult part is to know which details to leave out and which should be emphasized
+        </p>
+      </div>
+
+      <div id="why-c" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Communication</h3>
+        <img src="img/arch-comm.svg" class="svg"/>
+      </div>
+
+      <div id="why-r" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Representation</h3>
+      </div>
+
+      <div id="why-v" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Visualization</h3>
+      </div>
+
+      <div id="why-v2" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Visualization</h3>
+        <img src="img/viz-fb.svg" style="width:100%" class="svg">
+      </div>
+
+      <div id="why-q" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Quality</h3>
+        <img src="img/q.svg" style="width:100%" class="svg">
+      </div>
+
+      <div id="why-e" class="step flash" data-x="0" data-y="1000" data-scale="0.5" data-rotate="0">
+        <h3>Evolution</h3>
+        <p class="credit">
+          Stewart&nbsp;Brands
+        </p>
+        <img src="img/a-evolution.png" style="width:90%; float:left">
+      </div>
+
+      <div id="why2" class="step" data-x="-1225" data-y="1000" data-scale="0.75" data-rotate="0">
+        <h3>Why Software Architecture?</h3>
+        <ol>
+          <li>
+            Manage complexity through abstraction
+          </li>
+          <li>
+            Communicate, remember and share global design decisions among the team
+          </li>
+          <li>
+            Visualize and represent relevant aspects (structure, behavior, deployment, …) of a software system
+          </li>
+          <li>
+            Understand, predict and control how the design impacts quality attributes of a system
+          </li>
+          <li>
+            Define a flexible foundation for the maintenance and future evolution of the system
+          </li>
+        </ol>
+      </div>
+
+      <div id="overview-t" class="step bigtitle" data-x="1000" data-y="1000" data-scale="1" data-rotate="0">
+        <h1>Course Overview</h1>
+      </div>
+
+      <div id="overview-c" class="step" data-x="1184" data-y="1325" data-scale="1" data-rotate="0">
+        <img src="img/overview.svg" style="width:100%" class="svg">
+      </div>
+
+      <div id="presentations" class="step" data-x="2084" data-y="1325" data-scale="0.5" data-rotate="0">
+        <h2>Final Presentation</h2>
+        <p>
+          The Architecture of Open Source Software Systems
+        </p>
+        <ol>
+          <li>
+            Everyone is assigned a different system
+          </li>
+          <li>
+            Gather information about it (starting from *)
+          </li>
+          <li>
+            Give a presentation about its architecture during the last week of the semester
+          </li>
+        </ol>
+        <p class="ref">
+          *Amy Brown and Greg Wilson (eds.) <a href="http://www.aosabook.org/">The Architecture of Open Source Applications</a>, 2012
+        </p>
+      </div>
+
+      <!--<div id="whiteboard" class="step" data-x="1184" data-y="1325" data-scale="1" data-rotate="0">
+      </div>-->
+
+      <div id="refs-text" class="step" data-x="-1000" data-y="1700" data-scale="0.5" data-rotate="0">
+        <h3>Textbook</h3>
+        <p>
+          Richard N. Taylor, Nenad Medvidovic, Eric M. Dashofy, Software&nbsp;Architecture: Foundations, Theory and Practice, John-Wiley, January 2009, ISBN 9780470167748
+        </p>
+      </div>
+
+      <div id="refs" class="step" data-x="0" data-y="1700" data-scale="0.5" data-rotate="0">
+        <h2>References</h2>
+        <ul class="small">
+          <li>
+            George Fairbanks, Just Enough Software Architecture: A Risk Driven Approach, M&amp;B 2010
+          </li>
+          <li>
+            Eberhardt Rechtin, Systems Architecting: Creating and Building Complex Systems, Prentice Hall 1991
+          </li>
+          <li>
+            Henry Petroski, Small Things Considered: Why There Is No Perfect Design, Vintage 2004
+          </li>
+          <li>
+            Ian Gordon, Essential Software Architecture, Springer 2004
+          </li>
+          <li>
+            Christopher Alexander, The Timeless Way of Building, Oxford University Press 1979
+          </li>
+          <li>
+            Stewart Brand, How Buildings Learn, Penguin 1987
+          </li>
+          <li>
+            Amy Brown and Greg Wilson (eds.) <a href="http://www.aosabook.org/">The Architecture of Open Source Applications</a>, 2012>
+          </li>
+        </ul>
+      </div>
+
+      <div id="overview" class="step" data-x="0" data-y="0" data-scale="5"></div>
+
+      <div class="hint">
+        <p>
+          Use a spacebar or arrow keys to navigate
+        </p>
+      </div>
+
+    </div>
+
+    <script src="js/impress.js"></script>
+    <script src="js/builder.js"></script>
+    <script src="js/canvas.js"></script>
+    <!--<script src="../js/console.js"></script>-->
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/main.js"></script>
+    <script src="http://www.nihilogic.dk/labs/canvas2image/canvas2image.js"></script>
+    <script src="js/html2canvas.js"></script>
+
+
+    </script>
+
+  </body>
+</html>

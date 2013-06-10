@@ -57,10 +57,46 @@ var connect = function(host, port, session, mode) {
 		});
 
 		socket.on('asq:stat', function(event) {
-			console.log(event)
+			//console.log(event)
+			for (var i = 0; i < event.questions.length; i++) {
+				var question = event.questions[i];
+				$this = $("[data-target-assessment-id='" + question._id + "'] .answersolutions");
+				$this.find(".feedback").remove();
+
+				//Search for answers for this question
+				var answerArray = $.grep(event.answers, function(e) {
+					return e.question == question._id;
+				});
+
+				if (answerArray.length == 1) {
+					if (answerArray[0].correctness == 100) {
+						$this.append('<p class="feedback"><strong>&#x2713;&nbsp; Your submission is correct!</strong></p>');
+					} else {
+						$this.append('<p class="feedback"><strong>&#10007;&nbsp; Your submission is wrong.</strong></p>');
+					}
+				}
+
+				if (answerArray.length == 1 && question.questionType == "multi-choice") {
+					$this.find("li").each(function(el) {
+						if (answerArray[0].submission[el]) {
+							$(this).find("input").attr("checked", "true");
+						} else {
+							$(this).find("input").removeAttr("checked");
+						}
+						if (answerArray[0].submission[el] == question.questionOptions[el].correct) {
+							$(this).find("input").before('<span class="feedback">&#x2713;&nbsp;</span>');
+						} else {
+							$(this).find("input").before('<span class="feedback">&#10007;&nbsp;</span>');
+						}
+					});
+				} else if (answerArray.length == 1 && question.questionType == "text-input") {
+					$this.append('<p class="feedback">Your submission: ' + answerArray[0].submission[0] + '<br/>Solution: ' + question.correctAnswer + '</p>');
+				} else {
+					$this.append('<p class="feedback">No Answer recived!</p>');
+				}
+			};
+
 		});
-
-
 
 	}).on('connect_failed', function(reason) {
 		console.error('unable to connect to namespace', reason);
@@ -126,64 +162,48 @@ var showAnswer = function(question) {
 	});
 	$('#question').modal('hide');
 }
-
 $(function() {
 
-	$(document).on("click", ".changeAnswer" ,function(event) {
+	$(document).on("click", ".changeAnswer", function(event) {
 		event.preventDefault();
-		var $this = $(this).parents("form"); 
-		
+		var $this = $(this).parents("form");
+
 		var questionId = $(this).parent().parent().find('input[type="hidden"][name="question-id"]').val();
 		var resubmitEvent = new CustomEvent('local:resubmit', {});
 		document.dispatchEvent(resubmitEvent);
-		
-		$this.children().css('opacity', '1')
-			.end()
-			.find('input')
-				.removeAttr('disabled')
-				.end()
-			.find('.changeAnswer')
-				.fadeOut(function(){
-					$(this).remove();
-					$this.find('button')
-						.removeAttr('disabled')
-						.fadeIn()
-				});		
+
+		$this.children().css('opacity', '1').end().find('input').removeAttr('disabled').end().find('.changeAnswer').fadeOut(function() {
+			$(this).remove();
+			$this.find('button').removeAttr('disabled').fadeIn()
+		});
 	});
 
 	// form submission events
 	$(document).on('submit', '.assessment form', function(event) {
 		event.preventDefault();
-		var $this = $(this); 
+		var $this = $(this);
 
 		var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
-		console.log("QuestionID= " +questionId);
+		console.log("QuestionID= " + questionId);
 
-		$this.children().css('opacity', '0.5')
-			.end()
-			.find('input')
-				.attr('disabled', 'true')
-				.end()
-			.find('button:not(.changeanswer .btn)')
-				.attr('disabled', 'true')
-				.fadeOut( function(){
-					$this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
-					$this.find('.changeAnswer').fadeIn();
-				});
+		$this.children().css('opacity', '0.5').end().find('input').attr('disabled', 'true').end().find('button:not(.changeanswer .btn)').attr('disabled', 'true').fadeOut(function() {
+			$this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
+			$this.find('.changeAnswer').fadeIn();
+		});
 
 		//get question id
 		var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
 
 		//aggregate answers
 		var answers = [];
-		$(this).find('input[type=checkbox], input[type=radio]').each(function(){
+		$(this).find('input[type=checkbox], input[type=radio]').each(function() {
 			answers.push($(this).is(":checked"));
 		})
 
-		$(this).find('input[type=text]').each(function(){
+		$(this).find('input[type=text]').each(function() {
 			answers.push($(this).val());
 		})
-		
+
 		socket.emit('asq:submit', {
 			session : session,
 			answers : answers,
@@ -193,29 +213,28 @@ $(function() {
 	})
 })
 
-
 google.load("visualization", "1", {
 	packages : ["corechart"]
 });
 
 google.setOnLoadCallback(drawChart);
 
-var statsTypes={
+var statsTypes = {
 
-	rightVsWrong: {
+	rightVsWrong : {
 		metric : "rightVsWrong",
 		data : [],
-		chart: [],
-		options: {
+		chart : [],
+		options : {
 			width : 800,
 		}
 	},
 
-	distinctOptions: {
+	distinctOptions : {
 		metric : "distinctOptions",
 		data : [],
-		chart: [],
-		options: {
+		chart : [],
+		options : {
 			title : 'How often was a group of options selected',
 			width : 800,
 			isStacked : true,
@@ -226,11 +245,11 @@ var statsTypes={
 		}
 	},
 
-	distinctAnswers: {
+	distinctAnswers : {
 		metric : "distinctAnswers",
 		data : [],
-		chart: [],
-		options: {
+		chart : [],
+		options : {
 			title : 'How often was an option selected',
 			isStacked : true,
 			width : 800,
@@ -255,14 +274,14 @@ function drawChart() {
 $('a[data-toggle="tab"]').on('shown', function(e) {
 	var questionId = $(this).parents().find(".stats").data('target-assessment-id');
 
-	for (var key in statsTypes){
-		requestStats(questionId , statsTypes[key])
+	for (var key in statsTypes) {
+		requestStats(questionId, statsTypes[key])
 	}
 });
 
-function requestStats(questionId, obj){
+function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
 		obj.data[questionId] = google.visualization.arrayToDataTable(data);
-		obj.chart[questionId].draw(obj.data[questionId], obj.Options);
+		obj.chart[questionId].draw(obj.data[questionId], obj.options);
 	});
 }

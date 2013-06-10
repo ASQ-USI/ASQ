@@ -37,6 +37,9 @@ function updateOrientation() {
 			case 180:
 				$(".controls").removeClass("hidden-phone");
 				$(".controlBottom").addClass("hidden-phone");
+				$(".controlBottom").css("top", "inherit");
+				$(".controlBottom").css("height", "100%");
+
 				$(".thisSlideFrame").addClass("hidden-phone");
 				break;
 
@@ -45,6 +48,8 @@ function updateOrientation() {
 			$(".thisSlideFrame").addClass("hidden-phone");
 				$(".controls").addClass("hidden-phone");
 				$(".controlBottom").removeClass("hidden-phone");
+				$(".controlBottom").css("top", "0");
+				$(".controlBottom").css("height", "270px");
 				break;
 		}
 	}else{}
