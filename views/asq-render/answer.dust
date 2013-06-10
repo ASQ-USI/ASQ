@@ -1,37 +1,49 @@
 {question.stem|s}
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#answersolutions-{statId}"  data-toggle="tab">Correct Answer</a></li>
-  <li><a href="#rvsw-{statId}" data-toggle="tab">Right vs. Wrong</a></li>
-  <li><a href="#mscstats-{statId}" data-toggle="tab">Multiple Choice Statistics</a></li>
-  <li><a href="#diffAns-{statId}" data-toggle="tab">Different answers</a></li>
+  <li class="active">
+    <a href="#answersolutions-{statId}"  data-toggle="tab">Correct Answer</a>
+  </li>
+  <li>
+    <a href="#rvsw-{statId}" data-toggle="tab">Right vs. Wrong</a>
+  </li>
+  <li>
+    <a href="#mscstats-{statId}" data-toggle="tab">Multiple Choice Statistics</a>
+  </li>
+  <li>
+    <a href="#diffAns-{statId}" data-toggle="tab">Different answers</a>
+  </li>
 </ul>
-     
+
 <div class="tab-content">
 
   <!--  Displays correct solution -->
-  <div class="tab-pane active" id='answersolutions-{statId}'>
-  	    {?question.correctAnswer}
-    <p>
-      Solution: {question.correctAnswer}
-    </p>
-    <br/>
+  <div class="tab-pane answersolutions active" id='answersolutions-{statId}'>
+    {?question.correctAnswer}
     {:else}
-    	{>"asq-render/questionList-stats.dust"/}
-    {/question.correctAnswer}                    
-  </div>    
-      
+      <ol>
+			  {#question.questionOptions formButtonType=question.formButtonType htmlId=question.htmlId}
+			    <li class="{classList}" >
+			      <label class="{formButtonType}">
+			        <input type="{formButtonType}" name="{htmlId}" value="{$idx}" disabled> {text|s}
+			      </label>
+			    </li>{~n}
+			  {/question.questionOptions}
+			</ol>
+    {/question.correctAnswer}
+  </div>
+
   <!-- Displays Pie-Chart Right vs. Wrong -->
   <div class="tab-pane" id="rvsw-{statId}">
     <div id="rvswChart" class="rvswChart" style="width: 100%; height: 500px;"></div>
   </div>
-      
+
   <!-- Display multiple choice stats -->
   <div class="tab-pane" id="mscstats-{statId}">
     <div id="mscstatChart" class="distinctAnswers" style="height:500px"></div>
   </div>
-  
+
   <!-- Display different aswers  -->
   <div class="tab-pane" id="diffAns-{statId}">
     <div id="diffAnsChart" class="distinctOptions" style="height:500px"></div>
   </div>
-</div>  
+</div>

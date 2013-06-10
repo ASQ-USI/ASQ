@@ -1,0 +1,41 @@
+
+.pull-left{
+	float: left;
+}
+.pull-right{
+	float: right;
+}
+
+.nav li{
+	font-size: 0.7em;
+}
+.nav a{
+	text-decoration: none;
+}
+.nav{
+	padding-left: 0;
+	margin-bottom: 0;
+}
+.tab-content{
+	padding-top: 0;
+	background-color: #ffffff;
+	border: 1px solid #ddd;
+	border-top: none;
+}
+
+#progressNum{
+	margin: 15px;
+}
+.connected-viewers-number{
+	font-size: 0.8em;
+	color: #666;
+}
+.asq-welcome-screen{
+	text-align: center;
+}
+.tab-pane{
+	overflow: hidden;
+}
+.tab-pane form, .tab-pane p{
+	padding: 20px;
+}
