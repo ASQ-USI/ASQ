@@ -240,15 +240,34 @@ h2{
     
   #buttons{
     text-align: center;
-    margin-top: 30px;
+    margin-top: 15px;
+    
     a{
       margin: 5px;
     }
     button{
       margin-top: 30px;
     }
-    #nextButton{
-    
+    .mobilePrev, .mobileNext{
+      width: 49%;
+      float: left;
+      height: 100px;
+      display: table;
+      margin-bottom: 20px;
+    }
+    .mobilePrev :hover, .mobileNext :hover{
+      background-color: rgba(100,100,200,0.5);
+    }
+    .mobilePrev{
+      border-right: 1px solid #000;
+    }
+    .mobileNext{
+      border-left: 1px solid #333;
+    }
+    .mobilePrev p, .mobileNext p{
+      display: table-cell;
+      vertical-align: middle;
+      text-align:center;
     }
   }
 }
@@ -270,12 +289,12 @@ h2{
   
   position: absolute;
   left: 0;
-  right:0;
+  right: 0;
   bottom: 0;
   table-layout: fixed;
   
   width: 100%;
- height: 270px;
+  height: 270px;
   display: table;
   
     #controlToggle{

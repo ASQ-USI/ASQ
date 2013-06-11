@@ -132,7 +132,7 @@ exports.getStats = function(req, res) {
 			$in : req.query.slideshow.split(",")
 		};
 	}
-	console.log("Search Object "+ searchObj);
+	console.log("Search Object " + searchObj);
 	console.log(searchObj);
 	//Search answerDB with search object
 	answerDB.find(searchObj, function(err, answers) {
@@ -491,7 +491,7 @@ exports.getSessionStats = function(req, res) {
 
 					sessionArray.push({
 						time : timeString,
-						sessionId: allSessions[i]._id
+						sessionId : allSessions[i]._id
 					});
 				}
 
@@ -502,17 +502,29 @@ exports.getSessionStats = function(req, res) {
 						if (question) {
 							questions.push({
 								text : question.stemText,
-								questionId : question._id, 
-								question: question
+								questionId : question._id,
+								question : question
 							});
 						}
 						//Render it after last question added!
 						if (questions.length == slideshow.questions.length) {
-							res.render('statistics', {
-								username : req.user.name,
-								session : sessionArray,
-								title : slideshow.title,
-								questions : questions
+							var userId = req.user._id;
+							sessionFromUserId(userId, function(err, session) {
+								if (err)
+									throw err;
+								if (!session.id) {
+									res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
+								} else {
+									res.render('statistics', {
+										username : req.user.name,
+										session : sessionArray,
+										title : slideshow.title,
+										questions : questions,
+										host : appHost,
+										port : app.get('port'),
+										id : session.id,
+									});
+								}
 							});
 						}
 					});
@@ -535,4 +547,68 @@ exports.getSessionStats = function(req, res) {
 		}
 	});
 
+}
+
+/** Given a userId, find it's current session **/
+var sessionFromUserId = function(userId, callback) {
+	var User = db.model('User', schemas.userSchema);
+	User.findById(userId, function(err, user) {
+		if (err)
+			callback(err);
+		if (!user)
+			callback(new Error('User does not exist'));
+		else if (user.current) {
+			var Session = db.model('Session', schemas.sessionSchema);
+			Session.findById(user.current, function(err, session) {
+				if (err)
+					callback(err);
+				//console.log(session);
+				var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+				Slideshow.findById(session.slides, function(err, slideshow) {
+					if (err)
+						callback(err);
+					callback(null, {
+						id : session._id,
+						slideshow : slideshow
+					});
+				});
+			});
+		} else {//no session for user
+			callback(null, {});
+		}
+	});
+}
+/** Given a userName, find it's current session **/
+var sessionFromUserName = function(userName, callback) {
+	var User = db.model('User', schemas.userSchema);
+	//console.log('user');
+	//console.log(userName);
+	User.findOne({
+		name : userName
+	}, function(err, user) {
+		if (err)
+			callback(err);
+		//console.log('user');
+		//console.log(user);
+		if (!user)
+			callback(new Error('User does not exist'));
+		else if (user.current) {
+			var Session = db.model('Session', schemas.sessionSchema);
+			Session.findById(user.current, function(err, session) {
+				if (err)
+					callback(err);
+				var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+				Slideshow.findById(session.slides, function(err, slideshow) {
+					if (err)
+						callback(err);
+					callback(null, {
+						id : session._id,
+						slideshow : slideshow
+					});
+				});
+			});
+		} else {//no session for user
+			callback(null, {});
+		}
+	});
 }

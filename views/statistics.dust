@@ -6,7 +6,7 @@
 
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
+    <script src="/socket.io/socket.io.js"></script>
   </head>
 
   <body data-spy="scroll" data-target=".question-list">
@@ -46,7 +46,7 @@
           <div class="headline">
             <h3>Statistics of {title}</h3>
           </div>
-          
+
           {#questions}
           <div class="stats" id="{questionId}" data-target-assessment-id={questionId}>
             <h2>{text}</h2>
@@ -106,6 +106,14 @@
     <!-- /container -->
 
     <!-- Le javascript --->
+    <script>
+var mode = "controll";
+window.onload = function() {
+
+connect( "{host}" , {port} , "{id}");
+}
+    </script>
     <script src="/js/statistics.js"></script>
+
   </body>
 </html>

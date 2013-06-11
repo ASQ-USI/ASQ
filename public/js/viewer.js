@@ -29,6 +29,7 @@ var connect = function(host, port, session, mode) {
 		socket.on('asq:question', function(event) {
 			questionId = event.question._id;
 			showQuestion(event.question);
+			console.log("Wohoo a Question is coming!");
 		});
 
 		socket.on('asq:answer', function(event) {

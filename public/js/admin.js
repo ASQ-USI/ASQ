@@ -343,3 +343,13 @@ function requestStats(questionId, obj){
 		obj.chart[questionId].draw(obj.data[questionId], obj.options);
 	});
 }
+
+
+$(".mobileNext").click(function(){
+	impress().next();
+})
+
+$(".mobilePrev").click(function(){
+	impress().prev();
+})
+

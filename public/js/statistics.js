@@ -1,3 +1,75 @@
+var connect = function(host, port, session, mode) {
+	var started = false;
+	var socket = io.connect('http://' + host + ':' + port + '/ctrl');
+
+	socket.on('connect', function(event) {
+		socket.emit('asq:admin', {
+			session : session
+		});
+
+		/**
+		 Handle socket event 'new'
+		 Notifies the admin of a new connection to the presentation.
+		 */
+		socket.on('asq:submit', function(event) {
+			console.log("You've got an answer!");
+			var questionId = event.questionId;
+
+			for (var key in statsTypes) {
+				requestStats(questionId, statsTypes[key])
+			}
+			console.log("newdata")
+			//drawChart();
+
+		});
+
+	});
+
+	/**
+	 Handle impress:stepgoto event
+	 sSend a socket event to notify which slide to go to.
+	 */
+	document.addEventListener("impress:stepgoto", function(event) {
+		socket.emit('asq:goto', {
+			slide : event.target.id,
+			session : session
+		});
+	});
+
+	/**
+	 Handle impress:stepgotosub event
+	 sSend a socket event to notify which slide subtest to go to.
+	 */
+	document.addEventListener("impress:stepgotosub", function(event) {
+		socket.emit('asq:gotosub', {
+			substepIndex : event.detail.index,
+			session : session
+		});
+	});
+
+	/**
+	 Handle impress:stepgoto event
+	 sSend a socket event to notify which slide to go to.
+	 */
+	document.addEventListener("impress:start", function(event) {
+		socket.emit('asq:start', {
+			session : session,
+			slide : $('#impress .active').attr('id')
+		});
+	});
+
+	document.addEventListener('asq:close', function(event) {
+		socket.emit('asq:goto', {
+			session : session
+		});
+	});
+
+	//Shows stasts/answers
+	document.addEventListener('local:show-stats', function(event) {
+		socket.emit('asq:show-stats', {});
+	});
+}
+
 google.load("visualization", "1", {
 	packages : ["corechart"]
 });
@@ -11,8 +83,8 @@ var statsTypes = {
 		data : [],
 		chart : [],
 		options : {
-			width : 800,
-		}
+			
+		},
 	},
 
 	distinctOptions : {
@@ -21,17 +93,17 @@ var statsTypes = {
 		chart : [],
 		options : {
 			title : 'How often was a group of options selected',
-			width : 800,
+			
 			isStacked : true,
 			legend : {
 				position : 'top',
 				alignment : 'center'
-			}
+			},
+			animation : {
+				duration : 500,
+				easing : 'out'
+			},
 		},
-		animation:{
-        	duration: 1000,
-        	easing: 'out'
-      },
 	},
 
 	distinctAnswers : {
@@ -41,16 +113,16 @@ var statsTypes = {
 		options : {
 			title : 'How often was an option selected',
 			isStacked : true,
-			width : 800,
+			
 			legend : {
 				position : 'top',
 				alignment : 'center'
-			}
+			},
+			animation : {
+				duration : 500,
+				easing : 'out'
+			},
 		},
-		animation:{
-        	duration: 1000,
-        	easing: 'out'
-      },
 	}
 };
 
@@ -73,13 +145,14 @@ $('a[data-toggle="tab"]').on('shown', function(e) {
 });
 
 $("#session").change(function() {
-	var questionId = $('.stats').data('target-assessment-id');
 
-	for (var key in statsTypes) {
-		requestStats(questionId, statsTypes[key])
-	}
-	console.log("newdata")
-	drawChart();
+	$('.stats').each(function(el) {
+		var questionId = $(this).data('target-assessment-id');
+		for (var key in statsTypes) {
+			requestStats(questionId, statsTypes[key])
+		}
+		console.log("Session change: newdata for " + questionId);
+	});
 });
 
 function requestStats(questionId, obj) {

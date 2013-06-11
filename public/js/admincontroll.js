@@ -38,7 +38,7 @@ function updateOrientation() {
 				$(".controls").removeClass("hidden-phone");
 				$(".controlBottom").addClass("hidden-phone");
 				$(".controlBottom").css("top", "inherit");
-				$(".controlBottom").css("height", "100%");
+				$(".controlBottom").css("height", "inherit");
 
 				$(".thisSlideFrame").addClass("hidden-phone");
 				break;
@@ -49,7 +49,7 @@ function updateOrientation() {
 				$(".controls").addClass("hidden-phone");
 				$(".controlBottom").removeClass("hidden-phone");
 				$(".controlBottom").css("top", "0");
-				$(".controlBottom").css("height", "270px");
+				$(".controlBottom").css("height", "100%");
 				break;
 		}
 	}else{}

@@ -43,21 +43,25 @@
         </div>
 
         <div class="row" id="buttons">
+        	 <div class="span3 visible-phone">
+          	<div class="mobilePrev"><p><i class="icon-arrow-left icon-white"> </i>  Previous slide</p></div>
+          	<div class="mobileNext"><p><strong>Next slide</strong> <i class="icon-arrow-right icon-white"> </i> </p></div>
+          </div>
           <div class="span4">
             <a href="/user/statistics/{slideshow._id}" class="btn btn-small btn-inverse">Show statistics</a>
             <a href="/admin" class="btn btn-small btn-inverse hidden-phone">Go to presentation view</a>
           </div>
-          <div class="span2">
+          <div class="span2 hidden-phone">
             <button class="btn btn-info" onclick="impress().prev()">
               Previous slide
             </button>
-          </div>
-          <div class="span2">
+          </div> 
+          <div class="span2 hidden-phone">
             <button class="btn btn-large btn-primary" type="button" id="nextButton" onclick="impress().next();">
               Next slide
             </button>
           </div>
-          <div class="span2 pull-right">
+          <div class="span2 pull-right ">
             <p class="connected-viewers-number">
               Waiting for viewers.
             </p>
