@@ -120,7 +120,7 @@
     </div>
     <!-- /container -->
 
-    <!-- Le javascript --->
+    <!-- Le javascript -->
     <script>
 var mode = "controll";
 window.onload = function() {

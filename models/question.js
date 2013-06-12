@@ -27,6 +27,18 @@ var questionOptionSchema = new Schema({
   correct:{type: Boolean}
 })
 
+//remove answers before removing a question
+questionSchema.pre('remove', true, function(next,done){
+  next();
+   var Answer = db.model('Answer');
+
+  //delete sessions
+  Answer.remove({question : this.id}, function(err){
+    if (err) { done(err)}
+    done();
+  })
+});
+
 //Returns array with solution
 questionSchema.methods.getSolution = function(){
 	

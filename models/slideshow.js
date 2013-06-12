@@ -1,10 +1,13 @@
-var mongoose= require('mongoose');
+/** @module models/slideshow
+    @description the Slideshow Model
+*/
 
-var Schema = mongoose.Schema
+var mongoose= require('mongoose')
+, Schema = mongoose.Schema
 , ObjectId = Schema.ObjectId
 , when     = require('when');
 
-var slideshowSchema= new Schema({
+var slideshowSchema = new Schema({
   title: { type: String },
   course: { type: String, default: "General" },
   originalFile:{type:String},
@@ -23,6 +26,33 @@ var slideshowSchema= new Schema({
 slideshowSchema.virtual('path').get(function() {
   return './slides/' + this._id + '/';
 });
+
+//remove sessions before removing a slideshow
+slideshowSchema.pre('remove', true, function(next,done){
+  next();
+   var Session = db.model('Session');
+  
+  Session.remove({slides : this.id}, function(err){
+    if (err) { done(err)}
+    done();
+  })
+
+});
+
+//remove questions before removing a slideshow
+// questions will remove the related answers in their own pre()
+slideshowSchema.pre('remove', true, function(next,done){
+  next();
+    var Question = db.model('Question');
+
+  //delete sessions
+  Question.remove({_id : {$in : this.questions}}, function(err){
+    if (err) { done(err)}
+    done();
+  })
+
+});
+
 
 // Adds an array of questionIDs to the slideshow
 // Array arr should be populated with questionIDs

@@ -3,9 +3,9 @@
     TODO Handle upload of incrrect slideshows and their removal from the server.
     */
 
-var schema        = require('../models/models')
-, slideshowModel  = require('../models/slideshow')
-, questionModel   = require('../models/question')
+var model         = require('../models/models')
+, slideshowModel  = model.slideshowModel
+, questionModel   = model.questionModel
 , fs              = require('fs')
 , unzip           = require('unzip')
 , pfs             = require('promised-io/fs')

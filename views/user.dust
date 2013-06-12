@@ -3,6 +3,7 @@
 	<head>
 		{>htmlHead/}
 		<title>ASQ - My Presentations</title>
+		<script src="/socket.io/socket.io.js"></script>
 	</head>
 
 	<body>
@@ -89,8 +90,20 @@
 		<!-- /container -->
 
 		<!-- Le javascript -->
+		<!-- Connect to sockets only if there's an active session -->
+		{?session}
 		<script>
-		
+var mode = "controll";
+window.onload = function() {
+
+connect( "{host}" , {port} , "{id}");
+}
+    </script>
+
+    <script src="/js/user.js"></script>
+		{/session}
+
+		<script>
 		
 		if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
 			$('#iOSWebAppInfo').popover({

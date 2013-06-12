@@ -99,8 +99,8 @@ var connect = function(host, port, session, mode) {
 
 		});
 
-		socket.on('asq:terminate-session', function(event) {
-			console.log('you have to terminate')
+		socket.on('asq:session-terminated', function(event) {
+			console.log('session terminated')
 		});
 
 	}).on('connect_failed', function(reason) {

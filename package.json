@@ -27,7 +27,7 @@
     "unzip": "0.1.x",
     "promised-io": "0.3.x",
     "rimraf": "2.1.x",
-    "adm-zip": "0.2.x",
+    "adm-zip": "0.4.x",
     "wrench": "1.4.x",
     "jsdom": "0.5.x",
     "dust": "x.x.x",

@@ -482,6 +482,9 @@ exports.renderuser = function(req, res) {
 						arrayslides : slides,
 						slidesByCourses: slidesByCourses,
 						username : req.user.name,
+						host : appHost,
+						port : app.get('port'),
+						id : user.current,
 						alert : req.query.alert,
 						type : type,
 						session : user.current
