@@ -98,7 +98,7 @@
 
               <!-- Displays Pie-Chart Right vs. Wrong -->
               <div class="tab-pane" id="rvsw-{questionId}">
-                <div id="rvswChart-{questionId}" class="chart rvswChart-{questionId}" style=""></div>
+                <div id="rvswChart-{questionId}" class="chart rvswChart-{questionId}"></div>
               </div>
 
               <!-- Display multiple choice stats -->
