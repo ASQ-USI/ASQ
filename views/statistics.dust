@@ -46,7 +46,22 @@
           <div class="headline">
             <h3>Statistics of {title}</h3>
           </div>
-
+          {?liveData}
+          <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">
+              &times;
+            </button>
+            <strong>Live updates activated!</strong> Statistics will update it self when new ansers are submitted. <a href="/admincontroll">Return to presentation.</a>
+          </div>
+          {:else}
+          <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">
+              &times;
+            </button>
+            <strong>No live updates!</strong> It seems as if no session corresponding to this statistics is running.
+          </div>
+          {/liveData}
+          
           {#questions}
           <div class="stats" id="{questionId}" data-target-assessment-id={questionId}>
             <h2>{text}</h2>

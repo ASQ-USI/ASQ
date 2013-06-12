@@ -509,22 +509,26 @@ exports.getSessionStats = function(req, res) {
 						//Render it after last question added!
 						if (questions.length == slideshow.questions.length) {
 							var userId = req.user._id;
-							sessionFromUserId(userId, function(err, session) {
+							sessionFromUserName(req.user.name, function(err, session) {
 								if (err)
 									throw err;
-								if (!session.id) {
-									res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
-								} else {
-									res.render('statistics', {
-										username : req.user.name,
-										session : sessionArray,
-										title : slideshow.title,
-										questions : questions,
-										host : appHost,
-										port : app.get('port'),
-										id : session.id,
-									});
+									
+								console.log(session)
+								if(session != false){
+									var liveData = (session.slideshow._id == req.params.id);
 								}
+
+								res.render('statistics', {
+									username : req.user.name,
+									session : sessionArray,
+									title : slideshow.title,
+									questions : questions,
+									host : appHost,
+									port : app.get('port'),
+									id : session.id,
+									liveData: liveData
+								});
+
 							});
 						}
 					});
@@ -547,36 +551,6 @@ exports.getSessionStats = function(req, res) {
 		}
 	});
 
-}
-
-/** Given a userId, find it's current session **/
-var sessionFromUserId = function(userId, callback) {
-	var User = db.model('User', schemas.userSchema);
-	User.findById(userId, function(err, user) {
-		if (err)
-			callback(err);
-		if (!user)
-			callback(new Error('User does not exist'));
-		else if (user.current) {
-			var Session = db.model('Session', schemas.sessionSchema);
-			Session.findById(user.current, function(err, session) {
-				if (err)
-					callback(err);
-				//console.log(session);
-				var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-				Slideshow.findById(session.slides, function(err, slideshow) {
-					if (err)
-						callback(err);
-					callback(null, {
-						id : session._id,
-						slideshow : slideshow
-					});
-				});
-			});
-		} else {//no session for user
-			callback(null, {});
-		}
-	});
 }
 /** Given a userName, find it's current session **/
 var sessionFromUserName = function(userName, callback) {
@@ -608,7 +582,7 @@ var sessionFromUserName = function(userName, callback) {
 				});
 			});
 		} else {//no session for user
-			callback(null, {});
+			callback(null, false);
 		}
 	});
 }
