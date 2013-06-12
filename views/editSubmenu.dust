@@ -2,14 +2,14 @@
 <div class="span12 headline hidden-phone">
 	<h2 class="pull-left">{title}</h2>
 
-	<form id="delete-form" style="margin:0; padding:0; width:0; height:0"method="post" action="/slideshows/{slideshow.id}">
+	<form id="delete-form" method="post" action="/slideshows/{slideshow.id}">
 		<input name="_method" value="DELETE" type="hidden">
 	</form>			
-	<a onclick="document.getElementById('delete-form').submit();"class="pull-right controls " href="#"><i class="icon-trash icon-white"> </i>  Delete Slideshow </a>
-	<a class="pull-right controls " href="/user/edithtml/{slideshow._id}/"><i class="icon-align-left icon-white"> </i>  HTML </a>
-	<a class="pull-right controls " href="/user/editstyle/{slideshow._id}"><i class="icon-eye-open icon-white"> </i>  CSS </a>
-	<a class="pull-right controls " href="/user/editquestions/{slideshow._id}"><i class="icon-question-sign icon-white"> </i>  Questions </a>			
-	<a class="pull-right controls " href="/user/edit/{slideshow._id}"><i class="icon-th icon-white "> </i> Overview </a>
+	<a class="pull-right controls" id="delete" href="#"><i class="icon-trash icon-white"> </i>  Delete Slideshow </a>
+	<a class="pull-right controls" href="/user/edithtml/{slideshow._id}/"><i class="icon-align-left icon-white"> </i>  HTML </a>
+	<a class="pull-right controls" href="/user/editstyle/{slideshow._id}"><i class="icon-eye-open icon-white"> </i>  CSS </a>
+	<a class="pull-right controls" href="/user/editquestions/{slideshow._id}"><i class="icon-question-sign icon-white"> </i>  Questions </a>			
+	<a class="pull-right controls" href="/user/edit/{slideshow._id}"><i class="icon-th icon-white "> </i> Overview </a>
 </div>
 		
 		
