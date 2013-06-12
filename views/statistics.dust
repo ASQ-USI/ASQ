@@ -98,17 +98,17 @@
 
               <!-- Displays Pie-Chart Right vs. Wrong -->
               <div class="tab-pane" id="rvsw-{questionId}">
-                <div id="rvswChart-{questionId}" class="rvswChart-{questionId}" style="width: 100%; height: 500px;"></div>
+                <div id="rvswChart-{questionId}" class="chart rvswChart-{questionId}" style=""></div>
               </div>
 
               <!-- Display multiple choice stats -->
               <div class="tab-pane" id="mscstats-{questionId}">
-                <div id="mscstatChart-{questionId}" class="distinctAnswers-{questionId}" style="height:500px"></div>
+                <div id="mscstatChart-{questionId}" class="chart distinctAnswers-{questionId}" style="height:500px"></div>
               </div>
 
               <!-- Display different aswers  -->
               <div class="tab-pane" id="diffAns-{questionId}">
-                <div id="diffAnsChart-{questionId}" class="distinctOptions-{questionId}" style="height:500px"></div>
+                <div id="diffAnsChart-{questionId}" class="chart distinctOptions-{questionId}" style="height:500px"></div>
               </div>
             </div>
           </div>
