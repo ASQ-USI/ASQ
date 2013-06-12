@@ -103,12 +103,12 @@
 
               <!-- Display multiple choice stats -->
               <div class="tab-pane" id="mscstats-{questionId}">
-                <div id="mscstatChart-{questionId}" class="chart distinctAnswers-{questionId}" style="height:500px"></div>
+                <div id="mscstatChart-{questionId}" class="chart distinctAnswers-{questionId}" ></div>
               </div>
 
               <!-- Display different aswers  -->
               <div class="tab-pane" id="diffAns-{questionId}">
-                <div id="diffAnsChart-{questionId}" class="chart distinctOptions-{questionId}" style="height:500px"></div>
+                <div id="diffAnsChart-{questionId}" class="chart distinctOptions-{questionId}"></div>
               </div>
             </div>
           </div>
