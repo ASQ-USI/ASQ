@@ -106,6 +106,7 @@ module.exports.post = function(req, res) {
     //7) store new html with questions to file
     .then(
       function(newHtml){
+        logger.log('presenter and audience files rendered in memory successfully');
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
         newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';

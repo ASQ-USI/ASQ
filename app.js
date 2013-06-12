@@ -226,7 +226,7 @@ app.get('/user/editquestions/:id', ensureAuthenticated, editFunctions.editquesti
 
 //app.get('/user/delete/:id', ensureAuthenticated, editFunctions.deletequestion);
 
-app.get('/user/deleteslideshow:id', ensureAuthenticated, editFunctions.deleteslideshow);
+app.del('/slideshows/:id', ensureAuthenticated, editFunctions.deleteSlideshow);
 
 //app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 

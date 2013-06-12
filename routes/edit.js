@@ -93,7 +93,7 @@ exports.editslideshow = function(req, res) {
 
 exports.saveDetails = function(req, res) {
 	//console.log("###########wekljfnekrn");
-	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
+	var slideshowDB = db.model('Slideshow');
 	slideshowDB.findByIdAndUpdate(req.params.id, {
 		title : req.body.presentationName,
 		course : req.body.courseName
@@ -105,35 +105,56 @@ exports.saveDetails = function(req, res) {
 	//res.redirect('/user/' + req.user.name + '?alert=Slideshow successfully updated &type=succes');
 }
 
-exports.deleteslideshow = function(req, res) {
-	var users = db.model('User', schemas.userSchema);
-	var out = users.findById(req.user._id, function(err, user) {
-		if (user) {
-			for (var i = 0; i < user.slides.length; i++) {
-				if (user.slides[i] == req.params.id) {
-					user.slides.splice(i, 1);
-					user.save();
-				}
-			}
-			var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
-			var questionDB = db.model('Question', schemas.questionSchema);
-			slideshowDB.findById(req.params.id, function(err, slideshow) {
-				questionDB.remove({
-					_id : {
-						$in : slideshow.questions
-					}
-				}, function(err, question) {
-					if (err) {
-						console.log(err);
-					}
-				});
-				slideshow.remove();
-				res.redirect('/user/' + req.user.name);
-			});
-
-		}
-	});
+exports.deleteSlideshow = function(req, res) {
+	console.log(req.user.name)
+	var User = db.model('User')
+	, Slideshow = db.model('Slideshow');
+	User.findOne({name: req.user.name}).exec()
+		.then(function(user){
+			return Slideshow.findOne({_id: req.params.id, owner: user.id}).exec()
+		})
+		.then(function(slideshow){
+			return slideshow.remove().exec()
+		})
+		.then(function(){
+			res.redirect('/user?alert=Slideshow deleted &type=succes');
+		},
+		function(err){
+			res.redirect('/user?alert=Something went wrong &type=error');
+			throw err;
+			
+		})
 }
+
+// exports.deleteslideshow = function(req, res) {
+// 	var users = db.model('User', schemas.userSchema);
+// 	var out = users.findById(req.user._id, function(err, user) {
+// 		if (user) {
+// 			for (var i = 0; i < user.slides.length; i++) {
+// 				if (user.slides[i] == req.params.id) {
+// 					user.slides.splice(i, 1);
+// 					user.save();
+// 				}
+// 			}
+// 			var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
+// 			var questionDB = db.model('Question', schemas.questionSchema);
+// 			slideshowDB.findById(req.params.id, function(err, slideshow) {
+// 				questionDB.remove({
+// 					_id : {
+// 						$in : slideshow.questions
+// 					}
+// 				}, function(err, question) {
+// 					if (err) {
+// 						console.log(err);
+// 					}
+// 				});
+// 				slideshow.remove();
+// 				res.redirect('/user/' + req.user.name);
+// 			});
+
+// 		}
+// 	});
+// }
 /* --- Edit HTML ---*/
 exports.edithtml = function(req, res) {
 	//console.log(req.params.id);
