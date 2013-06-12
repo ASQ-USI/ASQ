@@ -1,6 +1,7 @@
 <!---   Seperating Headline   --->
 <div class="span12 headline hidden-phone">
 	<h2 class="pull-left">{title}</h2>
+	<a class="pull-right controls " href="#"><i class="icon-trash icon-white"> </i>  Delete Slideshow </a>
 	<a class="pull-right controls " href="/user/edithtml/{slideshow._id}"><i class="icon-align-left icon-white"> </i>  HTML </a>
 	<a class="pull-right controls " href="/user/editstyle/{slideshow._id}"><i class="icon-eye-open icon-white"> </i>  CSS </a>
 	<a class="pull-right controls " href="/user/editquestions/{slideshow._id}"><i class="icon-question-sign icon-white"> </i>  Questions </a>			
@@ -11,6 +12,7 @@
 <div class="visible-phone">
 	<h3>{title}</h3>
 	<ul class="nav nav-tabs nav-stacked">
+		<li><a class="pull-right controls " href="#"><i class="icon-trash icon-white"> </i>  Delete Slideshow </a></li>
 		<li><a class=" controls " href="/user/edithtml/{slideshow._id}"><i class="icon-align-left icon-white"> </i>  HTML </a></li>
 		<li><a class=" controls " href="/user/editstyle/{slideshow._id}"><i class="icon-eye-open icon-white"> </i>  CSS </a></li>
 		<li><a class=" controls " href="/user/editquestions/{slideshow._id}"><i class="icon-question-sign icon-white"> </i>  Questions </a></li>

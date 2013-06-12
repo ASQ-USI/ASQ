@@ -121,13 +121,14 @@
     <!-- /container -->
 
     <!-- Le javascript -->
-    <script>
-var mode = "controll";
-window.onload = function() {
-
-connect( "{host}" , {port} , "{id}");
-}
-    </script>
+    {?liveData}
+	    <script>
+	    var mode = "controll";
+			window.onload = function() {
+				connect( "{host}" , {port} , "{id}");
+			}
+	    </script>
+    {/liveData}
     <script src="/js/statistics.js"></script>
 
   </body>

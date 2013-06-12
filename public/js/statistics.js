@@ -24,50 +24,6 @@ var connect = function(host, port, session, mode) {
 		});
 
 	});
-
-	/**
-	 Handle impress:stepgoto event
-	 sSend a socket event to notify which slide to go to.
-	 */
-	document.addEventListener("impress:stepgoto", function(event) {
-		socket.emit('asq:goto', {
-			slide : event.target.id,
-			session : session
-		});
-	});
-
-	/**
-	 Handle impress:stepgotosub event
-	 sSend a socket event to notify which slide subtest to go to.
-	 */
-	document.addEventListener("impress:stepgotosub", function(event) {
-		socket.emit('asq:gotosub', {
-			substepIndex : event.detail.index,
-			session : session
-		});
-	});
-
-	/**
-	 Handle impress:stepgoto event
-	 sSend a socket event to notify which slide to go to.
-	 */
-	document.addEventListener("impress:start", function(event) {
-		socket.emit('asq:start', {
-			session : session,
-			slide : $('#impress .active').attr('id')
-		});
-	});
-
-	document.addEventListener('asq:close', function(event) {
-		socket.emit('asq:goto', {
-			session : session
-		});
-	});
-
-	//Shows stasts/answers
-	document.addEventListener('local:show-stats', function(event) {
-		socket.emit('asq:show-stats', {});
-	});
 }
 
 google.load("visualization", "1", {

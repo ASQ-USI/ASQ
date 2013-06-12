@@ -47,7 +47,8 @@
           	<div class="mobilePrev"><p><i class="icon-arrow-left icon-white"> </i>  Previous slide</p></div>
           	<div class="mobileNext"><p><strong>Next slide</strong> <i class="icon-arrow-right icon-white"> </i> </p></div>
           </div>
-          <div class="span4">
+          <div class="span5">
+          	<a class="btn btn-danger btn-small" id="stopSessionBtn" href="#"> Stop presentation </a>
             <a href="/user/statistics/{slideshow._id}" class="btn btn-small btn-inverse">Show statistics</a>
             <a href="/admin" class="btn btn-small btn-inverse hidden-phone">Go to presentation view</a>
           </div>
@@ -61,6 +62,7 @@
               Next slide
             </button>
           </div>
+         
           <div class="span2 pull-right ">
             <p class="connected-viewers-number">
               Waiting for viewers.

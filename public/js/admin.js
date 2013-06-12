@@ -5,7 +5,8 @@
 
 /** Connect back to the server with a websocket */
 var admin = {
-	terminateSession : function(){}
+	terminateSession : function() {
+	}
 }
 var connect = function(host, port, session, mode) {
 	var started = false;
@@ -96,14 +97,11 @@ var connect = function(host, port, session, mode) {
 		socket.on('asq:hide-answer', function(event) {
 			$('#answer').modal('hide');
 		});
-
-	});
-
-	admin.terminateSession = function (){
-		socket.emit('asq:terminate-session', {
-			session : session
+		socket.on('asq:session-terminated', function(event) {
+			console.log('session terminated')
+			$('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 100px">This presentation was terminated.</h2><p style="color: white; text-align: center;"> To reconnect try refreshing your borwser window.</p></div>');
 		});
-	}
+	});
 
 	/**
 	 Handle impress:stepgoto event
@@ -147,6 +145,11 @@ var connect = function(host, port, session, mode) {
 	//Shows stasts/answers
 	document.addEventListener('local:show-stats', function(event) {
 		socket.emit('asq:show-stats', {});
+	});
+	$('#stopSessionBtn').click(function() {
+		socket.emit('asq:terminate-session', {
+			session : session
+		});
 	});
 }
 function updateParticipation(submitted, users, questionId) {
@@ -286,22 +289,22 @@ google.load("visualization", "1", {
 
 google.setOnLoadCallback(drawChart);
 
-var statsTypes={
+var statsTypes = {
 
-	rightVsWrong: {
+	rightVsWrong : {
 		metric : "rightVsWrong",
 		data : [],
-		chart: [],
-		options: {
+		chart : [],
+		options : {
 			width : 800,
 		}
 	},
 
-	distinctOptions: {
+	distinctOptions : {
 		metric : "distinctOptions",
 		data : [],
-		chart: [],
-		options: {
+		chart : [],
+		options : {
 			title : 'How often was a group of options selected',
 			width : 800,
 			isStacked : true,
@@ -312,11 +315,11 @@ var statsTypes={
 		}
 	},
 
-	distinctAnswers: {
+	distinctAnswers : {
 		metric : "distinctAnswers",
 		data : [],
-		chart: [],
-		options: {
+		chart : [],
+		options : {
 			title : 'How often was an option selected',
 			isStacked : true,
 			width : 800,
@@ -341,12 +344,12 @@ function drawChart() {
 $('a[data-toggle="tab"]').on('shown', function(e) {
 	var questionId = $(this).parents().find(".stats").data('target-assessment-id');
 	console.log("huzza");
-	for (var key in statsTypes){
-		requestStats(questionId , statsTypes[key])
+	for (var key in statsTypes) {
+		requestStats(questionId, statsTypes[key])
 	}
 });
 
-function requestStats(questionId, obj){
+function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
 		obj.data[questionId] = google.visualization.arrayToDataTable(data);
 		obj.chart[questionId].draw(obj.data[questionId], obj.options);
@@ -354,11 +357,11 @@ function requestStats(questionId, obj){
 }
 
 
-$(".mobileNext").click(function(){
+$(".mobileNext").click(function() {
 	impress().next();
 })
 
-$(".mobilePrev").click(function(){
+$(".mobilePrev").click(function() {
 	impress().prev();
 })
 

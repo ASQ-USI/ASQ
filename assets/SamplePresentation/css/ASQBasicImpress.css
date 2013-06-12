@@ -186,7 +186,10 @@ p{
 	overflow: hidden;
 }
 .tab-pane form, .tab-pane p{
-	padding: 20px;
+	margin-left: 20px;
+}
+.answersolutions ol{
+	padding-left: 60px;
 }
 /*
     These 'slide' step styles were heavily inspired by HTML5 Slides:
