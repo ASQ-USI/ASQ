@@ -4,6 +4,9 @@
  */
 
 /** Connect back to the server with a websocket */
+var admin = {
+	terminateSession : function(){}
+}
 var connect = function(host, port, session, mode) {
 	var started = false;
 	var socket = io.connect('http://' + host + ':' + port + '/ctrl');
@@ -95,6 +98,12 @@ var connect = function(host, port, session, mode) {
 		});
 
 	});
+
+	admin.terminateSession = function (){
+		socket.emit('asq:terminate-session', {
+			session : session
+		});
+	}
 
 	/**
 	 Handle impress:stepgoto event

@@ -99,6 +99,10 @@ var connect = function(host, port, session, mode) {
 
 		});
 
+		socket.on('asq:terminate-session', function(event) {
+			console.log('you have to terminate')
+		});
+
 	}).on('connect_failed', function(reason) {
 		console.error('unable to connect to namespace', reason);
 		$('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
