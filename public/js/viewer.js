@@ -101,7 +101,7 @@ var connect = function(host, port, session, mode) {
 
 		socket.on('asq:session-terminated', function(event) {
 			console.log('session terminated')
-			$('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 50px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.To reconnect try refreshing your browser window.</p></div>');
+			$('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 50px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.</p></div>');
 		});
 
 	}).on('connect_failed', function(reason) {
