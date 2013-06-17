@@ -1,6 +1,6 @@
 #copied from express.js
 
-MOCHA_OPTS= --check-leaks
+MOCHA_OPTS=
 REPORTER = spec
 
 check: test

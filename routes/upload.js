@@ -97,7 +97,10 @@ module.exports.post = function(req, res) {
             }
           });
         });
+
+        //hold reference to the db questions
         slideShowQuestions = dbQuestions;
+
         return when.all([
           asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
           asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
