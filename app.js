@@ -138,7 +138,11 @@ app.configure(function() {
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
+    registration.isValidPassword = function(candidatePass) {
+        console.log('[devel mode] No password constraint');
+        return true;
+    };
 });
 
 // app.get('/', function(req, res){

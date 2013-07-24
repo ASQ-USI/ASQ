@@ -5,7 +5,7 @@ var schemas = require("../models/models.js")
 , dust      = require('dustjs-linkedin')
 , check     = require('validator').check;
 
-var isValidUserName = function(candidateUser) {
+exports.isValidUserName = function(candidateUser) {
 	// Match string between 3 and 12 chars starting with a letter, lower or upper case 
 	// and containing only letters (both cases, digits, dashes, underscores and dots.
 	var userRegex = /(?=[a-zA-Z])(?=^.{3,12}$)[a-zA-Z0-9_\-\.]*$/;
@@ -13,7 +13,7 @@ var isValidUserName = function(candidateUser) {
 
 }
 
-var isValidPassword = function(candidatePass) {
+exports.isValidPassword = function(candidatePass) {
 	// Match a string between 8 and 30 chars
 	// and containing only letters (both cases), digits and the following characters: ! @ # % : _ ( ) $ ^ & * - . ?
 	// It also must contain at least one upper case letter, one lower case and one digit and it cannot contain spaces.
@@ -21,7 +21,7 @@ var isValidPassword = function(candidatePass) {
 	return passwordRegex.test(candidatePass);
 }
 
-var isValidEmail = function(candidateEmail) {
+exports.isValidEmail = function(candidateEmail) {
 	return check(candidateEmail).len(6, 64).isEmail();
 }
 
@@ -40,7 +40,7 @@ exports.signup = function(req, res) {
 	}
 
 	// Username syntax
-	if (!isValidUserName(req.body.signupusername)) {
+	if (!exports.isValidUserName(req.body.signupusername)) {
 		res.render('index', {
 			message : "User name should be between 3 and 12 characters and only contain letters, digits or . - _.",
 			fromsignup : true
@@ -49,7 +49,7 @@ exports.signup = function(req, res) {
 	}
 	
 	// Email
-	if (!isValidEmail(req.body.signupemail)) {
+	if (!exports.isValidEmail(req.body.signupemail)) {
 		res.render('index', {
 			message : "Please insert a valid email adress",
 			fromsignup : true
@@ -58,7 +58,7 @@ exports.signup = function(req, res) {
 	}
 
 	//Password
-	if (!isValidPassword(req.body.signuppassword)) {
+	if (!exports.isValidPassword(req.body.signuppassword)) {
 		res.render('index', {
 			message : "Password should be betwwen 8 and 30 characters and have at least a lower case letter, an upper case letter and a digit. It can contain the following symbols: ! @ # % : _ ( ) $ ^ & * - . ?",
 			fromsignup : true
@@ -129,263 +129,6 @@ function preload(jsonFile) {
 	return question;
 
 }
-
-// exports.sendstats = function(req, res) {
-// 
-	// var questionDB = db.model('Question', schemas.questionSchema);
-	// var optionDB = db.model('Option', schemas.optionSchema);
-// 
-	// questionDB.findById(req.params.id, function(err, question) {
-		// optionDB.find({
-			// _id : {
-				// $in : question.answeroptions
-			// }
-		// }, function(err, options) {
-			// if (err)
-				// throw err;
-// 
-			// getQuestionStats(req.params.id, function(err, stats) {
-// 
-				// var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
-// 
-				// var countedMcOptions = [[question.questionText, "Number of answers"]]
-				// for (ans in stats.equalAnswers) {
-					// //console.log("###########");
-					// countedMcOptions.push([options[ans].optionText, stats.countedMcOptions[ans]]);
-				// }
-// 
-				// var equalAnswers = [['Different answers', 'Number of answers']]
-				// for (ans in stats.equalAnswers) {
-					// //console.log("###########");
-					// equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
-				// }
-// 
-				// //console.log(countedMcOptions);
-				// res.send(200, {
-					// correct : correct,
-					// countedMcOptions : countedMcOptions,
-					// equalAnswers : equalAnswers
-				// });
-// 
-			// });
-		// });
-	// });
-// 
-// }
-
-// exports.getStats = function(questionId, sessionId, callback) {
-	// var Question = db.model('Question', schemas.questionSchema);
-	// Question.findById(questionId).populate('answeroptions').exec(function(err, question) {
-		// if (err)
-			// callback(err);
-		// getQuestionStats(questionId, sessionId, function(err, stats) {
-			// if (err) {
-				// callback(err);
-				// return;
-			// }
-			// if (stats === null) {
-				// callback(null, {
-					// correct : {},
-					// countedMcOptions : {},
-					// equalAnswers : {}
-				// });
-				// return;
-			// }
-// 
-			// var correct = [['Correct answers', 'Number of answers'], ['Correct', stats.correct], ['Wrong', stats.wrong]]
-// 
-			// var countedMcOptions = [[question.questionText, "Number of answers"]]
-			// if (question.questionType === "Multiple choice") {
-				// var lim = stats.countedMcOptions.length < question.answeroptions.length ? stats.countedMcOptions.length : question.answeroptions.length;
-				// for (var ans = 0; ans < lim; ans++) {
-					// //console.log("###########");
-					// //This is what went wrong during the M4 demo
-					// //The check below can prevent the same mistake
-					// //But I don't know how it affects the expected result
-					// if (question.answeroptions[ans])
-						// countedMcOptions.push([question.answeroptions[ans].optionText, stats.countedMcOptions[ans]]);
-				// }
-			// }
-// 
-			// var equalAnswers = [['Different answers', 'Number of answers']]
-			// for (ans in stats.equalAnswers) {
-				// //console.log("###########");
-				// equalAnswers.push([stats.equalAnswers[ans].ansContent.toString(), stats.equalAnswers[ans].count]);
-			// }
-			// callback(null, {
-				// correct : correct,
-				// countedMcOptions : countedMcOptions,
-				// equalAnswers : equalAnswers
-			// });
-		// });
-	// });
-// }
-// function getQuestionStats(questionId, sessionId, callback) {
-	// var answerDB = db.model('Answer', schemas.answerSchema);
-	// var questionDB = db.model('Question', schemas.questionSchema);
-	// var optionDB = db.model('Option', schemas.optionSchema);
-	// var sessionDB = db.model('Session', schemas.sessionSchema);
-// 
-	// //console.log("------------" + sessionId)
-// 
-	// questionDB.findById(questionId).populate('answeroptions').exec(function(err, question) {
-		// sessionDB.findById(sessionId, function(err, session) {
-			// answerDB.findOne({
-				// _id : {
-					// $in : session.answers
-				// },
-				// question : questionId
-			// }, function(err, answer) {
-				// if (err) {
-					// callback(err);
-					// return;
-				// }
-				// if (!answer) {
-					// callback(null, null);
-					// return;
-				// }
-				// // console.log("#### Answers")
-				// // console.log(answer);
-				// // console.log(answer.answers);
-				// // console.log("--- Answers")
-				// var result = {
-					// questionText : "",
-					// questionOptions : ["Lorem", "Ipsum", "Dolor", "Sit amet"],
-					// questionType : "Multiple choice",
-					// total : answer.answers.length,
-					// correct : 1,
-					// wrong : 1,
-					// equalAnswers : null,
-					// countedMcOptions : null,
-				// }
-// 
-				// //Set question data
-				// result.questionText = question.questionText;
-				// result.questionType = question.questionType;
-				// result.questionOptions = question.answeroptions;
-// 
-				// //Get array of correct answers
-				// var correctWrong = getCorrectAnswers(answer.answers, question.answeroptions);
-				// result.correct = correctWrong[0];
-				// result.wrong = correctWrong[1];
-// 
-				// // Counting equal answers
-				// result.equalAnswers = getEqualAnswers(answer.answers);
-// 
-				// // Counting selectet options for multiple choice
-				// if (question.questionType === "Multiple choice") {
-					// result.countedMcOptions = getCountedMCOptions(answer.answers, question);
-				// }
-// 
-				// console.log(result);
-				// callback(null, result);
-			// });
-		// });
-	// });
-// 
-// }
-
-// function getNumberOfAnswers(questionId) {
-	// answerDB.findOne({
-		// question : questionId
-	// }, function(err, answer) {
-		// return answer.answers.length();
-// 
-	// });
-// }
-
-// function getCorrectAnswers(answers, answerOptions) {
-	// var correctAnswer = new Array();
-	// for (var ans = 0; ans < answerOptions.length; ans++) {
-		// if (answerOptions[ans].correct == true) {
-			// correctAnswer.push(true);
-		// } else if (answerOptions[ans].correct == false) {
-			// correctAnswer.push(false);
-		// } else if (answerOptions[ans].correct !== undefined) {
-			// correctAnswer.push(answerOptions[ans].correct);
-			// //console.log(typeof(answerOptions[ans].correct) +" "+answerOptions[ans].correct);
-		// }
-// 
-	// }
-	// console.log("Correct ans " + correctAnswer);
-// 
-	// //Check for correct answers
-	// var correct = 0;
-	// var wrong = 0;
-	// for (var i = 0; i < answers.length; i++) {
-		// //console.log(answers[i]);
-		// console.log(answers[i].content + " " + correctAnswer[i] + " " + arrayEqual(answers[i].content, correctAnswer))
-		// if (arrayEqual(answers[i].content, correctAnswer)) {
-			// correct++;
-		// } else {
-			// wrong++;
-		// }
-	// }
-	// return [correct, wrong];
-// }
-// 
-// function getEqualAnswers(answers) {
-	// var equalAnswers = new Array();
-// 
-	// for (var i = 0; i < answers.length; i++) {
-		// var newAnswer = true;
-// 
-		// //Chack all already grouped equal answers
-		// for (exAns in equalAnswers) {
-			// //Anwer already exists
-			// if (arrayEqual(answers[i].content, equalAnswers[exAns].ansContent)) {
-				// equalAnswers[exAns].count++;
-				// newAnswer = false;
-			// }
-// 
-		// }
-		// if (newAnswer) {
-			// equalAnswers.push({
-				// ansContent : answers[i].content,
-				// count : 1
-			// })
-		// }
-	// }
-	// return equalAnswers;
-// }
-
-// function getCountedMCOptions(answers, question) {
-	// var countetMcOptions = new Array();
-	// if (question.questionType == "Multiple choice") {
-		// //init array with 0
-		// for (var i = 0; i < answers[0].content.length; i++) {
-			// countetMcOptions.push(0);
-		// }
-// 
-		// for (var j = 0; j < answers.length; j++) {
-// 
-			// for (var k = 0; k < answers[j].content.length; k++) {
-				// if (answers[j].content[k] == true)
-					// countetMcOptions[k]++;
-			// }
-// 
-		// }
-	// } else {
-		// return null;
-	// }
-	// return countetMcOptions;
-// }
-// 
-// function arrayEqual(array1, array2) {
-	// if (array1.length !== array2.length) {
-		// console.log(array1.length + " " + array2.length)
-		// console.log("wrong length")
-		// return false;
-	// } else {
-		// for (var i = 0; i < array1.length; i++) {
-			// if (array1[i].toString() != array2[i].toString()) {
-				// console.log( typeof (array1[i]) + " - " + typeof (array2[i]))
-				// return false;
-			// }
-		// }
-	// }
-	// return true;
-// }
 
 exports.settings = function(req, res){
 	var users = db.model('User', schemas.userSchema);
