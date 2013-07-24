@@ -2,11 +2,27 @@ var usernameOk = false;
 var emailOk = false;
 var pwdOk = false;
 
+// var isValidUserName = function(candidateUser) {
+//   // Match string between 3 and 12 chars starting with a letter, lower or upper case 
+//   // and containing only letters (both cases, digits, dashes, underscores and dots.
+//   var userRegex = /(?=[a-zA-Z])(?=^.{3,12}$)[a-zA-Z0-9_\-\.]*$/;
+//   return userRegex.test(candidateUser);
+
+// }
+
+// var isValidPassword = function(candidatePass) {
+//   // Match a string between 8 and 30 chars
+//   // and containing only letters (both cases), digits and the following characters: ! @ # % : _ ( ) $ ^ & * - . ?
+//   // It also must contain at least one upper case letter, one lower case and one digit and it cannot contain spaces.
+//   var passwordRegex = /(?=^.{8,30}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z:!@#%_\(\)\$\^\&\*\-\.\?]*$/;
+//   return passwordRegex.test(candidatePass);
+// }
+
 function checkUsername(input) {
     var username = input.value;
     if (username!="") {
         var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/checkusername/' + username, true);
+            xhr.open('GET', '/checkusername/' + username + '/', true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status == 200) {
                     var html = [];
@@ -16,6 +32,10 @@ function checkUsername(input) {
                         document.getElementById("groupUsername").setAttribute("class", "control-group error");
                         usernameOk = false;
 
+                    } else if (reply==2) {
+                        document.getElementById('checkuser').innerHTML='Invalid name'
+                        document.getElementById("groupUsername").setAttribute("class", "control-group error");
+                        usernameOk = false;
                     } else {
                         document.getElementById('checkuser').innerHTML='<i class="icon-ok"></i>';
                         document.getElementById("groupUsername").setAttribute("class", "control-group");

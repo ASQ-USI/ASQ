@@ -68,8 +68,11 @@ passport.use(new LocalStrategy(
     var out = User.findOne({ name: username }, function (err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-        if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
-        return done(null, user);
+        user.isValidPassword(password, function(err, isMatch) {
+            if (err) { return done(err); }
+            if (!isMatch) { return done(null, false, { message: 'Invalid password' }); }
+            return done(null, user);  
+        });
       })
     });
   }
@@ -277,7 +280,7 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 
 /** HTTP Server */
 var server = http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
+    console.log("Express server listening on port " + app.get('port'));
 });
 
 /**

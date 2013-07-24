@@ -1,15 +1,36 @@
-var schemas = require("../models/models.js");
-var Slideshow = require("../models/slideshow")
-var fs = require("fs");
-var moment = require('moment');
-var dust = require('dustjs-linkedin');
+var schemas = require("../models/models.js")
+, Slideshow = require("../models/slideshow")
+, fs        = require("fs")
+, moment    = require('moment')
+, dust      = require('dustjs-linkedin')
+, check     = require('validator').check;
 
+var isValidUserName = function(candidateUser) {
+	// Match string between 3 and 12 chars starting with a letter, lower or upper case 
+	// and containing only letters (both cases, digits, dashes, underscores and dots.
+	var userRegex = /(?=[a-zA-Z])(?=^.{3,12}$)[a-zA-Z0-9_\-\.]*$/;
+	return userRegex.test(candidateUser);
+
+}
+
+var isValidPassword = function(candidatePass) {
+	// Match a string between 8 and 30 chars
+	// and containing only letters (both cases), digits and the following characters: ! @ # % : _ ( ) $ ^ & * - . ?
+	// It also must contain at least one upper case letter, one lower case and one digit and it cannot contain spaces.
+	var passwordRegex = /(?=^.{8,30}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z:!@#%_\(\)\$\^\&\*\-\.\?]*$/;
+	return passwordRegex.test(candidatePass);
+}
+
+var isValidEmail = function(candidateEmail) {
+	return check(candidateEmail).len(6, 64).isEmail();
+}
 
 exports.getsingle = function(req, res) {
 	res.sendfile(req.path);
 }
 //User is added to the database, and page is redirected to confirm the registration
 exports.signup = function(req, res) {
+	// Empty Fields
 	if (req.body.signupusername == "" || req.body.signuppassword == "") {
 		res.render('index', {
 			message : "Missing credentials",
@@ -17,22 +38,34 @@ exports.signup = function(req, res) {
 		});
 		return;
 	}
-	var myRegxp = /^([a-zA-Z0-9_-]){3,10}$/;
-	if (myRegxp.test(req.body.signupusername) == false || myRegxp.test(req.body.signuppassword) == false) {
+
+	// Username syntax
+	if (!isValidUserName(req.body.signupusername)) {
 		res.render('index', {
-			message : "Credentials must be only alphanumeric, between 3 and 10 characters",
+			message : "User name should be between 3 and 12 characters and only contain letters, digits or . - _.",
 			fromsignup : true
 		});
 		return;
 	}
-	var myRegxp = /\S+@\S+\.\S+/;
-	if (myRegxp.test(req.body.signupemail) == false) {
+	
+	// Email
+	if (!isValidEmail(req.body.signupemail)) {
 		res.render('index', {
 			message : "Please insert a valid email adress",
 			fromsignup : true
 		});
 		return;
 	}
+
+	//Password
+	if (!isValidPassword(req.body.signuppassword)) {
+		res.render('index', {
+			message : "Password should be betwwen 8 and 30 characters and have at least a lower case letter, an upper case letter and a digit. It can contain the following symbols: ! @ # % : _ ( ) $ ^ & * - . ?",
+			fromsignup : true
+		});
+		return;
+	}
+
 	if (req.body.signuppassword != req.body.signuppasswordconfirm) {
 		res.render('index', {
 			message : "The two passwords are not matching",
@@ -41,6 +74,7 @@ exports.signup = function(req, res) {
 		return;
 	}
 
+	// Username availability and saving
 	var users = db.model('User', schemas.userSchema);
 	var out = users.findOne({
 		name : req.body.signupusername
@@ -64,6 +98,11 @@ exports.signup = function(req, res) {
 }
 
 exports.checkusername = function(req, res) {
+	//Send invalid username if the format is wrong
+	if (!isValidUserName(req.params.username)) {
+		res.send(200, '2');
+	}
+
 	User = db.model('User', schemas.userSchema);
 	var response = '0';
 	var out = User.findOne({
@@ -361,23 +400,33 @@ exports.settings = function(req, res){
 }
 
 exports.saveSettings = function(req, res){
-	var myRegxp = /^([a-zA-Z0-9_-]){3,10}$/;
-	if ((req.body.inputUsername.length >0 && myRegxp.test(req.body.inputUsername) == false) || (req.body.inputPassword.length > 0 && myRegxp.test(req.body.inputPassword) == false)) {
+	// Username
+	if (req.body.inputUsername.length > 0 && !isValidUserName(req.body.inputUsername)) {
 		res.render('settings', {
-			alert : "Credentials must be only alphanumeric, between 3 and 10 characters",
+			alert : "User name should be between 3 and 12 characters and only contain letters, digits or . - _.",
 		});
 		return;
 	}
-	var myRegxp = /\S+@\S+\.\S+/;
-	if (req.body.inputEmail.length > 0 && myRegxp.test(req.body.inputEmail) == false) {
+	
+	// Password Syntax
+	if (req.body.inputPassword.length > 0 && !isValidPassword(req.body.inputPassword)) {
 		res.render('settings', {
-			alert : "Please insert a valid email adress",
+			alert : "Password should be betwwen 8 and 30 characters and have at least a lower case letter, an upper case letter and a digit. It can contain the following symbols: ! @ # % : _ ( ) $ ^ & * - . ?",
 		});
 		return;
 	}
+
 	if (req.body.inputPassword != req.body.inputRePassword && req.body.inputPassword > 2) {
 		res.render('settings', {
-			alert : "The two passwords are not matching or are too short (min. 6 charrcaters)",
+			alert : "The two passwords are not matching .",
+		});
+		return;
+	}
+
+	// Email
+	if (req.body.inputEmail.length > 0 && !isValidEmail(req.body.inputEmail)) {
+		res.render('settings', {
+			alert : "Please insert a valid email adress",
 		});
 		return;
 	}
@@ -408,15 +457,32 @@ exports.saveSettings = function(req, res){
 	}
 	
 	//update user
-	var out = users.findByIdAndUpdate(req.user._id, newValues, function(err, user) {
-		if (user) {
-			res.render('settings', {
-				user: newValues,
-				alert: "Acoount successfully updated!",
-				type: "success"
-			})
+	var out = users.findById(req.user._id, function(err, user) {
+		if (user) { // What about err?
+			user.set(newValues);
+			user.save(function(err, user) {
+				if (err) res.render('settings', {
+					user: newValues,
+					alert: "Something went wrong. Your data was not saved.",
+					type: "error"
+				});
+				res.render('settings', {
+					user:  newValues,
+					alert: "Acoount successfully updated!",
+					type: "success"
+				});	
+			});
 		}
 	});
+	// var out = users.findByIdAndUpdate(req.user._id, newValues, function(err, user) {
+	// 	if (user) {
+	// 		res.render('settings', {
+	// 			user: newValues,
+	// 			alert: "Acoount successfully updated!",
+	// 			type: "success"
+	// 		})
+	// 	}
+	// });
 	
 }
 
