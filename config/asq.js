@@ -8,10 +8,13 @@ module.exports = {
 	//Note this is overwritten by the environment HOST value if it exists.
 	host: "127.0.0.1",
 
-	//Port used by the server to listen for web requests (default: 443)
-	//By default HTTP uses port 80 and HTTPS uses port 443
+	//Port used by the server to listen for http requests (default: 80)
 	//Note this is overwritten by the environment HOST value if it exists.
-	port: 3443,
+	HTTPPort: 3000,
+
+	//Port used by the server to listen for https requests (default: 443)
+	//Note this is overwritten by the environment HOST value if it exists.
+	HTTPSPort: 3443,
 
 	//Clients limit (default: 50)
 	clientsLimit: 50,
@@ -26,7 +29,7 @@ module.exports = {
 	//CA path needed for HTTPS (default: './ssl/ca.crt')
 	caPath: "./ssl/ca.crt",
 	//Request a certificate for HTTPS (default: true)
-	requestCert: true,
+	requestCert: false,
 	//Reject unauthorized requests for HTTPS (default: false)
 	rejectUnauthorized: false,
 

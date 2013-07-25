@@ -13,7 +13,7 @@ var express = require('express')
         url: "mongodb://" + config.asq.mongoDBServer + ":" + config.asq.mongoDBPort + "/login",
         interval: 120000
     })
-  , http = config.asq.enableHTTPS ? require('https') : require('http')
+  , http = require('http')
   , credentials = config.asq.enableHTTPS ? { 
         key: fs.readFileSync(config.asq.keyPath),
         cert: fs.readFileSync(config.asq.certPath),
@@ -106,7 +106,7 @@ function ensureAuthenticated(req, res, next) {
 
 //Set the process host and port if undefined.
 process.env.HOST = process.env.HOST || config.asq.host;
-process.env.PORT = process.env.PROT || config.asq.port;
+process.env.PORT = process.env.PROT || (config.asq.enableHTTPS ? config.asq.HTTPSPort : config.asq.HTTPPort);
 console.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
@@ -122,12 +122,24 @@ mongoose = require('mongoose');
 db = mongoose.createConnection(config.asq.mongoDBServer, config.asq.mongoDBPort, config.asq.dbName);
 schemas = require('./models/models.js');
 
+//Reidrection to secure url when HTTPS is used.
+
+
 /** Configure express */
 app.configure(function() {
     app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     //app.set('view engine', 'ejs');
+    if (config.asq.enableHTTPS) {
+        app.use(function forceSSL(req, res, next) {
+            if (!req.secure) {
+                console.log('HTTPS Redirection');
+                return res.redirect('https://' + appHost + ":" + app.get('port') + req.url);
+            }
+            next();
+        });
+    }
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser({uploadDir: './slides/'}));
@@ -298,9 +310,20 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 
 /** HTTP(S) Server */
 if (config.asq.enableHTTPS) {
-    var server = http.createServer(credentials, app).listen(app.get('port'), function(){
+    var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
         console.log("ASQ HTTPS server listening on port " + app.get('port'));
     });
+    
+    //HTTP app and server for redirect
+    // var appHTTP = express();
+    // appHTTP.set('port', config.asq.HTTPPort || 3000);
+    // appHTTP.get('*', function (req, res) {
+    //     return res.redirect('https://' + req.get('host') + ":" + app.get('port') + req.url);
+    // });
+    var serverHTTP = http.createServer(app).listen(config.asq.HTTPPort, function() {
+        console.log("HTTP redirection ready, listening on port " + config.asq.HTTPPort);
+    });
+
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
         console.log("ASQ HTTP server listening on port " + app.get('port'));
