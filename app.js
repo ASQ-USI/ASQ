@@ -7,18 +7,19 @@ var express = require('express')
   , path = require('path')
   , fs = require('fs')
   , config = require('./config')
+  , sessionMongooseConfig = require('./sessionMongooseConfig')
   , SessionMongoose = require("session-mongoose")(express)
   , mongooseSessionStore = new SessionMongoose({
-        url: "mongodb://" + config.mongoDBServer + ":" + config.mongoDBPort + "/login",
+        url: "mongodb://" + config.asq.mongoDBServer + ":" + config.asq.mongoDBPort + "/login",
         interval: 120000
     })
-  , http = config.enableHTTPS ? require('https') : require('http')
-  , credentials = config.enableHTTPS ? { 
-        key: fs.readFileSync(config.keyPath),
-        cert: fs.readFileSync(config.certPath),
-        ca: fs.readFileSync(config.caPath),
-        requestCert: config.requestCert,
-        rejectUnauthorized: config.rejectUnauthorized,
+  , http = config.asq.enableHTTPS ? require('https') : require('http')
+  , credentials = config.asq.enableHTTPS ? { 
+        key: fs.readFileSync(config.asq.keyPath),
+        cert: fs.readFileSync(config.asq.certPath),
+        ca: fs.readFileSync(config.asq.caPath),
+        requestCert: config.asq.requestCert,
+        rejectUnauthorized: config.asq.rejectUnauthorized,
     } : {}
   , cons = require('consolidate')
   , dust = require('dustjs-linkedin')
@@ -32,14 +33,11 @@ var express = require('express')
   , editFunctions = require('./routes/edit')
   , statistics = require('./routes/statistics');
 
-
-
-console.log(process.env.IP, process.env.PORT);
   // save sessionStore to config for later access
-  config.setSessionStore(mongooseSessionStore);
+  sessionMongooseConfig.setSessionStore(mongooseSessionStore);
 
   //set the root path
-  config.setRootPath(__dirname);
+  sessionMongooseConfig.setRootPath(__dirname);
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -107,8 +105,8 @@ function ensureAuthenticated(req, res, next) {
 }
 
 //Set the process host and port if undefined.
-process.env.HOST = process.env.HOST || config.host;
-process.env.PORT = process.env.PROT || config.port;
+process.env.HOST = process.env.HOST || config.asq.host;
+process.env.PORT = process.env.PROT || config.asq.port;
 console.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
@@ -116,12 +114,12 @@ app = express();
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
 appHost = process.env.HOST || '127.0.0.1';
-clientsLimit = config.clientsLimit || 50;
+clientsLimit = config.asq.clientsLimit || 50;
 console.log('Clients limit: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection(config.mongoDBServer, config.mongoDBPort, config.dbName);
+db = mongoose.createConnection(config.asq.mongoDBServer, config.asq.mongoDBPort, config.asq.dbName);
 schemas = require('./models/models.js');
 
 /** Configure express */
@@ -151,7 +149,7 @@ app.configure(function() {
 app.configure('development', function(){
     app.use(express.errorHandler());
 
-    if (config.enableHTTPS) {
+    if (config.asq.enableHTTPS) {
         //Passphrase should be entered at launch for production env.
         credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt').toString().trim();
         registration.isValidPassword = function(candidatePass) {
@@ -298,11 +296,16 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 //app.get('/render2/',  registration.sendanswer);
 
 
-/** HTTP Server */
-var server = http.createServer(credentials, app).listen(app.get('port'), function(){
-    console.log("ASQ server listening on port " + app.get('port'));
-});
-
+/** HTTP(S) Server */
+if (config.asq.enableHTTPS) {
+    var server = http.createServer(credentials, app).listen(app.get('port'), function(){
+        console.log("ASQ HTTPS server listening on port " + app.get('port'));
+    });
+} else {
+    var server = http.createServer(app).listen(app.get('port'), function(){
+        console.log("ASQ HTTP server listening on port " + app.get('port'));
+    });
+}
 /**
    @description  Require socket.io (websocket wrapper) and listen to the server.
    This needs to be requierd at this point since we need the server to already
