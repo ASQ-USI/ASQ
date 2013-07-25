@@ -6,16 +6,20 @@
 var express = require('express')
   , path = require('path')
   , fs = require('fs')
-  , http = require('https')
-  , credentials = { 
-        key: fs.readFileSync('./ssl/server.key'),
-        cert: fs.readFileSync('./ssl/server.crt'),
-        ca: fs.readFileSync('./ssl/ca.crt'),
-        requestCert: true,
-        rejectUnauthorized: false,
-        //Passphrase should be entered at launch for production env.
-        passphrase: "ASQ is a Web application for creating and delivering interactive HTML5 presentations. It is designed to support teachers who need to gather real-time feedback from the students while delivering their lectures. Presentation slides are delivered to viewers who can answer the questions embedded in the slides. The objective is to maximize the efficiency of bi-directional communication between the lecturer and a large audience."
-    }
+  , config = require('./config')
+  , SessionMongoose = require("session-mongoose")(express)
+  , mongooseSessionStore = new SessionMongoose({
+        url: "mongodb://" + config.mongoDBServer + ":" + config.mongoDBPort + "/login",
+        interval: 120000
+    })
+  , http = config.enableHTTPS ? require('https') : require('http')
+  , credentials = config.enableHTTPS ? { 
+        key: fs.readFileSync(config.keyPath),
+        cert: fs.readFileSync(config.certPath),
+        ca: fs.readFileSync(config.caPath),
+        requestCert: config.requestCert,
+        rejectUnauthorized: config.rejectUnauthorized,
+    } : {}
   , cons = require('consolidate')
   , dust = require('dustjs-linkedin')
   , engine = require('ejs-locals')
@@ -26,21 +30,16 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
   , editFunctions = require('./routes/edit')
-  , statistics = require('./routes/statistics')
-  , SessionMongoose = require("session-mongoose")(express)
-  , mongooseSessionStore = new SessionMongoose({
-        url: "mongodb://127.0.0.1/login",
-        interval: 120000
-    })
-  ,config = require('./config');
+  , statistics = require('./routes/statistics');
 
+
+
+console.log(process.env.IP, process.env.PORT);
   // save sessionStore to config for later access
   config.setSessionStore(mongooseSessionStore);
 
   //set the root path
   config.setRootPath(__dirname);
-
-
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -107,24 +106,27 @@ function ensureAuthenticated(req, res, next) {
     return false; //Ensure a value is always returned
 }
 
+//Set the process host and port if undefined.
+process.env.HOST = process.env.HOST || config.host;
+process.env.PORT = process.env.PROT || config.port;
+console.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
+
 app = express();
 //app.engine('ejs', engine);
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
-//appHost ='10.145.45.254';
-//appHost = '192.168.3.30';
-appHost = process.argv[2] || '127.0.0.1';
-clientsLimit = process.argv[3] || 50;
-console.log(appHost + ' clients: ' + clientsLimit);
+appHost = process.env.HOST || '127.0.0.1';
+clientsLimit = config.clientsLimit || 50;
+console.log('Clients limit: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection('127.0.0.1', 'asq');
+db = mongoose.createConnection(config.mongoDBServer, config.mongoDBPort, config.dbName);
 schemas = require('./models/models.js');
 
 /** Configure express */
 app.configure(function() {
-    app.set('port', process.env.PORT || 3443);
+    app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     //app.set('view engine', 'ejs');
@@ -148,10 +150,15 @@ app.configure(function() {
 
 app.configure('development', function(){
     app.use(express.errorHandler());
-    registration.isValidPassword = function(candidatePass) {
-        console.log('[devel mode] No password constraint');
-        return true;
-    };
+
+    if (config.enableHTTPS) {
+        //Passphrase should be entered at launch for production env.
+        credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt').toString().trim();
+        registration.isValidPassword = function(candidatePass) {
+            console.log('[devel mode] No password constraint');
+            return true;
+        };
+    }
 });
 
 // app.get('/', function(req, res){
@@ -293,7 +300,7 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 
 /** HTTP Server */
 var server = http.createServer(credentials, app).listen(app.get('port'), function(){
-    console.log("Express server listening on port " + app.get('port'));
+    console.log("ASQ server listening on port " + app.get('port'));
 });
 
 /**
