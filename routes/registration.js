@@ -99,7 +99,7 @@ exports.signup = function(req, res) {
 
 exports.checkusername = function(req, res) {
 	//Send invalid username if the format is wrong
-	if (!isValidUserName(req.params.username)) {
+	if (!exports.isValidUserName(req.params.username)) {
 		res.send(200, '2');
 	}
 
@@ -144,7 +144,7 @@ exports.settings = function(req, res){
 
 exports.saveSettings = function(req, res){
 	// Username
-	if (req.body.inputUsername.length > 0 && !isValidUserName(req.body.inputUsername)) {
+	if (req.body.inputUsername.length > 0 && !exports.isValidUserName(req.body.inputUsername)) {
 		res.render('settings', {
 			alert : "User name should be between 3 and 12 characters and only contain letters, digits or . - _.",
 		});
@@ -152,7 +152,7 @@ exports.saveSettings = function(req, res){
 	}
 	
 	// Password Syntax
-	if (req.body.inputPassword.length > 0 && !isValidPassword(req.body.inputPassword)) {
+	if (req.body.inputPassword.length > 0 && !exports.isValidPassword(req.body.inputPassword)) {
 		res.render('settings', {
 			alert : "Password should be betwwen 8 and 30 characters and have at least a lower case letter, an upper case letter and a digit. It can contain the following symbols: ! @ # % : _ ( ) $ ^ & * - . ?",
 		});
@@ -167,7 +167,7 @@ exports.saveSettings = function(req, res){
 	}
 
 	// Email
-	if (req.body.inputEmail.length > 0 && !isValidEmail(req.body.inputEmail)) {
+	if (req.body.inputEmail.length > 0 && !exports.isValidEmail(req.body.inputEmail)) {
 		res.render('settings', {
 			alert : "Please insert a valid email adress",
 		});
@@ -217,15 +217,6 @@ exports.saveSettings = function(req, res){
 			});
 		}
 	});
-	// var out = users.findByIdAndUpdate(req.user._id, newValues, function(err, user) {
-	// 	if (user) {
-	// 		res.render('settings', {
-	// 			user: newValues,
-	// 			alert: "Acoount successfully updated!",
-	// 			type: "success"
-	// 		})
-	// 	}
-	// });
 	
 }
 
