@@ -4,9 +4,18 @@
 */
 
 var express = require('express')
-  , http = require('http')
   , path = require('path')
   , fs = require('fs')
+  , http = require('https')
+  , credentials = { 
+        key: fs.readFileSync('./ssl/server.key'),
+        cert: fs.readFileSync('./ssl/server.crt'),
+        ca: fs.readFileSync('./ssl/ca.crt'),
+        requestCert: true,
+        rejectUnauthorized: false,
+        //Passphrase should be entered at launch for production env.
+        passphrase: "ASQ is a Web application for creating and delivering interactive HTML5 presentations. It is designed to support teachers who need to gather real-time feedback from the students while delivering their lectures. Presentation slides are delivered to viewers who can answer the questions embedded in the slides. The objective is to maximize the efficiency of bi-directional communication between the lecturer and a large audience."
+    }
   , cons = require('consolidate')
   , dust = require('dustjs-linkedin')
   , engine = require('ejs-locals')
@@ -115,7 +124,7 @@ schemas = require('./models/models.js');
 
 /** Configure express */
 app.configure(function() {
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || 3443);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     //app.set('view engine', 'ejs');
@@ -283,7 +292,7 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 
 
 /** HTTP Server */
-var server = http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(credentials, app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });
 
