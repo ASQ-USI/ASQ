@@ -135,7 +135,7 @@ app.configure(function() {
         app.use(function forceSSL(req, res, next) {
             if (!req.secure) {
                 console.log('HTTPS Redirection');
-                return res.redirect('https://' + appHost + ":" + app.get('port') + req.url);
+                return res.redirect('https://' + appHost + (app.get('port') === "443" ? "" : (":" + app.get('port'))) + req.url);
             }
             next();
         });
