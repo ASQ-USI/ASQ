@@ -113,7 +113,7 @@ app = express();
 //app.engine('ejs', engine);
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
-appHost = process.env.HOST || '127.0.0.1';
+appHost = process.env.HOST;
 clientsLimit = config.asq.clientsLimit || 50;
 console.log('Clients limit: ' + clientsLimit);
 
@@ -127,7 +127,7 @@ schemas = require('./models/models.js');
 
 /** Configure express */
 app.configure(function() {
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     //app.set('view engine', 'ejs');
@@ -135,7 +135,7 @@ app.configure(function() {
         app.use(function forceSSL(req, res, next) {
             if (!req.secure) {
                 console.log('HTTPS Redirection');
-                return res.redirect('https://' + appHost + (app.get('port') === "443" ? "" : (":" + app.get('port'))) + req.url);
+                return res.redirect('https://' + process.env.HOST + (app.get('port') === "443" ? "" : (":" + app.get('port'))) + req.url);
             }
             next();
         });
@@ -314,12 +314,6 @@ if (config.asq.enableHTTPS) {
         console.log("ASQ HTTPS server listening on port " + app.get('port'));
     });
     
-    //HTTP app and server for redirect
-    // var appHTTP = express();
-    // appHTTP.set('port', config.asq.HTTPPort || 3000);
-    // appHTTP.get('*', function (req, res) {
-    //     return res.redirect('https://' + req.get('host') + ":" + app.get('port') + req.url);
-    // });
     var serverHTTP = http.createServer(app).listen(config.asq.HTTPPort, function() {
         console.log("HTTP redirection ready, listening on port " + config.asq.HTTPPort);
     });
@@ -329,6 +323,7 @@ if (config.asq.enableHTTPS) {
         console.log("ASQ HTTP server listening on port " + app.get('port'));
     });
 }
+
 /**
    @description  Require socket.io (websocket wrapper) and listen to the server.
    This needs to be requierd at this point since we need the server to already

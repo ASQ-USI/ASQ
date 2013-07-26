@@ -21,7 +21,7 @@ module.exports = {
 
 	//HTTPS Settings
 	//Enable HTTPS (default: true)
-	enableHTTPS: true,
+	enableHTTPS: false,
 	//Key path needed for HTTPS (default: './ssl/server.key')
 	keyPath: "./ssl/server.key",
 	//Cert path needed for HTTPS (default: './ssl/server.crt')
