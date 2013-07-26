@@ -22,8 +22,7 @@ var model         = require('../models/models')
 , _               = require('underscore')
 , asyncblock      = require('asyncblock')
 , exec            = require('child_process').exec
-, mkdirp          = require('mkdirp')
-, config          = require('../config');
+, mkdirp          = require('mkdirp');
 
 
 logger.setLogLevel(4);
@@ -54,7 +53,7 @@ module.exports.post = function(req, res) {
   });
 
   // 2) unzip files
-  var folderPath = config.rootPath + '/slides/' + newSlideshow._id;
+  var folderPath = app.get('uploadDir') + '/' + newSlideshow._id;
   var zip = new AdmZip(req.files.upload.path);
   zip.extractAllTo(folderPath);
 
@@ -176,9 +175,10 @@ function createThumb(slideshow) {
 		});
 		
 		asyncblock(function(flow){
-			mkdirp.sync('slides/thumbs/' + slideshow._id);
+			mkdirp.sync(app.get('uploadDir') + '/thumbs/' + slideshow._id);
       var call = new Array();
-      call[0] = "/usr/local/w2png -W 1024 -H 768 --delay=1 -T -D slides/thumbs/";
+      call[0] = "/usr/local/w2png -W 1024 -H 768 --delay=1 -T -D ";
+      call[0] += app.get('uploadDir') + "/thumbs/";
       call[1] = slideshow._id;
       call[2] = " -o ";
       call = call.join("");

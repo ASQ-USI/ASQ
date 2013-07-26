@@ -140,9 +140,10 @@ app.configure(function() {
             next();
         });
     }
+    app.set('uploadDir', path.resolve(__dirname, config.asq.uploadDir));
     app.use(express.favicon());
     app.use(express.logger('dev'));
-    app.use(express.bodyParser({uploadDir: './slides/'}));
+    app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
     app.use(express.methodOverride());
     app.use(express.cookieParser('your secret here'));
     //mongosession store to be used with socket.io
