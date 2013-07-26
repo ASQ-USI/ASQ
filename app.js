@@ -119,7 +119,7 @@ console.log('Clients limit: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection(config.asq.mongoDBServer, config.asq.mongoDBPort, config.asq.dbName);
+db = mongoose.createConnection(config.asq.mongoDBServer, config.asq.dbName, config.asq.mongoDBPort);
 schemas = require('./models/models.js');
 
 //Reidrection to secure url when HTTPS is used.
@@ -164,11 +164,12 @@ app.configure('development', function(){
     if (config.asq.enableHTTPS) {
         //Passphrase should be entered at launch for production env.
         credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt').toString().trim();
-        registration.isValidPassword = function(candidatePass) {
+        
+    }
+    registration.isValidPassword = function(candidatePass) {
             console.log('[devel mode] No password constraint');
             return true;
         };
-    }
 });
 
 // app.get('/', function(req, res){
