@@ -1,0 +1,333 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+@font-face {
+  font-family: 'Aero Matics';
+  src: url('/fonts/Aero Matics Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Aero Matics';
+  src: url('/fonts/Aero Matics Bold.ttf');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Aero Matics Display';
+  src: url('/fonts/Aero Matics Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Aero Matics';
+  src: url('/fonts/Aero Matics Display Bold.ttf');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Blue Highway';
+  src: url('/fonts/blue highway rg.otf');
+}
+
+@font-face {
+  font-family: 'Blue Highway';
+  src: url('/fonts/blue highway bd.otf');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Droidiga';
+  src: url('/fonts/Droidiga.otf');
+}
+
+@font-face {
+  font-family: 'Hit The Road';
+  src: url('/fonts/hitroad.ttf');
+}
+
+@font-face {
+  font-family: 'US 101';
+  src: url('/fonts/US101.ttf');
+}
+
+#ac1 {
+  font-family: 'Fresca', sans-serif;
+}
+
+#ac2 {
+  font-family: 'Ropa Sans', sans-serif;
+}
+
+#ac3 {
+  font-family: 'Audiowide', cursive;
+}
+
+#ac4 {
+  font-family: 'Aero Matics';
+  font-weight: bold;
+}
+
+#ac5 {
+  font-family: 'Aero Matics';
+}
+
+#ac6 {
+  font-family: 'Blue Highway', sans-serif;
+  font-weight: bold;
+}
+
+#ac7 {
+  font-family: 'Blue Highway', sans-serif;
+}
+
+#ac8 {
+  font-family: 'Droidiga', cursive;
+}
+
+#ac9 {
+  font-family: 'Hit The Road';
+}
+
+#ac10 {
+  font-family: 'US 101';
+}
+
+
+
+
+.ASQcontainer {
+  width: 96%;
+  height: 96%;
+  position: relative;
+  border: 1px solid #CCC;
+  -webkit-perspective: 1800px;
+     -moz-perspective: 1200px;
+       -o-perspective: 1200px;
+          perspective: 1200px;
+  clear: both;
+  margin: 2%;
+  //overflow: hidden;
+  text-align: center;
+}
+
+@dur: 4s;
+@delay: 1s;
+
+.box {
+  display: inline-block;
+  position: relative;
+  width: 30%;
+  height: auto;
+  padding-bottom: 30%;
+  text-align: center;
+  margin: 0 auto;
+
+
+  -webkit-transform-style: preserve-3d;
+     -moz-transform-style: preserve-3d;
+       -o-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 1s;
+     -moz-transition: -moz-transform 1s;
+       -o-transition: -o-transform 1s;
+          transition: transform 1s;
+  -webkit-transform-origin: 50% 50% -35px;
+  //-webkit-transform: translateZ( -35px );
+}
+
+.box:first-child {
+  float: left;
+}
+
+.box:last-child {
+  float: right;
+}
+
+.box figure {
+  display: block;
+  position: absolute;
+  background: black;
+}
+
+.box .letter {
+  display: inline-block;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 80%;
+  height: 80%;
+  padding: 5%;
+  margin: 5%;
+  background: white;
+  line-height: 85%;
+  font-size: 14em;
+  color: black;
+  vertical-align: baseline; 
+}
+
+.box .front,
+.box .back {
+  width: 100%;
+  height: 100%;
+}
+
+.box .front {
+  // background: blue;
+
+  // -webkit-transition-duration: 0s;
+  //     -webkit-transform: transform 0s;
+  //     -webkit-transform: translateZ( 35px );
+}
+
+.box .back {
+  // background: red;
+  -webkit-transform: rotateY( -180deg ) translateZ(  70px );
+}
+
+.box .left {
+  width: 70px;
+  height: 100%;
+  left: 0%;
+  // background: green;
+  text-align: center;
+  -webkit-transform-origin: 50% 50% -35px;
+  -webkit-transform: rotateY( -90deg );
+}
+
+.box .right {
+  width: 70px;
+  height: 100%;
+  left: 100%;
+  // background: green;
+  text-align: center;
+  -webkit-transform-origin: 50% 100% -35px;
+  -webkit-transform: rotateY( 90deg ) translateZ( -70px );
+}
+
+.animation1 {
+  -webkit-animation-name: myanim1;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-duration: 8s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-transform-style: preserve-3d;
+  -webkit-animation-direction:normal;
+  -webkit-animation-delay: @delay;
+  -moz-animation-name: myanim1;
+  -moz-animation-timing-function: ease-in-out;
+  -moz-animation-duration: 8s;
+  -moz-animation-iteration-count: infinite;
+  -moz-transform-style: preserve-3d;
+  -moz-animation-direction:normal;
+}
+
+@-webkit-keyframes myanim1 {
+  // 0% {-webkit-transform:   translateZ(  -35px ) rotateY( 0deg );}
+  // 25% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
+  // 75% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
+  // 100% {-webkit-transform: translateZ(  -35px ) rotateY( 360deg );}
+  0% {-webkit-transform:  rotateY( 0deg );}
+  25% {-webkit-transform: rotateY( 180deg );}
+  75% {-webkit-transform:  rotateY( 180deg );}
+  100% {-webkit-transform: rotateY( 360deg );}
+}
+
+.animation2 {
+  -webkit-animation-name: myanim2;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-duration: 8s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-transform-style: preserve-3d;
+  -webkit-animation-direction:normal;
+  -webkit-animation-delay: @delay;
+  -moz-animation-name: myanim2;
+  -moz-animation-timing-function: ease-in-out;
+  -moz-animation-duration: 8s;
+  -moz-animation-iteration-count: infinite;
+  -moz-transform-style: preserve-3d;
+  -moz-animation-direction:normal;
+}
+
+@-webkit-keyframes myanim2 {
+  // 0% {-webkit-transform:   translateZ(  -35px ) rotateY( 0deg );}
+  // 25% {-webkit-transform:  translateZ(  -35px ) rotateY( 0deg );}
+  // 50% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
+  // 75% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
+  // 100% {-webkit-transform: translateZ(  -35px ) rotateY( 360deg );}
+  0% {-webkit-transform:  rotateY( 0deg );}
+  25% {-webkit-transform: rotateY( 0deg );}
+  50% {-webkit-transform: rotateY( 180deg );}
+  75% {-webkit-transform: rotateY( 180deg );}
+  100% {-webkit-transform: rotateY( 360deg );}
+}
+
+.animation3 {
+  -webkit-animation-name: myanim3;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-duration: 8s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-transform-style: preserve-3d;
+  -webkit-animation-direction:normal;
+  -webkit-animation-delay: @delay;
+  -moz-animation-name: myanim3;
+  -moz-animation-timing-function: ease-in-out;
+  -moz-animation-duration: 8s;
+  -moz-animation-iteration-count: infinite;
+  -moz-transform-style: preserve-3d;
+  -moz-animation-direction:normal;
+}
+
+@-webkit-keyframes myanim3 {
+  // 25% {-webkit-transform:   translateZ(  -35px ) rotateY( 0deg );}
+  // 50% {-webkit-transform:  translateZ(  -35px ) rotateY(  0deg );}
+  // 75% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
+  // 100% {-webkit-transform: translateZ(  -35px ) rotateY( 360deg );}
+  25% {-webkit-transform: rotateY( 0deg );}
+  50% {-webkit-transform:  rotateY(  0deg );}
+  75% {-webkit-transform: rotateY( 180deg );}
+  100% {-webkit-transform: rotateY( 360deg );}
+}
