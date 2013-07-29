@@ -95,6 +95,17 @@ table {
   src: url('/fonts/US101.ttf');
 }
 
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src: url('/fonts/AlteHaasGroteskRegular.ttf');
+}
+
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src: url('/fonts/AlteHaasGroteskBold.ttf');
+  font-weight: bold;
+}
+
 #ac1 {
   font-family: 'Fresca', sans-serif;
 }
@@ -137,8 +148,14 @@ table {
   font-family: 'US 101';
 }
 
+#ac11 {
+  font-family: 'Alte Haas Grotesk';
+}
 
-
+#ac12 {
+  font-family: 'Alte Haas Grotesk';
+  font-weight: bold;
+}
 
 .ASQcontainer {
   width: 96%;
@@ -151,8 +168,11 @@ table {
           perspective: 1200px;
   clear: both;
   margin: 2%;
-  //overflow: hidden;
   text-align: center;
+}
+
+body.inverseLogo .ASQcontainer {
+  border: 1px solid #222;
 }
 
 @dur: 4s;
@@ -167,7 +187,6 @@ table {
   text-align: center;
   margin: 0 auto;
 
-
   -webkit-transform-style: preserve-3d;
      -moz-transform-style: preserve-3d;
        -o-transform-style: preserve-3d;
@@ -177,7 +196,6 @@ table {
        -o-transition: -o-transform 1s;
           transition: transform 1s;
   -webkit-transform-origin: 50% 50% -35px;
-  //-webkit-transform: translateZ( -35px );
 }
 
 .box:first-child {
@@ -191,6 +209,19 @@ table {
 .box figure {
   display: block;
   position: absolute;
+  background: black;
+}
+
+.box.inverseLogo figure {
+  background: white;
+}
+
+.box.inverseLogo .letter {
+  background: black;
+  color: white;
+}
+
+body.inverseLogo {
   background: black;
 }
 
@@ -216,16 +247,7 @@ table {
   height: 100%;
 }
 
-.box .front {
-  // background: blue;
-
-  // -webkit-transition-duration: 0s;
-  //     -webkit-transform: transform 0s;
-  //     -webkit-transform: translateZ( 35px );
-}
-
 .box .back {
-  // background: red;
   -webkit-transform: rotateY( -180deg ) translateZ(  70px );
 }
 
@@ -233,7 +255,6 @@ table {
   width: 70px;
   height: 100%;
   left: 0%;
-  // background: green;
   text-align: center;
   -webkit-transform-origin: 50% 50% -35px;
   -webkit-transform: rotateY( -90deg );
@@ -243,7 +264,6 @@ table {
   width: 70px;
   height: 100%;
   left: 100%;
-  // background: green;
   text-align: center;
   -webkit-transform-origin: 50% 100% -35px;
   -webkit-transform: rotateY( 90deg ) translateZ( -70px );
@@ -266,10 +286,6 @@ table {
 }
 
 @-webkit-keyframes myanim1 {
-  // 0% {-webkit-transform:   translateZ(  -35px ) rotateY( 0deg );}
-  // 25% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
-  // 75% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
-  // 100% {-webkit-transform: translateZ(  -35px ) rotateY( 360deg );}
   0% {-webkit-transform:  rotateY( 0deg );}
   25% {-webkit-transform: rotateY( 180deg );}
   75% {-webkit-transform:  rotateY( 180deg );}
@@ -293,11 +309,6 @@ table {
 }
 
 @-webkit-keyframes myanim2 {
-  // 0% {-webkit-transform:   translateZ(  -35px ) rotateY( 0deg );}
-  // 25% {-webkit-transform:  translateZ(  -35px ) rotateY( 0deg );}
-  // 50% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
-  // 75% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
-  // 100% {-webkit-transform: translateZ(  -35px ) rotateY( 360deg );}
   0% {-webkit-transform:  rotateY( 0deg );}
   25% {-webkit-transform: rotateY( 0deg );}
   50% {-webkit-transform: rotateY( 180deg );}
@@ -322,10 +333,6 @@ table {
 }
 
 @-webkit-keyframes myanim3 {
-  // 25% {-webkit-transform:   translateZ(  -35px ) rotateY( 0deg );}
-  // 50% {-webkit-transform:  translateZ(  -35px ) rotateY(  0deg );}
-  // 75% {-webkit-transform:  translateZ(  -35px ) rotateY( 180deg );}
-  // 100% {-webkit-transform: translateZ(  -35px ) rotateY( 360deg );}
   25% {-webkit-transform: rotateY( 0deg );}
   50% {-webkit-transform:  rotateY(  0deg );}
   75% {-webkit-transform: rotateY( 180deg );}
