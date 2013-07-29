@@ -7,6 +7,31 @@ var cheerio = require('cheerio');
 var fs = require("fs");
 var path = require('path'), schemas = require('../models/models.js');
 
+var authentification ={
+	"public": function(req, res, next) {
+		console.log("New viewer joining public session.")
+		next();
+	},
+
+	"anonymous": function(req, res, next) {
+
+	},
+
+	"private": function(req, res, next) {
+
+	}
+}
+
+/** Grant or deny access to the current session to potnetial viewers. */
+module.exports.connectViewer = function(req, res, next) {
+	var userName = req.params.user;
+	sessionFromUserName(userName, function(err, session) {
+		if (err) throw err;
+		console.log(session);
+		authentification[session.authLevel](req, res, next);
+	})
+}
+
 /** Renders the slideshow for admins */
 module.exports.admin = function(req, res) {
     var userId = req.user._id;
@@ -16,7 +41,7 @@ module.exports.admin = function(req, res) {
             res.redirect('/user/' + req.user.name +
                         '/?alert=You have no session running!&type=error');
         } else {
-            var slideshow = session.slideshow;
+            var slideshow = session.slides;
            // res.sendfile(slideshow.teacherFile)
             res.render(slideshow.teacherFile, {title: slideshow.title, mode:'admin',
                                 host: appHost, port: app.get('port'),
@@ -39,7 +64,8 @@ module.exports.adminControll = function(req, res) {
 		if (!session.id) {
 			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
 		} else {
-			var slideshow = session.slideshow;
+			console.log(session);
+			var slideshow = session.slides;
 			fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
 				//console.log(data);
 				var ids = [];
@@ -109,8 +135,8 @@ module.exports.adminStatic = function(req, res) {
 	console.log("adminStatic")
 	var userId = req.user._id;
 	sessionFromUserId(userId, function(err, session) {
-		if (session.slideshow)
-			res.sendfile(session.slideshow.path + req.params[0]);
+		if (session.slides)
+			res.sendfile(session.slides.path + req.params[0]);
 		else
 			res.send(404, 'You do not have a session running');
 	});
@@ -187,8 +213,8 @@ module.exports.live = function(req, res) {
                 throw err;
             return;
         }
-        if (session.slideshow) {
-            var slideshow = session.slideshow
+        if (session.slides) {
+            var slideshow = session.slides
             //res.sendfile(slideshow.studentFile)
             res.render(slideshow.studentFile, {title: slideshow.title, mode:mode,
                                   host:appHost, port: app.get('port'),
@@ -213,8 +239,8 @@ module.exports.liveStatic = function(req, res) {
 				throw err;
 			return;
 		}
-		if (session.slideshow)
-			res.sendfile(session.slideshow.path + req.params[0]);
+		if (session.slides)
+			res.sendfile(session.slides.path + req.params[0]);
 		else
 			res.send(404, 'This user does not have a session running');
 	});
@@ -251,6 +277,7 @@ module.exports.start = function(req, res) {
 		var newSession = new Session();
 		newSession.presenter = req.user._id;
 		newSession.slides = slides._id;
+		newSession.authLevel = "public";
 		newSession.save(function(err) {
 			if (err)
 				throw err;
@@ -293,19 +320,18 @@ var sessionFromUserId = function(userId, callback) {
 			callback(new Error('User does not exist'));
 		else if (user.current) {
 			var Session = db.model('Session', schemas.sessionSchema);
-			Session.findById(user.current, function(err, session) {
-				if (err)
-					callback(err);
+			Session.findById(user.current)
+				   .populate('slides')
+				   .exec(function(err, session) {
+				if (err) return callback(err);
+				callback(null, session);
 				//console.log(session);
-				var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-				Slideshow.findById(session.slides, function(err, slideshow) {
-					if (err)
-						callback(err);
-					callback(null, {
-						id : session._id,
-						slideshow : slideshow
-					});
-				});
+				// var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+				// Slideshow.findById(session.slides, function(err, slideshow) {
+				// 	if (err)
+				// 		callback(err);
+				// 	callback(null, session);
+				// });
 			});
 		} else {//no session for user
 			callback(null, {});
@@ -328,18 +354,17 @@ var sessionFromUserName = function(userName, callback) {
 			callback(new Error('User does not exist'));
 		else if (user.current) {
 			var Session = db.model('Session', schemas.sessionSchema);
-			Session.findById(user.current, function(err, session) {
-				if (err)
-					callback(err);
-				var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-				Slideshow.findById(session.slides, function(err, slideshow) {
-					if (err)
-						callback(err);
-					callback(null, {
-						id : session._id,
-						slideshow : slideshow
-					});
-				});
+			Session.findById(user.current)
+				   .populate('slides')
+				   .exec(function(err, session) {
+				if (err) return callback(err);
+				callback(null, session);
+				// var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+				// Slideshow.findById(session.slides, function(err, slideshow) {
+				// 	if (err)
+				// 		callback(err);
+				// 	callback(null, session);
+				// });
 			});
 		} else {//no session for user
 			callback(null, {});

@@ -10,7 +10,8 @@ var mongoose  = require('mongoose')
 
 var sessionSchema = new Schema({
 	presenter: { type: ObjectId, ref: 'User'},
-	slides: { type: ObjectId },
+	slides: { type: ObjectId, ref: 'Slideshow' },
+  authLevel: { type: String, enum: ['public', 'anonymous', 'private'] },
 	activeSlide: { type: String, default: '0' },
 	date: {type: Date, default: Date.now },
 	viewers: {type: Array, default: []},

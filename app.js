@@ -196,7 +196,7 @@ app.get('/user/settings', ensureAuthenticated, registration.settings);
 app.post('/user/settings', ensureAuthenticated, registration.saveSettings);
 
 /** Join the session of user */
-app.get('/live/:user/', routes.slides.live);
+app.get('/live/:user/', routes.slides.connectViewer, routes.slides.live);
 app.get('/live/:user/*', routes.slides.liveStatic);
 
 /** Control your current session (if any) */
