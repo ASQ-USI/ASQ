@@ -254,6 +254,7 @@ module.exports.start = function(req, res) {
 
 		//Error Handling
 		flow.errorCallback = function(err) {
+			lib.logger.error("Presentation Start\n" + err);
 			res.redirect(302, '/user/' + req.user.name 
 				+ '/?alert=Something went wrong. The Great ASQ Server said: '
 				+ err + '&type=error');
@@ -289,7 +290,7 @@ module.exports.start = function(req, res) {
 
 		//Wait to finish and redirect
 		flow.wait();
-		console.log("Starting new " + newSession.authLevel + " session");
+		lib.logger.info("Starting new " + newSession.authLevel + " session");
 		res.redirect(302, '/adminControll');
 	});
 }

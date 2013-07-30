@@ -225,8 +225,13 @@ app.get('/user/', ensureAuthenticated, function(req,res) {
 });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
-app.post('/user', passport.authenticate('local', { failureRedirect: '/', failureFlash: true}) ,function(req, res) {
-    res.redirect('/user/'+req.body.username+"/");
+app.post('/user', passport.authenticate('local', {
+  failureRedirect : '/',
+  failureFlash    : true
+}),function(req, res) {
+    var redirect_to = req.session.redirect_to ? 
+      req.session.redirect_to : "/user/" + req.body.username + "/";
+    res.redirect(redirect_to);
 });
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
