@@ -124,9 +124,9 @@ body{
   margin-top: 20px;
   margin-bottom: 80px;
 }
-.btn{
-  margin-right: 10px;
-}
+// .btn{
+//   margin-right: 10px;
+// }
 /* -- Style for seperating headline -- */
 .headline{
   border-bottom: 1px solid #000;
@@ -220,19 +220,33 @@ body{
     text-shadow: black 0px 0px 500px;
   }
   .buttons{
+    
     -webkit-transform: rotateY( 180deg );
     -moz-transform: rotateY( 180deg );
-    background-color: #efefef; 
+    background-color: #efefef;
+    text-align: center; 
     box-shadow: 0px 50px 100px black;
     height: 195px;
-    a{
-      display: block;
-      margin: 5px auto 5px auto;
-      width: 150px;
+    //dropdown button group
+    .btn-group{
+      margin-top: 30px;
+      margin-bottom:5px;
+      position:relative;
+      display: inline-block;
+      font-size: 0;
+      white-space: nowrap;
+      vertical-align: middle;
+      height:auto;
+      button{
+        width: 150px;
+      }
+      .dropdown-toggle{
+        width:auto;
+      }
     }
-    a:first-child{
-      display: block;
-      margin: 40px auto 5px auto;
+    a{
+      width: 150px;
+      margin: 4px 0
     }
   }
   .dates{

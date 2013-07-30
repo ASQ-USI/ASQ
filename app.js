@@ -120,7 +120,7 @@ console.log('Clients limit: ' + clientsLimit);
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
 db = mongoose.createConnection(config.asq.mongoDBServer, config.asq.dbName, config.asq.mongoDBPort);
-schemas = require('./models/models.js');
+schemas = require('./models');
 
 //Reidrection to secure url when HTTPS is used.
 

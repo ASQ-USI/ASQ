@@ -5,7 +5,7 @@
  */
 var cheerio = require('cheerio');
 var fs = require("fs");
-var path = require('path'), schemas = require('../models/models.js');
+var path = require('path'), schemas = require('../models');
 
 var authentification ={
 	"public": function(req, res, next) {

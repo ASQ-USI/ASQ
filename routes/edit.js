@@ -1,4 +1,4 @@
-var schemas = require("../models/models.js");
+var schemas = require("../models");
 var fs = require("fs");
 var moment = require('moment');
 var sys = require('sys');

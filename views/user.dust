@@ -1,158 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		{>htmlHead/}
-		<title>ASQ - My Presentations</title>
-		<script src="/socket.io/socket.io.js"></script>
-	</head>
+  <head>
+    {>htmlHead/}
+    <title>ASQ - My Presentations</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
 
-	<body>
+  <body>
 
-		<!---   top menu -->
-		{>menu/}
+    <!---   top menu -->
+    {>menu/}
 
-		<!---   Content area   -->
-		<div class="container" id="mainContainer">
+    <!---   Content area   -->
+    <div class="container" id="mainContainer">
 
-			<!--- Alert -->
-			<!-- Show notification fo user feedback based on query alert and type-->
+      <!--- Alert -->
+      <!-- Show notification fo user feedback based on query alert and type-->
 
-			{?alert}
-			<div class="alert {type}">
-				{alert}
-			</div>
-			{/alert}
+      {?alert}
+      <div class="alert {type}">
+        {alert}
+      </div>
+      {/alert}
 
-			<!---   Seperating Headline   -->
-			{?session}
-			<div class="alert alert-block activeSessionAlert">
-				<button type="button" class="close" data-dismiss="alert">
-					&times;
-				</button>
-				<h4>Presentation running</h4>
-				<p>
-					You have a live session running. Do you want to see it?
-				</p>
-				<p>
-					<a class="btn btn-primary"  href="/admincontroll">Go to presentation</a>
-					<a class="btn btn-danger" id="stopSessionBtn" href="#"> Stop presentation </a>
-				</p>
-			</div>
-			{/session}
-			<!---   Seperating Headline   -->
-			
-				{^slidesByCourses}
-					<div class="row">
-						<div class="span12  headline">
-							<h2 class="pull-left">No courses available</h2>
+      <!---   Seperating Headline   -->
+      {?session}
+      <div class="alert alert-block activeSessionAlert">
+        <button type="button" class="close" data-dismiss="alert">
+          &times;
+        </button>
+        <h4>Presentation running</h4>
+        <p>
+          You have a live session running. Do you want to see it?
+        </p>
+        <p>
+          <a class="btn btn-primary"  href="/admincontroll">Go to presentation</a>&nbsp;&nbsp;
+          <a class="btn btn-danger" id="stopSessionBtn" href="#"> Stop presentation </a>
+        </p>
+      </div>
+      {/session}
+      <!---   Seperating Headline   -->
+      
+        {^slidesByCourses}
+          <div class="row">
+            <div class="span12  headline">
+              <h2 class="pull-left">No courses available</h2>
                         </div>
-						<div class="span12">
-							<p>Please upload a new presentation.</p>
-						</div>
+            <div class="span12">
+              <p>Please upload a new presentation.</p>
+            </div>
                     </div>
-				{/slidesByCourses}
+        {/slidesByCourses}
 
-				{#slidesByCourses}
-				<div class="row">
-				<div class="span12  headline">
-					<h2 class="pull-left">{course}</h2>
-					<!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
-				</div>
-				</div>
-				<div class="row">
-					<div class="span12">
-						{#slides}
-						<div class="thumbContainer">
-							<div class="thumb" id="{_id}">
-								<div class="info" >
-									<div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
-									<h4>{title}</h4>
-								</div>
-		
-								<div class="buttons">
-									<a href="/user/start/{_id}" class="btn btn-primary start"><i class="icon-play icon-white"> </i> Start Presentation</a>
-									<a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-									<a href="/user/edit/{_id}" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-									<div class="dates">
-										<p><i class="icon-play"></i> {lastSession}</p>
-										<p><i class="icon-pencil" ></i> {lastEdit}</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						{/slides}
-					</div>
-				</div>
-			{/slidesByCourses}
+        {#slidesByCourses}
+        <div class="row">
+        <div class="span12  headline">
+          <h2 class="pull-left">{course}</h2>
+          <!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
+        </div>
+        </div>
+        <div class="row">
+          <div class="span12">
+            {#slides}
+            <div class="thumbContainer">
+              <div class="thumb" id="{_id}">
+                <div class="info" >
+                  <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
+                  <h4>{title}</h4>
+                </div>
+    
+                <div class="buttons">
+                  <div class="btn-group">
+                    <button class="btn btn-primary">Action</button>
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">Action</a></li>
+                      <li><a href="#">Another action</a></li>
+                      <li><a href="#">Something else here</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#">Separated link</a></li>
+                    </ul>
+                  </div>
+<!--                  <a href="/user/start/{_id}" class="btn btn-primary start"><i class="icon-play icon-white"> </i> Start Presentation</a> -->
+                  <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
+                  <a href="/user/edit/{_id}" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
+                  <div class="dates">
+                    <p><i class="icon-play"></i> {lastSession}</p>
+                    <p><i class="icon-pencil" ></i> {lastEdit}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/slides}
+          </div>
+        </div>
+      {/slidesByCourses}
 
-		</div>
-		<div id="iOSWebAppInfo" data-content='Tab on &nbsp;<img width="20px" src="/img/iOS-action.png"/>&nbsp; and select<br/> "Add to Home Screen".'></div>
-		<!-- /container -->
+    </div>
+    <div id="iOSWebAppInfo" data-content='Tab on &nbsp;<img width="20px" src="/img/iOS-action.png"/>&nbsp; and select<br/> "Add to Home Screen".'></div>
+    <!-- /container -->
 
-		<!-- Le javascript -->
-		<!-- Connect to sockets only if there's an active session -->
-		{?session}
-			<script>
-				window.onload = function() {
-				connect( "{host}" , {port} , "{id}");
-				}
-	    </script>
-	    <script src="/js/user.js"></script>
-		{/session}
+    <!-- Le javascript -->
+    <!-- Connect to sockets only if there's an active session -->
+    {?session}
+      <script>
+        window.onload = function() {
+        connect( "{host}" , {port} , "{id}");
+        }
+      </script>
+      <script src="/js/user.js"></script>
+    {/session}
 
-		<script>
-		
-		if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
-			$('#iOSWebAppInfo').popover({
-				placement: "top",
-				title: "Install ASQ as Web-app",
-				html: true,
-			});
-			$('#iOSWebAppInfo').popover('show');
-		}
-		if(!window.navigator.standalone && navigator.userAgent.match(/(iPad)/g) ? true : false ){
-			$('#iOSWebAppInfo').popover({
-				placement: "bottom",
-				title: "Install ASQ as Web-app",
-				html: true,
-			});
-			$('#iOSWebAppInfo').popover('show');
-		}
-		
-		document.addEventListener("touchstart", hidePopover, false);
-		function hidePopover(){
-			$('#iOSWebAppInfo').popover('destroy');
-		}
-		
-	  $('.thumb').click(function (evt) {
-				
-		    evt.stopPropagation(); 
-		    console.log("here");
-		   /* $(this).parent().parent().parent().siblings().siblings().siblings().find(".thumb").removeClass("flipped");
-		    $(this).parent().parent().parent().siblings().siblings().siblings().css("z-index", "1");*/
-		   	$(".thumb").removeClass("flipped").css("z-index", "1");
-		   	
-		    $(this).addClass("flipped");
-		    $(this).parent().css("z-index", "10");
-		});
-		
-		$(".buttons a").click(function (event) {
-		    event.preventDefault();
-		    window.location = $(this).attr("href");
-		    console.log(window.navigator.standalone);
-		    if($(this).hasClass("start") && !(window.navigator.standalone == true)){
-		    	window.open("/admin", '');
-		    	slideshow.blur();
-					window.focus();
-		    }
-		});
-		
-		
-		$(document).click(function () {
-		    $(".thumb").removeClass("flipped");
-		    $(".thumb").parent().css("z-index", "100");
-		});
-		</script>
-	</body>
+    <script>
+    
+    if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
+      $('#iOSWebAppInfo').popover({
+        placement: "top",
+        title: "Install ASQ as Web-app",
+        html: true,
+      });
+      $('#iOSWebAppInfo').popover('show');
+    }
+    if(!window.navigator.standalone && navigator.userAgent.match(/(iPad)/g) ? true : false ){
+      $('#iOSWebAppInfo').popover({
+        placement: "bottom",
+        title: "Install ASQ as Web-app",
+        html: true,
+      });
+      $('#iOSWebAppInfo').popover('show');
+    }
+    
+    document.addEventListener("touchstart", hidePopover, false);
+    function hidePopover(){
+      $('#iOSWebAppInfo').popover('destroy');
+    }
+    
+    $('.thumb').click(function (evt) {
+        
+        evt.stopPropagation(); 
+        console.log("here");
+       /* $(this).parent().parent().parent().siblings().siblings().siblings().find(".thumb").removeClass("flipped");
+        $(this).parent().parent().parent().siblings().siblings().siblings().css("z-index", "1");*/
+        $(".thumb").removeClass("flipped").css("z-index", "1");
+        
+        $(this).addClass("flipped");
+        $(this).parent().css("z-index", "10");
+    });
+    
+    $(".buttons a").click(function (event) {
+        event.preventDefault();
+        window.location = $(this).attr("href");
+        console.log(window.navigator.standalone);
+        if($(this).hasClass("start") && !(window.navigator.standalone == true)){
+          window.open("/admin", '');
+          slideshow.blur();
+          window.focus();
+        }
+    });
+    
+    
+    $(document).click(function () {
+        $(".thumb").removeClass("flipped");
+        $(".thumb").parent().css("z-index", "100");
+    });
+    </script>
+  </body>
 </html>
 

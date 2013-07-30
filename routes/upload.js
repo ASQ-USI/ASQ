@@ -3,7 +3,7 @@
     TODO Handle upload of incrrect slideshows and their removal from the server.
     */
 
-var model         = require('../models/models')
+var model         = require('../models')
 , slideshowModel  = model.slideshowModel
 , questionModel   = model.questionModel
 , fs              = require('fs')
