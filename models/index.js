@@ -4,6 +4,6 @@ module.exports = {
   questionModel   : require('./question'),
   sessionModel    : require('./session'),
   slideshowModel  : require('./slideshow'),
-  userModel       : require('./user')
-
+  userModel       : require('./user'),
+  whitelistModel  : require('./whitelist')
 }

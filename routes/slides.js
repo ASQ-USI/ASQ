@@ -3,9 +3,11 @@
  @description Functions related to the direct interaction with slideshows and
  sessions.
  */
-var cheerio = require('cheerio');
-var fs = require("fs");
-var path = require('path'), schemas = require('../models');
+var cheerio  = require('cheerio')
+, fs         = require("fs")
+, path       = require('path')
+, schemas    = require('../models')
+, asyncblock = require('asyncblock');
 
 var authentification ={
 	"public": function(req, res, next) {
@@ -24,12 +26,41 @@ var authentification ={
 	}
 }
 
+var generateWhitelist ={
+	"public": function(sessionId, presenter, callback) {
+		console.log('Generate whitelist for public presentation');
+		callback(null);
+	},
+
+	"anonymous": function(sessionId, presenter, callback) {
+		console.log('Generate whitelist for anonymous presentation');
+		var WhitelistEntry = db.model('AnonymousWhitelist', schemas.AnonymousWhitelistSchema);
+		var whitelistEntry = new WhitelistEntry();
+		whitelistEntry.session = sessionId;
+		whitelistEntry.uid = presenter;
+		whitelistEntry.token = "mySecretToken";
+		whitelistEntry.save(function(err, whitelistEntry) {
+			callback(err);
+		});
+	},
+
+	"private": function(sessionId, presenter, callback) {
+		console.log('Generate whitelist for private presentation');
+		var WhitelistEntry = db.model('PrivateWhitelist', schemas.privateWhitelistSchema);
+		var whitelistEntry = new WhitelistEntry();
+		whitelistEntry.session = sessionId;
+		whitelistEntry.uid = presenter;
+		whitelistEntry.save(function(err, whitelistEntry) {
+			callback(err);
+		});
+	}
+}
+
 /** Grant or deny access to the current session to potnetial viewers. */
 module.exports.connectViewer = function(req, res, next) {
 	var userName = req.params.user;
 	sessionFromUserName(userName, function(err, session) {
 		if (err) throw err;
-		console.log(session);
 		authentification[session.authLevel](req, res, next);
 	})
 }
@@ -250,49 +281,101 @@ module.exports.liveStatic = function(req, res) {
 /** Initialize a slideshow (create a new session) for an admin **/
 module.exports.start = function(req, res) {
 	var slidesId = req.params.id;
-	var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+	
 	//Update last played date
-	Slideshow.findByIdAndUpdate(slidesId, {
-		lastSession : new Date()
-	}, function(err, slides) {
-		if (err)
-			throw err;
-	});
-	var User = db.model('User', schemas.userSchema);
-	Slideshow.findById(slidesId, function(err, slides) {
-		if (err || slides === null) {
-			//Slides id is wrong
-			console.log('Slides id is wrong');
+	// Slideshow.findByIdAndUpdate(slidesId, {
+	// 	lastSession : new Date()
+	// }, function(err, slides) {
+	// 	if (err)
+	// 		throw err;
+	// });
+
+	asyncblock(function(flow) {
+
+		//Error Handling
+		flow.errorCallback = function(err) {
+			console.log('Something went wrong with start');
 			console.log(err);
-			res.redirect(302, '/user/' + req.user.name + '/');
+			res.redirect(302, '/user/' + req.user.name + '/?alert=Something went wrong. The Great ASQ Server said: ' + err + '&type=error');
 			return;
 		}
-		if (String(slides.owner) !== String(req.user._id)) {
-			//Not allowed to present those slides...
-			console.log('ownership problem...')
-			console.log('owner: ' + slides.owner);
-			console.log('user: ' + req.user._id);
-			res.redirect(302, '/user/' + req.user.name + '/');
-			return;
-		}
+
+		//Find slideshow
+		var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+		Slideshow.findOne({ _id: slidesId, owner: req.user._id }, flow.set('slideshow'));
+
+		//Instantiate a new session
 		var Session = db.model('Session', schemas.sessionSchema);
 		var newSession = new Session();
 		newSession.presenter = req.user._id;
-		newSession.slides = slides._id;
+		newSession.slides = flow.get('slideshow')._id;
 		newSession.authLevel = (Session.schema.path('authLevel').enumValues
 			.indexOf(req.query.al) > -1) ? req.query.al : "public";
-		newSession.save(function(err) {
-			if (err)
-				throw err;
-			var User = db.model('User', schemas.userSchema);
-			User.findByIdAndUpdate(req.user._id, {
-				current : newSession._id
-			}, function(err, user) {
-				res.redirect(302, '/admincontroll');
-			});
+		
+		//Save the new session
+		newSession.save(flow.add());
 
-		});
+		//Generate the white list for the level
+		generateWhitelist[newSession.authLevel](newSession._id, newSession.presenter, flow.add());
+
+		//Update the suer's current session
+		var User = db.model('User', schemas.userSchema);
+		User.findByIdAndUpdate(req.user._id, { current : newSession._id }, flow.add());
+
+		//Update slideshow's last presnetation to now
+		flow.get('slideshow').lastSession = new Date();
+		flow.get('slideshow').save(flow.add());
+
+		//Wait to finish and redirect
+		flow.wait();
+		res.redirect(302, '/adminControll');
 	});
+
+	// Slideshow.findOne({ _id: slidesId, owner: req.user._id }, function(err, slides) {
+	// 	if(err) throw err;
+	// 	var Session = db.model('Session', schemas.sessionSchema);
+	// 	var newSession = new Session();
+	// 	newSession.presenter = req.user._id;
+	// 	newSession.slides = slides._id;
+	// 	newSession.authLevel = (Session.schema.path('authLevel').enumValues
+	// 		.indexOf(req.query.al) > -1) ? req.query.al : "public";
+	// 	newSession.save()
+	// });
+
+	// Slideshow.findById(slidesId, function(err, slides) {
+	// 	if (err || slides === null) {
+	// 		//Slides id is wrong
+	// 		console.log('Slides id is wrong');
+	// 		console.log(err);
+	// 		res.redirect(302, '/user/' + req.user.name + '/');
+	// 		return;
+	// 	}
+	// 	if (String(slides.owner) !== String(req.user._id)) {
+	// 		//Not allowed to present those slides...
+	// 		console.log('ownership problem...')
+	// 		console.log('owner: ' + slides.owner);
+	// 		console.log('user: ' + req.user._id);
+	// 		res.redirect(302, '/user/' + req.user.name + '/');
+	// 		return;
+	// 	}
+	// 	var Session = db.model('Session', schemas.sessionSchema);
+	// 	var newSession = new Session();
+	// 	newSession.presenter = req.user._id;
+	// 	newSession.slides = slides._id;
+	// 	newSession.authLevel = (Session.schema.path('authLevel').enumValues
+	// 		.indexOf(req.query.al) > -1) ? req.query.al : "public";
+	// 	newSession.save(function(err) {
+	// 		if (err)
+	// 			throw err;
+	// 		var User = db.model('User', schemas.userSchema);
+	// 		User.findByIdAndUpdate(req.user._id, {
+	// 			current : newSession._id
+	// 		}, function(err, user) {
+	// 			res.redirect(302, '/admincontroll');
+	// 		});
+
+	// 	});
+	// });
 }
 /*
  * Set the current session for an authentificated user t null,
