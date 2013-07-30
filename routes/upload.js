@@ -181,9 +181,9 @@ function createThumb(slideshow) {
 			mkdirp.sync(app.get('uploadDir') + '/thumbs/' + slideshow._id);
       var call = new Array();
       call[0] = "/usr/local/w2png -W 1024 -H 768 --delay=1 -T -D ";
-      call[0] += app.get('uploadDir') + "/thumbs/";
-      call[1] = slideshow._id;
-      call[2] = " -o ";
+      call[1] = app.get('uploadDir') + "/thumbs/";
+      call[2] = slideshow._id;
+      call[3] = " -o ";
       call = call.join("");
 
       var url = new Array();
