@@ -14,11 +14,13 @@ var authentification ={
 	},
 
 	"anonymous": function(req, res, next) {
-
+		console.log("New viewer joining anonymous session.")
+		next();
 	},
 
 	"private": function(req, res, next) {
-
+		console.log("New viewer joining private session.")
+		next();
 	}
 }
 
@@ -277,7 +279,8 @@ module.exports.start = function(req, res) {
 		var newSession = new Session();
 		newSession.presenter = req.user._id;
 		newSession.slides = slides._id;
-		newSession.authLevel = "public";
+		newSession.authLevel = (Session.schema.path('authLevel').enumValues
+			.indexOf(req.query.al) > -1) ? req.query.al : "public";
 		newSession.save(function(err) {
 			if (err)
 				throw err;
