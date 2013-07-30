@@ -12,11 +12,8 @@ var model         = require('../models')
 , cheerio         = require('cheerio')
 , AdmZip          = require('adm-zip')
 , rimraf          = require('rimraf')
-, logger          = require('../lib/logger')
-, asqParser       = require('../lib/asqParser')
-, asqRenderer     = require('../lib/asqQuestionRenderer')
+, lib             = require('../lib')
 , config          = require('../config')
-, fsUtil          = require('../lib/fs-util')
 , when            = require('when')
 , path            = require('path')
 , _               = require('underscore')
@@ -25,7 +22,7 @@ var model         = require('../models')
 , mkdirp          = require('mkdirp');
 
 
-logger.setLogLevel(4);
+lib.logger.setLogLevel(4);
 
 module.exports.show = function(req, res) {
   res.render('upload', {username: req.user.name});
@@ -58,11 +55,11 @@ module.exports.post = function(req, res) {
   zip.extractAllTo(folderPath);
 
   //3) make sure at least one html exists
-  fsUtil.getFirstHtmlFile(folderPath)
+  lib.fsUtils.getFirstHtmlFile(folderPath)
     .then(
       function(filePath){
         newSlideshow.originalFile = filePath
-        logger.log('will use ' + filePath + ' for main presentation file...');
+        lib.logger.log('will use ' + filePath + ' for main presentation file...');
         return pfs.readFile(filePath)
     })
 
@@ -70,8 +67,8 @@ module.exports.post = function(req, res) {
     .then(    
       function(file) {
         slideShowFileHtml = file;
-        logger.log('parsing main .html file for questions...');
-        return asqParser.parse(slideShowFileHtml);
+        lib.logger.log('parsing main .html file for questions...');
+        return lib.asqParser.parse(slideShowFileHtml);
     })
     //5) create new questions for database
     // TODO: create questions only if they exist
@@ -84,7 +81,7 @@ module.exports.post = function(req, res) {
     //6) render questions inside to slideshow's html into memory
     .then(
       function(dbQuestions){
-        logger.log('questions successfully parsed');
+        lib.logger.log('questions successfully parsed');
 
         //copy objectIDs created from mongoose
         _.each(parsedQuestions, function(parsedQuestion, index){
@@ -102,14 +99,14 @@ module.exports.post = function(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
-          asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
+          lib.asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
+          lib.asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
           ]);
     })
     //7) store new html with questions to file
     .then(
       function(newHtml){
-        logger.log('presenter and audience files rendered in memory successfully');
+        lib.logger.log('presenter and audience files rendered in memory successfully');
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
         newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
@@ -136,9 +133,9 @@ module.exports.post = function(req, res) {
     //9) remove zip folder
     .then(
       function(doc){
-        logger.log('new slideshow saved to db');
+        lib.logger.log('new slideshow saved to db');
         //create thumbs
-        logger.log('creating thumbnails')
+        lib.logger.log('creating thumbnails')
         createThumb(newSlideshow);
         return pfs.unlink(req.files.upload.path);         
     })
@@ -150,15 +147,15 @@ module.exports.post = function(req, res) {
     //11) redirect to user profile page
     .then(
       function(user){
-      logger.log('upload zip file unlinked');
-      logger.log('upload complete!');
+      lib.logger.log('upload zip file unlinked');
+      lib.logger.log('upload complete!');
       res.redirect('/user/')
     },
 
       // Error handling for all the above promises
       function(err){
         pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
-        logger.error(err);
+        lib.logger.error(err);
     });
 
 }

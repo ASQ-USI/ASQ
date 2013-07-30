@@ -1,9 +1,9 @@
-var chai = require('chai')
+var chai         = require('chai')
 , chaiAsPromised = require("chai-as-promised")
-, assert = chai.assert
-, expect = chai.expect
-, express = require('express')
-, fsUtil = require('../lib/fs-util')
+, assert         = chai.assert
+, expect         = chai.expect
+, express        = require('express')
+, lib        = require('../lib')
 
 
 // support for promises
@@ -11,7 +11,7 @@ require("mocha-as-promised")();
 chai.use(chaiAsPromised);
 
 
-describe('fs-util', function() {
+describe('fs-utils', function() {
 
   describe('.getExtension(filename)', function(){
     it.skip('should be tested')

@@ -7,61 +7,15 @@ var cheerio  = require('cheerio')
 , fs         = require("fs")
 , path       = require('path')
 , schemas    = require('../models')
-, asyncblock = require('asyncblock');
-
-var authentification ={
-	"public": function(req, res, next) {
-		console.log("New viewer joining public session.")
-		next();
-	},
-
-	"anonymous": function(req, res, next) {
-		console.log("New viewer joining anonymous session.")
-		next();
-	},
-
-	"private": function(req, res, next) {
-		console.log("New viewer joining private session.")
-		next();
-	}
-}
-
-var generateWhitelist ={
-	"public": function(sessionId, presenter, callback) {
-		console.log('Generate whitelist for public presentation');
-		callback(null);
-	},
-
-	"anonymous": function(sessionId, presenter, callback) {
-		console.log('Generate whitelist for anonymous presentation');
-		var WhitelistEntry = db.model('AnonymousWhitelist', schemas.AnonymousWhitelistSchema);
-		var whitelistEntry = new WhitelistEntry();
-		whitelistEntry.session = sessionId;
-		whitelistEntry.uid = presenter;
-		whitelistEntry.token = "mySecretToken";
-		whitelistEntry.save(function(err, whitelistEntry) {
-			callback(err);
-		});
-	},
-
-	"private": function(sessionId, presenter, callback) {
-		console.log('Generate whitelist for private presentation');
-		var WhitelistEntry = db.model('PrivateWhitelist', schemas.privateWhitelistSchema);
-		var whitelistEntry = new WhitelistEntry();
-		whitelistEntry.session = sessionId;
-		whitelistEntry.uid = presenter;
-		whitelistEntry.save(function(err, whitelistEntry) {
-			callback(err);
-		});
-	}
-}
+, asyncblock = require('asyncblock')
+, lib 		 = require('../lib');
 
 /** Grant or deny access to the current session to potnetial viewers. */
 module.exports.connectViewer = function(req, res, next) {
 	var userName = req.params.user;
 	sessionFromUserName(userName, function(err, session) {
 		if (err) throw err;
-		authentification[session.authLevel](req, res, next);
+		lib.slidesUtils.authentify[session.authLevel](req, res, next);
 	})
 }
 
@@ -97,7 +51,6 @@ module.exports.adminControll = function(req, res) {
 		if (!session.id) {
 			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
 		} else {
-			console.log(session);
 			var slideshow = session.slides;
 			fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
 				//console.log(data);
@@ -281,14 +234,6 @@ module.exports.liveStatic = function(req, res) {
 /** Initialize a slideshow (create a new session) for an admin **/
 module.exports.start = function(req, res) {
 	var slidesId = req.params.id;
-	
-	//Update last played date
-	// Slideshow.findByIdAndUpdate(slidesId, {
-	// 	lastSession : new Date()
-	// }, function(err, slides) {
-	// 	if (err)
-	// 		throw err;
-	// });
 
 	asyncblock(function(flow) {
 
@@ -316,7 +261,8 @@ module.exports.start = function(req, res) {
 		newSession.save(flow.add());
 
 		//Generate the white list for the level
-		generateWhitelist[newSession.authLevel](newSession._id, newSession.presenter, flow.add());
+		lib.slidesUtils.generateWhitelist[newSession.authLevel]
+			(newSession._id, newSession.presenter, flow.add());
 
 		//Update the suer's current session
 		var User = db.model('User', schemas.userSchema);
@@ -328,58 +274,14 @@ module.exports.start = function(req, res) {
 
 		//Wait to finish and redirect
 		flow.wait();
+		console.log("Starting new " + newSession.authLevel + " session");
 		res.redirect(302, '/adminControll');
 	});
-
-	// Slideshow.findOne({ _id: slidesId, owner: req.user._id }, function(err, slides) {
-	// 	if(err) throw err;
-	// 	var Session = db.model('Session', schemas.sessionSchema);
-	// 	var newSession = new Session();
-	// 	newSession.presenter = req.user._id;
-	// 	newSession.slides = slides._id;
-	// 	newSession.authLevel = (Session.schema.path('authLevel').enumValues
-	// 		.indexOf(req.query.al) > -1) ? req.query.al : "public";
-	// 	newSession.save()
-	// });
-
-	// Slideshow.findById(slidesId, function(err, slides) {
-	// 	if (err || slides === null) {
-	// 		//Slides id is wrong
-	// 		console.log('Slides id is wrong');
-	// 		console.log(err);
-	// 		res.redirect(302, '/user/' + req.user.name + '/');
-	// 		return;
-	// 	}
-	// 	if (String(slides.owner) !== String(req.user._id)) {
-	// 		//Not allowed to present those slides...
-	// 		console.log('ownership problem...')
-	// 		console.log('owner: ' + slides.owner);
-	// 		console.log('user: ' + req.user._id);
-	// 		res.redirect(302, '/user/' + req.user.name + '/');
-	// 		return;
-	// 	}
-	// 	var Session = db.model('Session', schemas.sessionSchema);
-	// 	var newSession = new Session();
-	// 	newSession.presenter = req.user._id;
-	// 	newSession.slides = slides._id;
-	// 	newSession.authLevel = (Session.schema.path('authLevel').enumValues
-	// 		.indexOf(req.query.al) > -1) ? req.query.al : "public";
-	// 	newSession.save(function(err) {
-	// 		if (err)
-	// 			throw err;
-	// 		var User = db.model('User', schemas.userSchema);
-	// 		User.findByIdAndUpdate(req.user._id, {
-	// 			current : newSession._id
-	// 		}, function(err, user) {
-	// 			res.redirect(302, '/admincontroll');
-	// 		});
-
-	// 	});
-	// });
 }
+
 /*
- * Set the current session for an authentificated user t null,
- * effectively stopping the leive session.
+ * Set the current session for an authenticated user to null,
+ * effectively stopping the live session.
  * This require an authentificated user.
  * Note that if the user has no live session ie. his session is set to null,
  * This will still reset it to null, successfully "stopping" a non-existent live
@@ -392,8 +294,8 @@ module.exports.stop = function(req, res) {
 	}, function(err, user) {
 		if (err)
 			throw err;
-		//console.log(user.current);
-		res.redirect('/user/' + req.user.name + '/?alert=Your session was stopped. You have no session running&type=info');
+		res.redirect('/user/' + req.user.name 
+			+ '/?alert=Your session was stopped. You have no session running&type=info');
 	});
 }
 /** Given a userId, find it's current session **/

@@ -4,14 +4,14 @@ var chai          = require('chai')
 , request         = require('supertest')
 , express         = require('express')
 , upload          = require('../routes/upload')
-, schemas         = require('../models/models')
+, schemas         = require('../models')
 , mongoose        = require('mongoose')
 , passport        = require('passport')
 , passportMock    = require('./util/mock-passport-middleware')
 , proxyquire      =  require('proxyquire')
 , configStub      = {}
 , path            = require('path')
-, fsUtil          = require('../lib/fs-util')
+, lib             = require('../lib')
 , _               = require('underscore')
 
 // support for promises
@@ -69,7 +69,7 @@ describe('upload', function() {
             }
 
             _.each(docs, function(doc){
-              fsUtil.removeRecursive(uploadPath + doc.id, function(err, success){
+              lib.fsUtils.removeRecursive(uploadPath + doc.id, function(err, success){
                 if(err){
                   return done(err)
                 }
