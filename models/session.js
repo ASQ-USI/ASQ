@@ -17,8 +17,8 @@ var sessionSchema = new Schema({
 	viewers: {type: Array, default: []},
   
 	answers: {type:[ObjectId], ref: 'Answer'},
-	showingQuestion: {type: Boolean, default: false}, //maybe don't need it
-	showingAnswer: {type: Boolean, default: false}, //maybe don't need it
+	showingQuestion: {type: Boolean, default: false}, //maybe don't need it -> used to get a new connection up to date if it connects un the middle of a session
+	showingAnswer: {type: Boolean, default: false}, //maybe don't need it -> same as above
 	started: {type: Boolean, default: false}, 
 	questionsDisplayed: {type: [ObjectId], ref: 'Question'}, //maybe don't need it
   activeQuestions: [ObjectId],
