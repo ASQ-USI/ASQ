@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "mocha": "*",
-    "mocha-as-promised": "*",
+    "mocha-as-promised": "~1.4.0",
     "chai": "*",
     "chai-as-promised": "*",
     "supertest": "*",
@@ -59,7 +59,9 @@
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt-contrib-uglify": "~0.2.2"
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-mocha-test": "~0.6.2",
+    "grunt-contrib-concat": "~0.3.0"
   },
   "scripts": {
     "test": "make test-unit"
