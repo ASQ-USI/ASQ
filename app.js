@@ -106,7 +106,7 @@ function ensureAuthenticated(req, res, next) {
 
 //Set the process host and port if undefined.
 process.env.HOST = process.env.HOST || config.asq.host;
-process.env.PORT = process.env.PROT || (config.asq.enableHTTPS ? config.asq.HTTPSPort : config.asq.HTTPPort);
+process.env.PORT = process.env.PORT || (config.asq.enableHTTPS ? config.asq.HTTPSPort : config.asq.HTTPPort);
 console.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
