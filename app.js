@@ -32,7 +32,8 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , registration = require('./routes/registration')
   , editFunctions = require('./routes/edit')
-  , statistics = require('./routes/statistics');
+  , statistics = require('./routes/statistics')
+  , authentication = require('./lib/authentication');
 
   // save sessionStore to config for later access
   //sessionMongooseConfig.setSessionStore(mongooseSessionStore);
@@ -210,7 +211,7 @@ app.get('/user/settings', ensureAuthenticated, registration.settings);
 app.post('/user/settings', ensureAuthenticated, registration.saveSettings);
 
 /** Join the session of user */
-app.get('/live/:user/', routes.slides.connectViewer, routes.slides.live);
+app.get('/live/:user/', authentication.authorizeSession, routes.slides.live);
 app.get('/live/:user/*', routes.slides.liveStatic);
 
 /** Control your current session (if any) */
