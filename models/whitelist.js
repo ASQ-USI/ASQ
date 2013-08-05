@@ -5,7 +5,8 @@ var mongoose  = require('mongoose')
 var whitelistEntrySchema = new Schema({
 	session : { type: ObjectId, ref: 'Session', required: true },
 	uid : { type: ObjectId, ref: 'User', required: true },
-	token : { type: String } // Express Cookie session id
+	token : { type: String }, // Express Cookie session id
+	canControl : { type: Boolean, default: false }
 }, { collection: "whitelistEntries" });
 
 whitelistEntrySchema.index({ session: 1, uid: 1});
