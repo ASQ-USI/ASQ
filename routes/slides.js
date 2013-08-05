@@ -24,7 +24,7 @@ module.exports.admin = function(req, res) {
   var userId = req.user._id;
   sessionFromUserId(userId, function(err, session) {
     if (err) throw err;
-    if (!session.id) {
+    if (!session || !session.id) {
       res.redirect('/user/' + req.user.name + 
       	'/?alert=You have no session running!&type=error');
     } else {

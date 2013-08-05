@@ -17,7 +17,7 @@
     "connect-flash": "0.1.x",
     "passport": "0.1.x",
     "passport-local": "0.1.x",
-    "passport.socketio": "0.0.x",
+    "passport.socketio": "0.0.5",
     "connect": "2.8.x",
     "moment": "1.0.x",
     "consolidate": "0.9.0",
@@ -40,7 +40,10 @@
     "asyncblock": "*",
     "mkdirp": "~0.3.5",
     "bcrypt": "~0.7.6",
-    "validator": "~1.2.1"
+    "validator": "~1.2.1",
+    "connect-redis": "~1.4.5",
+    "redis": "~0.8.4",
+    "cookie": "~0.1.0"
   },
   "engines": {
     "node": "0.8.x",
