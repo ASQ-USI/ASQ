@@ -7,12 +7,13 @@ var express = require('express')
   , path = require('path')
   , fs = require('fs')
   , config = require('./config')
-  , sessionMongooseConfig = require('./sessionMongooseConfig')
-  , SessionMongoose = require("session-mongoose")(express)
-  , mongooseSessionStore = new SessionMongoose({
-        url: "mongodb://" + config.asq.mongoDBServer + ":" + config.asq.mongoDBPort + "/login",
-        interval: 120000
-    })
+  // , sessionMongooseConfig = require('./sessionMongooseConfig')
+  // , SessionMongoose = require("session-mongoose")(express)
+  // , mongooseSessionStore = new SessionMongoose({
+  //       url: "mongodb://" + config.asq.mongoDBServer + ":" + config.asq.mongoDBPort + "/login",
+  //       interval: 120000
+  //   })
+  , redisStore = require('connect-redis')(express)
   , http = require('http')
   , credentials = config.asq.enableHTTPS ? { 
         key: fs.readFileSync(config.asq.keyPath),
@@ -34,10 +35,10 @@ var express = require('express')
   , statistics = require('./routes/statistics');
 
   // save sessionStore to config for later access
-  sessionMongooseConfig.setSessionStore(mongooseSessionStore);
+  //sessionMongooseConfig.setSessionStore(mongooseSessionStore);
 
   //set the root path
-  sessionMongooseConfig.setRootPath(__dirname);
+  //sessionMongooseConfig.setRootPath(__dirname);
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -145,9 +146,22 @@ app.configure(function() {
     app.use(express.logger('dev'));
     app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
     app.use(express.methodOverride());
-    app.use(express.cookieParser('your secret here'));
+    app.use(express.cookieParser());
     //mongosession store to be used with socket.io
-    app.use(express.session({secret : 'ASQsecret' , store : mongooseSessionStore }));
+    var redisSessionStore = new redisStore({
+      host: '127.0.0.1',
+      port: 6379,
+      db: 0,
+    });
+    app.use(express.session({
+      key : 'asq.sid',
+      secret : 'ASQSecret',
+      store  : redisSessionStore,
+      cookie : {
+        maxAge : 2592000000 // 30 days
+      } 
+    }));
+    app.set('sessionStore', redisSessionStore);
     //necessary initialization for passport plugin
     app.use(passport.initialize());
     app.use(flash());
