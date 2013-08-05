@@ -10,7 +10,7 @@ var admin = {
 }
 var connect = function(host, port, session, mode) {
 	var started = false;
-	var socket = io.connect('http://' + host + ':' + port + '/ctrl');
+	var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session);
 
 	var updateViewersCount = function(event) {
 		if (!event.users)
