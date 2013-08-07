@@ -300,11 +300,21 @@ module.exports.stop = function(req, res) {
 	var User = db.model('User', schemas.userSchema);
 	User.findByIdAndUpdate(req.user._id, {
 		current : null
+	}, {
+		new : false
 	}, function(err, user) {
 		if (err) { throw err; }
-
-		res.redirect('/user/' + req.user.name 
+		if (!user) {
+			res.redirect('/user/' + req.user.name 
+			+ '/?alert=Something went wrong. The Great ASQ Server said: User not found');
+		}
+		
+		var WhitelistEntry = db.model('WhitelistEntry', schemas.whitelistEntrySchema);
+		WhitelistEntry.remove({ session : user.current }, function(err) {
+			if (err) { throw err; }
+			res.redirect('/user/' + req.user.name 
 			+ '/?alert=Your session was stopped. You have no session running&type=info');
+		});
 	});
 }
 
