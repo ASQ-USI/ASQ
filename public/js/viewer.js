@@ -10,7 +10,7 @@ var questionId = null, socket, session;
 var connect = function(host, port, session, mode) {
 	var started = false;
 	session = session;
-	socket = io.connect('http://' + host + ':' + port + '/folo');
+	socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session);
 	socket.on('connect', function(event) {
 		socket.emit('asq:viewer', {
 			session : session,

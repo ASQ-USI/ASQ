@@ -1,6 +1,6 @@
 var connect = function(host, port, session, mode) {
 	var started = false;
-	var socket = io.connect('http://' + host + ':' + port + '/ctrl');
+	var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session);
 
 	socket.on('connect', function(event) {
 		socket.emit('asq:admin', {
