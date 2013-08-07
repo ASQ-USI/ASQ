@@ -7,12 +7,6 @@ var express = require('express')
   , path = require('path')
   , fs = require('fs')
   , config = require('./config')
-  // , sessionMongooseConfig = require('./sessionMongooseConfig')
-  // , SessionMongoose = require("session-mongoose")(express)
-  // , mongooseSessionStore = new SessionMongoose({
-  //       url: "mongodb://" + config.asq.mongoDBServer + ":" + config.asq.mongoDBPort + "/login",
-  //       interval: 120000
-  //   })
   , redisStore = require('connect-redis')(express)
   , http = require('http')
   , credentials = config.asq.enableHTTPS ? { 
@@ -34,12 +28,6 @@ var express = require('express')
   , editFunctions = require('./routes/edit')
   , statistics = require('./routes/statistics')
   , authentication = require('./lib/authentication');
-
-  // save sessionStore to config for later access
-  //sessionMongooseConfig.setSessionStore(mongooseSessionStore);
-
-  //set the root path
-  //sessionMongooseConfig.setRootPath(__dirname);
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
