@@ -13,7 +13,8 @@ var sessionSchema = new Schema({
 	slides: { type: ObjectId, ref: 'Slideshow' },
   authLevel: { type: String, default: 'public', enum: ['public', 'anonymous', 'private'] },
 	activeSlide: { type: String, default: '0' },
-	date: {type: Date, default: Date.now },
+	startDate: {type: Date, default: Date.now },
+  endDate: { type: Date },
 	viewers: {type: Array, default: []},
   
 	answers: {type:[ObjectId], ref: 'Answer'},
@@ -23,6 +24,10 @@ var sessionSchema = new Schema({
 	questionsDisplayed: {type: [ObjectId], ref: 'Question'}, //maybe don't need it
   activeQuestions: [ObjectId],
   activeStatsQuestions : [ObjectId]
+});
+
+sessionSchema.virtual('isTerminated').get(function() {
+  return this.endDate != null;
 });
 
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
