@@ -1,3 +1,8 @@
+/**
+  @fileoverview test file for the model/answer.js 
+**/
+
+
 var chai          = require('chai')
 , chaiAsPromised  = require("chai-as-promised")
 , expect          = chai.expect

@@ -1,6 +1,5 @@
 /**
     @fileoverview app main file, for initialisation of the server
-    @author Jacques Dafflon jacques.dafflon@gmail.com
 */
 
 var express     = require('express')
@@ -163,7 +162,7 @@ app.configure(function() {
 });
 
 app.configure('development', function(){
-    app.use(express.errorHandler());
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
     if (config.asq.enableHTTPS) {
         //Passphrase should be entered at launch for production env.
@@ -174,6 +173,10 @@ app.configure('development', function(){
             console.log('[devel mode] No password constraint');
             return true;
         };
+});
+
+app.configure('production', function(){
+  app.use(express.errorHandler()); 
 });
 
 // app.get('/', function(req, res){
@@ -321,7 +324,7 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 /** HTTP(S) Server */
 if (config.asq.enableHTTPS) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
-        console.log("ASQ HTTPS server listening on port " + app.get('port'));
+        console.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
     
     var serverHTTP = http.createServer(app).listen(config.asq.HTTPPort, function() {
@@ -330,7 +333,7 @@ if (config.asq.enableHTTPS) {
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
-        console.log("ASQ HTTP server listening on port " + app.get('port'));
+        console.log("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }
 

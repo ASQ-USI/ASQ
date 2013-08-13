@@ -1,6 +1,22 @@
 /** @module config/index
-    @author Jacques Dafflon jacques.dafflon@gmail.com
     @description Main file for config files.
 */
 
-exports.asq = require("./asq");
+'use strict';
+
+var _ = require('underscore'),
+fs = require('fs'),
+defaultConf = require('./config.defaults.js'),
+env = process.env.NODE_ENV || 'development',
+envConf={},
+conf = {}
+
+if (fs.existsSync('./config.'+ env)){
+  envConf = require('./config.'+ env);
+}else{
+  console.log('Info: There is no configuration file for '+env+ " environment");
+}
+
+//overwrite default configuration with env configuration
+_.extend(conf, defaultConf, envConf);
+module.exports = conf;
