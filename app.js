@@ -1,25 +1,24 @@
 /**
     @fileoverview app main file, for initialisation of the server
-    @author Jacques Dafflon jacques.dafflon@gmail.com
 */
 
 var express = require('express')
   , path = require('path')
   , fs = require('fs')
-  , config = require('./config')
+  , settings = require('./config')
   , sessionMongooseConfig = require('./sessionMongooseConfig')
   , SessionMongoose = require("session-mongoose")(express)
   , mongooseSessionStore = new SessionMongoose({
-        url: "mongodb://" + config.asq.mongoDBServer + ":" + config.asq.mongoDBPort + "/login",
+        url: "mongodb://" + settings.mongoDBServer + ":" + settings.mongoDBPort + "/login",
         interval: 120000
     })
   , http = require('http')
-  , credentials = config.asq.enableHTTPS ? { 
-        key: fs.readFileSync(config.asq.keyPath),
-        cert: fs.readFileSync(config.asq.certPath),
-        ca: fs.readFileSync(config.asq.caPath),
-        requestCert: config.asq.requestCert,
-        rejectUnauthorized: config.asq.rejectUnauthorized,
+  , credentials = settings.enableHTTPS ? { 
+        key: fs.readFileSync(settings.keyPath),
+        cert: fs.readFileSync(settings.certPath),
+        ca: fs.readFileSync(settings.caPath),
+        requestCert: settings.requestCert,
+        rejectUnauthorized: settings.rejectUnauthorized,
     } : {}
   , cons = require('consolidate')
   , dust = require('dustjs-linkedin')
@@ -105,8 +104,8 @@ function ensureAuthenticated(req, res, next) {
 }
 
 //Set the process host and port if undefined.
-process.env.HOST = process.env.HOST || config.asq.host;
-process.env.PORT = process.env.PORT || (config.asq.enableHTTPS ? config.asq.HTTPSPort : config.asq.HTTPPort);
+process.env.HOST = process.env.HOST || settings.host;
+process.env.PORT = process.env.PORT || (settings.enableHTTPS ? settings.HTTPSPort : settings.HTTPPort);
 console.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
@@ -114,12 +113,12 @@ app = express();
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
 appHost = process.env.HOST;
-clientsLimit = config.asq.clientsLimit || 50;
+clientsLimit = settings.clientsLimit || 50;
 console.log('Clients limit: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection(config.asq.mongoDBServer, config.asq.dbName, config.asq.mongoDBPort);
+db = mongoose.createConnection(settings.mongoDBServer, settings.dbName, settings.mongoDBPort);
 schemas = require('./models');
 
 //Reidrection to secure url when HTTPS is used.
@@ -131,7 +130,7 @@ app.configure(function() {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     //app.set('view engine', 'ejs');
-    if (config.asq.enableHTTPS) {
+    if (settings.enableHTTPS) {
         app.use(function forceSSL(req, res, next) {
             if (!req.secure) {
                 console.log('HTTPS Redirection');
@@ -140,7 +139,7 @@ app.configure(function() {
             next();
         });
     }
-    app.set('uploadDir', path.resolve(__dirname, config.asq.uploadDir));
+    app.set('uploadDir', path.resolve(__dirname, settings.uploadDir));
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
@@ -160,9 +159,9 @@ app.configure(function() {
 });
 
 app.configure('development', function(){
-    app.use(express.errorHandler());
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
-    if (config.asq.enableHTTPS) {
+    if (settings.enableHTTPS) {
         //Passphrase should be entered at launch for production env.
         credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt').toString().trim();
         
@@ -171,6 +170,10 @@ app.configure('development', function(){
             console.log('[devel mode] No password constraint');
             return true;
         };
+});
+
+app.configure('production', function(){
+  app.use(express.errorHandler()); 
 });
 
 // app.get('/', function(req, res){
@@ -311,18 +314,18 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 
 
 /** HTTP(S) Server */
-if (config.asq.enableHTTPS) {
+if (settings.enableHTTPS) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
-        console.log("ASQ HTTPS server listening on port " + app.get('port'));
+        console.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
     
-    var serverHTTP = http.createServer(app).listen(config.asq.HTTPPort, function() {
-        console.log("HTTP redirection ready, listening on port " + config.asq.HTTPPort);
+    var serverHTTP = http.createServer(app).listen(settings.HTTPPort, function() {
+        console.log("HTTP redirection ready, listening on port " + settings.HTTPPort);
     });
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
-        console.log("ASQ HTTP server listening on port " + app.get('port'));
+        console.log("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }
 

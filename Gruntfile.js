@@ -1,3 +1,8 @@
+/**
+  @fileoverview main Grunt task file
+**/
+
+
 module.exports = function(grunt) {
   'use strict';
 
