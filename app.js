@@ -9,7 +9,7 @@ var express     = require('express')
   , redisStore  = require('connect-redis')(express)
   , http        = require('http')
   , credentials = config.enableHTTPS ? { 
-      key         : fs.readFileSync(config.keyPath),
+  , SessionMongoose       = require("session-mongoose")(express)
       cert        : fs.readFileSync(config.certPath),
       ca          : fs.readFileSync(config.caPath),
       requestCert : config.requestCert,
