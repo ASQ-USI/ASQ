@@ -3,30 +3,30 @@
     @author Jacques Dafflon jacques.dafflon@gmail.com
 */
 
-var express = require('express')
-  , path = require('path')
-  , fs = require('fs')
-  , config = require('./config')
-  , redisStore = require('connect-redis')(express)
-  , http = require('http')
+var express     = require('express')
+  , path        = require('path')
+  , fs          = require('fs')
+  , config      = require('./config')
+  , redisStore  = require('connect-redis')(express)
+  , http        = require('http')
   , credentials = config.asq.enableHTTPS ? { 
-        key: fs.readFileSync(config.asq.keyPath),
-        cert: fs.readFileSync(config.asq.certPath),
-        ca: fs.readFileSync(config.asq.caPath),
-        requestCert: config.asq.requestCert,
-        rejectUnauthorized: config.asq.rejectUnauthorized,
+      key         : fs.readFileSync(config.asq.keyPath),
+      cert        : fs.readFileSync(config.asq.certPath),
+      ca          : fs.readFileSync(config.asq.caPath),
+      requestCert : config.asq.requestCert,
+      rejectUnauthorized : config.asq.rejectUnauthorized,
     } : {}
-  , cons = require('consolidate')
-  , dust = require('dustjs-linkedin')
-  , engine = require('ejs-locals')
-  , slashes = require("connect-slashes")
-  , routes = require('./routes')
-  , flash = require('connect-flash')
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
-  , registration = require('./routes/registration')
-  , editFunctions = require('./routes/edit')
-  , statistics = require('./routes/statistics')
+  , cons       = require('consolidate')
+  , dust       = require('dustjs-linkedin')
+  , engine     = require('ejs-locals')
+  , slashes    = require("connect-slashes")
+  , routes     = require('./routes')
+  , flash      = require('connect-flash')
+  , passport   = require('passport')
+  , LocalStrategy  = require('passport-local').Strategy
+  , registration   = require('./routes/registration')
+  , editFunctions  = require('./routes/edit')
+  , statistics     = require('./routes/statistics')
   , authentication = require('./lib/authentication');
 
 // Passport session setup.

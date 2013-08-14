@@ -67,6 +67,7 @@ var connect = function(host, port, session, mode) {
 		});
 
 		socket.on('asq:goto', function(event) {
+			console.log('GOTO received');
 			if (mode == 'control') {
 				$('.controlThumbs .thumbsWrapper .active').removeClass('active');
 				$('.controlThumbs').scrollTo('.' + event.slide, 500, {
