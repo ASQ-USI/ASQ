@@ -2,35 +2,38 @@
     @fileoverview app main file, for initialisation of the server
 */
 
-var express = require('express')
-  , path = require('path')
-  , fs = require('fs')
-  , settings = require('./config')
+var express       = require('express')
+  , http          = require('http')
+  , path          = require('path')
+  , fs            = require('fs')
+  , settings      = require('./config')
+  , cons          = require('consolidate')
+  , dust          = require('dustjs-linkedin')
+  , engine        = require('ejs-locals')
+  , slashes       = require("connect-slashes")
+  , routes        = require('./routes')
+  , flash         = require('connect-flash')
+  , passport      = require('passport')
+  , LocalStrategy = require('passport-local').Strategy
+  , registration  = require('./routes/registration')
+  , editFunctions = require('./routes/edit')
+  , statistics    = require('./routes/statistics')
+  , winston       = require('winston')
+  
   , sessionMongooseConfig = require('./sessionMongooseConfig')
-  , SessionMongoose = require("session-mongoose")(express)
-  , mongooseSessionStore = new SessionMongoose({
+  , SessionMongoose       = require("session-mongoose")(express)
+  , mongooseSessionStore  = new SessionMongoose({
         url: "mongodb://" + settings.mongoDBServer + ":" + settings.mongoDBPort + "/login",
         interval: 120000
     })
-  , http = require('http')
-  , credentials = settings.enableHTTPS ? { 
+  
+  , credentials           = settings.enableHTTPS ? { 
         key: fs.readFileSync(settings.keyPath),
         cert: fs.readFileSync(settings.certPath),
         ca: fs.readFileSync(settings.caPath),
         requestCert: settings.requestCert,
         rejectUnauthorized: settings.rejectUnauthorized,
     } : {}
-  , cons = require('consolidate')
-  , dust = require('dustjs-linkedin')
-  , engine = require('ejs-locals')
-  , slashes = require("connect-slashes")
-  , routes = require('./routes')
-  , flash = require('connect-flash')
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
-  , registration = require('./routes/registration')
-  , editFunctions = require('./routes/edit')
-  , statistics = require('./routes/statistics');
 
   // save sessionStore to config for later access
   sessionMongooseConfig.setSessionStore(mongooseSessionStore);

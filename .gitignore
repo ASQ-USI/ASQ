@@ -24,7 +24,8 @@
 ###########
 node_modules/
 slides/
-config/asq.js
+config/config.*
+!config/config.defaults.js.example
 *.orig
 
 # IDE Files #
