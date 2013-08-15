@@ -63,7 +63,6 @@
     "validator": "~1.2.2",
     "when": "~2.1.0",
     "winston": "~0.7.2"
-    "wrench": "~1.4.4"
   },
   "engines": {
     "node": "0.10.x",
