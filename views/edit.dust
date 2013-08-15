@@ -66,6 +66,6 @@
 		
 
 		 <script src="/js/edit.js"></script>
-		 <script src="/js/bootstrap.js"></script>
+		 <script src="/js/lib/bootstrap.js"></script>
   </body>
 </html>

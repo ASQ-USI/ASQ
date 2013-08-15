@@ -9,7 +9,7 @@ var express     = require('express')
   , redisStore  = require('connect-redis')(express)
   , http        = require('http')
   , credentials = config.enableHTTPS ? { 
-  , SessionMongoose       = require("session-mongoose")(express)
+      key         : fs.readFileSync(config.keyPath),
       cert        : fs.readFileSync(config.certPath),
       ca          : fs.readFileSync(config.caPath),
       requestCert : config.requestCert,
@@ -332,8 +332,7 @@ if (config.enableHTTPS) {
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
-      var appLogger = winston.loggers.get('application');
-        appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
+      appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }
 

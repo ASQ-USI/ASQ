@@ -5,10 +5,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Test page</title>
 
-    <script src="/js/jquery.js"></script>
+    <script src="/js/lib/jquery.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/lib/jquery.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script type="text/javascript">
@@ -178,8 +178,8 @@
 		});
     </script>
     <!-- Modernizr -->
-    <script src="/js/modernizr.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.presentation.js"></script>
+    <script src="/js/lib/modernizr.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.presentation.js"></script>
   </body>
 
 </html>

@@ -27,11 +27,11 @@
 	</head>
 	<body>
 		
-		<!---   top menu --->
+		<!--   top menu -->
 		{>menu/}
 		
 		
-		<!---   Content area   --->  
+		<!--   Content area   -->  
     	<div class="container" id="mainContainer">
     		
     		<!-- Show notification fo user feedback based on query alert and type-->
@@ -41,7 +41,7 @@
 				</div>
  			{/alert}
 
-		 	<!--- Edit menu --->
+		 	<!-- Edit menu -->
 	        <div class="row" >
 				<div class="span12"><h3>Edit Stylesheet</h3></div>
 	  			{>editSubmenu/}
