@@ -1,5 +1,5 @@
 /**
-    @fileoverview app main file, for initialisation of the server
+    @fileoverview app main file, for initialization of the server
 */
 
 var express     = require('express')
@@ -8,30 +8,30 @@ var express     = require('express')
   , config      = require('./config')
   , redisStore  = require('connect-redis')(express)
   , http        = require('http')
-  , credentials = config.asq.enableHTTPS ? { 
-      key         : fs.readFileSync(config.asq.keyPath),
-      cert        : fs.readFileSync(config.asq.certPath),
-      ca          : fs.readFileSync(config.asq.caPath),
-      requestCert : config.asq.requestCert,
-      rejectUnauthorized : config.asq.rejectUnauthorized,
+  , credentials = config.enableHTTPS ? { 
+      key         : fs.readFileSync(config.keyPath),
+      cert        : fs.readFileSync(config.certPath),
+      ca          : fs.readFileSync(config.caPath),
+      requestCert : config.requestCert,
+      rejectUnauthorized : config.rejectUnauthorized,
     } : {}
-  , cons       = require('consolidate')
-  , dust       = require('dustjs-linkedin')
-  , engine     = require('ejs-locals')
-  , slashes    = require("connect-slashes")
-  , routes     = require('./routes')
-  , flash      = require('connect-flash')
-  , passport   = require('passport')
-  , appLogger     = require('./lib/logger').appLogger
-  , LocalStrategy  = require('passport-local').Strategy
-  , registration   = require('./routes/registration')
-  , editFunctions  = require('./routes/edit')
-  , statistics     = require('./routes/statistics')
-  , authentication = require('./lib/authentication');
+  , cons            = require('consolidate')
+  , dust            = require('dustjs-linkedin')
+  , slashes         = require("connect-slashes")
+  , routes          = require('./routes')
+  , flash           = require('connect-flash')
+  , passport        = require('passport')
+  , lib             = require('./lib')
+  , LocalStrategy   = require('passport-local').Strategy
+  , registration    = require('./routes/registration')
+  , editFunctions   = require('./routes/edit')
+  , statistics      = require('./routes/statistics')
+  , appLogger       = lib.logger.appLogger
+  , authentication  = lib.authentication;
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
-//   serialize users into a`nd deserialize users out of the session.  Typically,
+//   serialize users into and deserialize users out of the session.  Typically,
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 
@@ -95,21 +95,20 @@ function ensureAuthenticated(req, res, next) {
 }
 
 //Set the process host and port if undefined.
-process.env.HOST = process.env.HOST || settings.host;
-process.env.PORT = process.env.PORT || (settings.enableHTTPS ? settings.HTTPSPort : settings.HTTPPort);
+process.env.HOST = process.env.HOST || config.host;
+process.env.PORT = process.env.PORT || (config.enableHTTPS ? config.HTTPSPort : config.HTTPPort);
 appLogger.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
-//app.engine('ejs', engine);
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
 appHost = process.env.HOST;
-clientsLimit = settings.clientsLimit || 50;
+clientsLimit = config.clientsLimit || 50;
 appLogger.log('Clients limit: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
-db = mongoose.createConnection(config.asq.mongoDBServer, config.asq.dbName, config.asq.mongoDBPort);
+db = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
 schemas = require('./models');
 
 //Reidrection to secure url when HTTPS is used.
@@ -120,8 +119,7 @@ app.configure(function() {
     app.set('port', process.env.PORT);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
-    //app.set('view engine', 'ejs');
-    if (config.asq.enableHTTPS) {
+    if (config.enableHTTPS) {
         app.use(function forceSSL(req, res, next) {
             if (!req.secure) {
                 appLogger.log('HTTPS Redirection');
@@ -130,7 +128,7 @@ app.configure(function() {
             next();
         });
     }
-    app.set('uploadDir', path.resolve(__dirname, config.asq.uploadDir));
+    app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
@@ -156,7 +154,7 @@ app.configure(function() {
     app.use(flash());
     app.use(passport.session());
     app.use(app.router);
-    app.use(require('stylus').middleware(__dirname + '/public/'));
+    // app.use(require('stylus').middleware(__dirname + '/public/'));
     app.use(express.static(path.join(__dirname, '/public/')));
     //used to append slashes at the end of a url (MUST BE after static)
     app.use(slashes());
@@ -165,7 +163,7 @@ app.configure(function() {
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
-    if (config.asq.enableHTTPS) {
+    if (config.enableHTTPS) {
         //Passphrase should be entered at launch for production env.
         credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt').toString().trim();
         
@@ -323,18 +321,17 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 
 
 /** HTTP(S) Server */
-if (config.asq.enableHTTPS) {
+if (config.enableHTTPS) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
         appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
     
-    var serverHTTP = http.createServer(app).listen(settings.HTTPPort, function() {
-        appLogger.log("HTTP redirection ready, listening on port " + settings.HTTPPort);
+    var serverHTTP = http.createServer(app).listen(config.HTTPPort, function() {
+        appLogger.log("HTTP redirection ready, listening on port " + config.HTTPPort);
     });
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
-      var appLogger = winston.loggers.get('application');
         appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }

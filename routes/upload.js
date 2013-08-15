@@ -7,16 +7,15 @@ var model         = require('../models')
 , slideshowModel  = model.slideshowModel
 , questionModel   = model.questionModel
 , fs              = require('fs')
-, unzip           = require('unzip')
 , pfs             = require('promised-io/fs')
 , cheerio         = require('cheerio')
 , AdmZip          = require('adm-zip')
 , rimraf          = require('rimraf')
-, appLogger         = require('../lib/logger')
-, asqParser       = require('../lib/asqParser')
-, lib             = require('../lib')
 , config          = require('../config')
-, fsUtil          = require('../lib/fs-util')
+, lib             = require('../lib')
+, appLogger       = lib.logger
+, asqParser       = lib.asqParser
+, fsUtils         = lib.fsUtils
 , when            = require('when')
 , path            = require('path')
 , _               = require('underscore')
@@ -56,11 +55,11 @@ module.exports.post = function(req, res) {
   zip.extractAllTo(folderPath);
 
   //3) make sure at least one html exists
-  fsUtil.getFirstHtmlFile(folderPath)
+  fsUtils.getFirstHtmlFile(folderPath)
     .then(
       function(filePath){
         newSlideshow.originalFile = filePath
-        appLogger.log('will use ' + filePath + ' for main presentation file...');
+        appLogger.debug('will use ' + filePath + ' for main presentation file...');
         return pfs.readFile(filePath)
     })
 
@@ -68,7 +67,7 @@ module.exports.post = function(req, res) {
     .then(    
       function(file) {
         slideShowFileHtml = file;
-        appLogger.log('parsing main .html file for questions...');
+        appLogger.debug('parsing main .html file for questions...');
         return asqParser.parse(slideShowFileHtml);
     })
     //5) create new questions for database
@@ -82,7 +81,7 @@ module.exports.post = function(req, res) {
     //6) render questions inside to slideshow's html into memory
     .then(
       function(dbQuestions){
-        appLogger.log('questions successfully parsed');
+        appLogger.debug('questions successfully parsed');
 
         //copy objectIDs created from mongoose
         _.each(parsedQuestions, function(parsedQuestion, index){
@@ -107,7 +106,7 @@ module.exports.post = function(req, res) {
     //7) store new html with questions to file
     .then(
       function(newHtml){
-        appLogger.log('presenter and audience files rendered in memory successfully');
+        appLogger.debug('presenter and audience files rendered in memory successfully');
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
         newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
@@ -134,9 +133,9 @@ module.exports.post = function(req, res) {
     //9) remove zip folder
     .then(
       function(doc){
-        appLogger.log('new slideshow saved to db');
+        appLogger.debug('new slideshow saved to db');
         //create thumbs
-        appLogger.log('creating thumbnails')
+        appLogger.debug('creating thumbnails')
         createThumb(newSlideshow);
         return pfs.unlink(req.files.upload.path);         
     })
@@ -148,8 +147,8 @@ module.exports.post = function(req, res) {
     //11) redirect to user profile page
     .then(
       function(user){
-      appLogger.log('upload zip file unlinked');
-      appLogger.log('upload complete!');
+      appLogger.debug('upload zip file unlinked');
+      appLogger.info('upload complete!');
       res.redirect('/user/')
     },
 
@@ -195,7 +194,7 @@ function createThumb(slideshow) {
       url = url.join("");
       
       for(var i = 0; i < ids.length; i++){
-        console.log("calling: " + call + i + " -s 0.3 " + url + ids[i]);
+        console.debug("calling: " + call + i + " -s 0.3 " + url + ids[i]);
         exec(call + i + " -s 0.3 " + url + ids[i], flow.add());
   			flow.wait();
       }

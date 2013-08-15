@@ -298,10 +298,6 @@ exports.renderuser = function(req, res) {
 	}
 }
 
-//EJS helper to print dates in nice format. Done by Moment.js
-// ejs.filters.fromNow = function(date){
-  // return moment(date).format('DD.MM.YYYY HH:mm');
-// }
 dust.helpers.formatDate = function (chunk, context, bodies, params) {
    	 var value = dust.helpers.tap(params.value, chunk, context),
         timestamp,
