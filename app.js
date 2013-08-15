@@ -22,6 +22,7 @@ var express     = require('express')
   , routes     = require('./routes')
   , flash      = require('connect-flash')
   , passport   = require('passport')
+  , appLogger     = require('./lib/logger').appLogger
   , LocalStrategy  = require('passport-local').Strategy
   , registration   = require('./routes/registration')
   , editFunctions  = require('./routes/edit')
@@ -30,7 +31,7 @@ var express     = require('express')
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
-//   serialize users into and deserialize users out of the session.  Typically,
+//   serialize users into a`nd deserialize users out of the session.  Typically,
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 
@@ -94,17 +95,17 @@ function ensureAuthenticated(req, res, next) {
 }
 
 //Set the process host and port if undefined.
-process.env.HOST = process.env.HOST || config.asq.host;
-process.env.PORT = process.env.PORT || (config.asq.enableHTTPS ? config.asq.HTTPSPort : config.asq.HTTPPort);
-console.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
+process.env.HOST = process.env.HOST || settings.host;
+process.env.PORT = process.env.PORT || (settings.enableHTTPS ? settings.HTTPSPort : settings.HTTPPort);
+appLogger.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
 //app.engine('ejs', engine);
 app.engine('dust', cons.dust);
 // Global variable: hostname which we want to advertise for connection.
 appHost = process.env.HOST;
-clientsLimit = config.asq.clientsLimit || 50;
-console.log('Clients limit: ' + clientsLimit);
+clientsLimit = settings.clientsLimit || 50;
+appLogger.log('Clients limit: ' + clientsLimit);
 
 // mongoose, db, and schemas are global
 mongoose = require('mongoose');
@@ -123,7 +124,7 @@ app.configure(function() {
     if (config.asq.enableHTTPS) {
         app.use(function forceSSL(req, res, next) {
             if (!req.secure) {
-                console.log('HTTPS Redirection');
+                appLogger.log('HTTPS Redirection');
                 return res.redirect('https://' + process.env.HOST + (app.get('port') === "443" ? "" : (":" + app.get('port'))) + req.url);
             }
             next();
@@ -170,7 +171,7 @@ app.configure('development', function(){
         
     }
     registration.isValidPassword = function(candidatePass) {
-            console.log('[devel mode] No password constraint');
+            appLogger.log('[devel mode] No password constraint');
             return true;
         };
 });
@@ -324,16 +325,17 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 /** HTTP(S) Server */
 if (config.asq.enableHTTPS) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
-        console.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
+        appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
     
-    var serverHTTP = http.createServer(app).listen(config.asq.HTTPPort, function() {
-        console.log("HTTP redirection ready, listening on port " + config.asq.HTTPPort);
+    var serverHTTP = http.createServer(app).listen(settings.HTTPPort, function() {
+        appLogger.log("HTTP redirection ready, listening on port " + settings.HTTPPort);
     });
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
-        console.log("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
+      var appLogger = winston.loggers.get('application');
+        appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }
 
