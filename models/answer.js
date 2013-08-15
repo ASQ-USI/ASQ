@@ -48,8 +48,9 @@ answerSchema.methods.saveWithPromise = function(){
         return;
       } deferred.resolve(doc);
     });
-    return deferred.promise;
+  
   });
+    return deferred.promise;
 }
 
 
