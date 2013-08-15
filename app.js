@@ -31,7 +31,7 @@ var express     = require('express')
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
-//   serialize users into and deserialize users out of the session.  Typically,
+//   serialize users into a`nd deserialize users out of the session.  Typically,
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 
@@ -332,6 +332,7 @@ if (config.enableHTTPS) {
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
+      var appLogger = winston.loggers.get('application');
         appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }
