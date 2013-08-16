@@ -13,6 +13,7 @@ var chai          = require('chai')
 , path            = require('path')
 , lib             = require('../lib')
 , _               = require('underscore')
+, config          = require('../config');
 
 // support for promises
 require("mocha-as-promised")();
@@ -31,8 +32,9 @@ var mockUser = new User({
 });
 
 // setup a small app for the upload test
-var app = express();
+app = express();
 app.configure(function() {
+  app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
   app.use(express.bodyParser({uploadDir: './slides/'}));
   app.use(express.bodyParser());
   app.use(express.cookieParser());

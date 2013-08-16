@@ -13,7 +13,7 @@ var model         = require('../models')
 , rimraf          = require('rimraf')
 , config          = require('../config')
 , lib             = require('../lib')
-, appLogger       = lib.logger
+, appLogger       = lib.logger.appLogger
 , asqParser       = lib.asqParser
 , fsUtils         = lib.fsUtils
 , when            = require('when')
@@ -42,11 +42,11 @@ module.exports.post = function(req, res) {
   , slideShowFileHtml
   , slideShowQuestions
   , parsedQuestions
-  , parsedStats
+  , parsedStats;
 
   var newSlideshow = new Slideshow({
-    title:req.files.upload.name,
-    owner: req.user._id
+    title : req.files.upload.name,
+    owner : req.user._id
   });
 
   // 2) unzip files
@@ -58,10 +58,14 @@ module.exports.post = function(req, res) {
   fsUtils.getFirstHtmlFile(folderPath)
     .then(
       function(filePath){
-        newSlideshow.originalFile = filePath
+        newSlideshow.originalFile = filePath;
         appLogger.debug('will use ' + filePath + ' for main presentation file...');
-        return pfs.readFile(filePath)
-    })
+        return pfs.readFile(filePath);
+    }, function errUpload1(err) {
+      console.log('Error 1');
+      console.log(err);
+    }
+    )
 
     //4) parse questions
     .then(    
@@ -69,6 +73,9 @@ module.exports.post = function(req, res) {
         slideShowFileHtml = file;
         appLogger.debug('parsing main .html file for questions...');
         return asqParser.parse(slideShowFileHtml);
+    }, function errUpload2(err) {
+      console.log('Error 2');
+      console.log(err);
     })
     //5) create new questions for database
     // TODO: create questions only if they exist
@@ -154,8 +161,10 @@ module.exports.post = function(req, res) {
 
       // Error handling for all the above promises
       function(err){
+        console.log('Err handler');
+        console.log(err);
         pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
-        appLogger.error(err);
+        appLogger.error('Error during upload', { error : err });
     });
 
 }
