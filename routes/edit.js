@@ -87,8 +87,8 @@ exports.editslideshow = function(req, res) {
 				})
 			});
 
-		}
-	});
+}
+});
 }
 
 exports.saveDetails = function(req, res) {
@@ -110,20 +110,20 @@ exports.deleteSlideshow = function(req, res) {
 	var User = db.model('User')
 	, Slideshow = db.model('Slideshow');
 	User.findOne({name: req.user.name}).exec()
-		.then(function(user){
-			return Slideshow.findOne({_id: req.params.id, owner: user.id}).exec()
-		})
-		.then(function(slideshow){
-			return slideshow.remove().exec()
-		})
-		.then(function(){
-			res.redirect('/user?alert=Slideshow deleted &type=succes');
-		},
-		function(err){
-			res.redirect('/user?alert=Something went wrong &type=error');
-			throw err;
-			
-		})
+	.then(function(user){
+		return Slideshow.findOne({_id: req.params.id, owner: user.id}).exec()
+	})
+	.then(function(slideshow){
+		return slideshow.remove().exec()
+	})
+	.then(function(){
+		res.redirect('/user?alert=Slideshow deleted &type=succes');
+	},
+	function(err){
+		res.redirect('/user?alert=Something went wrong &type=error');
+		throw err;
+		
+	})
 }
 
 // exports.deleteslideshow = function(req, res) {
