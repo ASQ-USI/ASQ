@@ -61,7 +61,7 @@ module.exports = {
 		application: {
 			level: "info",
 			file: "app.log",
-			json: true
+			json: false
 		},
 
 		//db error logging (Note: only warn and error make sense for db logging)
