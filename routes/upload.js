@@ -15,6 +15,7 @@ var model         = require('../models')
 , lib             = require('../lib')
 , appLogger       = lib.logger.appLogger
 , asqParser       = lib.asqParser
+, asqRenderer     = lib.asqRenderer
 , fsUtils         = lib.fsUtils
 , when            = require('when')
 , path            = require('path')
@@ -60,23 +61,15 @@ module.exports.post = function(req, res) {
       function(filePath){
         newSlideshow.originalFile = filePath;
         appLogger.debug('will use ' + filePath + ' for main presentation file...');
-        return pfs.readFile(filePath);
-    }, function errUpload1(err) {
-      console.log('Error 1');
-      console.log(err);
-    }
-    )
 
+        return pfs.readFile(filePath);
+    })
     //4) parse questions
     .then(    
       function(file) {
         slideShowFileHtml = file;
         appLogger.debug('parsing main .html file for questions...');
-        return asqParser.parse(slideShowFileHtml);
-    }, function errUpload2(err) {
-      console.log('Error 2');
-      console.log(err);
-    })
+        return asqParser.parse(slideShowFileHtml);;    })
     //5) create new questions for database
     // TODO: create questions only if they exist
     .then(
@@ -106,8 +99,8 @@ module.exports.post = function(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          lib.asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
-          lib.asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
           ]);
     })
     //7) store new html with questions to file
@@ -161,10 +154,8 @@ module.exports.post = function(req, res) {
 
       // Error handling for all the above promises
       function(err){
-        console.log('Err handler');
-        console.log(err);
         pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
-        appLogger.error('Error during upload', { error : err });
+        appLogger.error("in upload.js: " + err.toString(), {error: err});
     });
 
 }
@@ -193,7 +184,7 @@ function createThumb(slideshow) {
       call = call.join("");
 
       var url = new Array();
-      url[0] = (config.asq.enableHTTPS ? "https://" : "http://");
+      url[0] = (config.enableHTTPS ? "https://" : "http://");
       url[1] = process.env.HOST;
       url[2] = ":";
       url[3] = process.env.PORT;
@@ -203,7 +194,7 @@ function createThumb(slideshow) {
       url = url.join("");
       
       for(var i = 0; i < ids.length; i++){
-        console.debug("calling: " + call + i + " -s 0.3 " + url + ids[i]);
+        appLogger.debug("calling: " + call + i + " -s 0.3 " + url + ids[i]);
         exec(call + i + " -s 0.3 " + url + ids[i], flow.add());
   			flow.wait();
       }
