@@ -33,8 +33,8 @@ var mockUser = new User({
 
 // setup a small app for the upload test
 app = express();
-app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
 app.configure(function() {
+  app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
   app.use(express.bodyParser({uploadDir: './slides/'}));
   app.use(express.bodyParser());
   app.use(express.cookieParser());
