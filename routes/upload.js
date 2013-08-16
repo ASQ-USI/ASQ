@@ -13,8 +13,9 @@ var model         = require('../models')
 , rimraf          = require('rimraf')
 , config          = require('../config')
 , lib             = require('../lib')
-, appLogger       = lib.logger
+, appLogger       = lib.logger.appLogger
 , asqParser       = lib.asqParser
+, asqRenderer     = lib.asqRenderer
 , fsUtils         = lib.fsUtils
 , when            = require('when')
 , path            = require('path')
@@ -58,9 +59,10 @@ module.exports.post = function(req, res) {
   fsUtils.getFirstHtmlFile(folderPath)
     .then(
       function(filePath){
-        newSlideshow.originalFile = filePath
+        newSlideshow.originalFile = filePath;
         appLogger.debug('will use ' + filePath + ' for main presentation file...');
-        return pfs.readFile(filePath)
+
+        return pfs.readFile("fas");//filePath);
     })
 
     //4) parse questions
@@ -99,8 +101,8 @@ module.exports.post = function(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          lib.asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
-          lib.asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
           ]);
     })
     //7) store new html with questions to file
@@ -155,7 +157,7 @@ module.exports.post = function(req, res) {
       // Error handling for all the above promises
       function(err){
         pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
-        appLogger.error(err);
+        appLogger.error("in upload.js: " + err.toString(), {error: err});
     });
 
 }

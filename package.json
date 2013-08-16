@@ -61,7 +61,7 @@
     "underscore": "~1.4.4",
     "unzip": "~0.1.7",
     "validator": "~1.2.2",
-    "when": "~2.1.0",
+    "when": "~2.3.0",
     "winston": "~0.7.2"
   },
   "engines": {
