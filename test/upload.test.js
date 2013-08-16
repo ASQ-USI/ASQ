@@ -13,6 +13,7 @@ var chai          = require('chai')
 , path            = require('path')
 , lib             = require('../lib')
 , _               = require('underscore')
+, config          = require('../config');
 
 // support for promises
 require("mocha-as-promised")();
@@ -31,7 +32,8 @@ var mockUser = new User({
 });
 
 // setup a small app for the upload test
-var app = express();
+app = express();
+app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
 app.configure(function() {
   app.use(express.bodyParser({uploadDir: './slides/'}));
   app.use(express.bodyParser());
@@ -55,46 +57,46 @@ describe('upload', function() {
    //callback tests
    describe('.post(req, res)', function(){
 
-    after(function(done){
-      // cleanup db and files
-      var Slideshow = db.model('Slideshow');
+    // after(function(done){
+    //   // cleanup db and files
+    //   var Slideshow = db.model('Slideshow');
 
-      Slideshow.find({}).exec()
-        .then(
-          function(docs){
-            var uploadPath = path.join( __dirname + '/../slides/');
-            var totalDocs = docs.length;
-            if(totalDocs == 0){
-              return done(new Error("totalDocs shouldn't be 0"));
-            }
+    //   Slideshow.find({}).exec()
+    //     .then(
+    //       function(docs){
+    //         var uploadPath = path.join( __dirname + '/../slides/');
+    //         var totalDocs = docs.length;
+    //         if(totalDocs == 0){
+    //           return done(new Error("totalDocs shouldn't be 0"));
+    //         }
 
-            _.each(docs, function(doc){
-              lib.fsUtils.removeRecursive(uploadPath + doc.id, function(err, success){
-                if(err){
-                  return done(err)
-                }
-                if(--totalDocs ==0){
-                  Slideshow.remove({}).exec()
-                    .then(
-                      function(){
-                        var Question = db.model('Question')
-                          return Question.remove({}).exec()                      
-                    })
-                    .then(
-                      function(){
-                       db.close()
-                       done();
-                    },
-                      function(err){
-                        if(err){
-                          return done(err)
-                        }
-                    });
-                  }          
-                });              
-            });
-        });
-    });
+    //         _.each(docs, function(doc){
+    //           lib.fsUtils.removeRecursive(uploadPath + doc.id, function(err, success){
+    //             if(err){
+    //               return done(err)
+    //             }
+    //             if(--totalDocs ==0){
+    //               Slideshow.remove({}).exec()
+    //                 .then(
+    //                   function(){
+    //                     var Question = db.model('Question')
+    //                       return Question.remove({}).exec()                      
+    //                 })
+    //                 .then(
+    //                   function(){
+    //                    db.close()
+    //                    done();
+    //                 },
+    //                   function(err){
+    //                     if(err){
+    //                       return done(err)
+    //                     }
+    //                 });
+    //               }          
+    //             });              
+    //         });
+    //     });
+    // });
     
     
     it.skip("should extract the questions and add them to the database");
