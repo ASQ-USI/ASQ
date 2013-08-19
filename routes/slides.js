@@ -9,6 +9,7 @@ var cheerio  = require('cheerio')
 , schemas    = require('../models')
 , asyncblock = require('asyncblock')
 , lib 		   = require('../lib');
+, appLogger  = lib.logger.appLogger;
 
 /** Renders the slideshow for admins */
 module.exports.admin = function(req, res) {
@@ -246,8 +247,8 @@ module.exports.start = function(req, res) {
 	asyncblock(function(flow) {
 
 		//Error Handling
-		flow.errorCallback = function(err) {
-			lib.logger.error("Presentation Start\n" + err);
+		flow.errorCallback = function errorCallback(err) {
+			appLogger.error("Presentation Start\n" + err);
 			res.redirect(302, '/user/' + req.user.name 
 				+ '/?alert=Something went wrong. The Great ASQ Server said: '
 				+ err + '&type=error');
@@ -283,7 +284,7 @@ module.exports.start = function(req, res) {
 
 		//Wait to finish and redirect
 		flow.wait();
-		lib.logger.info("Starting new " + newSession.authLevel + " session");
+		appLogger.info("Starting new " + newSession.authLevel + " session");
 		res.redirect(302, '/adminControll');
 	});
 }
