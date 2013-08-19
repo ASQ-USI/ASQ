@@ -22,8 +22,8 @@ var model         = require('../models')
 , _               = require('underscore')
 , asyncblock      = require('asyncblock')
 , exec            = require('child_process').exec
-, mkdirp          = require('mkdirp');
-
+, mkdirp          = require('mkdirp')
+, fn = ('when/function')
 
 module.exports.show = function(req, res) {
   res.render('upload', {username: req.user.name});
@@ -57,12 +57,13 @@ module.exports.post = function(req, res) {
 
   //3) make sure at least one html exists
   fsUtils.getFirstHtmlFile(folderPath)
+    .tap(function(filePath){
+      newSlideshow.originalFile = filePath;
+      appLogger.debug('will use ' + filePath + ' for main presentation file...');
+    })
     .then(
       function(filePath){
-        newSlideshow.originalFile = filePath;
-        appLogger.debug('will use ' + filePath + ' for main presentation file...');
-
-        return pfs.readFile("fas");//filePath);
+        return pfs.readFile(filePath);     
     })
 
     //4) parse questions
@@ -101,8 +102,9 @@ module.exports.post = function(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher"),
-          asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher")
+          //,
+          //asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
           ]);
     })
     //7) store new html with questions to file
@@ -156,8 +158,8 @@ module.exports.post = function(req, res) {
 
       // Error handling for all the above promises
       function(err){
-        pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
         appLogger.error("in upload.js: " + err.toString(), {error: err});
+        pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
     });
 
 }
@@ -186,7 +188,7 @@ function createThumb(slideshow) {
       call = call.join("");
 
       var url = new Array();
-      url[0] = (config.asq.enableHTTPS ? "https://" : "http://");
+      url[0] = (config.enableHTTPS ? "https://" : "http://");
       url[1] = process.env.HOST;
       url[2] = ":";
       url[3] = process.env.PORT;
