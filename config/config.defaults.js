@@ -61,13 +61,21 @@ module.exports = {
 		application: {
 			level: "info",
 			file: "log/app.log",
-			json: true
+			json: false
 		},
 
-		//db error logging (Note: only warn and error make sense for db logging)
+		//db logging (Note: only warn and error make sense for db logging)
 		db: {
 			level: "info",
-			file: "log/db.err.log",
+			file: "log/db.log",
+			json: false
+		},
+
+		// sockets logging
+		// (Note: sockets only support error, warn, info and debug levels.)
+		sockets: {
+			level: "info",
+			file: "log/soc.log",
 			json: false
 		}
 	}
