@@ -25,7 +25,7 @@
     </p>
     <br/>
     {:else}
-    	{>"asq-render/questionList-stats.dust"/}
+    	{>"questionList-stats.dust"/}
     {/question.correctAnswer}
     
   </div>

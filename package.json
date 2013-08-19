@@ -49,7 +49,6 @@
     "passport.socketio": "~0.0.5",
     "path": "~0.4.9",
     "promised-io": "~0.3.3",
-    "proxyquire": "~0.4.1",
     "redis": "~0.8.4",
     "rimraf": "~2.1.4",
     "session-mongoose": "~0.2.2",
@@ -80,7 +79,6 @@
     "grunt-contrib-concat": "~0.3.0",
     "mocha": "~1.8.2",
     "mocha-as-promised": "~1.4.0",
-    "proxyquire": "*"
   },
   "scripts": {
     "test": "make test-unit",

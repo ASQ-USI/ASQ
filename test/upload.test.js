@@ -1,3 +1,7 @@
+/**
+  @fileoverview tests for lib/upload.js for ASQ
+**/
+
 var chai          = require('chai')
 , chaiAsPromised  = require("chai-as-promised")
 , expect          = chai.expect
@@ -8,7 +12,6 @@ var chai          = require('chai')
 , mongoose        = require('mongoose')
 , passport        = require('passport')
 , passportMock    = require('./util/mock-passport-middleware')
-, proxyquire      =  require('proxyquire')
 , configStub      = {}
 , path            = require('path')
 , lib             = require('../lib')
@@ -20,7 +23,7 @@ require("mocha-as-promised")();
 chai.use(chaiAsPromised);
 
 // mongodb connection
-db = mongoose.createConnection('127.0.0.1', 'test-asq');
+db = mongoose.createConnection(config.host, config.dbName);
 
 // mock user
 var User = mongoose.model('User');
@@ -35,7 +38,7 @@ var mockUser = new User({
 app = express();
 app.configure(function() {
   app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
-  app.use(express.bodyParser({uploadDir: './slides/'}));
+  app.use(express.bodyParser({uploadDir: './test/slides/'}));
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.session({
@@ -44,9 +47,6 @@ app.configure(function() {
   app.use(passportMock.initialize(mockUser));
   return app.use(passport.session());
 });
-
-//mock config object
-var upload = proxyquire('../routes/upload', { '../config': { rootPath: path.join( __dirname + '/..') } });
 
 //upload root
 app.post('/user/username/upload/', upload.post);
@@ -57,46 +57,56 @@ describe('upload', function() {
    //callback tests
    describe('.post(req, res)', function(){
 
-    // after(function(done){
-    //   // cleanup db and files
-    //   var Slideshow = db.model('Slideshow');
+    after(function(done){
+      // cleanup db and files
+      var Slideshow = db.model('Slideshow');
 
-    //   Slideshow.find({}).exec()
-    //     .then(
-    //       function(docs){
-    //         var uploadPath = path.join( __dirname + '/../slides/');
-    //         var totalDocs = docs.length;
-    //         if(totalDocs == 0){
-    //           return done(new Error("totalDocs shouldn't be 0"));
-    //         }
+      Slideshow.find({}).exec()
+        .then(
+          function(docs){
+            var uploadPath = app.set('uploadDir');
+            var totalDocs = docs.length;
+            if(totalDocs == 0){
+              return done(new Error("totalDocs shouldn't be 0"));
+            }
 
-    //         _.each(docs, function(doc){
-    //           lib.fsUtils.removeRecursive(uploadPath + doc.id, function(err, success){
-    //             if(err){
-    //               return done(err)
-    //             }
-    //             if(--totalDocs ==0){
-    //               Slideshow.remove({}).exec()
-    //                 .then(
-    //                   function(){
-    //                     var Question = db.model('Question')
-    //                       return Question.remove({}).exec()                      
-    //                 })
-    //                 .then(
-    //                   function(){
-    //                    db.close()
-    //                    done();
-    //                 },
-    //                   function(err){
-    //                     if(err){
-    //                       return done(err)
-    //                     }
-    //                 });
-    //               }          
-    //             });              
-    //         });
-    //     });
-    // });
+            _.each(docs, function(doc){
+              //remove slideshow folder
+              lib.fsUtils.removeRecursive(uploadPath + '/' +doc.id, function(err, success){
+                if(err){
+                  return done(err)
+                }
+                //remove thumbs
+                lib.fsUtils.removeRecursive(uploadPath + '/thumbs/' +doc.id, function(err, success){
+                  if(err){
+                    return done(err)
+                  }
+
+                  if(--totalDocs ==0){
+                    //cleanup slideshow db
+                    Slideshow.remove({}).exec()
+                      .then(
+                        function(){
+                          //cleanup question db
+                          var Question = db.model('Question')
+                            return Question.remove({}).exec()                      
+                      })
+                      .then(
+                        function(){
+                         db.close()
+                         done();
+                      },
+                        function(err){
+                          if(err){
+                            return done(err)
+                          }
+                      });
+                    } 
+                  });         
+                });              
+            });
+        });
+    });
     
     
     it.skip("should extract the questions and add them to the database");
