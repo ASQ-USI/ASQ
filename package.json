@@ -78,7 +78,7 @@
     "grunt-mocha-test": "~0.6.2",
     "grunt-contrib-concat": "~0.3.0",
     "mocha": "~1.8.2",
-    "mocha-as-promised": "~1.4.0",
+    "mocha-as-promised": "~1.4.0"
   },
   "scripts": {
     "test": "make test-unit",
