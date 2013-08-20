@@ -84,21 +84,38 @@ describe('Socket ctrl authorization', function testCtrlAuth() {
   });
 
   describe('Valid connection', function() {
-    authentication.ctrlAuthorize(handshakeData, function(err, authorized) {
-      it('Should not return an error', function() {
-        expect(err).to.equal(null);
+    var err, authorized;
+
+    // if we want multiple tests on a callback it's more clean to do it like this
+    // (with a before close)
+    // I know I had like you did, but apparently we have silent fails of callbacks
+    // so I need to change it too
+
+    // This never enters the callback
+    before(function(done){
+      authentication.ctrlAuthorize(handshakeData, function(err, authorized) {
+        // we cannot reach here
+        console.log("I am in")
+        err=err;
+        authorized=authorized;
+        done();
       });
-      it('Should authorize the connection', function() {
-        expect(authorized).to.equal(true);
-      });
-      it('Should set the session in the handshake', function() {
-        expect(handshakeData.session).to.deep.equals(testSession);
-      });
-      it('Should set the displayName in the handshake', function() {
-        expect(handshakeData.displayName).to.equal(dispayName);
-      });
+    })
+
+    it('Should not return an error', function() {
+      expect(err).to.equal(null);
+    });
+    it('Should authorize the connection', function() {
+      expect(authorized).to.equal(true);
+    });
+    it('Should set the session in the handshake', function() {
+      expect(handshakeData.session).to.deep.equals(testSession);
+    });
+    it('Should set the displayName in the handshake', function() {
+      expect(handshakeData.displayName).to.equal(dispayName);
     });
   });
+
 
   afterEach(function (done) {
     var Session = db.model('Session', schemas.sessionSchema);
