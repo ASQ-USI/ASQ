@@ -92,7 +92,7 @@ describe('Socket ctrl authorization', function testCtrlAuth() {
         expect(authorized).to.equal(true);
       });
       it('Should set the session in the handshake', function() {
-        expect(handshakeData.session).to.deep.equals(mockSession);
+        expect(handshakeData.session).to.deep.equals(testSession);
       });
       it('Should set the displayName in the handshake', function() {
         expect(handshakeData.displayName).to.equal(dispayName);
