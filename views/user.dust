@@ -52,16 +52,16 @@
                     </div>
         {/slidesByCourses}
 
-        {#slidesByCourses}
+        {#JSONIter:slidesByCourses}
         <div class="row">
         <div class="span12  headline">
-          <h2 class="pull-left">{course}</h2>
+          <h2 class="pull-left">{key}</h2>
           <!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
         </div>
         </div>
         <div class="row">
           <div class="span12">
-            {#slides}
+            {#value}
             <div class="thumbContainer">
               <div class="thumb" id="{_id}">
                 <div class="info" >
@@ -89,10 +89,10 @@
                 </div>
               </div>
             </div>
-            {/slides}
+            {/value}
           </div>
         </div>
-      {/slidesByCourses}
+      {/JSONIter}
 
     </div>
     <div id="iOSWebAppInfo" data-content='Tab on &nbsp;<img width="20px" src="/img/iOS-action.png"/>&nbsp; and select<br/> "Add to Home Screen".'></div>
