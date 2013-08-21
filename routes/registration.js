@@ -3,7 +3,9 @@ var schemas = require("../models")
 , fs        = require("fs")
 , moment    = require('moment')
 , dust      = require('dustjs-linkedin')
-, check     = require('validator').check;
+, check     = require('validator').check
+, appLogger = require('../lib/logger').appLogger
+, util 			= require('util');
 
 exports.isValidUserName = function(candidateUser) {
 	// Match string between 3 and 12 chars starting with a letter, lower or upper case 
@@ -75,8 +77,8 @@ exports.signup = function(req, res) {
 	}
 
 	// Username availability and saving
-	var users = db.model('User', schemas.userSchema);
-	var out = users.findOne({
+	var User = db.model('User', schemas.userSchema);
+	var out = User.findOne({
 		name : req.body.signupusername
 	}, function(err, user) {
 		if (user) {
@@ -85,7 +87,7 @@ exports.signup = function(req, res) {
 				fromsignup : true
 			});
 		} else {
-			var newUser = new users({
+			var newUser = new User({
 				name : req.body.signupusername,
 				password : req.body.signuppassword,
 				email : req.body.signupemail
@@ -131,8 +133,8 @@ function preload(jsonFile) {
 }
 
 exports.settings = function(req, res){
-	var users = db.model('User', schemas.userSchema);
-	var out = users.findById(req.user._id, function(err, user) {
+	var User = db.model('User', schemas.userSchema);
+	var out = User.findById(req.user._id, function(err, user) {
 		if (user) {
 			res.render('settings', {
 				user: user
@@ -174,9 +176,9 @@ exports.saveSettings = function(req, res){
 		return;
 	}
 
-	var users = db.model('User', schemas.userSchema);
+	var User = db.model('User', schemas.userSchema);
 	//Test if username already exists
-	var out = users.findOne({
+	var out = User.findOne({
 		name : req.body.inputUsername
 	}, function(err, user) {
 		if (user) {
@@ -200,7 +202,7 @@ exports.saveSettings = function(req, res){
 	}
 	
 	//update user
-	var out = users.findById(req.user._id, function(err, user) {
+	var out = User.findById(req.user._id, function(err, user) {
 		if (user) { // What about err?
 			user.set(newValues);
 			user.save(function(err, user) {
@@ -222,76 +224,65 @@ exports.saveSettings = function(req, res){
 
 exports.renderuser = function(req, res) {
 	if (req.params.username == req.user.name) {
-		var users = db.model('User', schemas.userSchema);
-		var out = users.findById(req.user._id, function(err, user) {
-			if (user) {
-				var slideshowDB = db.model('Slideshow', Slideshow.slideshowSchema);
-				slideshowDB.find({
-					_id : {
-						$in : user.slides
+		appLogger.debug(req.user.current); 
+		var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+		Slideshow.find({
+			owner : req.user._id
+		}, function(err, slides) {
+			if (err){throw err;}
+			var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
+					? 'alert-' + req.query.type : '';
+			
+			var courses = [];
+			for(var i = 0; i < slides.length; i++){
+				if(courses.indexOf(slides[i].course) == -1){
+					if(courses.indexOf(slides[i].course) == ""){
+						courses.push("Unnamed course");
+					}else{
+						courses.push(slides[i].course);
 					}
-				}, function(err, slides) {
-					if (err){throw err;}
-					var type = req.query.type && /(succes|error|info)/g.test(req.query.type) ? 'alert-' + req.query.type : '';
-					
-					var courses = [];
-					for(var i = 0; i < slides.length; i++){
-						if(courses.indexOf(slides[i].course) == -1){
-							if(courses.indexOf(slides[i].course) == ""){
-								courses.push("Unnamed course");
-							}else{
-								courses.push(slides[i].course);
-							}
-						} 
-					}
-					
-					
-					for(var i = 0; i <slides.length; i++){
-						slides[i] = {
-							_id: slides[i]._id,		
-							title: slides[i].title,
-							lastEdit: moment( slides[i].lastSession).format('DD.MM.YYYY HH:mm'),
-							lastSession: moment( slides[i].lastEdit).format('DD.MM.YYYY HH:mm'),
-							course: slides[i].course
-							};
-					}
-					
-					
-					
-					
-					var slidesByCourses = []
-					for(var i = 0; i <courses.length; i++){
-						var temp = [];
-						
-						for(var j = 0; j < slides.length; j++){
-							if(slides[j].course === courses[i]){
-								temp.push(slides[j]);
-							}
-						}
-						
-						slidesByCourses.push({
-							course: courses[i],
-							slides: temp
-							}
-					);
-					}
-					
-					
-				console.log(slidesByCourses);
-					res.render('user', {
-						arrayslides : slides,
-						slidesByCourses: slidesByCourses,
-						username : req.user.name,
-						host : appHost,
-						port : app.get('port'),
-						id : user.current,
-						alert : req.query.alert,
-						type : type,
-						session : user.current
-					});
-				});
+				} 
+			}	
 
+			for(var i = 0; i <slides.length; i++){
+				slides[i] = {
+					_id: slides[i]._id,		
+					title: slides[i].title,
+					lastEdit: moment( slides[i].lastSession).format('DD.MM.YYYY HH:mm'),
+					lastSession: moment( slides[i].lastEdit).format('DD.MM.YYYY HH:mm'),
+					course: slides[i].course
+					};
 			}
+
+			var slidesByCourses = []
+			for(var i = 0; i <courses.length; i++){
+				var temp = [];
+				for(var j = 0; j < slides.length; j++){
+					if(slides[j].course === courses[i]){
+						temp.push(slides[j]);
+					}
+				}
+				slidesByCourses.push({
+					course: courses[i],
+					slides: temp
+				});
+			}		
+			appLogger.debug('Slides & course');
+			appLogger.debug(util.inspect(slides, { showHidden: true, depth: null }));
+			appLogger.debug(util.inspect(slidesByCourses, { showHidden: true, depth: null }));
+			appLogger.debug(util.inspect(courses, { showHidden: true, depth: null }));
+			
+			res.render('user', {
+				arrayslides : slides,
+				slidesByCourses: slidesByCourses,
+				username : req.user.name,
+				host : appHost,
+				port : app.get('port'),
+				id : req.user.current,
+				alert : req.query.alert,
+				type : type,
+				session : req.user.current
+			});
 		});
 	} else {
 		res.redirect('/user/' + req.user.name + '/');
