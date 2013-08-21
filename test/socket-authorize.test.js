@@ -87,7 +87,7 @@ describe('Socket ctrl authorization', function testCtrlAuth() {
     var err, authorized;
 
     // if we want multiple tests on a callback it's more clean to do it like this
-    // (with a before close)
+  // (with a before close)cat
     // I know I had like you did, but apparently we have silent fails of callbacks
     // so I need to change it too
 
@@ -97,6 +97,7 @@ describe('Socket ctrl authorization', function testCtrlAuth() {
         // we cannot reach here
         console.log("I am in")
         err=err;
+        console.log(err)
         authorized=authorized;
         done();
       });
