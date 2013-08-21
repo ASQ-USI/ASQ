@@ -232,49 +232,18 @@ exports.renderuser = function(req, res) {
 			if (err){throw err;}
 			var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
 					? 'alert-' + req.query.type : '';
-			
-			var courses = [];
-			for(var i = 0; i < slides.length; i++){
-				if(courses.indexOf(slides[i].course) == -1){
-					if(courses.indexOf(slides[i].course) == ""){
-						courses.push("Unnamed course");
-					}else{
-						courses.push(slides[i].course);
-					}
-				} 
-			}	
 
-			for(var i = 0; i <slides.length; i++){
-				slides[i] = {
-					_id: slides[i]._id,		
-					title: slides[i].title,
-					lastEdit: moment( slides[i].lastSession).format('DD.MM.YYYY HH:mm'),
-					lastSession: moment( slides[i].lastEdit).format('DD.MM.YYYY HH:mm'),
-					course: slides[i].course
-					};
+			var myData = {}
+			for (var i = 0; i < slides.length; i++) {
+				if (!myData.hasOwnProperty(slides[i].course)) {
+					myData[slides[i].course] = [];
+				}
+				myData[slides[i].course].push(slides[i]);
 			}
 
-			var slidesByCourses = []
-			for(var i = 0; i <courses.length; i++){
-				var temp = [];
-				for(var j = 0; j < slides.length; j++){
-					if(slides[j].course === courses[i]){
-						temp.push(slides[j]);
-					}
-				}
-				slidesByCourses.push({
-					course: courses[i],
-					slides: temp
-				});
-			}		
-			appLogger.debug('Slides & course');
-			appLogger.debug(util.inspect(slides, { showHidden: true, depth: null }));
-			appLogger.debug(util.inspect(slidesByCourses, { showHidden: true, depth: null }));
-			appLogger.debug(util.inspect(courses, { showHidden: true, depth: null }));
-			
 			res.render('user', {
 				arrayslides : slides,
-				slidesByCourses: slidesByCourses,
+				slidesByCourses: myData,
 				username : req.user.name,
 				host : appHost,
 				port : app.get('port'),
@@ -304,3 +273,14 @@ dust.helpers.formatDate = function (chunk, context, bodies, params) {
     return chunk.write(date + '.' + month + '.' + year);
 };
 
+
+dust.helpers.JSONIter = function (chk, ctx, bodies) {
+  var obj = ctx.current();
+  for (var k in obj) {
+    chk = chk.render(bodies.block, ctx.push({
+    	key   : k,
+    	value : obj[k]
+    }));
+  }
+  return chk;
+};
