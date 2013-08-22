@@ -1,11 +1,12 @@
-var schemas = require("../models")
-, Slideshow = require("../models/slideshow")
-, fs        = require("fs")
-, moment    = require('moment')
-, dust      = require('dustjs-linkedin')
-, check     = require('validator').check
-, appLogger = require('../lib/logger').appLogger
-, util 			= require('util');
+var schemas   = require("../models")
+, Slideshow   = require("../models/slideshow")
+, fs          = require("fs")
+, moment      = require('moment')
+, dust        = require('dustjs-linkedin')
+, dustHelpers = require('../lib/dust-helpers')
+, check       = require('validator').check
+, appLogger   = require('../lib/logger').appLogger
+, util 			  = require('util');
 
 exports.isValidUserName = function(candidateUser) {
 	// Match string between 3 and 12 chars starting with a letter, lower or upper case 
@@ -241,9 +242,12 @@ exports.renderuser = function(req, res) {
 				myData[slides[i].course].push(slides[i]);
 			}
 
+			// lastEdit: moment( slides[i].lastSession).format('DD.MM.YYYY HH:mm'),
+			// lastSession: moment( slides[i].lastEdit).format('DD.MM.YYYY HH:mm'),
+
 			res.render('user', {
-				arrayslides : slides,
 				slidesByCourses: myData,
+				JSONIter : dustHelpers.JSONIter,
 				username : req.user.name,
 				host : appHost,
 				port : app.get('port'),
@@ -271,16 +275,4 @@ dust.helpers.formatDate = function (chunk, context, bodies, params) {
     year = timestamp.getFullYear();
 
     return chunk.write(date + '.' + month + '.' + year);
-};
-
-
-dust.helpers.JSONIter = function (chk, ctx, bodies) {
-  var obj = ctx.current();
-  for (var k in obj) {
-    chk = chk.render(bodies.block, ctx.push({
-    	key   : k,
-    	value : obj[k]
-    }));
-  }
-  return chk;
 };
