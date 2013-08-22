@@ -229,28 +229,32 @@ exports.renderuser = function(req, res) {
 		var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 		Slideshow.find({
 			owner : req.user._id
-		}, 'title course lastSession lastEdit ',
+		}, '_id title course lastSession lastEdit',
 		function(err, slides) {
 			if (err){throw err;}
+
+			var slidesByCourse = []; //to evualte as false in dustjs
+
+			if (slides) {
+				slidesByCourse = {};
+				for (var i = 0; i < slides.length; i++) {
+					var slideshow = slides[i].toJSON();
+					if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
+						slidesByCourse[slideshow.course] = [];
+					}
+					slideshow.lastEdit = moment( slideshow.lastEdit)
+							.format('DD.MM.YYYY HH:mm');
+					slideshow.lastSession = moment( slideshow.lastSession)
+							.format('DD.MM.YYYY HH:mm');
+					slidesByCourse[slideshow.course].push(slideshow);
+				}
+			}
+
 			var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
 					? 'alert-' + req.query.type : '';
 
-			var myData = {}
-			for (var i = 0; i < slides.length; i++) {
-				var slideshow = slides[i].toJSON();
-				if (!myData.hasOwnProperty(slideshow.course)) {
-					myData[slideshow.course] = [];
-				}
-				var test = moment( slideshow.lastEdit).format('DD.MM.YYYY HH:mm');
-				slideshow['lastEdit'] = test;
-				slideshow.lastSession = moment( slideshow.lastSession).format('DD.MM.YYYY HH:mm');
-				appLogger.debug(slideshow.lastEdit + ' ' + test);
-				appLogger.debug(util.inspect(slideshow));
-				myData[slideshow.course].push(slideshow);
-			}
-
 			res.render('user', {
-				slidesByCourses: myData,
+				slidesByCourses: slidesByCourse,
 				JSONIter : dustHelpers.JSONIter,
 				username : req.user.name,
 				host : appHost,
