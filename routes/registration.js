@@ -229,21 +229,25 @@ exports.renderuser = function(req, res) {
 		var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 		Slideshow.find({
 			owner : req.user._id
-		}, function(err, slides) {
+		}, 'title course lastSession lastEdit ',
+		function(err, slides) {
 			if (err){throw err;}
 			var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
 					? 'alert-' + req.query.type : '';
 
 			var myData = {}
 			for (var i = 0; i < slides.length; i++) {
-				if (!myData.hasOwnProperty(slides[i].course)) {
-					myData[slides[i].course] = [];
+				var slideshow = slides[i].toJSON();
+				if (!myData.hasOwnProperty(slideshow.course)) {
+					myData[slideshow.course] = [];
 				}
-				myData[slides[i].course].push(slides[i]);
+				var test = moment( slideshow.lastEdit).format('DD.MM.YYYY HH:mm');
+				slideshow['lastEdit'] = test;
+				slideshow.lastSession = moment( slideshow.lastSession).format('DD.MM.YYYY HH:mm');
+				appLogger.debug(slideshow.lastEdit + ' ' + test);
+				appLogger.debug(util.inspect(slideshow));
+				myData[slideshow.course].push(slideshow);
 			}
-
-			// lastEdit: moment( slides[i].lastSession).format('DD.MM.YYYY HH:mm'),
-			// lastSession: moment( slides[i].lastEdit).format('DD.MM.YYYY HH:mm'),
 
 			res.render('user', {
 				slidesByCourses: myData,
