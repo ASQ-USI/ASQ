@@ -233,9 +233,9 @@ exports.renderuser = function(req, res) {
 		function(err, slides) {
 			if (err){throw err;}
 
-			var slidesByCourse = []; //to evualte as false in dustjs
+			var slidesByCourse = null; //to evaluate as false in dustjs
 
-			if (slides) {
+			if (slides && slides.length > 0) {
 				slidesByCourse = {};
 				for (var i = 0; i < slides.length; i++) {
 					var slideshow = slides[i].toJSON();
