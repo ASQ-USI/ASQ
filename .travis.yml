@@ -3,5 +3,9 @@ node_js:
   - "0.10"
   - "0.8"
   - "0.6"
+before_script: "mv config/config.travis.js config/config.test.js"
+services:
+  - mongodb
+  - redis-server
 notifications:
   hipchat: 053fa30889406842ce2432d239b201@266484
