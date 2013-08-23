@@ -97,7 +97,7 @@ conf = {
 if (fs.existsSync(__dirname + '/config.defaults.js')){
   defaultConf = require('/config.defaults.js');
 }else{
-  winston.info('Default configuration file not found(don\'t worry I have default defaults :)')');
+  winston.info('Default configuration file not found(don\'t worry I have default defaults :-)');
 }
 
 // check for env configuration
