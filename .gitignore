@@ -26,6 +26,7 @@ node_modules/
 slides/
 config/config.*
 !config/config.defaults.js.example
+!config/config.travis.js
 log/
 *.orig
 
