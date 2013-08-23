@@ -56,7 +56,7 @@
             <div class="span12 accordion-group">
               <div class="row accordion-heading">
                 <div class="span12  headline">
-                  <h2 class="pull-left">{key}</h2><a class="accordion-toggle" data-toggle="collapse" data-target="#course-{idx}" href="#">hide</a>
+                  <h2 class="pull-left">{key}</h2><a class="pull-right accordion-toggle" data-toggle="collapse" data-target="#course-{idx}" href="#">show/hide</a>
                   <!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
                 </div>
               </div>
@@ -93,6 +93,7 @@
                   {/value}
                 </div>
               </div>
+            </div>
 <!--             <div class="span12"> -->
           </div>
           {/JSONIter}
