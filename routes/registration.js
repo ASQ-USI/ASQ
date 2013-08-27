@@ -225,7 +225,6 @@ exports.saveSettings = function(req, res){
 
 exports.renderuser = function(req, res) {
 	if (req.params.username == req.user.name) {
-		appLogger.debug(req.user.current); 
 		var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 		Slideshow.find({
 			owner : req.user._id
