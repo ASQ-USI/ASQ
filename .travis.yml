@@ -9,3 +9,4 @@ services:
   - redis-server
 notifications:
   hipchat: 053fa30889406842ce2432d239b201@266484
+  webhooks: http://desolate-woodland-3690.herokuapp.com/hubot/travis?room=ASQ
