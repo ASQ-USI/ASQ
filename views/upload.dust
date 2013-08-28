@@ -22,7 +22,7 @@
 			</div>
 			<div class="row">
 				<div class="span12">
-					<form method="POST" action="./" enctype="multipart/form-data" class="form-inline">
+					<form method="POST" action="/{username}/presentations/" enctype="multipart/form-data" class="form-inline">
 						<input id="lefile" type="file" name="upload" size="40" maxlength="100000" style="display:none">
 						<div class="input-append">
 							<input id="photoCover" class="input-large" type="text">
