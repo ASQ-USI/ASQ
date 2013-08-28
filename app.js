@@ -322,6 +322,8 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 //app.get('/render2/',  registration.sendanswer);
 
 
+require('./routes/user/presentations').setUp(app, ensureAuthenticated);
+
 /** HTTP(S) Server */
 if (config.enableHTTPS) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
