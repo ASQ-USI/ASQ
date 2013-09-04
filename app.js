@@ -22,14 +22,14 @@ var express     = require('express')
   , slashes         = require("connect-slashes")
   , routes          = require('./routes')
   , flash           = require('connect-flash')
-  , passport        = require('passport')
   , lib             = require('./lib')
-  , LocalStrategy   = require('passport-local').Strategy
   , registration    = require('./routes/registration')
   , editFunctions   = require('./routes/edit')
   , statistics      = require('./routes/statistics')
   , appLogger       = lib.logger.appLogger
-  , authentication  = lib.authentication;
+  , authentication  = lib.authentication
+  , passport        = lib.passport.init()
+  , middleware      = require('./routes/middlewares');
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -37,44 +37,44 @@ var express     = require('express')
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 
-passport.serializeUser(function(user, done) {
-  done(null, user._id);
-});
+// passport.serializeUser(function(user, done) {
+//   done(null, user._id);
+// });
 
-passport.deserializeUser(function(id, done) {
-    var User = db.model('User', schemas.userSchema);
-    var out = User.findById(id, function (err, user) {
-        if (user) {
-            done(err, user);
-        } else {
-            done(null,new Error('User ' + id + ' does not exist'));
-        }
-      })
-    });
+// passport.deserializeUser(function(id, done) {
+//     var User = db.model('User', schemas.userSchema);
+//     var out = User.findById(id, function (err, user) {
+//         if (user) {
+//             done(err, user);
+//         } else {
+//             done(null,new Error('User ' + id + ' does not exist'));
+//         }
+//       })
+//     });
 
-// Use the LocalStrategy within Passport.
-//   Strategies in passport require a `verify` function, which accepts
-//   credentials (in this case, a username and password), and invoke a callback
-//   with a user object.  In the real world, this would query a database;
-//   however, in this example we are using a baked-in set of users.
+// // Use the LocalStrategy within Passport.
+// //   Strategies in passport require a `verify` function, which accepts
+// //   credentials (in this case, a username and password), and invoke a callback
+// //   with a user object.  In the real world, this would query a database;
+// //   however, in this example we are using a baked-in set of users.
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    // asynchronous verification, for effect...
-    process.nextTick(function () {
-    var User = db.model('User', schemas.userSchema);
-    var out = User.findOne({ name: username }, function (err, user) {
-        if (err) { return done(err); }
-        if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-        user.isValidPassword(password, function(err, isMatch) {
-            if (err) { return done(err); }
-            if (!isMatch) { return done(null, false, { message: 'Invalid password' }); }
-            return done(null, user);  
-        });
-      })
-    });
-  }
-));
+// passport.use(new LocalStrategy(
+//   function(username, password, done) {
+//     // asynchronous verification, for effect...
+//     process.nextTick(function () {
+//     var User = db.model('User', schemas.userSchema);
+//     var out = User.findOne({ name: username }, function (err, user) {
+//         if (err) { return done(err); }
+//         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
+//         user.isValidPassword(password, function(err, isMatch) {
+//             if (err) { return done(err); }
+//             if (!isMatch) { return done(null, false, { message: 'Invalid password' }); }
+//             return done(null, user);  
+//         });
+//       })
+//     });
+//   }
+// ));
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
@@ -237,7 +237,7 @@ app.post('/user', passport.authenticate('local', {
   failureFlash    : true
 }),function(req, res) {
     var redirect_to = req.session.redirect_to ? 
-      req.session.redirect_to : "/user/" + req.body.username + "/";
+      req.session.redirect_to : "/user/" + req.body.username + "/" ;
     res.redirect(redirect_to);
 });
 
@@ -302,7 +302,7 @@ app.get('/slidesInFrame/:id/', function(req,res){
 	res.render('slidesIFrame', {id: req.params.id, url: req.query.url});
 });
 app.get('/slidesRender/:id', routes.slides.render);
-app.get('/slidesRender/:id/*', routes.slides.renderStatic);
+app.get('/slidesRender/:id/*',  routes.slides.renderStatic);
 
 //Show splash screen for starting presentations
 //app.get('/slidesSplashScreen', routes.slides.splashScreen)
@@ -322,7 +322,7 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 //app.get('/render2/',  registration.sendanswer);
 
 
-require('./routes/user/presentations').setUp(app, ensureAuthenticated);
+require('./routes/user/presentations').setUp(app, middleware);
 
 /** HTTP(S) Server */
 if (config.enableHTTPS) {
