@@ -1,0 +1,277 @@
+var chai = require('chai')
+  , expect = chai.expect
+  , utils  = require('../routes/utils')
+  , errors  = require('../routes/error-messages');
+
+describe('Strict Mode', function() {
+  var strict = true;
+  describe('Valid inputs', function() {
+    it('Must return null.', function() {
+      var username = 'iron-man_1.2';
+      var email = 'super.valid@mail.com';
+      var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var result = utils.isValidUserForm(username, email, password,
+          passwordConfirm, strict);
+      expect(result).to.be.null;
+    });
+  });
+
+  describe('Single invalid input', function() {
+    it('Must detect an invalid username', function() {
+      var username = 'ThisUserNameIsWayTooLongToBeValid';
+      var email = 'super.valid@mail.com';
+      var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ username : errors.username.regex });
+    });
+    it('Must detect an invalid email', function() {
+      var username = 'iron-man_1.2';
+      var email = 'ThisIsNotAn.em@il';
+      var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ email : errors.email.isEmail });
+    });
+    it('Must detect an invalid password', function() {
+      var username = 'iron-man_1.2';
+      var email = 'super.valid@mail.com';
+      var password = 'badPassword';
+      var passwordConfirm = 'badPassword';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ password : errors.password.regex });
+    });
+    it('Must detect non matching passwords', function() {
+      var username = 'iron-man_1.2';
+      var email = 'super.valid@mail.com';
+      var password = 'Sup3r-Secre7_P@ssw**rd_Ver1';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd_Ver2';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({
+        passwordConfirm : errors.passwordConfirm.equals
+      });
+    });
+  });
+
+  describe('Multiple invalid inputs', function() {
+    var username = 'invalid!#$';
+    var email = 'not today';
+    var password = 'verybadpassword';
+    var passwordConfirm = 'thisaintbetter';
+    var result = utils.isValidUserForm(username, email, password,
+      passwordConfirm, strict);
+    it('Must be a single object with all errors', function() {
+      expect(result).not.to.be.an('array');
+      expect(result).to.be.an('object');
+    })
+    it('Must detect an invalid username', function() {
+      expect(result).to.have.property('username', errors.username.regex);
+    });
+    it('Must detect an invalid email', function() {
+      expect(result).to.have.property('email', errors.email.isEmail);
+    });
+    it('Must detect an invalid password', function() {
+      expect(result).to.have.property('password', errors.password.regex);
+    });
+    it('Must detect non matching passwords', function() {
+      expect(result).to.have.property('passwordConfirm',
+          errors.passwordConfirm.equals);
+    });
+  });
+
+  describe('Single missing input', function() {
+    var username = 'iron-man_1.2';
+    var email = 'super.valid@mail.com';
+    var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+    var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+    it('Must detect a missing username.', function() {
+      var result = utils.isValidUserForm('', email, password,
+          passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ username : errors.username.notEmpty });
+    });
+    it('Must detect a missing email.', function() {
+      var result = utils.isValidUserForm(username, '', password,
+          passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ email : errors.email.notEmpty });
+    });
+    it('Must detect a missing password.', function() {
+      var result = utils.isValidUserForm(username, email, '',
+          passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({
+        password        : errors.password.notEmpty,
+        passwordConfirm : errors.passwordConfirm.equals
+      });
+    });
+    it('Must detect a missing password confirmation.', function() {
+      var result = utils.isValidUserForm(username, email, password, '', strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ passwordConfirm :
+        errors.passwordConfirm.equals
+      });
+    });
+  });
+
+  describe('Multiple missing inputs', function() {
+    var result = utils.isValidUserForm('', '', '', '', strict);
+    it('Must be a single object with all errors', function() {
+      expect(result).not.to.be.an('array');
+      expect(result).to.be.an('object');
+    })
+    it('Must detect a missing username', function() {
+      expect(result).to.have.property('username', errors.username.notEmpty);
+    });
+    it('Must detect a missing email', function() {
+      expect(result).to.have.property('email', errors.email.notEmpty);
+    });
+    it('Must detect a missing password', function() {
+      expect(result).to.have.property('password', errors.password.notEmpty);
+    });
+    it('Must not detect empty matching passwords', function() {
+      expect(result).to.not.have.property('passwordConfirm');
+    });
+  });
+});
+
+describe('Non Strict Mode', function() {
+  var strict = false;
+  describe('Valid inputs', function() {
+    it('Must return null.', function() {
+      var username = 'iron-man_1.2';
+      var email = 'super.valid@mail.com';
+      var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var result = utils.isValidUserForm(username, email, password,
+          passwordConfirm, strict);
+      expect(result).to.be.null;
+    });
+  });
+
+  describe('Single invalid input', function() {
+    it('Must detect an invalid username.', function() {
+      var username = 'ThisUserNameIsWayTooLongToBeValid';
+      var email = 'super.valid@mail.com';
+      var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ username : errors.username.regex });
+    });
+    it('Must detect an invalid mail.', function() {
+      var username = 'iron-man_1.2';
+      var email = 'ThisIsNotAn.em@il';
+      var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ email : errors.email.isEmail });
+    });
+    it('Must detect an invalid password.', function() {
+      var username = 'iron-man_1.2';
+      var email = 'super.valid@mail.com';
+      var password = 'badPassword';
+      var passwordConfirm = 'badPassword';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({ password : errors.password.regex });
+    });
+    it('Must detect the non matching passwords.', function() {
+      var username = 'iron-man_1.2';
+      var email = 'super.valid@mail.com';
+      var password = 'Sup3r-Secre7_P@ssw**rd_Ver1';
+      var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd_Ver2';
+      var result = utils.isValidUserForm(username, email, password,
+        passwordConfirm, strict);
+      expect(result).to.be.an('object');
+      expect(result).to.deep.equal({
+        passwordConfirm : errors.passwordConfirm.equals
+      });
+    });
+  });
+
+   describe('Multiple invalid inputs', function() {
+    var username = 'invalid!#$';
+    var email = 'not today';
+    var password = 'verybadpassword';
+    var passwordConfirm = 'thisaintbetter';
+    var result = utils.isValidUserForm(username, email, password,
+      passwordConfirm, strict);
+    it('Must be a single object with all errors', function() {
+      expect(result).not.to.be.an('array');
+      expect(result).to.be.an('object');
+    })
+    it('Must detect an invalid username', function() {
+      expect(result).to.have.property('username', errors.username.regex);
+    });
+    it('Must detect an invalid email', function() {
+      expect(result).to.have.property('email', errors.email.isEmail);
+    });
+    it('Must detect an invalid password', function() {
+      expect(result).to.have.property('password', errors.password.regex);
+    });
+    it('Must detect non matching passwords', function() {
+      expect(result).to.have.property('passwordConfirm',
+          errors.passwordConfirm.equals);
+    });
+  });
+
+  describe('Single missing inputs', function() {
+    var username = 'iron-man_1.2';
+    var email = 'super.valid@mail.com';
+    var password = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+    var passwordConfirm = 'Sup3r-Secre7_P@ssw**rd^(LOL?)!';
+    it('Must handle a missing username.', function() {
+      var result = utils.isValidUserForm('', email, password,
+          passwordConfirm, strict);
+      expect(result).to.be.null;
+    });
+    it('Must handle a missing email.', function() {
+      var result = utils.isValidUserForm(username, '', password,
+          passwordConfirm, strict);
+      expect(result).to.be.null;
+    });
+    it('Must handle missing password and password confirmation.', function() {
+      var result = utils.isValidUserForm(username, email, '', '', strict);
+      expect(result).to.be.null;
+    });
+    it('Must hanlde a missing password (with password confirmation present).',
+      function() {
+        var result = utils.isValidUserForm(username, email, '',
+            passwordConfirm, strict);
+        expect(result).to.be.an('object');
+        expect(result).to.deep.equal({
+          passwordConfirm : errors.passwordConfirm.equals
+        });
+    });
+    it('Must handle a missing password confirmation (with password present).',
+      function() {
+        var result = utils.isValidUserForm(username, email, password, '',
+            strict);
+        expect(result).to.be.an('object');
+        expect(result).to.deep.equal({
+          passwordConfirm : errors.passwordConfirm.equals
+        });
+    });
+  });
+
+  describe('Multiple missing inputs', function() {
+    var result = utils.isValidUserForm('', '', '', '', strict);
+    it('Must return null.', function() {
+      expect(result).to.be.null;
+    });
+  });
+});;
