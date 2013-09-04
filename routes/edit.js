@@ -105,6 +105,7 @@ exports.saveDetails = function(req, res) {
 	//res.redirect('/user/' + req.user.name + '?alert=Slideshow successfully updated &type=succes');
 }
 
+//MOVED
 exports.deleteSlideshow = function(req, res) {
 	console.log(req.user.name)
 	var User = db.model('User')
@@ -163,8 +164,8 @@ exports.edithtml = function(req, res) {
 		if (err) {
 			console.log(err);
 		} else {
-			var folderHTML = './slides/' + req.params.id + '/index.html';
-			fs.readFile(slideshow.originalFile, 'utf-8', function(error, data) {
+			var folderHTML = slideshow.path + slideshow.originalFile;
+			fs.readFile(folderHTML, 'utf-8', function(error, data) {
 				//console.log(req.params.id + " "+ data);
 				res.render('edithtml', {
 					username : req.user.name,
