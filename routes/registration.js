@@ -133,6 +133,7 @@ function preload(jsonFile) {
 
 }
 
+//MOVED
 exports.settings = function(req, res){
 	var User = db.model('User', schemas.userSchema);
 	var out = User.findById(req.user._id, function(err, user) {
@@ -144,7 +145,7 @@ exports.settings = function(req, res){
 		}
 	});
 }
-
+ //MOVED
 exports.saveSettings = function(req, res){
 	// Username
 	if (req.body.inputUsername.length > 0 && !exports.isValidUserName(req.body.inputUsername)) {
@@ -223,6 +224,7 @@ exports.saveSettings = function(req, res){
 	
 }
 
+//MOVED
 exports.renderuser = function(req, res) {
 	if (req.params.username == req.user.name) {
 		var Slideshow = db.model('Slideshow', schemas.slideshowSchema);

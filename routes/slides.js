@@ -127,6 +127,7 @@ module.exports.adminStatic = function(req, res) {
 	});
 }
 
+//MOVED
 /** Renders the slideshow for thumbnail */
 module.exports.render = function(req, res) {
 	var id = req.params.id;

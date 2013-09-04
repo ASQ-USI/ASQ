@@ -29,6 +29,7 @@ module.exports.show = function(req, res) {
   res.render('upload', {username: req.user.name});
 }
 
+//MOVED
 /*
  * Handle a POST request to the server to upload a new slideshow.
  * This function does all the necessary steps to create a new slideshow
@@ -164,6 +165,7 @@ module.exports.post = function(req, res) {
 
 }
 
+//MOVED
 function createThumb(slideshow) {
 	fs.readFile(slideshow.studentFile, 'utf-8', function(error, data) {
 		var ids = [];
