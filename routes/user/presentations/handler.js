@@ -1,4 +1,10 @@
-var lib            = require('../../../lib')
+var AdmZip         = require('adm-zip')
+  , moment         = require('moment')
+  , path           = require('path')
+  , pfs            = require('promised-io/fs')
+  , _              = require('underscore')
+  , when           = require('when')
+  , lib            = require('../../../lib')
   , dustHelpers    = lib.dustHelpers
   , appLogger      = lib.logger.appLogger
   , asqParser      = lib.asqParser
@@ -7,12 +13,7 @@ var lib            = require('../../../lib')
   , model          = require('../../../models')
   , slideshowModel = model.slideshowModel
   , questionModel  = model.questionModel
-  , AdmZip         = require('adm-zip')
-  , moment         = require('moment')
-  , path           = require('path')
-  , pfs            = require('promised-io/fs')
-  , _              = require('underscore')
-  , when           = require('when');
+  , utils          = require('./utils');
 
 function listPresentations(req, res) {
   appLogger.debug('list presentations');
@@ -60,7 +61,6 @@ function listPresentations(req, res) {
   } else {
     res.redirect('/user/' + req.user.name + '/');
   }
-
 }
 
 function uploadPresentation(req, res) {
@@ -86,8 +86,8 @@ function uploadPresentation(req, res) {
   //3) make sure at least one html exists
   fsUtils.getFirstHtmlFile(folderPath)
     .tap(function(filePath){
-      newSlideshow.originalFile = filePath;
-      appLogger.debug('will use ' + filePath + ' for main presentation file...');
+      newSlideshow.originalFile = path.basename(filePath);
+      appLogger.debug('will use ' + filePath + ' as main presentation file...');
     })
     .then(
       function(filePath){
@@ -129,16 +129,18 @@ function uploadPresentation(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher")
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, 'teacher')
           //,
-          //asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
+          //asqRenderer.render(slideShowFileHtml, parsedQuestions, 'student')
           ]);
     })
     //7) store new html with questions to file
     .then(
       function(newHtml){
-        appLogger.debug('presenter and audience files rendered in memory successfully');
-        var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
+        appLogger.debug('presenter and audience files rendered in memory '
+            + 'successfully');
+        var fileNoExt =  folderPath + '/'
+            + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
         newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
         
@@ -147,7 +149,7 @@ function uploadPresentation(req, res) {
           pfs.writeFile(newSlideshow.studentFile, newHtml[1])
          ];
 
-        return  require("promised-io/promise").all(filePromises);
+        return  require('promised-io/promise').all(filePromises);
 
     })
     //8) add questions to slideshow and persist
@@ -167,13 +169,15 @@ function uploadPresentation(req, res) {
         appLogger.debug('new slideshow saved to db');
         //create thumbs
         appLogger.debug('creating thumbnails')
-        createThumb(newSlideshow);
+        utils.createThumbs(newSlideshow);
         return pfs.unlink(req.files.upload.path);         
     })
     //10) update slideshows for user
     .then(function(){
       var User = db.model('User');
-          return User.findByIdAndUpdate(req.user._id, { $push: {slides : newSlideshow._id } }).exec();
+          return User.findByIdAndUpdate(req.user._id, {
+            $push: { slides : newSlideshow._id }
+          }).exec();
     })
     //11) redirect to user profile page
     .then(
@@ -185,27 +189,43 @@ function uploadPresentation(req, res) {
 
       // Error handling for all the above promises
       function(err){
-        appLogger.error("in upload.js: " + err.toString(), {error: err});
+        appLogger.error('in upload.js: ' + err.toString(), {error: err});
         pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
     });
 }
 
 function getPresentation(req, res) {
-  if (req.params.user === req.user.name) {
-    var id = req.params.id;
+  if (req.params.user == req.user.name) {
+    appLogger.debug('Trying to render?')
+    var id = req.params.presentationId;
     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 
     Slideshow.findById(id, function(err, slideshow) {
       if(slideshow){
-        res.sendfile(slideshow.originalFile);
+        res.sendfile(slideshow.path + path.basename(slideshow.originalFile));
       
       }else{
-        res.send(404, "Slideshow not found");
+        res.send(404, 'Slideshow not found');
       }
     });
+  } else {
+    res.send(401, 'You cannot see this slideshow');
   }
-  res.send(401, 'You cannot see this slideshow');
+}
 
+function getPresentationFiles(req, res) {
+  var id = req.params.presentationId;
+  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+
+  Slideshow.findById(id, function(err, slideshow) {
+    if (slideshow && req.params[0] == slideshow.originalFile) {
+      res.redirect(301, '/' + req.user.name + '/presentations/' + id + '/');
+    } else if (slideshow) {
+      res.sendfile(slideshow.path + req.params[0]);
+    } else {
+      res.send(404, 'Slideshow not found, unable to serve attached file.');
+    }
+  });
 }
 
 function updatePresentation(req, res) {
@@ -218,7 +238,10 @@ function deletePresentation(req, res) {
     var User      = db.model('User')
       , Slideshow = db.model('Slideshow');
 
-    Slideshow.findOne({_id: req.params.id, owner: req.user._id}).exec()
+    Slideshow.findOne({
+      _id   : req.params.presentationId,
+      owner : req.user._id
+    }).exec()
     .then(
     function(slideshow){
       return slideshow.remove().exec()
@@ -243,6 +266,7 @@ module.exports = {
   listPresentations  : listPresentations,
   uploadPresentation : uploadPresentation,
   getPresentation    : getPresentation,
+  getPresentationFiles : getPresentationFiles,
   updatePresentation : updatePresentation,
   deletePresentation : deletePresentation
 }
