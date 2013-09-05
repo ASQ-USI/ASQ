@@ -78,3 +78,12 @@ function signOut(req, res) {
   req.logout();
   res.redirect('/');
 }
+
+module.exports = {
+  getHomePage  : getHomePage,
+  getRegister  : getRegister,
+  postRegister : postRegister,
+  getSignIn    : getSignIn,
+  postSignIn   : postSignIn,
+  signOut      : signOut
+}
