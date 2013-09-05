@@ -8,7 +8,7 @@ function getUserPage(req, res) {
         + '! This is your personal profile page.')
   } else {
     res.send(200, 'Hello ' + req.user.name 
-        + '! You are viewing the user page of ' + req.params.name + '.');
+        + '! You are viewing the user page of ' + req.params.user + '.');
   }
 }
 
@@ -30,7 +30,7 @@ function updateUserSettings(req, res) {
 
   if (errors !== null) {
     res.render('settings', { 
-    alert : errors.toString()
+    alert : errors.toString(),
     type  : 'error'
     }); //TODO handle errors display on page
   }
@@ -73,4 +73,10 @@ function updateUserSettings(req, res) {
       type: 'success'
     }); 
   });
+}
+
+module.exports = {
+  getUserPage        : getUserPage,
+  getUserSettings    : getUserSettings,
+  updateUserSettings : updateUserSettings
 }
