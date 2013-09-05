@@ -59,7 +59,8 @@ function listPresentations(req, res) {
       });
     });
   } else {
-    res.redirect('/user/' + req.user.name + '/');
+    //For now reidrect to your presentations.
+    res.redirect('/' + req.user.name + '/presentations/');
   }
 }
 
@@ -175,22 +176,26 @@ function uploadPresentation(req, res) {
     //10) update slideshows for user
     .then(function(){
       var User = db.model('User');
-          return User.findByIdAndUpdate(req.user._id, {
-            $push: { slides : newSlideshow._id }
-          }).exec();
+      return User.findByIdAndUpdate(req.user._id, {
+        $push: { slides : newSlideshow._id }
+      }).exec();
     })
     //11) redirect to user profile page
     .then(
       function(user){
-      appLogger.debug('upload zip file unlinked');
-      appLogger.info('upload complete!');
-      res.redirect('/user/')
+        appLogger.debug('upload zip file unlinked');
+        appLogger.info(newSlideshow.title + ' uploaded successfully!');
+        res.redirect(['/', req.user.name, '/presentations/?alert=',
+            newSlideshow.title, ' uploaded successfully!&type=success']
+            .join(''));
     },
-
-      // Error handling for all the above promises
-      function(err){
-        appLogger.error('in upload.js: ' + err.toString(), {error: err});
-        pfs.unlink(req.files.upload.path).then(res.redirect('/user/'));
+    // Error handling for all the above promises
+    function(err){
+      appLogger.error('During upload : ' + err.toString(), { error : err });
+      pfs.unlink(req.files.upload.path).then(
+        res.redirect(['/', req.user.name, '/presentations/?alert=',
+            err.toString(), '&type=error'].join(''));
+      );
     });
 }
 
@@ -249,7 +254,7 @@ function deletePresentation(req, res) {
     .then(
     function(){
       res.redirect('/' + req.user.name +
-        '/presentations?alert=Slideshow deleted&type=succes');
+        '/presentations/?alert=Slideshow deleted&type=succes');
     },
     function(err){
       res.redirect('/' + req.user.name +
