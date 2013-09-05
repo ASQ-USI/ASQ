@@ -30,12 +30,21 @@ slideshowSchema.virtual('path').get(function() {
 //remove sessions before removing a slideshow
 slideshowSchema.pre('remove', true, function(next,done){
   next();
-   var Session = db.model('Session');
-  
-  Session.remove({slides : this.id}, function(err){
-    if (err) { done(err)}
-    done();
-  })
+  var Session = db.model('Session');
+  Session.findOne({ 
+    slides       : this._id,
+    isTerminated : false
+  }, function(err, session) {
+    if (session) {
+      return next(new Error('This presentation is being broadcast and cannot be '
+        + 'removed.'));
+    }
+    next();
+  });
+  // Session.remove({slides : this.id}, function(err){
+  //   if (err) { done(err)}
+  //   done();
+  // })
 
 });
 

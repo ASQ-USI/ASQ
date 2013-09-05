@@ -27,7 +27,7 @@ var sessionSchema = new Schema({
 });
 
 sessionSchema.virtual('isTerminated').get(function() {
-  return this.endDate != null;
+  return this.endDate !== null;
 });
 
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
