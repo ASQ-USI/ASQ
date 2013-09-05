@@ -1,9 +1,11 @@
-var handler = require('./handler')
-  , user    = require('./user');
+var handler   = require('./handler')
+  , user      = require('./user')
+  , appLogger = require('../lib/logger').appLogger;
 
 module.exports.setUp = function setUp(app, middleware) {
+  appLogger.debug('Setting root routes');
   // Get the home page
-  app.get('/', hanlder.getHomePage);
+  app.get('/', handler.getHomePage);
 
   //Get the register page
   app.get('/register/', middleware.isNotAuthenticated, handler.getRegister);
@@ -15,7 +17,7 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/sign_in/', middleware.isNotAuthenticated, handler.getSignIn);
 
   //Sign in
-  app.post('/sign_in', middleware.localAuthorize, handler.postSignIn);
+  app.post('/sign_in', /*middleware.localAuthorize,*/ handler.postSignIn);
 
   //Sign out
   app.post('/sign_out', middleware.isAuthenticated, handler.signOut);
