@@ -70,7 +70,7 @@ function getSignIn(req, res) {
 
 function postSignIn(req, res) {
   var redirect_to = req.session.redirect_to ? 
-      req.session.redirect_to : '/user/' + req.body.username + '/' ;
+      req.session.redirect_to : '/' + req.body.username + '/' ;
   res.redirect(redirect_to);
 }
 
