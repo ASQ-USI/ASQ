@@ -4,6 +4,7 @@ module.exports = errors = {};
 errors.username = {
   notEmpty : 'Username missing.',
   notNull  : 'Username missing.',
+  isIn     : 'Username not available.',
   regex    : 'Allowed: 3 to 12 characters among letters, digit or . - _.'
 };
 

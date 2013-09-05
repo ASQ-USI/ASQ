@@ -1,5 +1,6 @@
-var check   = require('validator').check
-  , errorMessages   = require('./error-messages');
+var check            = require('validator').check
+  , reservedKeywords = require('../lib/keywords')
+  , errorMessages    = require('./error-messages');
 
 function isValidUserForm(username, email, password, passwordConfirm, strict) {
   var strict = typeof(strict) != 'boolean' ? true : strict;
@@ -10,6 +11,7 @@ function isValidUserForm(username, email, password, passwordConfirm, strict) {
     check(username, errorMessages.username)
       .notEmpty()
       .notNull()
+      .isIn(reservedKeywords)
       .regex('(?=[a-zA-Z])(?=^.{3,12}$)[a-zA-Z0-9_\\-\.]*$');
   } catch (err) {
     var registerError = strict
