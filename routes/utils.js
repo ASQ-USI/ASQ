@@ -11,7 +11,7 @@ function isValidUserForm(username, email, password, passwordConfirm, strict) {
     check(username, errorMessages.username)
       .notEmpty()
       .notNull()
-      .isIn(reservedKeywords)
+      .notIn(reservedKeywords)
       .regex('(?=[a-zA-Z])(?=^.{3,12}$)[a-zA-Z0-9_\\-\.]*$');
   } catch (err) {
     var registerError = strict
