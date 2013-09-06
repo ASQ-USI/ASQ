@@ -7,6 +7,7 @@ var chai = require('chai')
 var db = mongoose.createConnection('127.0.0.1', 'test-asq');
 
 var Slideshow = db.model("Slideshow");
+var Question = db.model("Question");
 
 
 

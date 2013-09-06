@@ -47,7 +47,7 @@ before(function(done) {
     var WhitelistEntry = db.model('WhitelistEntry', schemas.whitelistEntrySchema);
     testWhitelistEntry = new WhitelistEntry({
       session     : sessionId,
-      uid         : mongoose.Types.ObjectId('4edd40c86762e0fb12000003'),
+      uid         : mongoose.Types.ObjectId('4edd40c86762e0fb12000002'),
       token       : token,
       displayName : displayName,
       canControl  : true
