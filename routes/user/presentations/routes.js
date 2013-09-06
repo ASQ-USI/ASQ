@@ -8,7 +8,7 @@ module.exports.setUp = function setUp(app, middleware) {
     handler.listPresentations);
   
   // Upload a new presentation.
-  app.post('/:user/presentations/', middleware.isRouteOwner,
+  app.post('/:user/presentations', middleware.isRouteOwner,
     handler.uploadPresentation);
   
   // Get the presentation matching presentationId.
@@ -20,10 +20,10 @@ module.exports.setUp = function setUp(app, middleware) {
       handler.getPresentationFiles)
   
   // Update the presentation matching presentationId.
-  app.put('/:user/presentations/:presentationId/', middleware.isRouteOwner,
+  app.put('/:user/presentations/:presentationId', middleware.isRouteOwner,
       handler.updatePresentation);
 
   // Delete the presentation matching presentationId.
-  app.del('/:user/presentations/:presentationId/', middleware.isRouteOwner,
+  app.del('/:user/presentations/:presentationId', middleware.isRouteOwner,
       handler.deletePresentation);
 }

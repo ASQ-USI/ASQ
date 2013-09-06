@@ -194,7 +194,7 @@ function uploadPresentation(req, res) {
       appLogger.error('During upload : ' + err.toString(), { error : err });
       pfs.unlink(req.files.upload.path).then(
         res.redirect(['/', req.user.name, '/presentations/?alert=',
-            err.toString(), '&type=error'].join(''));
+            err.toString(), '&type=error'].join(''))
       );
     });
 }
