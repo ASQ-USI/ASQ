@@ -65,6 +65,9 @@ module.exports = function(grunt) {
       case "drop" :
         grunt.task.run('dbDrop');
         break;
+      case " dropTest" :
+        grunt.task.run('dbDropTest');
+        break;
     }
   });
 
@@ -77,6 +80,26 @@ module.exports = function(grunt) {
         throw err;
       }
       grunt.log.writeln('Dropping database: asq ...');
+      mongoose.connection.db.dropDatabase(function(err) {
+        if (err) {
+          done(err);
+        } else {
+          grunt.log.ok();
+          done();
+        }
+      });
+    });
+  });
+
+  grunt.registerTask('dbDropTest', "Drops the schema of the asq database", function() {
+    var mongoose = require('mongoose')
+    , done = this.async();
+
+    mongoose.connect('mongodb://localhost:27017/asq-test', function(err) {
+      if (err) {
+        throw err;
+      }
+      grunt.log.writeln('Dropping database: asq-test ...');
       mongoose.connection.db.dropDatabase(function(err) {
         if (err) {
           done(err);
