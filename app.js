@@ -160,6 +160,10 @@ app.configure(function() {
     app.use(express.static(path.join(__dirname, '/public/')));
     //used to append slashes at the end of a url (MUST BE after static)
     app.use(slashes());
+    app.use(function(err, req, res, next){
+      console.error(err.stack);
+      res.send(500, 'Something broke!');
+    });
 });
 
 app.configure('development', function(){
@@ -188,9 +192,10 @@ app.configure('production', function(){
 // });
 
 /** Routing */
- app.get('/', ensureAuthenticated, function(req, res){
-   res.redirect('/user');
- });
+//MOVED
+ // app.get('/', ensureAuthenticated, function(req, res){
+ //   res.redirect('/user');
+ // });
 
 /** Initialize a new session with slides matching the id */
 app.get('/user/start/:id', ensureAuthenticated, routes.slides.start);
@@ -199,8 +204,9 @@ app.get('/user/start/:id', ensureAuthenticated, routes.slides.start);
 app.get('/user/stop', ensureAuthenticated, routes.slides.stop);
 
 /** Edit user account settings **/
-app.get('/user/settings', ensureAuthenticated, registration.settings);
-app.post('/user/settings', ensureAuthenticated, registration.saveSettings);
+//MOVED
+// app.get('/user/settings', ensureAuthenticated, registration.settings);
+// app.post('/user/settings', ensureAuthenticated, registration.saveSettings);
 
 /** Join the session of user */
 app.get('/live/:user/', authentication.authorizeSession, routes.slides.live);
@@ -213,39 +219,46 @@ app.get('/admin/',  ensureAuthenticated, routes.slides.admin);
 app.get('/admin/*', ensureAuthenticated, routes.slides.adminStatic);
 
 /** Upload new slides */
-app.post('/user/upload/', ensureAuthenticated, routes.upload.post);
+//MOVED
+//app.post('/user/upload/', ensureAuthenticated, routes.upload.post);
 app.get('/user/upload/', ensureAuthenticated, routes.upload.show);
 
 //Someone types /signup URL, which has no meaning. He is redirected.
-app.get('/signup/', function(req, res){
-  res.redirect('/');
-});
+//MOVED
+// app.get('/signup/', function(req, res){
+//   res.redirect('/');
+// });
 
 app.get('/checkusername/:username/', registration.checkusername);
 
 //Registration happened.
-app.post('/signup', registration.signup);
+//MOVED
+//app.post('/signup', registration.signup);
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
-app.get('/user/', ensureAuthenticated, function(req,res) {
-    res.redirect('/user/'+req.user.name + '/');
-});
+//MOVED
+// app.get('/user/', ensureAuthenticated, function(req,res) {
+//     res.redirect('/user/'+req.user.name + '/');
+// });
 
 //Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
-app.post('/user', passport.authenticate('local', {
-  failureRedirect : '/',
-  failureFlash    : true
-}),function(req, res) {
-    var redirect_to = req.session.redirect_to ? 
-      req.session.redirect_to : "/user/" + req.body.username + "/" ;
-    res.redirect(redirect_to);
-});
+//MOVED
+// app.post('/user', passport.authenticate('local', {
+//   failureRedirect : '/',
+//   failureFlash    : true
+// }),function(req, res) {
+//     var redirect_to = req.session.redirect_to ? 
+//       req.session.redirect_to : "/user/" + req.body.username + "/" ;
+//     res.redirect(redirect_to);
+// });
 
 //Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
-app.get('/user/:username/', ensureAuthenticated, registration.renderuser);
+//MOVED
+//app.get('/user/:username/', ensureAuthenticated, registration.renderuser);
 
 //Serves thumbnails 
-app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
+//MOVED
+//app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
 
 app.get('/user/edit/', ensureAuthenticated, function (req,res) {
     res.redirect("/user/edit")
@@ -278,10 +291,11 @@ app.del('/slideshows/:id', ensureAuthenticated, editFunctions.deleteSlideshow);
 //app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 
 //The user logs out, and get redirected
-app.get('/logout/', function(req, res){
-  req.logout();
-  res.redirect('/');
-});
+//MOVED
+// app.get('/logout/', function(req, res){
+//   req.logout();
+//   res.redirect('/');
+// });
 
 
 // Crash at start with node.js 0.10.10
@@ -301,8 +315,9 @@ app.post('/user/savedetails/:id', ensureAuthenticated, editFunctions.saveDetails
 app.get('/slidesInFrame/:id/', function(req,res){
 	res.render('slidesIFrame', {id: req.params.id, url: req.query.url});
 });
-app.get('/slidesRender/:id', routes.slides.render);
-app.get('/slidesRender/:id/*',  routes.slides.renderStatic);
+//MOVED
+// app.get('/slidesRender/:id', routes.slides.render);
+// app.get('/slidesRender/:id/*',  routes.slides.renderStatic);
 
 //Show splash screen for starting presentations
 //app.get('/slidesSplashScreen', routes.slides.splashScreen)
@@ -322,7 +337,7 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 //app.get('/render2/',  registration.sendanswer);
 
 
-require('./routes/user/presentations').setUp(app, middleware);
+routes.setUp(app, middleware);
 
 /** HTTP(S) Server */
 if (config.enableHTTPS) {

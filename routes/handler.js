@@ -1,4 +1,5 @@
-var utils = require('./utils');
+var utils     = require('./utils')
+  , appLogger = require('../lib/logger').appLogger;
 
 function getHomePage(req, res) {
   res.send(200, 'This is where the home page will be.');
@@ -75,6 +76,7 @@ function postSignIn(req, res) {
 }
 
 function signOut(req, res) {
+  appLogger.debug('Sign out');
   req.logout();
   res.redirect('/');
 }
