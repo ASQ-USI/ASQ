@@ -7,26 +7,27 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="brand pull-right" href="/user"><img src="/img/ASQBlack.svg" height="34px" /></a>
+      <a class="brand pull-right" href="/{username}/"><img src="/img/ASQBlack.svg" height="34px" /></a>
 
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li>
-            <a href="/user">My Presentations</a>
+            <a href="/{username}/presentations/">My Presentations</a>
           </li>
           <!-- <li><a href="/questions">My Questions</a></li> -->
           <li>
-            <a href="/user/upload">Upload Presentation</a>
+            <a href="/upload/">Upload Presentation</a>
           </li>
 
         </ul>
         <ul class="nav pull-right">
           <li>
-            <a href="/user/settings">Settings</a>
+            <a href="/{username}/settings">Settings</a>
           </li>
           <li class="divider-vertical"></li>
           <li>
-            <a href="/logout/">Log out</a>
+            <form id="logoutForm" method="post" action="/sign_out" style="display: none; opacity: 0;"></form>
+            <a href="#" onclick="$('#logoutForm').submit()">Log out</a>
           </li>
         </ul>
       </div>

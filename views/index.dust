@@ -62,7 +62,7 @@
 				
 
 				<div class="slidinglogin">
-					<form name="login" class="form-horizontal" action="/user" method="post">
+					<form name="login" class="form-horizontal" action="/sign_in/" method="post">
 						<div class="control-group">
 							<div class="input-prepend">
 								<span class="add-on">Username</span>
@@ -110,7 +110,7 @@
 					
 					
 					
-					<form id="signup" class="form-horizontal" action="/signup" method="post">
+					<form id="signup" class="form-horizontal" action="/register" method="post">
 						<div class="control-group" id="groupUsername">
 							<label class="control-label" for="inputUsername" >Username</label>
 					    	<div class="controls">
