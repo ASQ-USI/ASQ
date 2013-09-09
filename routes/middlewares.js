@@ -38,6 +38,16 @@ function isRouteOwner(req, res, next) {
     }
 }
 
+function forceSSL(req, res, next) {
+      if (!req.secure) {
+        appLogger.log('HTTPS Redirection');
+        return res.redirect(['https://', process.env.HOST,
+            (app.get('port') === '443' ? '' : (':' + app.get('port'))),
+            req.url].join(''));
+      }
+      next();
+    }
+
 var localAuthenticate = passport.authenticate('local', {
   failureRedirect : '/sign_in/',
   failureFlash    : true
@@ -46,6 +56,7 @@ var localAuthenticate = passport.authenticate('local', {
 module.exports = {
     isAuthenticated    : isAuthenticated,
     isNotAuthenticated : isNotAuthenticated,
-    isRouteOwner       : isRouteOwner,//[ isAuthenticated, isRouteOwner ],
-    localAuthenticate  : localAuthenticate
+    isRouteOwner       : [ isAuthenticated, isRouteOwner ],
+    localAuthenticate  : localAuthenticate,
+    forceSSL           : forceSSL
 }
