@@ -118,52 +118,44 @@ schemas = require('./models');
 
 /** Configure express */
 app.configure(function() {
-    app.set('port', process.env.PORT);
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'dust');
-    if (config.enableHTTPS) {
-        app.use(function forceSSL(req, res, next) {
-            if (!req.secure) {
-                appLogger.log('HTTPS Redirection');
-                return res.redirect('https://' + process.env.HOST + (app.get('port') === "443" ? "" : (":" + app.get('port'))) + req.url);
-            }
-            next();
-        });
-    }
-    app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
-    app.use(express.favicon());
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
-    app.use(express.methodOverride());
-    app.use(express.cookieParser());
-    //mongosession store to be used with socket.io
-    var redisSessionStore = new redisStore({
-      host: '127.0.0.1',
-      port: 6379,
-      db: 0,
-    });
-    app.use(express.session({
-      key : 'asq.sid',
-      secret : 'ASQSecret',
-      store  : redisSessionStore,
-      cookie : {
-        maxAge : 2592000000 // 30 days
-      } 
-    }));
-    app.set('sessionStore', redisSessionStore);
-    //necessary initialization for passport plugin
-    app.use(passport.initialize());
-    app.use(flash());
-    app.use(passport.session());
-    app.use(app.router);
-    // app.use(require('stylus').middleware(__dirname + '/public/'));
-    app.use(express.static(path.join(__dirname, '/public/')));
-    //used to append slashes at the end of a url (MUST BE after static)
-    app.use(slashes());
-    app.use(function(err, req, res, next){
-      console.error(err.stack);
-      res.send(500, 'Something broke!');
-    });
+  app.set('port', process.env.PORT);
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'dust');
+  if (config.enableHTTPS) {
+    app.use(middleware.forceSSL);
+  }
+  app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
+  app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
+  app.use(express.static(path.join(__dirname, '/public/')));
+  app.use(slashes()); //Append slashes at the end of urls (MUST BE after static)
+  app.use(express.favicon(path.join(__dirname, '/public/favicon.ico')));
+  app.use(express.logger('dev'));
+  app.use(express.methodOverride()); //Enable DELETE & PUT
+  app.use(express.cookieParser());
+  //redis store for session cookies
+  var redisSessionStore = new redisStore({
+    host: '127.0.0.1',
+    port: 6379,
+    db: 0,
+  });
+  app.use(express.session({
+    key : 'asq.sid',
+    secret : 'ASQSecret',
+    store  : redisSessionStore,
+    cookie : {
+      maxAge : 2592000000 // 30 days
+    } 
+  }));
+  app.set('sessionStore', redisSessionStore);
+  //necessary initialization for passport plugin
+  app.use(passport.initialize());
+  app.use(flash());
+  app.use(passport.session());
+  app.use(app.router);
+  app.use(function(err, req, res, next){
+    appLogger.error(err.stack);
+    res.send(500, 'Something broke!');
+  });
 });
 
 app.configure('development', function(){
