@@ -241,6 +241,7 @@ module.exports.liveStatic = function(req, res) {
 	});
 }
 
+//MOVED
 /** Initialize a slideshow (create a new session) for an admin **/
 module.exports.start = function(req, res) {
 	var slidesId = req.params.id;
