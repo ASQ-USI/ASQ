@@ -1,13 +1,14 @@
 /**
  @fileoverview Socket code for the admin client.
- @author Jacques Dafflon jacques.dafflon@gmail.com
  */
 
 /** Connect back to the server with a websocket */
-var admin = {
-	terminateSession : function() {
-	}
-}
+
+var impress = require('./impress-admin.shim')
+, io = require('socket.io-browserify')
+, $ = require('jquery');
+
+
 var connect = function(host, port, session, mode) {
 	var started = false;
 	var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session);
@@ -365,4 +366,8 @@ $(".mobileNext").click(function() {
 $(".mobilePrev").click(function() {
 	impress().prev();
 })
+
+module.exports={
+	connect: connect
+}
 

@@ -1,0 +1,5 @@
+/**
+ @fileoverview browserify shim for impress-admin.js
+ */
+require("./impress-admin.js");
+module.exports = window.impress;
