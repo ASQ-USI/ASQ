@@ -51,7 +51,7 @@
             </div>
           </div>
         {:else}
-          {#JSONIter:slidesByCourses}
+          {#JSONIter:slidesByCourses username=username}
           <div class="row accordion">
             <div class="span12 accordion-group">
               <div class="row accordion-heading">
@@ -82,7 +82,7 @@
                           </ul>
                         </div>
                         <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-                        <a href="/user/edit/{_id}" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
+                        <a href="/{params.username}/presentations/{_id}/edit" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
                         <div class="dates">
                           <p><i class="icon-play"></i> {lastSession}</p>
                           <p><i class="icon-pencil" ></i> {lastEdit}</p>
