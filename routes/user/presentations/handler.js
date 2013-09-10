@@ -53,9 +53,7 @@ var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
       appLogger.error(err.toString());
     } else {
       /* Load presentation html file */
-      fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
-
-        //TODO How about handling the error?
+      pfs.readFile(slideshow.teacherFile, 'utf-8').then(function(data) {
 
         //Array with one field per slide. Each field has questions and stats
         var slides = [];
@@ -94,6 +92,10 @@ var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
           slides    : slides,
           slideshow : slideshow,
         });
+      }, function(error){
+        //TODO How about handling the error?
+        appLogger.error('This is an error left unhandeled...');
+        appLogger.error(error.toStirng());
       });
     }
   });
