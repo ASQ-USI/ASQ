@@ -1,4 +1,5 @@
 var AdmZip         = require('adm-zip')
+  , cheerio        = require('cheerio')
   , moment         = require('moment')
   , path           = require('path')
   , pfs            = require('promised-io/fs')
@@ -14,6 +15,123 @@ var AdmZip         = require('adm-zip')
   , slideshowModel = model.slideshowModel
   , questionModel  = model.questionModel
   , utils          = require('./utils');
+
+function deletePresentation(req, res) {
+  if (req.params.user === req.user.name) {
+    var User      = db.model('User')
+      , Slideshow = db.model('Slideshow');
+
+    Slideshow.findOne({
+      _id   : req.params.presentationId,
+      owner : req.user._id
+    }).exec()
+    .then(
+    function(slideshow){
+      return slideshow.remove().exec()
+    })
+    .then(
+    function(){
+      res.redirect('/' + req.user.name +
+        '/presentations/?alert=Slideshow deleted&type=succes');
+    },
+    function(err){
+      res.redirect('/' + req.user.name +
+        '/presentations?alert=Something went wrong. The Great ASQ Server said: '
+        + err.toString() + '&type=error');
+      throw err;
+      
+    });
+  }
+}
+
+function editPresentation(req, res) {
+var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+  var questionDB = db.model('Question', schemas.questionSchema);
+
+  Slideshow.findById(req.params.presentationId, function(err, slideshow) {
+    if (err) {
+      appLogger.error(err.toString());
+    } else {
+      /* Load presentation html file */
+      fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
+
+        //TODO How about handling the error?
+
+        //Array with one field per slide. Each field has questions and stats
+        var slides = [];
+
+        $ = cheerio.load(data);
+        $('.step').each(function(slide) {
+          //Get questions on this slide. Get their text and push it into an array
+          var questionsOnSlide = new Array();
+          $(this).find('.assessment').each(function(el) {
+            var text = $(this).find('.stem').first().text();
+            if (text == undefined || text.length == 0) {
+              text = "Missing question text";
+            }
+            questionsOnSlide.push(text);
+          });
+
+          //Get stats on this slide. Get their text and push it into an array
+          var statsOnSlide = new Array();
+          $(this).find('.stats').each(function(el) {
+            var text = $(this).find('.stem').first().text();
+            if (text == undefined || text.length == 0) {
+              text = "Missing question text";
+            }
+            statsOnSlide.push(text);
+          });
+
+          //Push questions and stats on this slide into array
+          slides.push({
+            questions : questionsOnSlide,
+            stats     : statsOnSlide
+          });
+        });
+
+        res.render('edit', {
+          title     : slideshow.title,
+          slides    : slides,
+          slideshow : slideshow,
+        });
+      });
+    }
+  });
+}
+
+function getPresentation(req, res) {
+  if (req.params.user == req.user.name) {
+    appLogger.debug('Trying to render?')
+    var id = req.params.presentationId;
+    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+
+    Slideshow.findById(id, function(err, slideshow) {
+      if(slideshow){
+        res.sendfile(slideshow.path + path.basename(slideshow.originalFile));
+      
+      }else{
+        res.send(404, 'Slideshow not found');
+      }
+    });
+  } else {
+    res.send(401, 'You cannot see this slideshow');
+  }
+}
+
+function getPresentationFiles(req, res) {
+  var id = req.params.presentationId;
+  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+
+  Slideshow.findById(id, function(err, slideshow) {
+    if (slideshow && req.params[0] == slideshow.originalFile) {
+      res.redirect(301, '/' + req.user.name + '/presentations/' + id + '/');
+    } else if (slideshow) {
+      res.sendfile(slideshow.path + req.params[0]);
+    } else {
+      res.send(404, 'Slideshow not found, unable to serve attached file.');
+    }
+  });
+}
 
 function listPresentations(req, res) {
   appLogger.debug('list presentations');
@@ -47,21 +165,26 @@ function listPresentations(req, res) {
           ? 'alert-' + req.query.type : '';
 
       res.render('user', {
-        slidesByCourses: slidesByCourse,
-        JSONIter : dustHelpers.JSONIter,
-        username : req.user.name,
-        host : appHost,
-        port : app.get('port'),
-        id : req.user.current,
-        alert : req.query.alert,
-        type : type,
-        session : req.user.current
+        username        : req.user.name,
+        slidesByCourses : slidesByCourse,
+        JSONIter        : dustHelpers.JSONIter,
+        host            : appHost,
+        port            : app.get('port'),
+        id              : req.user.current,
+        alert           : req.query.alert,
+        type            : type,
+        session         : req.user.current
       });
     });
   } else {
     //For now reidrect to your presentations.
     res.redirect('/' + req.user.name + '/presentations/');
   }
+}
+
+function updatePresentation(req, res) {
+  appLogger.error('NOT IMPLEMENTED: Updating a presentation is not supported.');
+  res.send(405, 'Cannot update a presentation so far...');
 }
 
 function uploadPresentation(req, res) {
@@ -199,79 +322,13 @@ function uploadPresentation(req, res) {
     });
 }
 
-function getPresentation(req, res) {
-  if (req.params.user == req.user.name) {
-    appLogger.debug('Trying to render?')
-    var id = req.params.presentationId;
-    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-
-    Slideshow.findById(id, function(err, slideshow) {
-      if(slideshow){
-        res.sendfile(slideshow.path + path.basename(slideshow.originalFile));
-      
-      }else{
-        res.send(404, 'Slideshow not found');
-      }
-    });
-  } else {
-    res.send(401, 'You cannot see this slideshow');
-  }
-}
-
-function getPresentationFiles(req, res) {
-  var id = req.params.presentationId;
-  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-
-  Slideshow.findById(id, function(err, slideshow) {
-    if (slideshow && req.params[0] == slideshow.originalFile) {
-      res.redirect(301, '/' + req.user.name + '/presentations/' + id + '/');
-    } else if (slideshow) {
-      res.sendfile(slideshow.path + req.params[0]);
-    } else {
-      res.send(404, 'Slideshow not found, unable to serve attached file.');
-    }
-  });
-}
-
-function updatePresentation(req, res) {
-  appLogger.error('NOT IMPLEMENTED: Updating a presentation is not supported.');
-  res.send(405, 'Cannot update a presentation so far...');
-}
-
-function deletePresentation(req, res) {
-  if (req.params.user === req.user.name) {
-    var User      = db.model('User')
-      , Slideshow = db.model('Slideshow');
-
-    Slideshow.findOne({
-      _id   : req.params.presentationId,
-      owner : req.user._id
-    }).exec()
-    .then(
-    function(slideshow){
-      return slideshow.remove().exec()
-    })
-    .then(
-    function(){
-      res.redirect('/' + req.user.name +
-        '/presentations/?alert=Slideshow deleted&type=succes');
-    },
-    function(err){
-      res.redirect('/' + req.user.name +
-        '/presentations?alert=Something went wrong. The Great ASQ Server said: '
-        + err.toString() + '&type=error');
-      throw err;
-      
-    });
-  }
-}
-
 
 module.exports = {
-  listPresentations  : listPresentations,
-  uploadPresentation : uploadPresentation,
-  getPresentation    : getPresentation,
+  deletePresentation   : deletePresentation,
+  editPresentation     : editPresentation,
+  getPresentation      : getPresentation,
   getPresentationFiles : getPresentationFiles,
-  updatePresentation : updatePresentation,
-  deletePresentation : deletePresentation
+  listPresentations    : listPresentations,
+  updatePresentation   : updatePresentation,
+  uploadPresentation   : uploadPresentation
 }

@@ -65,7 +65,7 @@ function postRegister(req, res) {
 
 function getSignIn(req, res) {
   res.render('index', {
-      fromsignup : true
+      fromsignup : false
     });
 }
 
@@ -81,11 +81,16 @@ function signOut(req, res) {
   res.redirect('/');
 }
 
+function getUploadForm(req, res) {
+  res.render('upload', { username: req.user.name });
+}
+
 module.exports = {
-  getHomePage  : getHomePage,
-  getRegister  : getRegister,
-  postRegister : postRegister,
-  getSignIn    : getSignIn,
-  postSignIn   : postSignIn,
-  signOut      : signOut
+  getHomePage   : getHomePage,
+  getRegister   : getRegister,
+  postRegister  : postRegister,
+  getSignIn     : getSignIn,
+  postSignIn    : postSignIn,
+  signOut       : signOut,
+  getUploadForm : getUploadForm
 }

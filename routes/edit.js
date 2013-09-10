@@ -33,6 +33,7 @@ function createThumb(slideshow) {
 	});
 }
 
+//MOVED
 exports.editslideshow = function(req, res) {
 
 	var slideshowDB = db.model('Slideshow', schemas.slideshowSchema);
