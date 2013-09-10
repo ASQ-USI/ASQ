@@ -14,7 +14,8 @@ function getUserPage(req, res) {
 
 function getUserSettings(req, res) {
   res.render('settings', {
-    user : user
+    username : req.user.name,
+    user : { name : req.user.name, email : req.user.email }
   });
 }
 
@@ -29,9 +30,10 @@ function updateUserSettings(req, res) {
   var errors = validInputs(username, email, password, passwordConfirm, strict);
 
   if (errors !== null) {
-    res.render('settings', { 
-    alert : errors.toString(),
-    type  : 'error'
+    res.render('settings', {
+      username : req.user.name,
+      alert : errors.toString(),
+      type  : 'error'
     }); //TODO handle errors display on page
   }
 
@@ -41,6 +43,7 @@ function updateUserSettings(req, res) {
   User.findOne({ name : username }, function(err, user) {
     if (user) {
       return res.render('settings', {
+        username : req.user.name,
         message : 'Username already taken'
       });
     }
@@ -63,13 +66,15 @@ function updateUserSettings(req, res) {
   user.set(newValues);
   user.save(function(err, user) {
     if (err) res.render('settings', {
+      username : req.user.name,
       user: newValues,
       alert: 'Something went wrong. Your data was not saved.',
       type: 'error'
     });
     res.render('settings', {
+      username : req.user.name,
       user:  newValues,
-      alert: 'Acoount successfully updated!',
+      alert: 'Account successfully updated!',
       type: 'success'
     }); 
   });
