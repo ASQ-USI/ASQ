@@ -127,7 +127,6 @@ app.configure(function() {
   app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
   app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
   app.use(express.static(path.join(__dirname, '/public/')));
-  app.use(slashes()); //Append slashes at the end of urls (MUST BE after static)
   app.use(express.favicon(path.join(__dirname, '/public/favicon.ico')));
   app.use(express.logger('dev'));
   app.use(express.methodOverride()); //Enable DELETE & PUT
@@ -156,6 +155,7 @@ app.configure(function() {
     appLogger.error(err.stack);
     res.send(500, 'Something broke!');
   });
+  app.use(slashes()); //Append slashes at the end of urls. (MUST BE at the end!)
 });
 
 app.configure('development', function(){
