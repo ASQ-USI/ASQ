@@ -213,7 +213,7 @@ app.get('/admin/*', ensureAuthenticated, routes.slides.adminStatic);
 /** Upload new slides */
 //MOVED
 //app.post('/user/upload/', ensureAuthenticated, routes.upload.post);
-app.get('/user/upload/', ensureAuthenticated, routes.upload.show);
+//app.get('/user/upload/', ensureAuthenticated, routes.upload.show);
 
 //Someone types /signup URL, which has no meaning. He is redirected.
 //MOVED

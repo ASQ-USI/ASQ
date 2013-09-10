@@ -17,10 +17,13 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/sign_in/', middleware.isNotAuthenticated, handler.getSignIn);
 
   //Sign in
-  app.post('/sign_in', /*middleware.localAuthorize,*/ handler.postSignIn);
+  app.post('/sign_in', middleware.localAuthenticate, handler.postSignIn);
 
   //Sign out
   app.post('/sign_out', middleware.isAuthenticated, handler.signOut);
+
+  //Upload form
+  app.get('/upload/', middleware.isAuthenticated, handler.getUploadForm);
 
   //Set up routes starting with /:user/*
   user.setUp(app, middleware);

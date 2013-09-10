@@ -12,6 +12,10 @@ module.exports.setUp = function setUp(app, middleware) {
     handler.uploadPresentation);
   
   // Get the presentation matching presentationId.
+  app.get('/:user/presentations/:presentationId/edit/', middleware.isRouteOwner,
+      handler.editPresentation);
+
+  // Get the presentation matching presentationId.
   app.get('/:user/presentations/:presentationId/', middleware.isRouteOwner,
       handler.getPresentation);
 
