@@ -44,86 +44,23 @@ function deletePresentation(req, res) {
   }
 }
 
-function editPresentation(req, res) {
-var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-  var questionDB = db.model('Question', schemas.questionSchema);
+function getPresentation(req, res) {
+  var id = req.params.presentationId;
+  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 
-  Slideshow.findById(req.params.presentationId, function(err, slideshow) {
-    if (err) {
-      appLogger.error(err.toString());
-    } else {
-      /* Load presentation html file */
-      pfs.readFile(slideshow.teacherFile, 'utf-8').then(function(data) {
-
-        //Array with one field per slide. Each field has questions and stats
-        var slides = [];
-
-        $ = cheerio.load(data);
-        $('.step').each(function(slide) {
-          //Get questions on this slide. Get their text and push it into an array
-          var questionsOnSlide = new Array();
-          $(this).find('.assessment').each(function(el) {
-            var text = $(this).find('.stem').first().text();
-            if (text == undefined || text.length == 0) {
-              text = "Missing question text";
-            }
-            questionsOnSlide.push(text);
-          });
-
-          //Get stats on this slide. Get their text and push it into an array
-          var statsOnSlide = new Array();
-          $(this).find('.stats').each(function(el) {
-            var text = $(this).find('.stem').first().text();
-            if (text == undefined || text.length == 0) {
-              text = "Missing question text";
-            }
-            statsOnSlide.push(text);
-          });
-
-          //Push questions and stats on this slide into array
-          slides.push({
-            questions : questionsOnSlide,
-            stats     : statsOnSlide
-          });
-        });
-
-        res.render('edit', {
-          title     : slideshow.title,
-          slides    : slides,
-          slideshow : slideshow,
-        });
-      }, function(error){
-        //TODO How about handling the error?
-        appLogger.error('This is an error left unhandeled...');
-        appLogger.error(error.toStirng());
-      });
+  Slideshow.findById(id, function(err, slideshow) {
+    if(slideshow){
+      res.sendfile(slideshow.path + path.basename(slideshow.originalFile));
+    
+    }else{
+      res.send(404, 'Slideshow not found');
     }
   });
-}
-
-function getPresentation(req, res) {
-  if (req.params.user == req.user.name) {
-    appLogger.debug('Trying to render?')
-    var id = req.params.presentationId;
-    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-
-    Slideshow.findById(id, function(err, slideshow) {
-      if(slideshow){
-        res.sendfile(slideshow.path + path.basename(slideshow.originalFile));
-      
-      }else{
-        res.send(404, 'Slideshow not found');
-      }
-    });
-  } else {
-    res.send(401, 'You cannot see this slideshow');
-  }
 }
 
 function getPresentationFiles(req, res) {
   var id = req.params.presentationId;
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-
   Slideshow.findById(id, function(err, slideshow) {
     if (slideshow && req.params[0] == slideshow.originalFile) {
       res.redirect(301, '/' + req.user.name + '/presentations/' + id + '/');
@@ -327,7 +264,6 @@ function uploadPresentation(req, res) {
 
 module.exports = {
   deletePresentation   : deletePresentation,
-  editPresentation     : editPresentation,
   getPresentation      : getPresentation,
   getPresentationFiles : getPresentationFiles,
   listPresentations    : listPresentations,
