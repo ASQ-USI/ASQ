@@ -29,6 +29,8 @@ var express     = require('express')
   , appLogger       = lib.logger.appLogger
   , authentication  = lib.authentication
   , passport        = lib.passport.init()
+  , formUtils       = lib.utils.form
+  , errorMessages   = lib.errorMessages
   , middleware      = require('./routes/middlewares');
 
 // Passport session setup.
@@ -164,13 +166,24 @@ app.configure('development', function(){
 
     if (config.enableHTTPS) {
         //Passphrase should be entered at launch for production env.
-        credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt').toString().trim();
+        credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt')
+            .toString().trim();
         
     }
-    registration.isValidPassword = function(candidatePass) {
-            appLogger.log('[devel mode] No password constraint');
-            return true;
-        };
+    formUtils.prodValidUserForm = formUtils.isValidUserForm;
+    formUtils.isValidUserForm = function(username, email, password, passwordConfirm, strict) {
+      appLogger.debug('[devel mode] No password constraint')
+      var errors = formUtils.prodValidUserForm(username, email, password, passwordConfirm, strict);
+      if (errors === null || !errors.hasOwnProperty('password')) {
+        return errors;
+      } else if (Object.keys(errors).length === 1 
+                  && errors.password === errorMessages.password.regex) {
+        return null;
+      } else if (errors.password === errorMessages.password.regex) {
+        delete errors.password;
+      }
+      return errors;
+    }
 });
 
 app.configure('production', function(){
