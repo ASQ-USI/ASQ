@@ -45,6 +45,7 @@ function deletePresentation(req, res) {
 }
 
 function getPresentation(req, res) {
+  appLogger.debug(req.liveSession);
   var id = req.params.presentationId;
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 

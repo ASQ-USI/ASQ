@@ -155,6 +155,7 @@ app.configure(function() {
     appLogger.error(err.stack);
     res.send(500, 'Something broke!');
   });
+  app.param('liveId', middleware.setLiveSession);
   app.use(slashes()); //Append slashes at the end of urls. (MUST BE at the end!)
 });
 
@@ -189,8 +190,9 @@ app.configure('production', function(){
  //   res.redirect('/user');
  // });
 
+//MOVED
 /** Initialize a new session with slides matching the id */
-app.get('/user/start/:id', ensureAuthenticated, routes.slides.start);
+//app.get('/user/start/:id', ensureAuthenticated, routes.slides.start);
 
 /** Stop a user current session **/
 app.get('/user/stop', ensureAuthenticated, routes.slides.stop);
@@ -252,23 +254,24 @@ app.get('/checkusername/:username/', registration.checkusername);
 //MOVED
 //app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
 
-app.get('/user/edit/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/edit")
-});
+//REDIRECT LOOP FOR SOME REASON
+// app.get('/user/edit/', ensureAuthenticated, function (req,res) {
+//     res.redirect("/user/edit")
+// });
 
-app.get('/user/edithtml/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/edit")
-});
+// app.get('/user/edithtml/', ensureAuthenticated, function (req,res) {
+//     res.redirect("/user/edit")
+// });
 
-app.get('/user/editstyle/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/edit")
-});
-app.get('/user/editquestions/', ensureAuthenticated, function (req,res) {
-    res.redirect("/user/edit")
-});
+// app.get('/user/editstyle/', ensureAuthenticated, function (req,res) {
+//     res.redirect("/user/edit")
+// });
+// app.get('/user/editquestions/', ensureAuthenticated, function (req,res) {
+//     res.redirect("/user/edit")
+// });
 
-
-app.get('/user/edit/:id', ensureAuthenticated, editFunctions.editslideshow);
+//MOVED
+//app.get('/user/edit/:id', ensureAuthenticated, editFunctions.editslideshow);
 
 app.get('/user/editquestions/:id', ensureAuthenticated, editFunctions.editquestions);
 
@@ -278,7 +281,8 @@ app.get('/user/editquestions/:id', ensureAuthenticated, editFunctions.editquesti
 
 //app.get('/user/delete/:id', ensureAuthenticated, editFunctions.deletequestion);
 
-app.del('/slideshows/:id', ensureAuthenticated, editFunctions.deleteSlideshow);
+//MOVED
+//pp.del('/slideshows/:id', ensureAuthenticated, editFunctions.deleteSlideshow);
 
 //app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
 
@@ -327,7 +331,6 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 // Crash at start with node.js 0.10.10
 //app.get('/render/', ensureAuthenticated, registration.parsequestion);
 //app.get('/render2/',  registration.sendanswer);
-
 
 routes.setUp(app, middleware);
 
