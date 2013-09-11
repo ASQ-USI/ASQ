@@ -1,5 +1,6 @@
-var utils     = require('./utils')
-  , appLogger = require('../lib/logger').appLogger;
+var lib     = require('../lib') 
+  , utils     = lib.utils.form
+  , appLogger = lib.logger.appLogger;
 
 function getHomePage(req, res) {
   res.send(200, 'This is where the home page will be.');
@@ -15,7 +16,7 @@ function getRegister(req, res) {
 function postRegister(req, res) {
   //TODO change those horrible signup...
   var username        = req.body.signupusername;
-  var email           = req.body.signupuseremail;
+  var email           = req.body.signupemail;
   var password        = req.body.signuppassword;
   var passwordConfirm = req.body.signuppasswordconfirm
 
@@ -60,6 +61,13 @@ function postRegister(req, res) {
         });
       }
     });
+  }else{
+    console.log(validUserForm)
+    res.render('index', {
+      message : 'Something went wrong. The great ASQ Server said: You specified wrong data',
+       // + validUserForm.toString(),
+      fromsignup : true
+      });
   }
 } 
 

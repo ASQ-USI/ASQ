@@ -19,11 +19,12 @@ module.exports = function(grunt) {
   grunt.registerTask('dbDrop', "Drops the schema of the asq database", function() {
     var done = this.async()
     , mongoose = require('mongoose')
-    , env = grunt.option('env') || 'dev'
+    , env = grunt.option('env') || 'development'
     , dbName;
 
     switch (env) {
       case "dev" :
+      case "development" :
         dbName = "asq-dev";
         break;
       case "test" :

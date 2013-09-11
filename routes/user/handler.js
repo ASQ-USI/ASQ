@@ -1,4 +1,4 @@
-var validInputs = require('../utils').isvalidUserForm;
+var validInputs = require('../../lib').utils.form.isvalidUserForm;
 
 function getUserPage(req, res) {
   if (!req.isAuthenticated()) {

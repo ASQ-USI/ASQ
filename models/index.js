@@ -1,5 +1,8 @@
-module.exports = {
+/** @module models/index
+    @description Exposes modules under models
+*/
 
+module.exports = {
   answerModel     : require('./answer'),
   questionModel   : require('./question'),
   sessionModel    : require('./session'),

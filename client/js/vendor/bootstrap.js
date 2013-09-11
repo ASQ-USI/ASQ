@@ -22,7 +22,6 @@
 
   "use strict"; // jshint ;_;
 
-  console.log("niax")
   /* CSS TRANSITION SUPPORT (http://www.modernizr.com/)
    * ======================================================= */
 

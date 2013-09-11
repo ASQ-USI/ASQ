@@ -4,7 +4,7 @@
 
 /** Connect back to the server with a websocket */
 
-var impress = require('./impress-admin.shim')
+var impress = require('impress')
 , io = require('socket.io-browserify')
 , $ = require('jquery');
 

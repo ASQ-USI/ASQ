@@ -37,8 +37,9 @@
 
 		</div>
 
-		<script src="/js/ajax.js"></script>
+		<script src="/js/asq-client.js"></script>
 		<script>
+				var $=require("jQuery");
 				$('input[id=lefile]').change(function() {
 			   $('#photoCover').val($(this).val());
 			});
