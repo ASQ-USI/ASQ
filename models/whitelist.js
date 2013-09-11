@@ -10,26 +10,26 @@ roles['assistant'] = 2;
 roles['presenter'] = 3;
 
 function setRole(role) {
-  try {
-    check(role, {
-      isInt : 'not int',
-      min   : 'too low',
-      max   :  'too high'
-    })
-      .isInt()
-      .min(0)
-      .max(3)
-  } catch (err) {
-    if (err.message === 'not int') {
-      try {
-        check(role, {
+  // try {
+  //   check(role, {
+  //     isInt : 'not int',
+  //     min   : 'too low',
+  //     max   :  'too high'
+  //   })
+  //     .isInt()
+  //     .min(0)
+  //     .max(3)
+  // } catch (err) {
+  //   if (err.message === 'not int') {
+  //     try {
+  //       check(role, {
 
-        })
-        .isString()
+  //       })
+  //       .isString()
         
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
   
 }
 var whitelistEntrySchema = new Schema({
