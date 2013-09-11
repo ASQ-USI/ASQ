@@ -60,7 +60,13 @@ function editPresentation(req, res) {
 }
 
 function livePresentation(req, res) {
-
+  var role = req.query.role || 'viewer'; //Check user is allowed to have this role
+  if (req.whitelistEntry !== undefined) {
+    role = req.whitelistEntry.grant(role); //Demotion of role if too elevated for the user
+  } else {
+    role = 'viewer' //Public session and not whitelisted only allows viewers.
+  }
+  var view = req.query.view || 'presentation';
 }
 
 function startPresentation(req, res) {
