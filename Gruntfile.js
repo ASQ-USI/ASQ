@@ -1,15 +1,9 @@
 /**
   @fileoverview main Grunt task file
 **/
-
+'use strict';
 
 module.exports = function(grunt) {
-  'use strict';
-
-  grunt.loadNpmTasks('grunt-mocha-test');
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   // Project configuration.
   grunt.initConfig({
@@ -27,39 +21,44 @@ module.exports = function(grunt) {
 
     browserify: {
       vendor:{
-        cwd: 'client/lib/',
-        src: ['*.js'],
+        src: ['client/js/vendor/vendor-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
         dest: 'public/js/vendor.js',
+        // debug: true,
         options:{
-          noParse: ['*.js', '!jquery.min.js'],
+          alias: 'client/js/vendor/jquery-1.10.2.js:jQuery',
           shim:{
-            jQuery: {path: 'client/lib/jquery.min.js', exports: '$'}
+            bootstrap:{
+              path: 'client/js/vendor/bootstrap.js'
+              , exports: null
+              , depends: {jQuery:'jQuery'}
+            } 
           }
-        }
+       }
       },
       presenter: {
-        src: ['client/admin.js'],
+        src: ['client/js/admin.js'],
         dest: 'public/js/asq-presenter.js',
         debug: true,
         options: {
           shim: {
-            impressAdmin: {path: 'client/impress-presenter.js', exports: 'impress'}
+            impressAdmin: {path: 'client/js/impress-presenter.js', exports: 'impress'}
           }
         }
       },
       viewer: {
-        src: ['client/viewer.js'],
+        src: ['client/js/viewer.js'],
         dest: 'public/js/asq-viewer.js',
+        debug: true,
         options: {
           shim: {
-            impressAdmin: {path: 'client/impress-viewer.js', exports: 'impress'}
+            impressAdmin: {path: 'client/js/impress-viewer.js', exports: 'impress'}
           }
         }
       },
     },
 
     jshint: {
-      all: ['Gruntfile.js', 'client/*.js', 'test/**/*.js']
+      all: ['Gruntfile.js', 'client/js/*.js', 'test/**/*.js']
     },
 
     //uglify
@@ -76,79 +75,46 @@ module.exports = function(grunt) {
           'public/js/asq-viewer.min.js' : ['public/js/asq-viewer.js']
         }
       }
-    }
+    },
 
+    less: {
+      development: {
+        options: {
+          paths: ["client/less"]
+        },
+        files: {
+          "public/css/login.css": "client/less/login.less",
+          "public/css/logoAnim.css": "client/less/logoAnim.less",
+          "public/css/phone.css": "client/less/phone.less",
+          "public/css/style.css": "client/less/style.less"
+        }
+      },
+      production: {
+        options: {
+          paths: ["client/less"],
+          yuicompress: true
+        },
+        files: {
+          "public/css/login.css": "client/less/login.less",
+          "public/css/logoAnim.css": "client/less/logoAnim.less",
+          "public/css/phone.css": "client/less/phone.less",
+          "public/css/style.css": "client/less/style.less"
+        }
+      }
+    }
   });
 
   // Default task(s).
   grunt.registerTask('default', ['mochaTest', 'jshint', 'browserify', 'uglify']);
 
-  /* ------------------- Database Tasks -------------------------*/
+  //npm tasks
+  grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  //the basic db task. It calls all the other tasks
-  grunt.registerTask('db', "Tasks for the Mongo Database", function(command) {
-    switch (command) {
-      case "drop" :
-        grunt.task.run('dbDrop');
-        break;
-      case " dropTest" :
-        grunt.task.run('dbDropTest');
-        break;
-    }
-  });
-
-  //This task is responsible for droping the databases
-  grunt.registerTask('dbDrop', "Drops the schema of the asq database", function() {
-    var done = this.async()
-    , mongoose = require('mongoose')
-    , env = grunt.option('env') || 'dev'
-    , dbName;
-
-    switch (env) {
-      case "dev" :
-        dbName = "asq-dev";
-        break;
-      case "test" :
-        dbName = "asq-test";
-        break;
-      default:
-        dbName = "asq-dev";
-    }
-
-    mongoose.connect('mongodb://localhost:27017/'+dbName, function(err) {
-      if (err) {
-        throw err;
-      }
-      grunt.log.writeln('Dropping database: '+ dbName +' ...');
-      mongoose.connection.db.dropDatabase(function(err) {
-        if (err) {
-          done(err);
-        } else {
-          grunt.log.ok();
-          done();
-        }
-      });
-    });
-  });
-
-  grunt.registerTask('dbDropTest', "Drops the schema of the asq database", function() {
-    var mongoose = require('mongoose')
-    , done = this.async();
-
-    mongoose.connect('mongodb://localhost:27017/asq-test', function(err) {
-      if (err) {
-        throw err;
-      }
-      grunt.log.writeln('Dropping database: asq-test ...');
-      mongoose.connection.db.dropDatabase(function(err) {
-        if (err) {
-          done(err);
-        } else {
-          grunt.log.ok();
-          done();
-        }
-      });
-    });
-  });
+  //load external taks
+  grunt.loadTasks('./tasks');
 
 };
