@@ -1,4 +1,17 @@
-var passport = require('passport'); //TODO Set up passport in lib folder!
+var passport       = require('passport')
+  , authentication = require('../lib/authentication');
+
+var authorizeSession = authentication.authorizeSession;
+
+function forceSSL(req, res, next) {
+  if (!req.secure) {
+    appLogger.log('HTTPS Redirection');
+    return res.redirect(['https://', process.env.HOST,
+        (app.get('port') === '443' ? '' : (':' + app.get('port'))),
+        req.url].join(''));
+  }
+  next();
+}
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
@@ -38,25 +51,32 @@ function isRouteOwner(req, res, next) {
   }
 }
 
-function forceSSL(req, res, next) {
-  if (!req.secure) {
-    appLogger.log('HTTPS Redirection');
-    return res.redirect(['https://', process.env.HOST,
-        (app.get('port') === '443' ? '' : (':' + app.get('port'))),
-        req.url].join(''));
-  }
-  next();
-}
-
 var localAuthenticate = passport.authenticate('local', {
   failureRedirect : '/sign_in/',
   failureFlash    : true
 });
 
+function setLiveSession(req, res, next, liveId) {
+  var Session = db.model('Session', schemas.sessionSchema);
+  Session.findById(liveId).populate('slides').exec().then(
+    function onSession(session) {
+      if (session) {
+        req.liveSession = session;
+        return next();
+      } else {
+        return next(new Error('Failed to load session.'));
+      }
+    }, function onError(err) {
+      return next(err);
+    });
+}
+
 module.exports = {
+  authorizeSession   : authorizeSession,
+  forceSSL           : forceSSL,
   isAuthenticated    : isAuthenticated,
   isNotAuthenticated : isNotAuthenticated,
   isRouteOwner       : [ isAuthenticated, isRouteOwner ],
   localAuthenticate  : localAuthenticate,
-  forceSSL           : forceSSL
+  setLiveSession     : setLiveSession
 }
