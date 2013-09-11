@@ -1,15 +1,18 @@
 'user strict';
 
-var chai         = require('chai')
-, expect         = chai.expect
-, socketUtils    = require('../lib/socket-utils')
-, mongoose       = require('mongoose')
-, config         = require('../config')
-, proxyquire     = require('proxyquire')
-, utilsStub       = {}
-, authentication = proxyquire('../lib/authentication', { './utils' : utilsStub});
+var chai           = require('chai')
+  , expect         = chai.expect
+  , socketUtils    = require('../lib/utils').socket
+  , mongoose       = require('mongoose')
+  , config         = require('../config')
+  , proxyquire     = require('proxyquire')
+  , utilsStub      = {}
+  , authentication = proxyquire('../lib/authentication', { './utils' : utilsStub});
 
-utilsStub.getSessionFromCookie = function(cookie) { return cookie; }
+utilsStub={
+  presUtils : require('../lib/utils').presentation,
+  auth: { getSessionFromCookie : function(cookie) { return cookie; } }
+}
 
 schemas = require('../models')
 db = mongoose.createConnection(config.mongoDBServer, config.dbName,

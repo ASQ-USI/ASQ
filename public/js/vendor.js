@@ -26,7 +26,6 @@ var global=self;(function browserifyShim(module, define) {
 
   "use strict"; // jshint ;_;
 
-  console.log("niax")
   /* CSS TRANSITION SUPPORT (http://www.modernizr.com/)
    * ======================================================= */
 

@@ -35,8 +35,16 @@ module.exports = function(grunt) {
           }
        }
       },
+      client:{
+        src: ['client/js/client.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
+        dest: 'public/js/asq-client.js',
+        // debug: true,
+        options:{
+          external: ["jQuery"]
+       }
+      },
       presenter: {
-        src: ['client/js/admin.js'],
+        src: ['client/js/presenter.js'],
         dest: 'public/js/asq-presenter.js',
         debug: true,
         options: {
@@ -58,7 +66,10 @@ module.exports = function(grunt) {
     },
 
     jshint: {
-      all: ['Gruntfile.js', 'client/js/*.js', 'test/**/*.js']
+      all: ['Gruntfile.js'
+          , 'client/js/**/*.js'
+          , '!client/js/vendor/**/*.js'
+          , 'test/**/*.js']
     },
 
     //uglify

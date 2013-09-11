@@ -7,7 +7,7 @@ var mongoose  = require('mongoose')
 , Schema      = mongoose.Schema
 , ObjectId    = Schema.ObjectId
 , when        = require('when')
-, arrayEqual  = require('../lib/utils').arrayEqual;
+, arrayEqual  = require('../lib/utils/stats').arrayEqual;
 
 
 var answerSchema = new Schema({

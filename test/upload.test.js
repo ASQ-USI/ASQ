@@ -2,21 +2,22 @@
   @fileoverview tests for lib/upload.js for ASQ
 **/
 
-var chai          = require('chai')
-, chaiAsPromised  = require("chai-as-promised")
-, expect          = chai.expect
-, request         = require('supertest')
-, express         = require('express')
-, upload          = require('../routes/upload')
-, schemas         = require('../models')
-, mongoose        = require('mongoose')
-, passport        = require('passport')
-, passportMock    = require('./util/mock-passport-middleware')
-, configStub      = {}
-, path            = require('path')
-, lib             = require('../lib')
-, _               = require('underscore')
-, config          = require('../config');
+var chai            = require('chai')
+  , chaiAsPromised  = require("chai-as-promised")
+  , expect          = chai.expect
+  , request         = require('supertest')
+  , express         = require('express')
+  , upload          = require('../routes/upload')
+  , schemas         = require('../models')
+  , mongoose        = require('mongoose')
+  , passport        = require('passport')
+  , passportMock    = require('./util/mock-passport-middleware')
+  , configStub      = {}
+  , path            = require('path')
+  , lib             = require('../lib')
+  , fsUtils         = lib.utils.fs
+  , _               = require('underscore')
+  , config          = require('../config');
 
 // support for promises
 require("mocha-as-promised")();
@@ -73,12 +74,12 @@ describe('upload', function() {
 
             _.each(docs, function(doc){
               //remove slideshow folder
-              lib.fsUtils.removeRecursive(uploadPath + '/' +doc.id, function(err, success){
+              fsUtils.removeRecursive(uploadPath + '/' +doc.id, function(err, success){
                 if(err){
                   return done(err)
                 }
                 //remove thumbs
-                lib.fsUtils.removeRecursive(uploadPath + '/thumbs/' +doc.id, function(err, success){
+                fsUtils.removeRecursive(uploadPath + '/thumbs/' +doc.id, function(err, success){
                   if(err){
                     return done(err)
                   }

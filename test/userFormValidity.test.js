@@ -1,7 +1,7 @@
 var chai = require('chai')
   , expect = chai.expect
-  , utils  = require('../routes/utils')
-  , errors  = require('../routes/error-messages');
+  , utils  = require('../lib/utils').form
+  , errors  = require('../lib/error-messages');
 describe('User data validation', function(){
   describe('StrictValidation Mode', function() {
     var strictValidation = true;

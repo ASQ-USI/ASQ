@@ -10,7 +10,7 @@ var AdmZip         = require('adm-zip')
   , appLogger      = lib.logger.appLogger
   , asqParser      = lib.asqParser
   , asqRenderer    = lib.asqRenderer
-  , fsUtils        = lib.fsUtils
+  , fsUtils        = lib.utils.fs
   , model          = require('../../../models')
   , slideshowModel = model.slideshowModel
   , questionModel  = model.questionModel
@@ -166,7 +166,7 @@ function listPresentations(req, res) {
       var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
           ? 'alert-' + req.query.type : '';
 
-      res.render('user', {
+      res.render('presentations', {
         username        : req.user.name,
         slidesByCourses : slidesByCourse,
         JSONIter        : dustHelpers.JSONIter,
