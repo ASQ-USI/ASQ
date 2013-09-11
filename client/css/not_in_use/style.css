@@ -1,0 +1,65 @@
+body{
+	background-color: #F9F9F9;
+}
+#top{
+	background-image: url('../img/pattern5.jpg');
+	background-repeat: repeat;
+	background-color: #000000;
+}
+
+#login{
+	margin: 20px 0 0 0;
+	text-align: right;
+}
+#login span{
+	font-size: 16px;
+	color: #EFEFEF;
+	margin: 0 5px 0 5px;
+}
+
+#banner{
+	height: 420px;
+	width: 920px;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+
+	background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 61%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,0.1)), color-stop(61%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Opera 12+ */
+	background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* IE10+ */
+	background: radial-gradient(ellipse at center,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1affffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+#banner img{
+	display: block;
+	margin: 0 auto 20px auto;
+} 
+
+#banner p{
+	font-family: Georgia, sans-serif;
+	color: #CDCDCD;
+	font-style: italic;
+	font-size: 16px;
+	text-align: center;
+	display: block;
+	font-weight: 300;
+	letter-spacing: 1px;
+}
+
+#logo p{
+	width: 80px;
+	height: 80px;
+	border: solid 5px #FFFFFF;
+	text-align: center;
+	vertical-align: middle;
+	display: table-cell;
+	color: #FFF;
+	font-size: 60px;
+	box-shadow: 0px 3px 6px #000;
+	box-shadow:inset 0px 3px 6px #000;
+	text-shadow: 0px 3px 6px #000;
+	position: relative;
+}
