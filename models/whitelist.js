@@ -3,8 +3,8 @@ var check    = require('validator').check
   , Schema   = mongoose.Schema
   , ObjectId = Schema.ObjectId;
 
-var roles = {}
-roles['banned']    = 0; 
+var roles = {};
+roles['banned']    = 0;
 roles['viewer']    = 1;
 roles['assistant'] = 2;
 roles['presenter'] = 3;

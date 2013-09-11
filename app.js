@@ -268,7 +268,7 @@ app.get('/checkusername/:username/', registration.checkusername);
 //MOVED
 //app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
 
-app.get('/user/edit/', ensureAuthenticated, function (req,res) {
+//REDIRECT LOOP FOR SOME REASON
 // app.get('/user/edit/', ensureAuthenticated, function (req,res) {
 //     res.redirect("/user/edit")
 // });
