@@ -1,0 +1,32 @@
+body {
+  background-image: url(../img/pattern5.jpg);
+  background-repeat: repeat;
+  background-color: #000000;
+  height: 100%;
+}
+html {
+  width: 261px;
+  margin: 0 auto;
+  height: 100%;
+}
+#wrapper {
+  display: table;
+  height: 100%;
+}
+#loginBox {
+  display: table-cell;
+  vertical-align: middle;
+  height: 221px;
+}
+#loginBox img {
+  margin-bottom: 30px;
+}
+#loginBox input {
+  width: 160px;
+}
+#loginBox button {
+  margin-right: 10px;
+}
+#loginBox .add-on {
+  width: 70px;
+}
