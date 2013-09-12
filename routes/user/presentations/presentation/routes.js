@@ -1,4 +1,4 @@
-var handler   = require('./handler')
+var handlers   = require('./handlers')
   , appLogger = require('../../../../lib/logger').appLogger;
 
 module.exports.setUp = function setUp(app, middleware) {
@@ -6,11 +6,11 @@ module.exports.setUp = function setUp(app, middleware) {
 
   // Get the presentation matching presentationId.
   app.get('/:user/presentations/:presentationId/edit/', middleware.isRouteOwner,
-      handler.editPresentation);
+      handlers.editPresentation);
 
   app.post('/:user/presentations/:presentationId/live/:liveId', 
-    middleware.authorizeSession, handler.livePresentation);
+    middleware.authorizeSession, handlers.livePresentation);
 
   app.post('/:user/presentations/:presentationId/start/',
-      middleware.isRouteOwner, handler.startPresentation);
+      middleware.isRouteOwner, handlers.startPresentation);
 }
