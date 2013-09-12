@@ -20,8 +20,6 @@ var whitelistEntrySchema = new Schema({
 
 whitelistEntrySchema.index({ session: 1, uid: 1 });
 
-mongoose.model("WhitelistEntry", whitelistEntrySchema);
-
 /*
  * Check if the user is allowed to use the given role.
  * @param role the role the user wants to use.
@@ -33,6 +31,8 @@ whitelistEntrySchema.methods.validateRole = function validateRole(role) {
     return roles[role] > roles[this.role] ? this.role : role;
   }
 }
+
+mongoose.model("WhitelistEntry", whitelistEntrySchema);
 
 module.exports = {
 	whitelistEntrySchema : whitelistEntrySchema

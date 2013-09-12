@@ -14,7 +14,7 @@ var sessionSchema = new Schema({
   authLevel: { type: String, default: 'public', enum: ['public', 'anonymous', 'private'] },
 	activeSlide: { type: String, default: '0' },
 	startDate: {type: Date, default: Date.now },
-  endDate: { type: Date },
+  endDate: { type: Date, default: null },
 	viewers: {type: Array, default: []},
   
 	answers: { type:[ObjectId], ref: 'Answer'},

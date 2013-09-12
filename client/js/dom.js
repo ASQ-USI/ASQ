@@ -55,10 +55,12 @@ var init = function (){
           //start presentation
           var username = $this.data('username');
           var presentationId = $this.data('id');
-          var authLevel = $this.data('authLevel');
+          var authLevel = $this.data('authlevel');
           var url = ['/', username, '/presentations/', presentationId, '/live/?start&al=',
             authLevel].join('');
-          $.post(url, null , function(data){
+          console.log('POST ' + url);
+          $.post(url, null)
+          .success(function (data){
             console.log(data)
             if(!window.navigator.standalone){
               window.open("/admin", '');
