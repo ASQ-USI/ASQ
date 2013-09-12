@@ -162,7 +162,7 @@ describe('Get stats for created answers', function() {
     });
     it("should get right vs wrong data", function(done){
       request(app)
-      console.log('/stats/getStats?metric=distinctAnswers&question='+questionID)
+      // console.log('/stats/getStats?metric=distinctAnswers&question='+questionID)
       .get('/stats/getStats')
       .expect(200)
       .end(function(err, res){
