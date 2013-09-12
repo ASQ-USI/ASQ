@@ -172,14 +172,15 @@ app.configure('development', function(){
     }
     formUtils.prodValidUserForm = formUtils.isValidUserForm;
     formUtils.isValidUserForm = function(username, email, password, passwordConfirm, strict) {
-      appLogger.debug('[devel mode] No password constraint')
       var errors = formUtils.prodValidUserForm(username, email, password, passwordConfirm, strict);
       if (errors === null || !errors.hasOwnProperty('password')) {
         return errors;
       } else if (Object.keys(errors).length === 1 
                   && errors.password === errorMessages.password.regex) {
+        appLogger.debug('[devel mode] No password constraint');
         return null;
       } else if (errors.password === errorMessages.password.regex) {
+        appLogger.debug('[devel mode] No password constraint');
         delete errors.password;
       }
       return errors;
