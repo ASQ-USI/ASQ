@@ -66,6 +66,14 @@ function checkUsername (input) {
   checkAllOk();
 }
 
+$('.start').on('click', 'a', function(event) {
+  event.stopPropagation();
+  console.log('Start presentation');
+  console.log($(this).data('username'));
+  // $.POST(['/', user, '/presentations/', presentationId, '/live/?start&al=',
+  //       authLevel].join(''));
+});
+
 function validateMail() {
 
   var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -116,13 +124,11 @@ function checkAllOk() {
 }
 
 
-
-
 var form = module.exports = {
-    checkAllOk       : checkAllOk,
-    checkUsername    : checkUsername,
-    validateMail     : validateMail,
-    validatePassword : validatePassword
+    checkAllOk        : checkAllOk,
+    checkUsername     : checkUsername,
+    validateMail      : validateMail,
+    validatePassword  : validatePassword
 }
-},{}]},{},[1])
+},{"jQuery":false}]},{},[1])
 ;

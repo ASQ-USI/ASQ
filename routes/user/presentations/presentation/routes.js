@@ -8,9 +8,9 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/:user/presentations/:presentationId/edit/', middleware.isRouteOwner,
       handlers.editPresentation);
 
-  app.post('/:user/presentations/:presentationId/live/:liveId', 
-    middleware.authorizeSession, handlers.livePresentation);
-
-  app.post('/:user/presentations/:presentationId/start/',
+  app.post('/:user/presentations/:presentationId/live/',
       middleware.isRouteOwner, handlers.startPresentation);
+
+  app.get('/:user/presentations/:presentationId/live/:liveId', 
+    middleware.authorizeSession, handlers.livePresentation);
 }

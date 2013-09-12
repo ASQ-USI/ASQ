@@ -106,11 +106,9 @@ function checkAllOk() {
 }
 
 
-
-
 var form = module.exports = {
-    checkAllOk       : checkAllOk,
-    checkUsername    : checkUsername,
-    validateMail     : validateMail,
-    validatePassword : validatePassword
+    checkAllOk        : checkAllOk,
+    checkUsername     : checkUsername,
+    validateMail      : validateMail,
+    validatePassword  : validatePassword
 }
