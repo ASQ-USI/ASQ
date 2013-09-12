@@ -71,18 +71,18 @@
                       </div>
                       <div class="buttons">
                         <div class="btn-group">
-                          <a href="/user/start/{_id}?al=public" class="btn btn-primary start">
+                          <a href="/{params.username}/presentations/{_id}/start/?al=public" class="btn btn-primary start">
                             <i class="icon-play icon-white"></i> Start Presentation
                           </a>
                           <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                           <ul class="dropdown-menu">
-                            <li><a href="/user/start/{_id}?al=public" class="start">Public Presentation</a></li>
-                            <li><a href="/user/start/{_id}?al=anonymous"  class="start">Anonymous Presentation</a></li>
-                            <li><a href="/user/start/{_id}?al=private"  class="start">Private Presentation</a></li>
+                            <li><a href="/{params.username}/presentations/{_id}/start/?al=public" class="start">Public Presentation</a></li>
+                            <li><a href="/{params.username}/presentations/{_id}/start/?al=anonymous"  class="start">Anonymous Presentation</a></li>
+                            <li><a href="/{params.username}/presentations/{_id}/start/?al=private"  class="start">Private Presentation</a></li>
                           </ul>
                         </div>
                         <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-                        <a href="/{params.username}/presentations/{_id}/edit" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
+                        <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
                         <div class="dates">
                           <p><i class="icon-play"></i> {lastSession}</p>
                           <p><i class="icon-pencil" ></i> {lastEdit}</p>
