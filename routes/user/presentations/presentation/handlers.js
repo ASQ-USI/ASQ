@@ -1,6 +1,9 @@
-var cheerio   = require('cheerio')
-  , pfs       = require('promised-io/fs')
-  , appLogger = require('../../../../lib/logger').appLogger;
+var asyncblock = require('asyncblock')
+  , cheerio    = require('cheerio')
+  , pfs        = require('promised-io/fs')
+  , lib        = require('../../../../lib')
+  , appLogger  = lib.logger.appLogger
+  , presUtils  = lib.utils.presentation;
 
 function editPresentation(req, res) {
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
@@ -99,7 +102,7 @@ function startPresentation(req, res) {
       appLogger.error('Presentation Start\n' + err);
       return res.redirect(500, ['/', req.user.name,
           '/?alert=Something went wrong. The Great ASQ Server said: ',
-          err.toStirng(), '&type=error'].join(''));
+          err.toString(), '&type=error'].join(''));
     }
 
     //Find slideshow
@@ -120,7 +123,7 @@ function startPresentation(req, res) {
     newSession.save(flow.add());
 
     //Generate the white list for the level
-    lib.slidesUtils.generateWhitelist[newSession.authLevel]
+    presUtils.generateWhitelist[newSession.authLevel]
       (newSession._id, newSession.presenter, flow.add());
 
     //Update the suer's current session

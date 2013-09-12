@@ -70,7 +70,9 @@ var init = function (){
           var authLevel = $this.data('authLevel');
           var url = ['/', username, '/presentations/', presentationId, '/live/?start&al=',
             authLevel].join('');
-          $.post(url, null , function(data){
+          console.log('POST ' + url);
+          $.post(url, null)
+          .success(function (data){
             console.log(data)
             if(!window.navigator.standalone){
               window.open("/admin", '');
@@ -95,7 +97,7 @@ var init = function (){
 var dom = module.exports={
   init : init
 }    
-},{}],3:[function(require,module,exports){
+},{"jQuery":false}],3:[function(require,module,exports){
 var $ = require("jQuery")
 
 
@@ -210,5 +212,5 @@ var form = module.exports = {
     validateMail      : validateMail,
     validatePassword  : validatePassword
 }
-},{}]},{},[1])
+},{"jQuery":false}]},{},[1])
 ;
