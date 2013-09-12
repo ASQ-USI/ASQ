@@ -122,62 +122,6 @@
       </script>
       <script src="/js/user.js"></script>
     {/session}
-
-    <script>
-    var $ = require("jQuery");
-    if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
-      $('#iOSWebAppInfo').popover({
-        placement: "top",
-        title: "Install ASQ as Web-app",
-        html: true,
-      });
-      $('#iOSWebAppInfo').popover('show');
-    }
-    if(!window.navigator.standalone && navigator.userAgent.match(/(iPad)/g) ? true : false ){
-      $('#iOSWebAppInfo').popover({
-        placement: "bottom",
-        title: "Install ASQ as Web-app",
-        html: true,
-      });
-      $('#iOSWebAppInfo').popover('show');
-    }
-    
-    document.addEventListener("touchstart", hidePopover, false);
-    function hidePopover(){
-      $('#iOSWebAppInfo').popover('destroy');
-    }
-    
-    $('.thumb').click(function (event) {
-        
-        event.stopPropagation();
-        $(".thumb").removeClass("flipped").css("z-index", "1");
-        
-        $(this).addClass("flipped");
-        $(this).parent().css("z-index", "10");
-    });
-
-    $('.dropdown-toggle').click(function(event) {
-      event.stopPropagation();
-      $(this).parent().toggleClass("open");
-    });
-    
-    $(".buttons a").click(function (event) {
-        event.preventDefault();
-        window.location = $(this).attr("href");
-        console.log(window.navigator.standalone);
-        if($(this).hasClass("start") && !(window.navigator.standalone == true)){
-          window.open("/admin", '');
-          slideshow.blur();
-          window.focus();
-        }
-    });
-    
-    
-    $(document).click(function () {
-        $(".thumb").removeClass("flipped");
-        $(".thumb").parent().css("z-index", "100");
-    });
-    </script>
   </body>
 </html>
 
