@@ -15,7 +15,6 @@ function editPresentation(req, res) {
 
         //Array with one field per slide. Each field has questions and stats
         var slides = [];
-
         $ = cheerio.load(data);
         $('.step').each(function(slide) {
           //Get questions on this slide. Get their text and push it into an array
@@ -62,14 +61,35 @@ function editPresentation(req, res) {
 function livePresentation(req, res) {
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
-    role = req.whitelistEntry.grant(role); //Demotion of role if too elevated for the user
+    role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
   } else {
     role = 'viewer' //Public session and not whitelisted only allows viewers.
   }
   var view = req.query.view || 'presentation';
+  var presentation = req.liveSession.slides;
+  //TMP until roles are defined more precisly 
+  var template = (function getTemplate(role, view, presentation) {
+      if (view === 'ctrl' && role !== 'viewer') {
+        return 'adminControll';
+      } else if (role === 'presenter' || role === 'assistant') {
+        return presentation.teacherFile;
+      }
+      return presentation.studentFile;
+    })(role, view, presentation);
+
+  res.render(template, {
+    title : presentation.title,
+    host  : process.env.Host,
+    port  : process.env.PORT,
+    id    : req.liveSession.id,
+    date  : req.liveSession.startDate
+  });
+
 }
 
+
 function startPresentation(req, res) {
+  appLogger.debug('New session from ' + req.user.name);
   var slidesId = req.params.presentationId;
 
   asyncblock(function(flow) {
