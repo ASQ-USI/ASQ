@@ -30,6 +30,6 @@ module.exports.setUp = function setUp(app, middleware) {
   presentation.setUp(app, middleware);
 
   // Serve static files attached to the slideshow
-  app.get('/:user/presentations/:presentationId/*', middleware.isRouteOwner,
-      handlers.getPresentationFiles);
+  // app.get('/:user/presentations/:presentationId/?!(edit|live|start)',
+  //   middleware.isRouteOwner, handlers.getPresentationFiles);
 }

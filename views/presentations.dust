@@ -71,14 +71,27 @@
                       </div>
                       <div class="buttons">
                         <div class="btn-group">
-                          <a href="/{params.username}/presentations/{_id}/start/?al=public" class="btn btn-primary start">
+                          <!-- boiler jQuery -->
+                          <a href="#" class="btn btn-primary start" onclick="$('#{_id}-public').submit()">
                             <i class="icon-play icon-white"></i> Start Presentation
                           </a>
                           <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                           <ul class="dropdown-menu">
-                            <li><a href="/{params.username}/presentations/{_id}/start/?al=public" class="start">Public Presentation</a></li>
-                            <li><a href="/{params.username}/presentations/{_id}/start/?al=anonymous"  class="start">Anonymous Presentation</a></li>
-                            <li><a href="/{params.username}/presentations/{_id}/start/?al=private"  class="start">Private Presentation</a></li>
+                            <li>
+                              <!-- boiler jQuery -->
+                              <form id="{_id}-public" method="post" action="/{params.username}/presentations/{_id}/live/?start&al=public" style="display: none; opacity: 0;"></form>
+                              <a href="#" class="start"  onclick="$('#{_id}-public').submit()">Public Presentation</a>
+                            </li>
+                            <li>
+                              <!-- boiler jQuery -->
+                              <form id="{_id}-anonymous" method="post" action="/{params.username}/presentations/{_id}/live/?start&al=anonymous" style="display: none; opacity: 0;"></form>
+                              <a href="#" class="start"  onclick="$('#{_id}-anonymous').submit()">Anonymous Presentation</a>
+                            </li>
+                            <li>
+                              <!-- boiler jQuery -->
+                               <form id="{_id}-private" method="post" action="/{params.username}/presentations/{_id}/live/?start&al=private" style="display: none; opacity: 0;"></form>
+                              <a href="#" class="start"  onclick="$('#{_id}-private').submit()">Private Presentation</a>
+                            </li>
                           </ul>
                         </div>
                         <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
