@@ -3,28 +3,28 @@
 **/
 
 
-var chai          = require('chai')
-, chaiAsPromised  = require("chai-as-promised")
-, expect          = chai.expect
-, request         = require('supertest')
-, express         = require('express')
-, upload          = require('../routes/upload')
-, schemas         = require('../models')
-, mongoose        = require('mongoose')
-, passport        = require('passport')
-, passportMock    = require('./util/mock-passport-middleware')
-//, proxyquire      =  require('proxyquire')
-, configStub      = {}
-, path            = require('path')
-, _               = require('underscore')
-, statistics = require('../routes/statistics')
+var chai           = require('chai')
+  , chaiAsPromised = require("chai-as-promised")
+  , expect         = chai.expect
+  , request        = require('supertest')
+  , express        = require('express')
+  , upload         = require('../routes/upload')
+  , schemas        = require('../models')
+  , mongoose       = require('mongoose')
+  , passport       = require('passport')
+  , passportMock   = require('./util/mock-passport-middleware')
+  , configStub     = {}
+  , path           = require('path')
+  , _              = require('underscore')
+  , statistics     = require('../routes/statistics')
+  , config          = require('../config');
 
 // support for promises
 require("mocha-as-promised")();
 chai.use(chaiAsPromised);
 
 // mongodb connection
-db = mongoose.createConnection('127.0.0.1', 'test-asq');
+db = mongoose.createConnection('127.0.0.1', config.dbName);
 
 
 // setup a small app for the upload test

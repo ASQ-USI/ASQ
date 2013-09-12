@@ -1,13 +1,14 @@
-var fs = require('fs'), 
-  sugar = require('sugar'),
-  chai = require('chai'),
-  chaiAsPromised = require("chai-as-promised"),
-  asqParser = require('../lib/asqParser'),
-  expectedMC = require('./fixtures/multiple-choice'),
-  expectedTI = require('./fixtures/text-input'),
-  cheerio = require('cheerio'),
-  assert = chai.assert,
-  expect = chai.expect;
+var fs             = require('fs')
+  , sugar          = require('sugar')
+  , chai           = require('chai')
+  , chaiAsPromised = require("chai-as-promised")
+  , asqParser      = require('../lib/asqParser')
+  , expectedMC     = require('./fixtures/multiple-choice')
+  , expectedTI     = require('./fixtures/text-input')
+  , cheerio        = require('cheerio')
+  , assert         = chai.assert
+  , expect         = chai.expect
+  , _              = require("underscore");
 
 require("mocha-as-promised")();
 chai.use(chaiAsPromised);
@@ -36,7 +37,7 @@ describe('AsqParser', function() {
     asqParser.parse(htmlMCString, {outputFormat:'Object'} ,function(err, generated){
       it("should return an object with a correct number of options that matches the reference object", function(){
         expect(generated).to.deep.equals(expectedMC)
-          .with.deep.property("q-2.questionOptions.length", 5);
+          .with.deep.property("questions.q-2.questionOptions.length", 5);
       });
     });  
 
@@ -56,7 +57,7 @@ describe('AsqParser', function() {
     asqParser.parse(htmlTIString, {outputFormat:'Object'} ,function(err, generated){
       it("should return an object that matches the reference object", function(){
         expect(generated).to.deep.equals(expectedTI)
-          .with.property("q-2.stemText", "The interface of a software component:");
+          .with.property("questions.q-2.stemText", "The interface of a software component:");
       });
     });  
 
@@ -70,13 +71,13 @@ describe('AsqParser', function() {
     });
   });
 
-  // promise tests
+  // promise tests or multi-choice questions
   describe('.parse(html) with promise', function(){
     var promise = asqParser.parse(htmlMCString, {outputFormat: 'Object'});
 
     it("should return an object with a correct number of options that matches the reference object", function(){
       return expect(promise).to.eventually.deep.equals(expectedMC)
-        .with.deep.property("q-2.questionOptions.length", 5);
+        .with.deep.property("questions.q-2.questionOptions.length", 5);
     });
 
     var promiseNoId = asqParser.parse(htmlMCNoIDString);
