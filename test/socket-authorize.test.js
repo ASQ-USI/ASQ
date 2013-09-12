@@ -6,15 +6,13 @@ var chai           = require('chai')
   , mongoose       = require('mongoose')
   , config         = require('../config')
   , proxyquire     = require('proxyquire')
-  , utilsStub      = {}
-  , authentication = proxyquire('../lib/authentication', { './utils' : utilsStub});
+  , stub           = {
+      presUtils : require('../lib/utils').presentation,
+      auth: { getSessionFromCookie : function(cookie) { return cookie; }}
+    }
+  , authentication = proxyquire('../lib/authentication', { './utils' : stub});
 
-utilsStub={
-  presUtils : require('../lib/utils').presentation,
-  auth: { getSessionFromCookie : function(cookie) { return cookie; } }
-}
-
-schemas = require('../models')
+schemas = require('../models');
 db = mongoose.createConnection(config.mongoDBServer, config.dbName,
         config.mongoDBPort);
 
@@ -53,7 +51,7 @@ before(function(done) {
       uid         : mongoose.Types.ObjectId('4edd40c86762e0fb12000002'),
       token       : token,
       displayName : displayName,
-      canControl  : true
+      role  : 'presenter'
     });
     testSession.save(function(err, session) {
       if (err) {
