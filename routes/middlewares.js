@@ -58,8 +58,8 @@ var localAuthenticate = passport.authenticate('local', {
 
 function setLiveSession(req, res, next, liveId) {
   var Session = db.model('Session', schemas.sessionSchema);
-  Session.findById(liveId).populate('slides').exec().then(
-    function onSession(session) {
+  Session.findOne({ _id: liveId, isTerminated : false }).populate('slides')
+    .exec().then(function onSession(session) {
       if (session) {
         req.liveSession = session;
         return next();

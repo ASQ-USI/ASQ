@@ -30,7 +30,7 @@
 				<div class="span12">
 					<p>This form allows you to update your user acoount information. Please fill out all fields to update. </p>
 					<br />
-					<form class="form-horizontal" action="/user/settings" method="post">
+					<form class="form-horizontal" action="/{username}/settings" method="post">
 
 						<div class="control-group">
 							<label class="control-label" for="inputUsername">Username</label>
@@ -67,7 +67,6 @@
 								</button>
 							</div>
 						</div>
-
 					</form>
 				</div>
 			</div>
