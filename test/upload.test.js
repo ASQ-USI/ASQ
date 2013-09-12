@@ -7,7 +7,7 @@ var chai            = require('chai')
   , expect          = chai.expect
   , request         = require('supertest')
   , express         = require('express')
-  , upload          = require('../routes/upload')
+  , uploadHandler   = require('../routes/user/presentations/handler').uploadPresentation
   , schemas         = require('../models')
   , mongoose        = require('mongoose')
   , passport        = require('passport')
@@ -50,7 +50,7 @@ app.configure(function() {
 });
 
 //upload root
-app.post('/user/username/upload/', upload.post);
+app.post('/upload/', uploadHandler);
 
 
 describe('upload', function() {
@@ -118,9 +118,8 @@ describe('upload', function() {
 
     it("should redirect to the users page ", function(done){
       request(app)
-      .post('/AlexandrosKontopides/presentations')
+      .post('/upload/')
       .set('Accept', 'application/json')
-      //.attach('upload', 'test/fixtures/sample_presentation_valid_questions_stats.zip', 'upload') 
       .attach('upload', 'assets/SamplePresentation.zip', 'upload')      
       .expect(302)
       .end(function(err, res){

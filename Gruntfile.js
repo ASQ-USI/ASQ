@@ -19,11 +19,11 @@ module.exports = function(grunt) {
       }
     },
 
+    //browserify
     browserify: {
       vendor:{
         src: ['client/js/vendor/vendor-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
         dest: 'public/js/vendor.js',
-        // debug: true,
         options:{
           alias: 'client/js/vendor/jquery-1.10.2.js:jQuery',
           shim:{
@@ -36,9 +36,9 @@ module.exports = function(grunt) {
        }
       },
       client:{
-        src: ['client/js/client.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
+        src: ['client/js/client.js'],
         dest: 'public/js/asq-client.js',
-        // debug: true,
+        debug: true,
         options:{
           external: ["jQuery"]
        }
@@ -65,6 +65,7 @@ module.exports = function(grunt) {
       },
     },
 
+    //jshint
     jshint: {
       all: ['Gruntfile.js'
           , 'client/js/**/*.js'
