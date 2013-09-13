@@ -103,6 +103,7 @@ sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
 // 	});
 // }
 
+sessionSchema.set('toObject', { virtuals: true });
 sessionSchema.set('toJSON', { virtuals: true });
 
 mongoose.model("Session", sessionSchema);
