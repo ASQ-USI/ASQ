@@ -62,15 +62,19 @@ function editPresentation(req, res) {
 }
 
 function livePresentation(req, res) {
+  appLogger.debug(req.query.role);
+  appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
     role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
   } else {
+    appLogger.debug('Public session');
     role = 'viewer' //Public session and not whitelisted only allows viewers.
   }
   var view = req.query.view || 'presentation';
   var presentation = req.liveSession.slides;
   //TMP until roles are defined more precisly 
+  appLogger.debug('Select template for ' + role + ' ' + view);
   var template = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
         return 'adminControll';
@@ -78,7 +82,8 @@ function livePresentation(req, res) {
         return presentation.teacherFile;
       }
       return presentation.studentFile;
-    })(role, view, presentation);
+  })(role, view, presentation);
+  appLogger.debug('Selected template: ' + template);
 
   res.render(template, {
     title : presentation.title,
@@ -138,8 +143,9 @@ function startPresentation(req, res) {
     //Wait to finish and redirect
     flow.wait();
     appLogger.info('Starting new ' + newSession.authLevel + ' session');
-    res.redirect(302, ['/', req.user.name, '/presentations/', newSession.slides,
+    res.location(['/', req.user.name, '/presentations/', newSession.slides,
       '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
+    res.send(201);
   });
 }
 

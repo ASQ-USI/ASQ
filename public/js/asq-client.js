@@ -67,16 +67,17 @@ var init = function (){
           //start presentation
           var username = $this.data('username');
           var presentationId = $this.data('id');
-          var authLevel = $this.data('authLevel');
+          var authLevel = $this.data('authlevel');
           var url = ['/', username, '/presentations/', presentationId, '/live/?start&al=',
             authLevel].join('');
           console.log('POST ' + url);
           $.post(url, null)
-          .success(function (data){
-            console.log(data)
+          .success(function (data, textStatus, jqXHR){
+            var location = jqXHR.getResponseHeader('Location');
+            window.location = location;
             if(!window.navigator.standalone){
               window.open("/admin", '');
-              slideshow.blur();
+              //slideshow.blur(); What is that?
               window.focus();
             }else{
               window.location = $this.attr("href");
