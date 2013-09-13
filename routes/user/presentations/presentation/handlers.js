@@ -77,7 +77,7 @@ function livePresentation(req, res) {
   appLogger.debug('Select template for ' + role + ' ' + view);
   var template = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
-        return 'adminControll';
+        return 'slidesControll';
       } else if (role === 'presenter' || role === 'assistant') {
         return presentation.teacherFile;
       }
@@ -92,7 +92,20 @@ function livePresentation(req, res) {
     id    : req.liveSession.id,
     date  : req.liveSession.startDate
   });
+}
 
+function livePresentationFiles(req, res) {
+  var presentation = req.liveSession.slides;
+  var file = req.params[0];
+  if (presentation && file === presentation.originalFile) {
+    res.redirect(301, ['/', req.user.name, '/presentations/',
+        req.params.presentationId, '/live/', req.params.liveId,
+        '/?view=presentation'].join(''));
+  } else if(presentation) {
+    res.sendfile(presentation.path + file);
+  } else {
+    res.send(404, 'Presentation not found, unable to serve attached file.');
+  }
 }
 
 
@@ -150,7 +163,8 @@ function startPresentation(req, res) {
 }
 
 module.exports = {
-  editPresentation  : editPresentation,
-  livePresentation  : livePresentation,
-  startPresentation : startPresentation
+  editPresentation      : editPresentation,
+  livePresentation      : livePresentation,
+  livePresentationFiles : livePresentationFiles,
+  startPresentation     : startPresentation
 }
