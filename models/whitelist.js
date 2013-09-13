@@ -25,9 +25,11 @@ whitelistEntrySchema.index({ session: 1, uid: 1 });
  * @param role the role the user wants to use.
  */
 whitelistEntrySchema.methods.validateRole = function validateRole(role) {
+  console.log('Check role');
   if (!roles.hasOwnProperty(role)) {
     return 'viewer';
   } else {
+    console.log(roles[role] + ' ' + roles[this.role]);
     return roles[role] > roles[this.role] ? this.role : role;
   }
 }
