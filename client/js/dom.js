@@ -60,12 +60,13 @@ var init = function (){
             authLevel].join('');
           console.log('POST ' + url);
           $.post(url, null)
-          .success(function (data){
-            console.log(data)
+          .success(function (data, textStatus, jqXHR){
+            var location = jqXHR.getResponseHeader('Location');
+            window.location = location;
             if(!window.navigator.standalone){
-              window.open("/admin", '');
-              slideshow.blur();
-              window.focus();
+              //window.open("/admin", '');
+              //slideshow.blur(); What is that?
+              //window.focus();
             }else{
               window.location = $this.attr("href");
               console.log(window.navigator.standalone);
