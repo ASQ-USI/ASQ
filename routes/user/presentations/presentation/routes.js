@@ -13,4 +13,7 @@ module.exports.setUp = function setUp(app, middleware) {
 
   app.get('/:user/presentations/:presentationId/live/:liveId', 
     middleware.authorizeSession, handlers.livePresentation);
+
+  app.get('/:user/presentations/:presentationId/live/:liveId/*', 
+    middleware.authorizeSession, handlers.livePresentationFiles);
 }
