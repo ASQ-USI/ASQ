@@ -1,7 +1,7 @@
 <p>
   <strong>Join this presentation:</strong>
 </p>
-<h3 class="slideshow-url">http://{host}:{port}/live/{user}/</h3>
+<h3 class="slideshow-url">http://{host}:{port}/{user}/live</h3>
 <div class="connected-viewers-icons">
 </div>
 <p class="connected-viewers-number">
