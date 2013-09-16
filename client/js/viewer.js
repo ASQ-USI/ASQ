@@ -1,7 +1,11 @@
 /**
  @fileoverview Socket code for the viewer client.
- @author Jacques Dafflon jacques.dafflon@gmail.com
  */
+
+/** Connect back to the server with a websocket */
+var impress = require('impressViewer')
+, io = require('socket.io-browserify')
+, $ = require('jQuery');
 
 // Save current question id;
 var questionId = null, socket, session;

@@ -1,13 +1,13 @@
 /**
- @fileoverview Socket code for the admin client.
+ @fileoverview Socket code for the presenter client.
  */
 
-/** Connect back to the server with a websocket */
-
-var impress = require('impress')
+var impress = require('impressPresenter')
 , io = require('socket.io-browserify')
-, $ = require('jquery');
+, $ = require('jQuery');
 
+
+/** Connect back to the server with a websocket */
 
 var connect = function(host, port, session, mode) {
 	var started = false;

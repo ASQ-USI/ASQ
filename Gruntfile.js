@@ -50,8 +50,9 @@ module.exports = function(grunt) {
         debug: true,
         options: {
           shim: {
-            impressAdmin: {path: 'client/js/impress-presenter.js', exports: 'impress'}
-          }
+            impressPresenter: {path: 'client/js/impress-presenter.js', exports: 'impress'}
+          },
+          external: ["jQuery"]
         }
       },
       viewer: {
@@ -60,10 +61,15 @@ module.exports = function(grunt) {
         debug: true,
         options: {
           shim: {
-            impressAdmin: {path: 'client/js/impress-viewer.js', exports: 'impress'}
-          }
+            impressViewer: {path: 'client/js/impress-viewer.js', exports: 'impress'}
+          },
+          external: ["jQuery"]
         }
       },
+    },
+
+    clean: {
+      slides: ["slides/*"]
     },
 
     //jshint
@@ -123,7 +129,7 @@ module.exports = function(grunt) {
       },
       client: {
         files: ['client/js/*.js'],
-        tasks: ['browserify:client'],
+        tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer'],
         options: {
           // spawn: false,
           interrupt: true
@@ -138,10 +144,12 @@ module.exports = function(grunt) {
   //npm tasks
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+
 
   //load external taks
   grunt.loadTasks('./tasks');
