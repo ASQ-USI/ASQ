@@ -40,6 +40,7 @@ module.exports = function(grunt) {
         dest: 'public/js/asq-client.js',
         debug: true,
         options:{
+          alias: 'client/js/client-socket.js:clientSocket',
           external: ["jQuery"]
        }
       },
@@ -113,6 +114,21 @@ module.exports = function(grunt) {
           "public/css/style.css": "client/less/style.less"
         }
       }
+    },
+
+    //watch
+    watch: {
+      options:{
+        livereload: true
+      },
+      client: {
+        files: ['client/js/*.js'],
+        tasks: ['browserify:client'],
+        options: {
+          // spawn: false,
+          interrupt: true
+        },
+      },
     }
   });
 
@@ -125,6 +141,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   //load external taks
   grunt.loadTasks('./tasks');

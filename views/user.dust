@@ -3,7 +3,6 @@
   <head>
     {>htmlHead/}
     <title>ASQ - My Presentations</title>
-    <script src="/socket.io/socket.io.js"></script>
   </head>
 
   <body>
@@ -71,18 +70,27 @@
                       </div>
                       <div class="buttons">
                         <div class="btn-group">
-                          <a href="/user/start/{_id}?al=public" class="btn btn-primary start">
-                            <i class="icon-play icon-white"></i> Start Presentation
+                          <!-- boiler jQuery -->
+                          <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"></i> Start Presentation
                           </a>
                           <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                           <ul class="dropdown-menu">
-                            <li><a href="/user/start/{_id}?al=public" class="start">Public Presentation</a></li>
-                            <li><a href="/user/start/{_id}?al=anonymous"  class="start">Anonymous Presentation</a></li>
-                            <li><a href="/user/start/{_id}?al=private"  class="start">Private Presentation</a></li>
+                            <li>
+                              <!-- boiler jQuery -->
+                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public">Public Presentation</a>
+                            </li>
+                            <li>
+                              <!-- boiler jQuery -->
+                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous">Anonymous Presentation</a>
+                            </li>
+                            <li>
+                              <!-- boiler jQuery -->
+                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="private">Private Presentation</a>
+                            </li>
                           </ul>
                         </div>
                         <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-                        <a href="/{params.username}/presentations/{_id}/edit" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
+                        <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
                         <div class="dates">
                           <p><i class="icon-play"></i> {lastSession}</p>
                           <p><i class="icon-pencil" ></i> {lastEdit}</p>
@@ -106,69 +114,18 @@
     <!-- Le javascript -->
     <!-- Connect to sockets only if there's an active session -->
     {?session}
+
+      <!-- Socket parameters that are needed by our javascript -->
+      {>serverParams/}
       <script>
-        window.onload = function() {
-        connect( "{host}" , {port} , "{id}");
-        }
+        /* if the + sign looks strange to you have a look here:
+         http://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name */
+
+        +function init(){
+          var clientSocket = require('clientSocket');
+          clientSocket.init();
+        }();        
       </script>
-      <script src="/js/user.js"></script>
     {/session}
-
-    <script>
-    
-    if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
-      $('#iOSWebAppInfo').popover({
-        placement: "top",
-        title: "Install ASQ as Web-app",
-        html: true,
-      });
-      $('#iOSWebAppInfo').popover('show');
-    }
-    if(!window.navigator.standalone && navigator.userAgent.match(/(iPad)/g) ? true : false ){
-      $('#iOSWebAppInfo').popover({
-        placement: "bottom",
-        title: "Install ASQ as Web-app",
-        html: true,
-      });
-      $('#iOSWebAppInfo').popover('show');
-    }
-    
-    document.addEventListener("touchstart", hidePopover, false);
-    function hidePopover(){
-      $('#iOSWebAppInfo').popover('destroy');
-    }
-    
-    $('.thumb').click(function (event) {
-        
-        event.stopPropagation();
-        $(".thumb").removeClass("flipped").css("z-index", "1");
-        
-        $(this).addClass("flipped");
-        $(this).parent().css("z-index", "10");
-    });
-
-    $('.dropdown-toggle').click(function(event) {
-      event.stopPropagation();
-      $(this).parent().toggleClass("open");
-    });
-    
-    $(".buttons a").click(function (event) {
-        event.preventDefault();
-        window.location = $(this).attr("href");
-        console.log(window.navigator.standalone);
-        if($(this).hasClass("start") && !(window.navigator.standalone == true)){
-          window.open("/admin", '');
-          slideshow.blur();
-          window.focus();
-        }
-    });
-    
-    
-    $(document).click(function () {
-        $(".thumb").removeClass("flipped");
-        $(".thumb").parent().css("z-index", "100");
-    });
-    </script>
   </body>
 </html>
-

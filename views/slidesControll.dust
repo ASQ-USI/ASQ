@@ -71,9 +71,9 @@
         </div>
       </div>
 
-      <!--- / Content area --->
+      <!-- / Content area -->
 
-      <!--- Thumbnails controllThumbs --->
+      <!-- Thumbnails controllThumbs -->
 
       <div class="controlBottom hidden-phone">
 
@@ -101,11 +101,11 @@
         </div>
 
       </div>
-      <!--- / Thumbnails controllThumbs --->
+      <!-- / Thumbnails controllThumbs -->
     </div>
     <!-- /Controlls for runnig presentation -->
 
-    <!-- Non visible presentation --->
+    <!-- Non visible presentation -->
     <div id="impress" style="display: none">
       {presenationSkeleton|s}
     </div>
