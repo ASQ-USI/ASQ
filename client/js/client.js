@@ -5,5 +5,4 @@
 'use strict';
 
 require('./form');
-require('./dom').init()
-
+require('./dom').init();

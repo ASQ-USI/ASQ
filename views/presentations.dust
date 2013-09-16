@@ -3,7 +3,6 @@
   <head>
     {>htmlHead/}
     <title>ASQ - My Presentations</title>
-    <script src="/socket.io/socket.io.js"></script>
   </head>
 
   <body>
@@ -72,21 +71,21 @@
                       <div class="buttons">
                         <div class="btn-group">
                           <!-- boiler jQuery -->
-                          <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authlevel="public"></i> Start Presentation
+                          <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"></i> Start Presentation
                           </a>
                           <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                           <ul class="dropdown-menu">
                             <li>
                               <!-- boiler jQuery -->
-                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authlevel="public">Public Presentation</a>
+                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public">Public Presentation</a>
                             </li>
                             <li>
                               <!-- boiler jQuery -->
-                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authlevel="anonymous">Anonymous Presentation</a>
+                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous">Anonymous Presentation</a>
                             </li>
                             <li>
                               <!-- boiler jQuery -->
-                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authlevel="private">Private Presentation</a>
+                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="private">Private Presentation</a>
                             </li>
                           </ul>
                         </div>
@@ -115,13 +114,18 @@
     <!-- Le javascript -->
     <!-- Connect to sockets only if there's an active session -->
     {?session}
+
+      <!-- Socket parameters that are needed by our javascript -->
+      {>serverParams/}
       <script>
-        window.onload = function() {
-        connect( "{host}" , {port} , "{id}");
-        }
+        /* if the + sign looks strange to you have a look here:
+         http://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name */
+
+        +function init(){
+          var clientSocket = require('clientSocket');
+          clientSocket.init();
+        }();        
       </script>
-      <script src="/js/user.js"></script>
     {/session}
   </body>
 </html>
-

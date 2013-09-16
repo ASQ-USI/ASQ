@@ -1,0 +1,6 @@
+<script>
+  var ASQ = window.ASQ || {};
+  ASQ.host = '{host}';
+  ASQ.port = {port};
+  ASQ.id = '{id}';
+</script>
