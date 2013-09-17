@@ -117,7 +117,7 @@ function listPresentations(req, res) {
       });
     });
   } else {
-    //For now reidrect to your presentations.
+    //For now redirect to your presentations.
     res.redirect('/' + req.user.name + '/presentations/');
   }
 }

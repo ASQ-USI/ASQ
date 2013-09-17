@@ -1,11 +1,60 @@
-var validInputs = require('../../lib').utils.form.isvalidUserForm;
+var validInputs = require('../../lib').utils.form.isvalidUserForm
+  , lib            = require('../../lib')
+  , dustHelpers    = lib.dustHelpers;
 
+// GET /:user
 function getUserPage(req, res) {
   if (!req.isAuthenticated()) {
     res.send(200, 'Public user page of ' + req.params.user + '.');
-  } else if (req.user.name === req.params.user) {
-    res.send(200, 'Hello ' + req.user.name
-        + '! This is your personal profile page.')
+  } 
+  else if (req.user.name === req.params.user) {
+
+    // TODO: this is the same as 
+    // routes/user/presentations/handlers.js:listPresentations
+    // refactor into a common function
+    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+    Slideshow.find({
+      owner : req.user._id
+    }, '_id title course lastSession lastEdit',
+    function processPresentations(err, slides) {
+      if (err) {
+        throw err;
+      }
+      var slidesByCourse = null; //to evaluate as false in dustjs
+
+      if (typeof slides != "undefined"
+            && slides != null
+            && slides.length > 0) {
+
+        slidesByCourse = {};
+        for (var i = 0; i < slides.length; i++) {
+          var slideshow = slides[i].toJSON();
+          if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
+            slidesByCourse[slideshow.course] = [];
+          }
+          slideshow.lastEdit = moment( slideshow.lastEdit)
+              .format('DD.MM.YYYY HH:mm');
+          slideshow.lastSession = moment( slideshow.lastSession)
+              .format('DD.MM.YYYY HH:mm');
+          slidesByCourse[slideshow.course].push(slideshow);
+        }
+      }
+
+      var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
+          ? 'alert-' + req.query.type : '';
+
+      res.render('user', {
+        username        : req.user.name,
+        slidesByCourses : slidesByCourse,
+        JSONIter        : dustHelpers.JSONIter,
+        host            : appHost,
+        port            : app.get('port'),
+        id              : req.user.current,
+        alert           : req.query.alert,
+        type            : type,
+        session         : req.user.current
+      });
+    });
   } else {
     res.send(200, 'Hello ' + req.user.name 
         + '! You are viewing the user page of ' + req.params.user + '.');
