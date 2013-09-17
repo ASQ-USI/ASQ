@@ -86,7 +86,10 @@ function listPresentations(req, res) {
       }
       var slidesByCourse = null; //to evaluate as false in dustjs
 
-      if (slides && slides.length > 0) {
+      if (typeof slides != "undefined" 
+            && slides != null
+            && slides.length > 0) {
+        
         slidesByCourse = {};
         for (var i = 0; i < slides.length; i++) {
           var slideshow = slides[i].toJSON();
