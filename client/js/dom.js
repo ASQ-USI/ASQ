@@ -1,8 +1,23 @@
-/* Presentations DOM */
 'use strict'
 var $ = require("jQuery");
+var form = require('./form.js')
 
-var init = function (){
+//All uses of ASQ[property] supppose that ASQ is global
+
+
+// signIn.dust
+function signInDOMBinder(){
+  form.setup('signIn');
+
+  $(function(){
+    var fromRegister = $('body').attr('data-from-register');
+    fromRegister = typeof fromRegister == 'undefined' ? false : Boolean(fromRegister);
+    if(fromRegister)$('#myModal').modal('show');
+  });
+}
+
+// presentations.dust
+function psesentationsDOMBinder(){
   $(function(){
     if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
       $('#iOSWebAppInfo').popover({
@@ -40,12 +55,6 @@ var init = function (){
       $(this).parent().toggleClass("open");
     });
 
-//     $('.start').on('click', function(event) {
-//   event.stopPropagation();
-//   console.log('Start presentation');
-//   console.log($(this).data('username'));
- 
-// });
     
     $(".buttons a").click(function (event) {
         event.preventDefault();
@@ -83,6 +92,27 @@ var init = function (){
   })
 }
 
+// user.dust
+function userDOMBinder(){
+  //TODO update this for user
+  psesentationsDOMBinder();
+}
+
+var binders = {
+  'presentations' : psesentationsDOMBinder,
+  'user'  : userDOMBinder,
+  'signIn' : signInDOMBinder,
+}
+
+function bindingsFor(viewName){
+  if (binders.hasOwnProperty(viewName) && typeof binders[viewName] == 'function'){
+    binders[viewName]();
+  }else{
+    console.log("No Dom Bindings for "+ viewName);
+  }
+
+}
+
 var dom = module.exports={
-  init : init
+  bindingsFor : bindingsFor
 }    

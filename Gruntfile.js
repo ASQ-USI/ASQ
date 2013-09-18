@@ -36,11 +36,12 @@ module.exports = function(grunt) {
        }
       },
       client:{
-        src: ['client/js/client.js'],
+        src: ['client/js/dom.js'],
         dest: 'public/js/asq-client.js',
         debug: true,
         options:{
-          alias: 'client/js/client-socket.js:clientSocket',
+          alias: ['client/js/client-socket.js:clientSocket',
+                  'client/js/dom:dom'],
           external: ["jQuery"]
        }
       },

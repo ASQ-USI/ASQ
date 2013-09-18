@@ -1,4 +1,5 @@
 var validInputs = require('../../lib').utils.form.isvalidUserForm
+  , moment         = require('moment')
   , lib            = require('../../lib')
   , dustHelpers    = lib.dustHelpers;
 
