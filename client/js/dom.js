@@ -1,6 +1,34 @@
+/*
+* Require this in your views to setup the dom bindings by calling
+* <pre>dom.bindingsFor(viewName)</pre>. The function bindingsFor will search for
+* a <pre>viewName</pre> property in the binders and, if it's a function, it
+* will call it. This way you can specify dom logic per view. Moreover this is 
+* a good place to setup the form bindings as well.
+*/
+
+
 'use strict'
 var $ = require("jQuery");
 var form = require('./form.js')
+
+var binders = {
+  'presentations' : psesentationsDOMBinder,
+  'user'  : userDOMBinder,
+  'signIn' : signInDOMBinder,
+}
+
+function bindingsFor(viewName){
+  if (binders.hasOwnProperty(viewName) && typeof binders[viewName] == 'function'){
+    binders[viewName]();
+  }else{
+    console.log("No Dom Bindings for "+ viewName);
+  }
+
+}
+
+var dom = module.exports={
+  bindingsFor : bindingsFor
+}  
 
 //All uses of ASQ[property] supppose that ASQ is global
 
@@ -96,23 +124,4 @@ function psesentationsDOMBinder(){
 function userDOMBinder(){
   //TODO update this for user
   psesentationsDOMBinder();
-}
-
-var binders = {
-  'presentations' : psesentationsDOMBinder,
-  'user'  : userDOMBinder,
-  'signIn' : signInDOMBinder,
-}
-
-function bindingsFor(viewName){
-  if (binders.hasOwnProperty(viewName) && typeof binders[viewName] == 'function'){
-    binders[viewName]();
-  }else{
-    console.log("No Dom Bindings for "+ viewName);
-  }
-
-}
-
-var dom = module.exports={
-  bindingsFor : bindingsFor
-}    
+}  
