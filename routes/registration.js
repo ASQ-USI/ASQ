@@ -35,7 +35,7 @@ exports.getsingle = function(req, res) {
 exports.signup = function(req, res) {
 	// Empty Fields
 	if (req.body.signupusername == "" || req.body.signuppassword == "") {
-		res.render('index', {
+		res.render('signIn', {
 			message : "Missing credentials",
 			fromsignup : true
 		});
@@ -44,7 +44,7 @@ exports.signup = function(req, res) {
 
 	// Username syntax
 	if (!exports.isValidUserName(req.body.signupusername)) {
-		res.render('index', {
+		res.render('signIn', {
 			message : "User name should be between 3 and 12 characters and only contain letters, digits or . - _.",
 			fromsignup : true
 		});
@@ -53,7 +53,7 @@ exports.signup = function(req, res) {
 	
 	// Email
 	if (!exports.isValidEmail(req.body.signupemail)) {
-		res.render('index', {
+		res.render('signIn', {
 			message : "Please insert a valid email adress",
 			fromsignup : true
 		});
@@ -62,7 +62,7 @@ exports.signup = function(req, res) {
 
 	//Password
 	if (!exports.isValidPassword(req.body.signuppassword)) {
-		res.render('index', {
+		res.render('signIn', {
 			message : "Password should be betwwen 8 and 30 characters and have at least a lower case letter, an upper case letter and a digit. It can contain the following symbols: ! @ # % : _ ( ) $ ^ & * - . ?",
 			fromsignup : true
 		});
@@ -70,7 +70,7 @@ exports.signup = function(req, res) {
 	}
 
 	if (req.body.signuppassword != req.body.signuppasswordconfirm) {
-		res.render('index', {
+		res.render('signIn', {
 			message : "The two passwords are not matching",
 			fromsignup : true
 		});
@@ -83,7 +83,7 @@ exports.signup = function(req, res) {
 		name : req.body.signupusername
 	}, function(err, user) {
 		if (user) {
-			res.render('index', {
+			res.render('signIn', {
 				message : "Username already taken",
 				fromsignup : true
 			});
@@ -94,7 +94,7 @@ exports.signup = function(req, res) {
 				email : req.body.signupemail
 			});
 			newUser.save();
-			res.render('index', {message: "Account was created"} );
+			res.render('signIn', {message: "Account was created"} );
 		}
 	});
 

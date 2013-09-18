@@ -1,64 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-		<meta charset="utf-8">
-	    <title>ASQ - Home</title>
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable= no">
-	    <meta name="description" content="">
-	    <meta name="author" content="">
-	
-	    <!-- Le styles -->
-	    <link href="/css/bootstrap.min.css" rel="stylesheet">
-	    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet">
-	    <link href='/css/login.css' rel='stylesheet'/>
+  	{>htmlHead/}
+    <title>ASQ - Sign in</title>
+     <link href='/css/login.css' rel='stylesheet'/>
 
-			<script src="/js/vendor.js"></script>
-			<script src="/js/asq-client.js"></script>
-	
-	
-	    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-	    <!--[if lt IE 9]>
-	      <script src="../assets/js/html5shiv.js"></script>
-	    <![endif]-->
-	    
-	    <meta name="apple-mobile-web-app-capable" content="yes" />
-	    <link rel="apple-touch-startup-image" href="img/startup.png">
-	
-	    <!-- Fav and touch icons -->
-	    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
-	    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
-	      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
-	                                <link rel="apple-touch-icon" href="img/apple-touch-icon-57.png">
-	                                   <link rel="shortcut icon" href="img/favicon.png">
-		
-		
-		<script>
-			var $ = require('jQuery');
-			$(document).ready(function() {
-				{?fromsignup}
-					$('#myModal').modal('show');
-				{/fromsignup}
-				
-					$('#createAccount').click(function() {
-					$('#signup').submit();
-				})
-			});
-		</script>
   </head>
   
-  <body>
+  <body data-from-register="{fromRegister}">
 
 		<div id="wrapper">
 
 			<div id="loginBox">
 				<img src="/img/logo-big.png" />
 				{?message}
-					{^fromsignup}
+					{^fromRegister}
 					<p>&nbsp;</p>	
 						<div class="alert alert-block">
 							<h4>{message}</h4>
 						</div>	
-					{/fromsignup}
+					{/fromRegister}
 				{/message}
 				
 
@@ -104,18 +65,13 @@
 						</div>	
 						
 						<br/>
-					{/message}
-					
-					
-					
-					
-					
+					{/message}					
 					
 					<form id="signup" class="form-horizontal" action="/register" method="post">
 						<div class="control-group" id="groupUsername">
 							<label class="control-label" for="inputUsername" >Username</label>
 					    	<div class="controls">
-					     		<input type="text" id="inputUsername" placeholder="MyUsername" name="signupusername" onkeyup="checkUsername(this)">
+					     		<input type="text" id="inputUsername" placeholder="MyUsername" name="signupusername" >
 					     		<span class="help-inline" id="checkuser"> </span>
 					    	</div>
 					  	</div>
@@ -123,7 +79,7 @@
 						<div class="control-group" id="groupEmail">
 							<label class="control-label" for="inputEmail">Email</label>
 							<div class="controls">
-								<input type="email" id="inputEmail" placeholder="my.name@usi.ch" name="signupemail" onkeyup="validateMail()">
+								<input type="email" id="inputEmail" placeholder="my.name@usi.ch" name="signupemail">
 								<span class="help-inline" id="checkmail"> </span>
 					  		</div>
 						</div>
@@ -139,28 +95,27 @@
 						<div class="control-group" id="groupPassword2">
 							<label class="control-label" for="inputRepeatPassword">Repeat password</label>
 							<div class="controls">
-								<input type="password" id="inputRepeatPassword" placeholder="Password" name="signuppasswordconfirm" onkeyup="validatePassword()">
+								<input type="password" id="inputRepeatPassword" placeholder="Password" name="signuppasswordconfirm">
 								<span id ="checkpwd2" class="help-inline"></span>
 							</div>
 							
 						</div>
-					  
-					  
-					  
 					</form>
-					
 
 				</div>
 				<div class="modal-footer">
 					<button class="btn" data-dismiss="modal" aria-hidden="true">
 						Close
 					</button>
-					<button class="btn btn-primary" id="createAccount" >
+					<button class="btn btn-primary disabled" id="createAccount" >
 						Create Account
 					</button>
 				</div>
 			</div>
-
+		<!-- </div> -->
+		<script>
+			/* dom bindings for the page */
+			require('dom').bindingsFor('signIn');
+		</script>
 	</body>
-	<!-- <script src="js/lib/bootstrap.js"></script> -->
 </html>

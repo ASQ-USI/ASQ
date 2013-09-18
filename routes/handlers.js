@@ -8,8 +8,8 @@ function getHomePage(req, res) {
 
 function getRegister(req, res) {
   //TODO Code a real sign up page.
-  res.render('index', {
-        'fromsignup': true
+  res.render('signIn', {
+        'fromRegister': true
       });
 }
 
@@ -29,9 +29,9 @@ function postRegister(req, res) {
     User.findOne({ name : username },
       function(err, user) {
         if (user) {
-          res.render('index', { //TODO render proper register page
+          res.render('signIn', { //TODO render proper register page
             message    : 'Username ' + user + ' already taken',
-            fromsignup : true
+            fromRegister : true
           });
         } else {
         var newUser = new User({
@@ -42,7 +42,7 @@ function postRegister(req, res) {
         newUser.save(function(err) {
           if (err) {
             appLogger.error('Registration - ' + err.toString());
-            res.render('index', {
+            res.render('signIn', {
               message : 'Something went wrong. The great ASQ Server said: '
                   + err.toString()
             });
@@ -50,7 +50,7 @@ function postRegister(req, res) {
           req.login(newUser, function(err) {
             if (err) {
               appLogger.error('First login - ' + err.toString());
-              res.render('index', {
+              res.render('signIn', {
               message : 'Something went wrong. The great ASQ Server said: '
                   + err.toString()
               });
@@ -63,17 +63,17 @@ function postRegister(req, res) {
     });
   }else{
     console.log(validUserForm)
-    res.render('index', {
+    res.render('signIn', {
       message : 'Something went wrong. The great ASQ Server said: You specified wrong data',
        // + validUserForm.toString(),
-      fromsignup : true
+      fromRegister : true
       });
   }
 } 
 
 function getSignIn(req, res) {
-  res.render('index', {
-      fromsignup : false
+  res.render('signIn', {
+      fromRegister : false
     });
 }
 

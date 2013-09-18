@@ -28,7 +28,7 @@
     "dust": "~0.3.0",
     "dustfs": "~0.0.6",
     "dustjs-helpers": "~1.1.1",
-    "dustjs-linkedin": "~1.2.4",
+    "dustjs-linkedin": "~2.0.3",
     "ejs": "~0.8.4",
     "ejs-locals": "~1.0.2",
     "express": "~3.3.5",
