@@ -25,7 +25,6 @@ var form = module.exports = {
     setup : setup
 }
 
-
 //signin form
 function signInFormBinder(){
   var iconOkHtml = '<i class="icon-ok"></i>'
