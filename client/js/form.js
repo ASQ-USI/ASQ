@@ -2,7 +2,7 @@
 * This works a little bit like this: you can call from an external module
 * <pre>forms.setup(viewName)</pre> and the setup function will search for
 * a <pre>viewName</pre> property in the binders and, if it's a function, 
-* will call it. This way you can specify form logic per view
+* it will call it. This way you can specify form logic per view
 */
 
 'use strict'
