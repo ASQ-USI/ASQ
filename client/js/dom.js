@@ -12,9 +12,10 @@ var $ = require("jQuery")
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder
 
 var binders = {
+  'menu'   : menuDOMBinder,
+  'user'   : userDOMBinder,
+  'signIn' : signInDOMBinder,
   'presentations'    : psesentationsDOMBinder,
-  'user'             : userDOMBinder,
-  'signIn'           : signInDOMBinder,
   'presenterControl' : presenterControlDOMBinder
 }
 
@@ -32,6 +33,14 @@ var dom = module.exports={
 
 //All uses of ASQ[property] supppose that ASQ is global
 
+function menuDOMBinder(){
+  $(function(){
+    $('#logoutAnchor').on('click.asq.logout', function(){
+      $('#logoutForm').submit()
+    })
+  })
+}
+
 
 // signIn.dust
 function signInDOMBinder(){
@@ -40,7 +49,7 @@ function signInDOMBinder(){
   $(function(){
     var fromRegister = $('body').attr('data-from-register');
     fromRegister = typeof fromRegister == 'undefined' ? false : Boolean(fromRegister);
-    if(fromRegister)$('#myModal').modal('show');
+    if(fromRegister)$('#registerModal').modal('show');
   });
 }
 

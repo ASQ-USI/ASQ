@@ -3,7 +3,7 @@
   <head>
   	{>htmlHead/}
     <title>ASQ - Sign in</title>
-     <link href='/css/login.css' rel='stylesheet'/>
+    <link href='/css/login.css' rel='stylesheet'/>
 
   </head>
   
@@ -20,8 +20,7 @@
 							<h4>{message}</h4>
 						</div>	
 					{/fromRegister}
-				{/message}
-				
+				{/message}		
 
 				<div class="slidinglogin">
 					<form name="login" class="form-horizontal" action="/sign_in" method="post">
@@ -41,7 +40,7 @@
 						</div>
 
 						<button type="submit" class="btn btn-primary">Log in</button>
-						<button type="button" class="btn" data-toggle="modal" data-target="#myModal">Register</button>
+						<button type="button" class="btn" data-toggle="modal" data-target="#registerModal">Register</button>
 					</form>
 				</div>
 
@@ -51,12 +50,12 @@
 
 			</div>
 
-			<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div id="registerModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						×
 					</button>
-					<h3 id="myModalLabel">Sign up</h3>
+					<h3 id="registerModalLabel">Register on ASQ</h3>
 				</div>
 				<div class="modal-body">
 					{?message}
