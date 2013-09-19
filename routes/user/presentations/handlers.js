@@ -197,8 +197,7 @@ function uploadPresentation(req, res) {
 
         return when.all([
           asqRenderer.render(slideShowFileHtml, parsedQuestions, 'teacher')
-          //,
-          //asqRenderer.render(slideShowFileHtml, parsedQuestions, 'student')
+          , asqRenderer.render(slideShowFileHtml, parsedQuestions, 'student')
           ]);
     })
     //7) store new html with questions to file

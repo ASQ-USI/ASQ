@@ -96,7 +96,7 @@ module.exports.adminControll = function(req, res) {
 				});
 				presentationSkeleton ='<div class="step" id="'+ ids.join('"></div><div class="step" id="') + '"></div>';
 
-				res.render('slidesControll', {
+				res.render('presenterControl', {
 					title : slideshow.title,
 					mode  : true,
 					host  : appHost,

@@ -3,7 +3,8 @@ var asyncblock = require('asyncblock')
   , fs         = require('fs')
   , mkdirp     = require('mkdirp')
   , config     = require('../../../config')
-  , appLogger  = require('../../../lib').logger.appLogger;
+  , appLogger  = require('../../../lib').logger.appLogger
+  , exec       = require('child_process').exec;
 
 function createThumbs(slideshow) {
   fs.readFile(slideshow.studentFile, 'utf-8', function(error, data) {
@@ -45,7 +46,6 @@ function createThumbs(slideshow) {
         flow.wait();
       }
     });
-    
   });
 }
 

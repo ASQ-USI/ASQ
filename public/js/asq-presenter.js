@@ -1059,12 +1059,26 @@ var global=self;(function browserifyShim(module, exports, define, browserify_shi
 },{}],2:[function(require,module,exports){
 /**
  @fileoverview Socket code for the presenter client.
+ * 
  */
+
+'use strict'
 
 var impress = require('impressPresenter')
 , io = require('socket.io-browserify')
-, $ = require('jQuery');
+, $ = window.jQuery || require('jQuery')
 
+$(function(){
+	var $body = $('body')
+		, host 			=  $body.attr('data-asq-host')
+    , port  		= parseInt($body.attr('data-asq-port'))
+    , sessionId = $body.attr('data-asq-session-id')
+    , mode 			= $body.attr('data-asq-socket-mode')
+
+	impress().init();
+	connect(host, port, sessionId, mode)
+	impress().start();
+})
 
 /** Connect back to the server with a websocket */
 
