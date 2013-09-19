@@ -75,20 +75,30 @@ function livePresentation(req, res) {
   var presentation = req.liveSession.slides;
   //TMP until roles are defined more precisly 
   appLogger.debug('Select template for ' + role + ' ' + view);
-  var template = (function getTemplate(role, view, presentation) {
+  var renderOpts = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
-        return 'slidesControll';
+        return {
+          template: 'presenterControl',
+          mode: 'controll',
+        };
       } else if (role === 'presenter' || role === 'assistant') {
-        return presentation.teacherFile;
+        return {
+          template: presentation.teacherFile,
+          mode: 'presenter',
+        };
       }
-      return presentation.studentFile;
+      return {
+          template: presentation.studentFile,
+          mode: 'viewer',
+        };
   })(role, view, presentation);
-  appLogger.debug('Selected template: ' + template);
+  appLogger.debug('Selected template: ' + renderOpts.template);
 
-  res.render(template, {
+  res.render(renderOpts.template, {
     title : presentation.title,
     host  : process.env.Host,
     port  : process.env.PORT,
+    mode  : renderOpts.mode,
     id    : req.liveSession.id,
     date  : req.liveSession.startDate
   });

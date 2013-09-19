@@ -5,16 +5,17 @@
 * will call it. This way you can specify dom logic per view. Moreover this is 
 * a good place to setup the form bindings as well.
 */
+'use strict';
 
-
-'use strict'
-var $ = require("jQuery");
-var form = require('./form.js')
+var $ = require("jQuery")
+  , form = require('./form.js')
+  , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder
 
 var binders = {
-  'presentations' : psesentationsDOMBinder,
-  'user'  : userDOMBinder,
-  'signIn' : signInDOMBinder,
+  'presentations'    : psesentationsDOMBinder,
+  'user'             : userDOMBinder,
+  'signIn'           : signInDOMBinder,
+  'presenterControl' : presenterControlDOMBinder
 }
 
 function bindingsFor(viewName){
@@ -23,7 +24,6 @@ function bindingsFor(viewName){
   }else{
     console.log("No Dom Bindings for "+ viewName);
   }
-
 }
 
 var dom = module.exports={

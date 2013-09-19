@@ -31,7 +31,12 @@ module.exports = function(grunt) {
               path: 'client/js/vendor/bootstrap.js'
               , exports: null
               , depends: {jQuery:'jQuery'}
-            } 
+            },
+            jQueryScrollTo:{
+              path: 'client/js/vendor/jquery.scrollTo.js'
+              , exports: null
+              , depends: {jQuery:'jQuery'}
+            }  
           }
        }
       },
