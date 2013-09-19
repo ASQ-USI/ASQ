@@ -54,9 +54,10 @@ var $ = require("jQuery")
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder
 
 var binders = {
+  'menu'   : menuDOMBinder,
+  'user'   : userDOMBinder,
+  'signIn' : signInDOMBinder,
   'presentations'    : psesentationsDOMBinder,
-  'user'             : userDOMBinder,
-  'signIn'           : signInDOMBinder,
   'presenterControl' : presenterControlDOMBinder
 }
 
@@ -74,6 +75,14 @@ var dom = module.exports={
 
 //All uses of ASQ[property] supppose that ASQ is global
 
+function menuDOMBinder(){
+  $(function(){
+    $('#logoutAnchor').on('click.asq.logout', function(){
+      $('#logoutForm').submit()
+    })
+  })
+}
+
 
 // signIn.dust
 function signInDOMBinder(){
@@ -82,7 +91,7 @@ function signInDOMBinder(){
   $(function(){
     var fromRegister = $('body').attr('data-from-register');
     fromRegister = typeof fromRegister == 'undefined' ? false : Boolean(fromRegister);
-    if(fromRegister)$('#myModal').modal('show');
+    if(fromRegister)$('#registerModal').modal('show');
   });
 }
 
@@ -323,7 +332,9 @@ function signInFormBinder(){
 var $ = require('jQuery');
 
 function presenterControlDOMBinder(){
-	var sessionStart = new Date($('body').attr('data-asq-last-session'));
+	//check if we have last session stored
+	var lastSession = $('body').attr('data-asq-last-session')
+	  , sessionStart = lastSession == "" ? new Date() : new Date(lastSession);
 
 	/* Hide thumbnails if page height is less than 1000px */
 	if (window.innerHeight < 860) {
@@ -361,9 +372,10 @@ function presenterControlDOMBinder(){
 				case 0:
 				case 180:
 					$(".controls").removeClass("hidden-phone");
-					$(".controlBottom").addClass("hidden-phone");
-					$(".controlBottom").css("top", "inherit");
-					$(".controlBottom").css("height", "inherit");
+					$(".controlBottom")
+						.addClass("hidden-phone")
+						.css("top", "inherit")
+						.css("height", "inherit");
 					$(".thisSlideFrame").addClass("hidden-phone");
 					break;
 
@@ -371,9 +383,10 @@ function presenterControlDOMBinder(){
 				case 90:
 				$(".thisSlideFrame").addClass("hidden-phone");
 					$(".controls").addClass("hidden-phone");
-					$(".controlBottom").removeClass("hidden-phone");
-					$(".controlBottom").css("top", "0");
-					$(".controlBottom").css("height", "100%");
+					$(".controlBottom")
+						.removeClass("hidden-phone")
+						.css("top", "0")
+						.css("height", "100%");
 					break;
 			}
 		}else{}
@@ -390,12 +403,14 @@ function presenterControlDOMBinder(){
 	/* Manually toggle thumbnails */
 	$('#controlToggle').click(function(e) {
 		if( $('.controlBottom').hasClass('hiddenThumbs') ) {
-			$('.controlBottom').removeClass('hiddenThumbs');
-			$('.controlBottom').css('bottom', '0px');
+			$('.controlBottom')
+				.removeClass('hiddenThumbs')
+				.css('bottom', '0px');
 			$('#controlToggle a').html('<i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i>');
 		}else{
-			$('.controlBottom').addClass('hiddenThumbs');
-			$('.controlBottom').css('bottom', '-260px');
+			$('.controlBottom')
+				.addClass('hiddenThumbs')
+				.css('bottom', '-260px');
 			$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
 		}
 	});

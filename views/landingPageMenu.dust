@@ -7,37 +7,29 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="brand pull-right" href="/{username}/"><img src="/img/ASQBlack.svg" height="34px" /></a>
+      <a class="brand pull-left" href="/"><img src="/img/ASQBlack.svg" height="34px" /></a>
 
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li>
-            <a href="/{username}/presentations/">My Presentations</a>
+            <a href="#">Landing Page link 1</a>
           </li>
           <!-- <li><a href="/questions">My Questions</a></li> -->
           <li>
-            <a href="/upload/">Upload Presentation</a>
+            <a href="#">Landing Page link 2</a>
           </li>
 
         </ul>
         <ul class="nav pull-right">
           <li>
-            <a href="/{username}/settings">Settings</a>
+            <a href="/register">Register</a>
           </li>
           <li class="divider-vertical"></li>
           <li>
-            <form id="logoutForm" method="post" action="/sign_out" style="display: none; opacity: 0;"></form>
-            <a href="#" id="logoutAnchor">Log out</a>
+            <a href="/sign_in">Sign In</a>
           </li>
         </ul>
       </div>
     </div>
   </div>
 </div>
- <script>
- /* if the + sign looks strange to you have a look here:
- http://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name */
-  +function initMenuDomBindings(){
-    require('dom').bindingsFor('menu');
-  }();                
-</script>

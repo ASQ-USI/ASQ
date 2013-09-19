@@ -3,7 +3,13 @@ var lib     = require('../lib')
   , appLogger = lib.logger.appLogger;
 
 function getHomePage(req, res) {
-  res.send(200, 'This is where the home page will be.');
+  if (req.isAuthenticated()) {
+    //redirect to user homepage
+    res.redirect('/' + req.user.name);
+  } else{
+    //render asq homepage
+    res.render('landingPage');
+  }
 }
 
 function getRegister(req, res) {
