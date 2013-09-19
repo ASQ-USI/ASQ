@@ -1007,7 +1007,7 @@ var global=self;(function browserifyShim(module, exports, define, browserify_shi
 /** Connect back to the server with a websocket */
 var impress = require('impressViewer')
 , io = require('socket.io-browserify')
-, $ = require('jQuery');
+, $ = window.jQuery || require('jQuery')
 
 // Save current question id;
 var questionId = null, socket, session;
