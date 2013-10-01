@@ -1,7 +1,11 @@
 var validInputs = require('../../lib').utils.form.isvalidUserForm
-  , moment         = require('moment')
-  , lib            = require('../../lib')
-  , dustHelpers    = lib.dustHelpers;
+  , moment      = require('moment')
+  , lib         = require('../../lib')
+  , appLogger   = lib.logger.appLogger
+  , dustHelpers = lib.dustHelpers
+  , Slideshow   = db.model('Slideshow')
+  , User        = db.model('User')
+  , Session     = db.model('Session');
 
 // GET /:user
 function getUserPage(req, res) {
@@ -13,7 +17,6 @@ function getUserPage(req, res) {
     // TODO: this is the same as 
     // routes/user/presentations/handlers.js:listPresentations
     // refactor into a common function
-    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
     Slideshow.find({
       owner : req.user._id
     }, '_id title course lastSession lastEdit',
@@ -48,7 +51,7 @@ function getUserPage(req, res) {
         username        : req.user.name,
         slidesByCourses : slidesByCourse,
         JSONIter        : dustHelpers.JSONIter,
-        host            : appHost,
+        host            : ASQ.appHost,
         port            : app.get('port'),
         id              : req.user.current,
         alert           : req.query.alert,
@@ -88,7 +91,6 @@ function updateUserSettings(req, res) {
   }
 
   // Checking user name uniqueness
-  var User = db.model('User', schemas.userSchema);
   //Check if username already exists
   User.findOne({ name : username }, function(err, user) {
     if (user) {
@@ -130,8 +132,42 @@ function updateUserSettings(req, res) {
   });
 }
 
+function getLivePresentations(req, res) {
+    User.findOne({name: req.params.user}, {_id:1}).exec()
+      .then(
+        function(user){
+          return Session
+            .where('presenter').equals(user._id)
+            .where('endDate').equals(null)
+            .exec()
+        })
+      .then(
+        function(sessions){
+            var sessionIds = sessions.map(function getSessionIds(session){
+              return session.slides
+            })
+            return Slideshow.find({_id : {$in : sessionIds}}).exec();
+        })
+      .then(
+        function(slideshows){
+          console.log(slideshows)
+            res.render('userLive', {
+            livePresentations: slideshows,
+            user : { name : req.user.name, email : req.user.email }
+          });
+        },
+        function(err){
+          var where = "@ getLivePresentations";
+          appLogger.error(where + ': ' + err);
+          res.render('500', { where: where , error: err });
+        })
+
+
+}
+
 module.exports = {
   getUserPage        : getUserPage,
   getUserSettings    : getUserSettings,
-  updateUserSettings : updateUserSettings
+  updateUserSettings : updateUserSettings,
+  getLivePresentations : getLivePresentations
 }

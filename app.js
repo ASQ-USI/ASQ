@@ -1,12 +1,16 @@
 /**
     @fileoverview app main file, for initialization of the server
 */
+var config = require('./config')
+// Globals: mongoose, db, and schemas
+mongoose = require('mongoose');
+db = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
+schemas = require('./models');
 
 var express     = require('express')
   , http          = require('http')
   , path        = require('path')
   , fs          = require('fs')
-  , config      = require('./config')
   , redisStore  = require('connect-redis')(express)
   , http        = require('http')
   , credentials = config.enableHTTPS ? { 
@@ -20,9 +24,9 @@ var express     = require('express')
   , cons            = require('consolidate')
   , dust            = require('dustjs-linkedin')
   , slashes         = require("connect-slashes")
-  , routes          = require('./routes')
   , flash           = require('connect-flash')
   , lib             = require('./lib')
+  , routes          = require('./routes')
   , registration    = require('./routes/registration')
   , editFunctions   = require('./routes/edit')
   , statistics      = require('./routes/statistics')
@@ -105,15 +109,17 @@ appLogger.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + p
 
 app = express();
 app.engine('dust', cons.dust);
-// Global variable: hostname which we want to advertise for connection.
-appHost = process.env.HOST;
+
+
+// Global namespace
+var ASQ = global.ASQ = {};
+
+//hostname which we want to advertise for connection.
+ASQ.appHost = process.env.HOST;
 clientsLimit = config.clientsLimit || 50;
 appLogger.log('Clients limit: ' + clientsLimit);
 
-// mongoose, db, and schemas are global
-mongoose = require('mongoose');
-db = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
-schemas = require('./models');
+
 
 //Reidrection to secure url when HTTPS is used.
 
@@ -323,7 +329,7 @@ app.post('/user/savedetails/:id', ensureAuthenticated, editFunctions.saveDetails
 
 //Render presentations in iframe for thumbnails
 app.get('/slidesInFrame/:id/', function(req,res){
-	res.render('slidesIFrame', {id: req.params.id, url: req.query.url});
+	res.render('slidesIFrame', {user: req.user.name, id: req.params.id, url: req.query.url});
 });
 //MOVED
 // app.get('/slidesRender/:id', routes.slides.render);
@@ -351,6 +357,7 @@ routes.setUp(app, middleware);
 /** HTTP(S) Server */
 if (config.enableHTTPS) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
+        ASQ.rootUrl = "https://" + config.host + ":" + config.HTTPSPort
         appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
     
@@ -360,7 +367,7 @@ if (config.enableHTTPS) {
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), function(){
-      //var appLogger = winston.loggers.get('application');
+      ASQ.rootUrl = "http://" + config.host + ":" + config.HTTPPort
       appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }

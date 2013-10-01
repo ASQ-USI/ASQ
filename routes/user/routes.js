@@ -6,6 +6,9 @@ module.exports.setUp = function setUp(app, middleware) {
   appLogger.debug('Setting user routes');
   //Render the user page
   app.get('/:user/', handlers.getUserPage);
+
+    //Update the user settings
+  app.get('/:user/live/', handlers.getLivePresentations);
   
   //Render the user settings
   app.get('/:user/settings/', middleware.isRouteOwner, handlers.getUserSettings);

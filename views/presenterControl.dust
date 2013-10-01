@@ -50,7 +50,7 @@
           <div class="span5">
           	<a class="btn btn-danger btn-small" id="stopSessionBtn" href="#"> Stop presentation </a>
             <a href="/user/statistics/{slideshow._id}" class="btn btn-small btn-inverse">Show statistics</a>
-            <a href="/admin" class="btn btn-small btn-inverse hidden-phone">Go to presentation view</a>
+            <a href="{presentationViewUrl}" class="btn btn-small btn-inverse hidden-phone">Go to presentation view</a>
           </div>
           <div class="span2 hidden-phone">
             <button class="btn btn-info" onclick="impress().prev()">

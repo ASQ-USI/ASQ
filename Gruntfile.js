@@ -141,6 +141,14 @@ module.exports = function(grunt) {
           interrupt: true
         },
       },
+      less: {
+        files: ['client/less/**/*.less'],
+        tasks: ['less:development'],
+        options: {
+          // spawn: false,
+          interrupt: true
+        },
+      }
     }
   });
 

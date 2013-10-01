@@ -111,7 +111,7 @@ function listPresentations(req, res) {
         username        : req.user.name,
         slidesByCourses : slidesByCourse,
         JSONIter        : dustHelpers.JSONIter,
-        host            : appHost,
+        host            : ASQ.appHost,
         port            : app.get('port'),
         id              : req.user.current,
         alert           : req.query.alert,

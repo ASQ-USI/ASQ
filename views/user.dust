@@ -68,34 +68,37 @@
                         <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
                         <h4>{title}</h4>
                       </div>
-                      <div class="buttons">
-                        <div class="btn-group">
-                          <!-- boiler jQuery -->
-                          <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"></i> Start Presentation
-                          </a>
-                          <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                          <ul class="dropdown-menu">
-                            <li>
-                              <!-- boiler jQuery -->
-                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public">Public Presentation</a>
-                            </li>
-                            <li>
-                              <!-- boiler jQuery -->
-                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous">Anonymous Presentation</a>
-                            </li>
-                            <li>
-                              <!-- boiler jQuery -->
-                              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="private">Private Presentation</a>
-                            </li>
-                          </ul>
-                        </div>
-                        <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-                        <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-                        <div class="dates">
-                          <p><i class="icon-play"></i> {lastSession}</p>
-                          <p><i class="icon-pencil" ></i> {lastEdit}</p>
+                      <div class="buttons-container">
+                        <div class="buttons">
+                          <div class="btn-group">
+                            <!-- boiler jQuery -->
+                            <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"></i> Start Presentation
+                            </a>
+                            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                              <li>
+                                <!-- boiler jQuery -->
+                                <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public">Public Presentation</a>
+                              </li>
+                              <li>
+                                <!-- boiler jQuery -->
+                                <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous">Anonymous Presentation</a>
+                              </li>
+                              <li>
+                                <!-- boiler jQuery -->
+                                <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="private">Private Presentation</a>
+                              </li>
+                            </ul>
+                          </div>
+                          <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
+                          <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
+                          <div class="dates">
+                            <p><i class="icon-play"></i> {lastSession}</p>
+                            <p><i class="icon-pencil" ></i> {lastEdit}</p>
+                          </div>
                         </div>
                       </div>
+
                     </div>
                   </div>
                   {/value}
