@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<title>ASQ - Error</title>
+  </head>
+		
+  <body>
+		<h1>Internal server error</h1>
+		<p>{where}: {error}</p>
+  </body>
+</html>

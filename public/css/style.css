@@ -165,6 +165,9 @@ a.accordion-toggle:hover {
   -moz-transform-style: preserve-3d;
   -moz-transition: -webkit-transform 1s;
   position: relative;
+  -webkit-transform: scale3d(0.9, 0.9, 1);
+  -moz-transform: scale3d(0.9, 0.9, 1);
+  transform: scale3d(0.9, 0.9, 1);
 }
 .thumb .bg {
   background-size: cover;
@@ -205,13 +208,24 @@ a.accordion-toggle:hover {
   background-color: #000;
   text-shadow: black 0px 0px 500px;
 }
-.thumb .buttons {
+.thumb .buttons-container {
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
   background-color: #efefef;
-  text-align: center;
   box-shadow: 0px 50px 100px black;
-  height: 195px;
+  text-align: center;
+}
+.thumb .buttons-container:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+.thumb .buttons {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  vertical-align: middle;
 }
 .thumb .buttons .btn-group {
   margin-top: 30px;
@@ -292,9 +306,9 @@ a.accordion-toggle:hover {
   display: table-cell;
 }
 .flipped {
-  -webkit-transform: rotateY(180deg) translateZ(-100px);
-  -moz-transform: rotateY(180deg) translateZ(-100px);
-  transform: rotateY(180deg) translateZ(-100px);
+  -webkit-transform: rotateY(180deg) scale3d(1, 1, 1);
+  -moz-transform: rotateY(180deg) scale3d(1, 1, 1);
+  transform: rotateY(180deg) scale3d(1, 1, 1);
   z-index: 10;
 }
 /* -----  Style for Stats ----- */

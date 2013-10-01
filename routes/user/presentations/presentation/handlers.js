@@ -3,7 +3,8 @@ var asyncblock = require('asyncblock')
   , pfs        = require('promised-io/fs')
   , lib        = require('../../../../lib')
   , appLogger  = lib.logger.appLogger
-  , presUtils  = lib.utils.presentation;
+  , presUtils  = lib.utils.presentation
+  , config     = require('../../../../config')
 
 function editPresentation(req, res) {
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
@@ -94,13 +95,22 @@ function livePresentation(req, res) {
   })(role, view, presentation);
   appLogger.debug('Selected template: ' + renderOpts.template);
 
+  var presentationViewUrl = ASQ.rootUrl + '/' + req.user.name + '/presentations/' 
+                            + presentation._id + '/live/' + req.liveSession.id 
+                            + '/?role=' + role+ '&view=presentation';
+  console.log(presentationViewUrl)
+
+  var presenterLiveUrl = ASQ.rootUrl + '/' + req.user.name + '/live/';
+
   res.render(renderOpts.template, {
     title : presentation.title,
-    host  : process.env.Host,
+    host  : process.env.HOST,
     port  : process.env.PORT,
     mode  : renderOpts.mode,
     id    : req.liveSession.id,
-    date  : req.liveSession.startDate
+    date  : req.liveSession.startDate,
+    presentationViewUrl: presentationViewUrl,
+    presenterLiveUrl : presenterLiveUrl
   });
 }
 

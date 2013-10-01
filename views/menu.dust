@@ -12,7 +12,7 @@
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li>
-            <a href="/{username}/presentations/">My Presentations</a>
+            <a href="/{user.name}/presentations/">My Presentations</a>
           </li>
           <!-- <li><a href="/questions">My Questions</a></li> -->
           <li>

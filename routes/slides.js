@@ -27,7 +27,7 @@ module.exports.admin = function(req, res) {
     res.render(slideshow.teacherFile, { 
     	title : slideshow.title,
     	mode  : 'admin',
-      host  : appHost,
+      host  : ASQ.appHost,
       port  : app.get('port'),
       user  : req.user.name,
       pass  : '&bull;&bull;&bull;&bull;&bull;&bull;',
@@ -99,7 +99,7 @@ module.exports.adminControll = function(req, res) {
 				res.render('presenterControl', {
 					title : slideshow.title,
 					mode  : true,
-					host  : appHost,
+					host  : ASQ.appHost,
 					port  : app.get('port'),
 					user  : req.user.name,
 					pass  : '&bull;&bull;&bull;&bull;&bull;&bull;',
@@ -155,7 +155,7 @@ module.exports.render = function(req, res) {
 			// var slideshow = session.slideshow;
   			// res.render('slidesSplashScreen',{
   					// title : slideshow.title,
-					// host : appHost,
+					// host : ASQ.appHost,
 					// port : app.get('port'),
 					// user : req.user.name}
 					// );
@@ -206,7 +206,7 @@ module.exports.live = function(req, res) {
         res.render(slideshow.studentFile, {
         	title : slideshow.title,
         	mode  : mode,
-          host  : appHost,
+          host  : ASQ.appHost,
           port  : app.get('port'),
           user  : req.params.user,
           path  : path.relative(app.get('views'), slideshow.path + 'index.html'),

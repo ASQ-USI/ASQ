@@ -258,7 +258,7 @@ exports.renderuser = function(req, res) {
 				slidesByCourses: slidesByCourse,
 				JSONIter : dustHelpers.JSONIter,
 				username : req.user.name,
-				host : appHost,
+				host : ASQ.appHost,
 				port : app.get('port'),
 				id : req.user.current,
 				alert : req.query.alert,
