@@ -1087,9 +1087,9 @@ var connect = function(host, port, session, mode) {
 	var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session);
 
 	var updateViewersCount = function(event) {
-		if (!event.users)
+		if (!event.connectedClients)
 			return;
-		var connectedViewers = event.users;
+		var connectedViewers = event.connectedClients;
 		// Draw icons for the first 50 viewers
 		var lim = connectedViewers < 50 ? connectedViewers : 50;
 		$('.connected-viewers-icons').empty();
@@ -1127,7 +1127,7 @@ var connect = function(host, port, session, mode) {
 		/**
 		 * Update the viewers count when users connect or disconnect.
 		 */
-		socket.on('asq:viewers-update', updateViewersCount);
+		socket.on('asq:folo-connected', updateViewersCount);
 
 		socket.on('asq:start', function(event) {
 			if (!started) {

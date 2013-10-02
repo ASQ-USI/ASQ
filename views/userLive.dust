@@ -35,7 +35,6 @@
                 <div class="span12  headline">
                   <h2 class="pull-left"><a href="/{username}">{user.name}'s</a> live presentations</h2>
                   <a class="pull-right accordion-toggle" data-toggle="collapse" data-target="#course-{idx}" href="#">show/hide</a>
-                  <!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
                 </div>
               </div>
               <div class="row accordion-body collpase in" id="course-{idx}">
@@ -49,7 +48,7 @@
                       </div>
                       <div class="buttons-container">
                         <div class="buttons">
-                          <a href="/user/statistics/{_id}" class="btn btn-primary"><i class="icon-picture icon-white"> </i> Join presentation</a>
+                          <a href="{liveUrl}" class="btn btn-primary"><i class="icon-picture icon-white"> </i> Join presentation</a>
                         </div>
                       </div>
 
@@ -84,7 +83,7 @@
     {/session}
     <script>
       +function initDomBindings(){
-         require('dom').bindingsFor('presentations');
+         require('dom').bindingsFor('userLive');
       }();                
     </script>
   </body>

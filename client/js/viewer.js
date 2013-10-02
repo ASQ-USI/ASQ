@@ -10,12 +10,25 @@ var impress = require('impressViewer')
 // Save current question id;
 var questionId = null, socket, session;
 
+$(function(){
+	var $body = $('body')
+		, host 			=  $body.attr('data-asq-host')
+    , port  		= parseInt($body.attr('data-asq-port'))
+    , sessionId = $body.attr('data-asq-session-id')
+    , mode 			= $body.attr('data-asq-socket-mode')
+
+	impress().init();
+	connect(host, port, sessionId, mode)
+})
+
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session, mode) {
 	var started = false;
 	session = session;
 	socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session);
+	
 	socket.on('connect', function(event) {
+		console.log("connected")
 		socket.emit('asq:viewer', {
 			session : session,
 			mode : mode
@@ -108,10 +121,15 @@ var connect = function(host, port, session, mode) {
 			$('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 50px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.</p></div>');
 		});
 
-	}).on('connect_failed', function(reason) {
+	})
+	.on('connect_failed', function(reason) {
 		console.error('unable to connect to namespace', reason);
 		$('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
-	});
+	})
+
+	.on('error', function (reason){
+	  console.error('Unable to connect Socket.IO', reason);
+	});;
 
 	document.addEventListener('local:resubmit', function(event) {
 		socket.emit('asq:resubmit', {
