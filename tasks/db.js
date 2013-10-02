@@ -25,6 +25,10 @@ module.exports = function(grunt) {
       case "test" :
         global['dbName'] = "asq-test";
         break;
+      case "prod" :
+      case "prod" :
+        global['dbName'] = "asq";
+        break;
       default:
         global['dbName'] = "asq-dev";
     }
