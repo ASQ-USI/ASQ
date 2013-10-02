@@ -130,5 +130,10 @@
         }();        
       </script>
     {/session}
+    <script>
+      +function initDomBindings(){
+         require('dom').bindingsFor('user');
+      }();                
+    </script>
   </body>
 </html>

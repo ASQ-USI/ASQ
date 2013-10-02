@@ -1,3 +1,5 @@
+'use strict';
+
 var validInputs = require('../../lib').utils.form.isvalidUserForm
   , moment      = require('moment')
   , lib         = require('../../lib')
@@ -133,36 +135,43 @@ function updateUserSettings(req, res) {
 }
 
 function getLivePresentations(req, res) {
-    User.findOne({name: req.params.user}, {_id:1}).exec()
-      .then(
-        function(user){
-          return Session
-            .where('presenter').equals(user._id)
-            .where('endDate').equals(null)
-            .exec()
-        })
-      .then(
-        function(sessions){
-            var sessionIds = sessions.map(function getSessionIds(session){
-              return session.slides
-            })
-            return Slideshow.find({_id : {$in : sessionIds}}).exec();
-        })
-      .then(
-        function(slideshows){
-          console.log(slideshows)
-            res.render('userLive', {
-            livePresentations: slideshows,
-            user : { name : req.user.name, email : req.user.email }
-          });
-        },
-        function(err){
-          var where = "@ getLivePresentations";
-          appLogger.error(where + ': ' + err);
-          res.render('500', { where: where , error: err });
-        })
-
-
+  var slideshowSessionMap = {};
+  User.findOne({name: req.params.user}, {_id:1}).exec()
+    .then(
+      function(user){
+        return Session
+          .where('presenter').equals(user._id)
+          .where('endDate').equals(null)
+          .exec()
+      })
+    .then(
+      function(sessions){
+          var sessionIds = sessions.map(function getSessionIds(session){
+            slideshowSessionMap[session.slides] = session._id
+            return session.slides
+          })
+          return Slideshow.find({_id : {$in : sessionIds}}).exec();
+      })
+    .then(
+      function(slideshows){
+          slideshows.forEach(function(slideshow){
+            slideshow.liveUrl = ASQ.rootUrl + '/' + req.user.name
+                          + '/presentations/' + slideshow._id + '/live/'
+                          + slideshowSessionMap[slideshow._id] 
+                          + '/?role=viewer&view=presentation';
+                          
+          })
+          res.render('userLive', {
+          livePresentations: slideshows,
+          username: req.user.name,
+          user : { name : req.user.name, email : req.user.email }
+        });
+      },
+      function(err){
+        var where = "@ getLivePresentations";
+        appLogger.error(where + ': ' + err);
+        res.render('500', { where: where , error: err });
+      })
 }
 
 module.exports = {
