@@ -7,6 +7,9 @@ var asyncblock = require('asyncblock')
   , exec       = require('child_process').exec;
 
 function createThumbs(slideshow) {
+  //check if w2png exists
+  if (!fs.existsSync("/usr/local/w2png")) { return;}
+
   fs.readFile(slideshow.studentFile, 'utf-8', function(error, data) {
     var ids = [];
     var $ = cheerio.load(data);
