@@ -37,6 +37,10 @@ var express     = require('express')
   , errorMessages   = lib.errorMessages
   , middleware      = require('./routes/middlewares');
 
+
+//don't remove whitespace
+dust.optimizers.format = function(ctx, node) { return node };
+
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into a`nd deserialize users out of the session.  Typically,

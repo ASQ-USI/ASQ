@@ -1030,7 +1030,7 @@ var connect = function(host, port, session, mode) {
 	socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session);
 	
 	socket.on('connect', function(event) {
-		console.log("connected")
+		// console.log("connected")
 		socket.emit('asq:viewer', {
 			session : session,
 			mode : mode
@@ -1044,6 +1044,10 @@ var connect = function(host, port, session, mode) {
 				started = true;
 			}
 		});
+
+		socket.on('disconnect', function(event){
+				console.log('disconnected')
+		})
 
 		socket.on('asq:question', function(event) {
 			questionId = event.question._id;
