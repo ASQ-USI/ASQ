@@ -1118,10 +1118,10 @@ var connect = function(host, port, session, mode) {
 		 Handle socket event 'new'
 		 Notifies the admin of a new connection to the presentation.
 		 */
-		socket.on('asq:submit', function(event) {
+		socket.on('asq:submitted', function(event) {
 			console.log("You've got an answer!");
 			console.log(event);
-			updateParticipation(event.submitted, event.users, event.questionId);
+			updateParticipation(event.submittedViewers, event.totalViewers, event.questionId);
 		});
 
 		/**
@@ -1165,6 +1165,7 @@ var connect = function(host, port, session, mode) {
 		});
 
 		socket.on('asq:answer', function(event) {
+			console.log(event.stats)
 			showAnswer(event.question, event.stats);
 			//Question contains the answer.
 		});
@@ -1180,7 +1181,7 @@ var connect = function(host, port, session, mode) {
 
 	/**
 	 Handle impress:stepgoto event
-	 sSend a socket event to notify which slide to go to.
+	 Send a socket event to notify which slide to go to.
 	 */
 	document.addEventListener("impress:stepgoto", function(event) {
 		socket.emit('asq:goto', {
@@ -1227,18 +1228,19 @@ var connect = function(host, port, session, mode) {
 		});
 	});
 }
-function updateParticipation(submitted, users, questionId) {
-	var maxUsers = -1;
-	if (maxUsers < users) {
-		maxUsers = users;
+function updateParticipation(submittedViewers, totalViewers, questionId) {
+	var maxViewers = -1;
+	if (maxViewers < totalViewers) {
+		maxViewers = totalViewers;
 	}
-	if (maxUsers == submitted) {
-		$('[data-question-id="' + questionId + '"] .progressNum').text('All answers received (' + submitted + '/' + maxUsers + '). ');
+
+	if (maxViewers == submittedViewers) {
+		$('[data-question-id="' + questionId + '"] .progressNum').text('All answers received (' + submittedViewers + '/' + maxViewers + '). ');
 		$('[data-question-id="' + questionId + '"] .show-stats').attr("class", "btn btn-success");
 	} else {
-		$('[data-question-id="' + questionId + '"] .progressNum').text(submitted + '/' + maxUsers + ' answers received.');
+		$('[data-question-id="' + questionId + '"] .progressNum').text(submittedViewers + '/' + maxViewers + ' answers received.');
 	}
-	var width = (submitted / maxUsers) * 100;
+	var width = (submittedViewers / maxViewers) * 100;
 	$('[data-question-id="' + questionId + '"] .progress .bar').css('width', width + "%");
 }
 

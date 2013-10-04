@@ -1,20 +1,20 @@
-var AdmZip         = require('adm-zip')
-  , cheerio        = require('cheerio')
-  , moment         = require('moment')
-  , path           = require('path')
-  , pfs            = require('promised-io/fs')
-  , _              = require('underscore')
-  , when           = require('when')
-  , lib            = require('../../../lib')
-  , dustHelpers    = lib.dustHelpers
-  , appLogger      = lib.logger.appLogger
-  , asqParser      = lib.asqParser
-  , asqRenderer    = lib.asqRenderer
-  , fsUtils        = lib.utils.fs
-  , model          = require('../../../models')
-  , slideshowModel = model.slideshowModel
-  , questionModel  = model.questionModel
-  , utils          = require('./utils');
+var AdmZip          = require('adm-zip')
+  , cheerio         = require('cheerio')
+  , moment          = require('moment')
+  , path            = require('path')
+  , pfs             = require('promised-io/fs')
+  , _               = require('underscore')
+  , when            = require('when')
+  , lib             = require('../../../lib')
+  , dustHelpers     = lib.dustHelpers
+  , appLogger       = lib.logger.appLogger
+  , asqParser       = lib.assessment.parser
+  , markupGenerator = lib.assessment.markupGenerator
+  , fsUtils         = lib.utils.fs
+  , model           = require('../../../models')
+  , slideshowModel  = model.slideshowModel
+  , questionModel   = model.questionModel
+  , utils           = require('./utils');
 
 function deletePresentation(req, res) {
   if (req.params.user === req.user.name) {
@@ -196,8 +196,8 @@ function uploadPresentation(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          asqRenderer.render(slideShowFileHtml, parsedQuestions, 'teacher')
-          , asqRenderer.render(slideShowFileHtml, parsedQuestions, 'student')
+          markupGenerator.render(slideShowFileHtml, parsedQuestions, 'teacher')
+          , markupGenerator.render(slideShowFileHtml, parsedQuestions, 'student')
           ]);
     })
     //7) store new html with questions to file
