@@ -66,7 +66,7 @@
     "chai-as-promised": "*",
     "supertest": "*",
     "grunt": "~0.4.1",
-    "grunt-browserify": "~1.2.4",
+    "grunt-browserify": "~1.2.8",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-less": "~0.7.0",
@@ -75,7 +75,8 @@
     "grunt-mocha-test": "~0.6.2",
     "mocha": "~1.8.2",
     "mocha-as-promised": "~1.4.0",
-    "proxyquire": "~0.5.0"
+    "proxyquire": "~0.5.0",
+    "browserify": "~2.33.1"
   },
   "scripts": {
     "test": "make test-unit",
