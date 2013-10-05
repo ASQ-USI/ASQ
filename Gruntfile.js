@@ -108,7 +108,7 @@ module.exports = function(grunt) {
           paths: ["client/less"]
         },
         files: {
-          "public/css/login.css": "client/less/login.less",
+          "public/css/signin.css": "client/less/signin.less",
           "public/css/logoAnim.css": "client/less/logoAnim.less",
           "public/css/phone.css": "client/less/phone.less",
           "public/css/style.css": "client/less/style.less"
@@ -120,7 +120,7 @@ module.exports = function(grunt) {
           yuicompress: true
         },
         files: {
-          "public/css/login.css": "client/less/login.less",
+          "public/css/signin.css": "client/less/signin.less",
           "public/css/logoAnim.css": "client/less/logoAnim.less",
           "public/css/phone.css": "client/less/phone.less",
           "public/css/style.css": "client/less/style.less"

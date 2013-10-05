@@ -6,22 +6,20 @@
   </head>
 
   <body>
-
     <!---   top menu -->
     {>landingPageMenu/}
 
     <!---   Content area   -->
-    <div class="container" id="mainContainer">
-      <div class="row">
-        <div class="span12 text-center headline">
+    <main class="landhead" role="main">
+      <div class="container" id="mainContainer">
+        <div class="row">
           <h1 >Welcome to ASQ</h1>
+          <p class="lead">Please <a href="/register">register</a> or <a href="/sign_in">sign in</a>.</p>
         </div>
-        <div class="span12">
-          <p>Please <a href="/register">register</a> or <a href="/sign_in">sign in</a>.</p>
-        </div>
-      </div>
 
-    </div>    <!-- /container -->
+      </div><!-- /.container -->
+    </main><!-- /main -->
+
     <div id="iOSWebAppInfo" data-content='Tab on &nbsp;<img width="20px" src="/img/iOS-action.png"/>&nbsp; and select<br/> "Add to Home Screen".'></div>
   </body>
 </html>

@@ -1,39 +1,36 @@
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<header class="navbar navbar-default" role="banner">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-nav">
+        <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      <a class="navbar-brand navbar-right" href="/{username}/"><img src="/img/ASQBlack.svg" height="34" alt="ASQ logo" /></a>
+    </div><!-- /.navbar-header -->  
 
-      <a class="brand pull-right" href="/{username}/"><img src="/img/ASQBlack.svg" height="34px" /></a>
-
-      <div class="nav-collapse collapse">
-        <ul class="nav">
-          <li>
-            <a href="/{username}/presentations/">My Presentations</a>
-          </li>
-          <!-- <li><a href="/questions">My Questions</a></li> -->
-          <li>
-            <a href="/upload/">Upload Presentation</a>
-          </li>
-
-        </ul>
-        <ul class="nav pull-right">
-          <li>
-            <a href="/{username}/settings">Settings</a>
-          </li>
-          <li class="divider-vertical"></li>
-          <li>
-            <form id="logoutForm" method="post" action="/sign_out" style="display: none; opacity: 0;"></form>
-            <a href="#" id="logoutAnchor">Log out</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <nav class="collapse navbar-collapse navbar-main-nav" role="navigation">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/{username}/presentations/">My Presentations</a></li>
+        <!-- <li><a href="/questions">My Questions</a></li> -->
+        <li>
+          <a href="/upload/">Upload Presentation</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li> <a href="/{username}/settings">Settings</a></li>
+        <li class="divider-vertical"></li>
+        <li>
+          <form id="logoutForm" method="post" action="/sign_out" style="display: none; opacity: 0;"></form>
+          <a href="#" id="logoutAnchor">Log out</a>
+        </li>
+      </ul>
+    </nav><!-- /.navbar-collapse -->  
+  </div><!-- /.container -->  
+</header>
  <script>
  /* if the + sign looks strange to you have a look here:
  http://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name */

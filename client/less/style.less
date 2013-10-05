@@ -3,7 +3,6 @@ body{
     height: 100%;
     color: #FFF;
     background-color: #333;
-    padding-top: 90px;
 }
 
 #mainContainer{
@@ -25,54 +24,62 @@ body{
 
 
 /* --- Menu --- */
-.navbar .nav  li{
-    line-height: 34px;
-    font-size:16px;
-}
-.navbar .nav > li > a{
-    padding-left:0px;
-    padding-right: 30px;
-}
-.navbar .nav.pull-right > li > a{
-    padding-left:10px;
-    padding-right: 15px;
-}
-.navbar .nav > .active > a{
-    background: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    font-weight: bold;
+@media (min-width: 768px){
+  .navbar {
+    border-radius: 0px;
+  }
 }
 
-.navbar .nav > .active > a:hover,
-.navbar .nav > li:hover{
-    background: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    color:#000;
-}
 
-.navbar .navbar-inner{
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    background-color:rgba(240, 240, 240, 0.95);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
-}
+// .navbar .nav  li{
+//     line-height: 34px;
+//     font-size:16px;
+// }
+// .navbar .nav > li > a{
+//     padding-left:0px;
+//     padding-right: 30px;
+// }
+// .navbar .nav.pull-right > li > a{
+//     padding-left:10px;
+//     padding-right: 15px;
+// }
+// .navbar .nav > .active > a{
+//     background: none;
+//     -webkit-box-shadow: none;
+//     -moz-box-shadow: none;
+//     box-shadow: none;
+//     font-weight: bold;
+// }
 
-.navbar .brand{
+// .navbar .nav > .active > a:hover,
+// .navbar .nav > li:hover{
+//     background: none;
+//     -webkit-box-shadow: none;
+//     -moz-box-shadow: none;
+//     box-shadow: none;
+//     color:#000;
+// }
+
+// .navbar {
+//     -webkit-box-shadow: none;
+//     -moz-box-shadow: none;
+//     box-shadow: none;
+//     background-color:rgba(240, 240, 240, 0.95);
+//     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+// }
+
+.navbar-brand{
+    padding: 0 20px;
     float:right;
-    line-height: 34px;
+    line-height: 50px;
     img{
       height: 34px;
     }
 }
 
-.navbar .nav .dropdown-toggle .caret{
-    margin-top:15px;
-}
+// .navbar .nav .dropdown-toggle .caret{
+//     margin-top:15px;
+// }
 
 
 #iOSWebAppInfo{
@@ -151,10 +158,10 @@ body{
   display: none;
 }
 
-.accordion-group, .accordion-inner {
-  border: 0;
-  border-image-width: 0;
-}
+// .accordion-group, .accordion-inner {
+//   border: 0;
+//   border-image-width: 0;
+// }
 
 a.accordion-toggle {
   color : #ccc;
@@ -345,6 +352,34 @@ a.accordion-toggle:hover {
   -moz-transform: rotateY( 180deg ) scale3d(1,1,1);
   transform: rotateY( 180deg ) scale3d(1,1,1);
   z-index: 10;
+}
+
+/* -----  Style for Langind page ----- */
+.landhead {
+  text-align:center;
+  padding: 30px 15px;
+  
+  h1 {
+    font-size: 50px;
+    line-height: 1;
+  }
+  .lead{
+    color: #686868
+  }
+}
+@media screen and (min-width: 768px){
+  .landhead{
+  padding-top: 140px;
+  padding-bottom: 140px;
+  text-align:left;
+
+    h1{
+      font-size: 72px;
+    }
+    .lead{
+      font-size: 30px;
+    }
+  } 
 }
 
 
