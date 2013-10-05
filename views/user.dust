@@ -24,16 +24,14 @@
 
       <!---   Seperating Headline   -->
       {?session}
-      <div class="alert alert-block activeSessionAlert">
-        <button type="button" class="close" data-dismiss="alert">
-          &times;
-        </button>
+            <div class="alert alert-warning alert-dismissible activeSessionAlert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <h4>Presentation running</h4>
         <p>
           You have a live session running. Do you want to see it?
         </p>
         <p>
-          <a class="btn btn-primary"  href="/admincontroll">Go to presentation</a>&nbsp;&nbsp;
+          <a class="btn btn-primary"  href="/admincontroll">Go to presentation</a>
           <a class="btn btn-danger" id="stopSessionBtn" href="#"> Stop presentation </a>
         </p>
       </div>
@@ -51,62 +49,20 @@
           </div>
         {:else}
           {#JSONIter:slidesByCourses username=username}
-          <div class="row accordion">
-            <div class="span12 accordion-group">
-              <div class="row accordion-heading">
-                <div class="span12  headline">
-                  <h2 class="pull-left">{key}</h2><a class="pull-right accordion-toggle" data-toggle="collapse" data-target="#course-{idx}" href="#">show/hide</a>
-                  <!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
-                </div>
-              </div>
-              <div class="row accordion-body collpase in" id="course-{idx}">
-                <div class="span12 accordion-inner">
-                  {#value}
-                  <div class="thumbContainer">
-                    <div class="thumb" id="{_id}">
-                      <div class="info" >
-                        <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
-                        <h4>{title}</h4>
-                      </div>
-                      <div class="buttons-container">
-                        <div class="buttons">
-                          <div class="btn-group">
-                            <!-- boiler jQuery -->
-                            <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"></i> Start Presentation
-                            </a>
-                            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                              <li>
-                                <!-- boiler jQuery -->
-                                <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public">Public Presentation</a>
-                              </li>
-                              <li>
-                                <!-- boiler jQuery -->
-                                <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous">Anonymous Presentation</a>
-                              </li>
-                              <li>
-                                <!-- boiler jQuery -->
-                                <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="private">Private Presentation</a>
-                              </li>
-                            </ul>
-                          </div>
-                          <a href="/user/statistics/{_id}" class="btn btn-info"><i class="icon-signal icon-white"> </i> Show Statistics</a>
-                          <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><i class="icon-pencil icon-white"> </i> Edit Presentation</a>
-                          <div class="dates">
-                            <p><i class="icon-play"></i> {lastSession}</p>
-                            <p><i class="icon-pencil" ></i> {lastEdit}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                  {/value}
-                </div>
+            <div class="row accordion-heading">
+              <div class="col-md-12 clearfix headline">
+                <h2 class="pull-left">{key}</h2>
+                <a class="pull-right accordion-toggle" data-toggle="collapse" data-target="#course-{idx}" href="#">show/hide</a>
+                <!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
               </div>
             </div>
-<!--             <div class="span12"> -->
-          </div>
+            <div class="row accordion-body collapse in" id="course-{idx}">
+              <div class="col-md-12 accordion-inner">
+                {#value}
+                  {>presentationThumb /}
+                {/value}
+              </div>
+            </div>
           {/JSONIter}
         {/slidesByCourses}
 

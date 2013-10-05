@@ -1,0 +1,38 @@
+<div class="thumbContainer">
+  <div class="thumb" id="{_id}">
+    <div class="info" >
+      <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
+      <h4>{title}</h4>
+    </div>
+    <div class="buttons-container">
+      <div class="buttons">
+        <div class="btn-group">
+          <!-- boiler jQuery -->
+          <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"> Start Presentation
+          </a>
+          <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+          <ul class="dropdown-menu">
+            <li>
+              <!-- boiler jQuery -->
+              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public">Public Presentation</a>
+            </li>
+            <li>
+              <!-- boiler jQuery -->
+              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous">Anonymous Presentation</a>
+            </li>
+            <li>
+              <!-- boiler jQuery -->
+              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="private">Private Presentation</a>
+            </li>
+          </ul>
+        </div>
+        <a href="/user/statistics/{_id}" class="btn btn-info"><span class="glyphicon glyphicon-signal icon-white"> </span> Show Statistics</a>
+        <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><span class="glyphicon glyphicon-pencil icon-white"> </span> Edit Presentation</a>
+        <div class="dates">
+          <p><span class="glyphicon glyphicon-play"></span> {lastSession}</p>
+          <p><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

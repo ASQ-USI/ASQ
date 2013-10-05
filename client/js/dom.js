@@ -50,7 +50,7 @@ function signInDOMBinder(){
   $(function(){
     var fromRegister = $('body').attr('data-from-register');
     fromRegister = typeof fromRegister == 'undefined' ? false : Boolean(fromRegister);
-    if(fromRegister)$('#registerModal').modal('show');
+    if(fromRegister)$('#register-modal').modal('show');
   });
 }
 
