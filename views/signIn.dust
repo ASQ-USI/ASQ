@@ -53,7 +53,7 @@
 						<button type="button" class="btn" data-toggle="modal" data-target="#register-modal">Register</button>
 					</form> -->
 						<div class="register-field">
-							<a href="/register" data-toggle="modal" data-target="#register-modal">Register</a>
+							<a href="/#register-modal" data-toggle="modal">Register</a>
 						</div>
 
 				</div>
