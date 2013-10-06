@@ -10,7 +10,9 @@
           <!-- boiler jQuery -->
           <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"> Start Presentation
           </a>
-          <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+          <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+          </button>
           <ul class="dropdown-menu">
             <li>
               <!-- boiler jQuery -->
@@ -28,11 +30,11 @@
         </div>
         <a href="/user/statistics/{_id}" class="btn btn-info"><span class="glyphicon glyphicon-signal icon-white"> </span> Show Statistics</a>
         <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><span class="glyphicon glyphicon-pencil icon-white"> </span> Edit Presentation</a>
-        <div class="dates">
-          <p><span class="glyphicon glyphicon-play"></span> {lastSession}</p>
-          <p><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
-        </div>
       </div>
+    </div>
+    <div class="dates">
+      <p><span class="glyphicon glyphicon-play"></span> {lastSession}</p>
+      <p><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
     </div>
   </div>
 </div>

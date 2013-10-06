@@ -1,3 +1,6 @@
+// mixins
+@import "lesshat.less";
+
 body{
     background-image: url("../img/pattern5.jpg");
     height: 100%;
@@ -30,44 +33,6 @@ body{
   }
 }
 
-
-// .navbar .nav  li{
-//     line-height: 34px;
-//     font-size:16px;
-// }
-// .navbar .nav > li > a{
-//     padding-left:0px;
-//     padding-right: 30px;
-// }
-// .navbar .nav.pull-right > li > a{
-//     padding-left:10px;
-//     padding-right: 15px;
-// }
-// .navbar .nav > .active > a{
-//     background: none;
-//     -webkit-box-shadow: none;
-//     -moz-box-shadow: none;
-//     box-shadow: none;
-//     font-weight: bold;
-// }
-
-// .navbar .nav > .active > a:hover,
-// .navbar .nav > li:hover{
-//     background: none;
-//     -webkit-box-shadow: none;
-//     -moz-box-shadow: none;
-//     box-shadow: none;
-//     color:#000;
-// }
-
-// .navbar {
-//     -webkit-box-shadow: none;
-//     -moz-box-shadow: none;
-//     box-shadow: none;
-//     background-color:rgba(240, 240, 240, 0.95);
-//     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
-// }
-
 .navbar-brand{
     padding: 0 20px;
     float:right;
@@ -76,11 +41,6 @@ body{
       height: 34px;
     }
 }
-
-// .navbar .nav .dropdown-toggle .caret{
-//     margin-top:15px;
-// }
-
 
 #iOSWebAppInfo{
   position: fixed;
@@ -177,8 +137,7 @@ a.accordion-toggle:hover {
   width: 260px;
   margin: 0px 15px 15px 15px;
   float: left;
-  -webkit-perspective: 800px;
-  -moz-perspective: 800px;
+  .perspective(800px);
   position: relative;
   z-index: 1;
 }
@@ -188,26 +147,19 @@ a.accordion-toggle:hover {
   box-shadow: 0 3px 6px #000;
   margin-top: 20px;
   color: #000;
-  -webkit-transform-style: preserve-3d;
-  -webkit-transition: -webkit-transform 1s; 
-  transform-style: preserve-3d;
-  transition: transform 1s; 
-  -moz-transform-style: preserve-3d;
-  -moz-transition: -webkit-transform 1s;  
   position: relative;
-  -webkit-transform:  scale3d(0.9, 0.9, 1);
-  -moz-transform:  scale3d(0.9, 0.9, 1);
-  transform:  scale3d(0.9, 0.9, 1);
-
+  .transform-style(preserve-3d);
+  .transition(~"transform 1s");
+  .scale3d(0.9, 0.9, 1);
 
   .bg{
+    .100WidthHeight;
     background-size: cover;
     background-position: center; 
     background-repeat:  no-repeat;
     position: absolute;
     z-index: 15;
-    -webkit-transition: opacity 0.3s;
-    -moz-transition: opacity 0.3s;
+    .transition(~"opacity 0.3s");
     box-shadow: inset 3px 3px 0px #ccc, 
     inset -3px -3px 0px #ccc,
     inset 0px 0px 8px #000;
@@ -223,12 +175,10 @@ a.accordion-toggle:hover {
     word-wrap: break-word;
     padding: 10px;
     }
-  div{
+  > div{
     position: absolute;
     .100WidthHeight;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    backface-visibility: hidden;
+    .backface-visibility(hidden);
     display: table;
     width: 100%;
     table-layout: fixed;
@@ -237,83 +187,13 @@ a.accordion-toggle:hover {
     box-shadow: inset 3px 3px 0px #ccc, 
         inset -3px -3px 0px #ccc,
         inset 0px 0px 8px #000;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
+    .backface-visibility(hidden);
     z-index: 101;
     background-color: #000;
     text-shadow: black 0px 0px 500px;
   }
-  .buttons-container{
-    -webkit-transform: rotateY( 180deg );
-    -moz-transform: rotateY( 180deg );
-    background-color: #efefef;
-    box-shadow: 0px 50px 100px black;
-    text-align: center; 
-  }
-  .buttons-container:before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-    // margin-right: -0.25em; /* Adjusts for spacing */
-  }
-  .buttons{
-    position:relative;
-    display:inline-block;  
-    height:auto;
-    vertical-align: middle;
-    // height: 195px;
-    //dropdown button group
-    .btn-group{
-      margin-top: 30px;
-      margin-bottom:5px;
-      position:relative;
-      display: inline-block;
-      font-size: 0;
-      white-space: nowrap;
-      vertical-align: middle;
-      height:auto;
-      button{
-        width: 150px;
-      }
-      .dropdown-toggle{
-        width:auto;
-      }
-    }
-    a{
-      width: 156px;
-      margin: 4px 0
-    }
-    a:first-child {
-      width: 130px;
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      top: 95%;
-      left: 14%;
-      width: 182px;
-      z-index: 1000;
-      float: left;
-      min-width: 160px;
-      padding: 5px 0;
-      margin: 2px 0 0;
-      list-style: none;
-      background-color: #ffffff;
-      border: 1px solid rgba(0, 0, 0, 0.2);
-    }
-
-    .dropdown-menu > li > a {
-      display: block;
-      padding: 3px 20px;
-      clear: both;
-      font-weight: normal;
-      line-height: 20px;
-      color: #333333;
-      white-space: nowrap;
-    }
-  }
   .dates{
+    .rotateY( 180deg );
     background-color: #ddd;
     height: 20px;
     position: absolute;
@@ -328,6 +208,78 @@ a.accordion-toggle:hover {
     p:last-child{
       float: right;
     }
+  }
+  .buttons-container{
+    .rotateY( 180deg );
+    background-color: #efefef;
+    box-shadow: 0px 50px 100px black;
+    text-align: center; 
+    height: 162px;
+  }
+  .buttons-container:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+  }
+  .buttons{
+    position:relative;
+    display:inline-block;  
+    height:auto;
+    vertical-align: middle;
+    // height: 195px;
+    //dropdown button group
+    .btn-group{
+      // margin-top: 30px;
+      margin-bottom:5px;
+      position:relative;
+      display: inline-block;
+      font-size: 0;
+      white-space: nowrap;
+      vertical-align: middle;
+      height:auto;
+      button{
+        width: 150px;
+      }
+      .dropdown-toggle{
+        width:auto;
+      }
+      .btn:first-child {
+        width: 130px;
+      }
+
+    }
+    > .btn{
+      width: 156px;
+      margin: 4px 0
+    }
+   
+
+    // .dropdown-menu {
+    //   position: absolute;
+    //   top: 95%;
+    //   left: 14%;
+    //   width: 182px;
+    //   z-index: 1000;
+    //   float: left;
+    //   min-width: 160px;
+    //   padding: 5px 0;
+    //   margin: 2px 0 0;
+    //   list-style: none;
+    //   background-color: #ffffff;
+    //   border: 1px solid rgba(0, 0, 0, 0.2);
+    // }
+
+    // .dropdown-menu > li > a {
+    //   display: block;
+    //   padding: 3px 20px;
+    //   clear: both;
+    //   font-weight: normal;
+    //   line-height: 20px;
+    //   color: #333333;
+    //   white-space: nowrap;
+    // }
   }
 }
 .100WidthHeight{
@@ -348,9 +300,7 @@ a.accordion-toggle:hover {
   }
 }
 .flipped{
-  -webkit-transform: rotateY( 180deg ) scale3d(1,1,1);
-  -moz-transform: rotateY( 180deg ) scale3d(1,1,1);
-  transform: rotateY( 180deg ) scale3d(1,1,1);
+  .transform(~"rotateY( 180deg ) scale3d(1,1,1)");
   z-index: 10;
 }
 
@@ -541,8 +491,7 @@ h2{
     overflow-y: hidden;
     
   .thumb{
-    -moz-transition: all .2s ease-in-out;
-    -webkit-transition: all .2s ease-in-out;
+    .transition( ~"all .2s ease-in-out" );
     height: 150px;
     width: 200px;
     margin: 40px 10px 40px 10px;
