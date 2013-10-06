@@ -27,7 +27,7 @@ var form = module.exports = {
 
 //signin form
 function signInFormBinder(){
-  var iconOkHtml = '<i class="icon-ok"></i>'
+  var iconOkHtml = '<span class="glyphings glyphings-ok"></span>'
     , usernameOk  = false
     , emailOk    = false
     , pwdOk      = false;
