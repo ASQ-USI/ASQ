@@ -113,7 +113,6 @@ a.accordion-toggle:hover {
   float: left;
   -webkit-perspective: 800px;
   -moz-perspective: 800px;
-  perspective: 800px;
   position: relative;
   z-index: 1;
 }
@@ -122,25 +121,19 @@ a.accordion-toggle:hover {
   box-shadow: 0 3px 6px #000;
   margin-top: 20px;
   color: #000;
-  position: relative;
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  -ms-transform-style: preserve-3d;
-  transform-style: preserve-3d;
+  -webkit-transform-style: 'preserve-3d';
+  -moz-transform-style: 'preserve-3d';
+  -ms-transform-style: 'preserve-3d';
+  transform-style: 'preserve-3d';
   -webkit-transition: -webkit-transform 1s;
-  -moz-transition: -moz-transform 1s;
-  -o-transition: -o-transform 1s;
-  -ms-transition: -ms-transform 1s;
   transition: transform 1s;
+  -moz-transition: -moz-transform 1s;
+  position: relative;
   -webkit-transform: scale3d(0.9, 0.9, 1);
   -moz-transform: scale3d(0.9, 0.9, 1);
-  -o-transform: scale3d(0.9, 0.9, 1);
-  -ms-transform: scale3d(0.9, 0.9, 1);
   transform: scale3d(0.9, 0.9, 1);
 }
 .thumb .bg {
-  width: 100%;
-  height: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -148,9 +141,6 @@ a.accordion-toggle:hover {
   z-index: 15;
   -webkit-transition: opacity 0.3s;
   -moz-transition: opacity 0.3s;
-  -o-transition: opacity 0.3s;
-  -ms-transition: opacity 0.3s;
-  transition: opacity 0.3s;
   box-shadow: inset 3px 3px 0px #cccccc, inset -3px -3px 0px #cccccc, inset 0px 0px 8px #000000;
 }
 .thumb h4 {
@@ -178,7 +168,6 @@ a.accordion-toggle:hover {
   box-shadow: inset 3px 3px 0px #cccccc, inset -3px -3px 0px #cccccc, inset 0px 0px 8px #000000;
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
-  backface-visibility: hidden;
   z-index: 101;
   background-color: #000;
   text-shadow: black 0px 0px 500px;
@@ -186,9 +175,6 @@ a.accordion-toggle:hover {
 .thumb .dates {
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
-  -o-transform: rotateY(180deg);
-  -ms-transform: rotateY(180deg);
-  transform: rotateY(180deg);
   background-color: #ddd;
   height: 20px;
   position: absolute;
@@ -207,9 +193,6 @@ a.accordion-toggle:hover {
 .thumb .buttons-container {
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
-  -o-transform: rotateY(180deg);
-  -ms-transform: rotateY(180deg);
-  transform: rotateY(180deg);
   background-color: #efefef;
   box-shadow: 0px 50px 100px black;
   text-align: center;
@@ -245,12 +228,35 @@ a.accordion-toggle:hover {
 .thumb .buttons .btn-group .dropdown-toggle {
   width: auto;
 }
-.thumb .buttons .btn-group .btn:first-child {
-  width: 130px;
-}
-.thumb .buttons > .btn {
+.thumb .buttons > a {
   width: 156px;
   margin: 4px 0;
+}
+.thumb .buttons a:first-child {
+  width: 130px;
+}
+.thumb .buttons .dropdown-menu {
+  position: absolute;
+  top: 95%;
+  left: 14%;
+  width: 182px;
+  z-index: 1000;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.thumb .buttons .dropdown-menu > li > a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
 }
 .100WidthHeight {
   width: 100%;
@@ -269,11 +275,9 @@ a.accordion-toggle:hover {
   display: table-cell;
 }
 .flipped {
-  -webkit-transform: rotateY( 180deg ) scale3d(1,1,1);
-  -moz-transform: rotateY( 180deg ) scale3d(1,1,1);
-  -o-transform: rotateY( 180deg ) scale3d(1,1,1);
-  -ms-transform: rotateY( 180deg ) scale3d(1,1,1);
-  transform: rotateY( 180deg ) scale3d(1,1,1);
+  -webkit-transform: rotateY(180deg) scale3d(1, 1, 1);
+  -moz-transform: rotateY(180deg) scale3d(1, 1, 1);
+  transform: rotateY(180deg) scale3d(1, 1, 1);
   z-index: 10;
 }
 /* -----  Style for Langind page ----- */
@@ -453,11 +457,8 @@ a.accordion-toggle:hover {
   overflow-y: hidden;
 }
 .controlBottom .controlThumbs .thumb {
-  -webkit-transition: all .2s ease-in-out;
-  -moz-transition: all .2s ease-in-out;
-  -o-transition: all .2s ease-in-out;
-  -ms-transition: all .2s ease-in-out;
-  transition: all .2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
   height: 150px;
   width: 200px;
   margin: 40px 10px 40px 10px;

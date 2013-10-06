@@ -46,9 +46,9 @@
                         <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
                         <h4>{title}</h4>
                       </div>
-                      <div class="buttons-container">
+                      <div class="buttons-container" style="height:100%;">
                         <div class="buttons">
-                          <a href="{liveUrl}" class="btn btn-primary"><i class="icon-picture icon-white"> </i> Join presentation</a>
+                          <a href="{liveUrl}" class="btn btn-primary"><span class="glyphicon glyphicon-picture"> </span> Join presentation</a>
                         </div>
                       </div>
 
