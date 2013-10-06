@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     {>htmlHead/}
-    <title>ASQ - {user}\s live presentations</title>
+    <title>ASQ - {user.name}'s live presentations</title>
   </head>
 
   <body>
@@ -24,21 +24,19 @@
       
         {^livePresentations}
           <div class="row">
-            <div class="span12  headline">
+            <div class="col-md-12  headline">
               <h2 class="pull-left"><a href="/{username}">{user.name}</a> doesn't seem to have any live presentations.</h2>
             </div>
           </div>
         {:else}
-          <div class="row accordion">
-            <div class="span12 accordion-group">
               <div class="row accordion-heading">
-                <div class="span12  headline">
+                <div class="col-md-12 clearfix headline">
                   <h2 class="pull-left"><a href="/{username}">{user.name}'s</a> live presentations</h2>
                   <a class="pull-right accordion-toggle" data-toggle="collapse" data-target="#course-{idx}" href="#">show/hide</a>
                 </div>
               </div>
-              <div class="row accordion-body collpase in" id="course-{idx}">
-                <div class="span12 accordion-inner">
+              <div class="row accordion-body collapse in" id="course-{idx}">
+                <div class="col-md-12 accordion-inner">
                   {#livePresentations username=username}
                   <div class="thumbContainer">
                     <div class="thumb" id="{_id}">
@@ -57,9 +55,6 @@
                   {/livePresentations}
                 </div>
               </div>
-            </div>
-<!--             <div class="span12"> -->
-          </div>
         {/livePresentations}
 
     </div>
