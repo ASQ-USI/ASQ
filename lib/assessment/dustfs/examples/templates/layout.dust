@@ -1,0 +1,19 @@
+<body>
+<div id="header">
+{+header}
+Header
+{/header}
+</div>
+
+<div id="content">
+{+content}
+Default content.
+{/content}
+</div>
+
+<div id="footer">
+{+footer}
+Default footer
+{/footer}
+</div>
+</body>

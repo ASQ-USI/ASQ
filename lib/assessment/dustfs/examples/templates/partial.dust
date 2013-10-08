@@ -1,0 +1,9 @@
+{>"layout.dust"/}
+
+{<header}
+Hello, {name}!
+{/header}
+
+{<content}
+This is our own content.
+{/content}

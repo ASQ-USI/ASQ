@@ -25,17 +25,18 @@ module.exports = function(grunt) {
         src: ['client/js/vendor/vendor-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
         dest: 'public/js/vendor.js',
         options:{
+          debug: true,
           alias: 'client/js/vendor/jquery-1.10.2.js:jQuery',
           shim:{
             bootstrap:{
-              path: 'client/js/vendor/bootstrap.js'
-              , exports: null
-              , depends: {jQuery:'jQuery'}
+              path: 'client/js/vendor/bootstrap.js',
+              exports: null,
+              depends: {jQuery:'jQuery'}
             },
             jQueryScrollTo:{
-              path: 'client/js/vendor/jquery.scrollTo.js'
-              , exports: null
-              , depends: {jQuery:'jQuery'}
+              path: 'client/js/vendor/jquery.scrollTo.js',
+              exports: null,
+              depends: {jQuery:'jQuery'}
             }  
           }
        }
@@ -43,8 +44,8 @@ module.exports = function(grunt) {
       client:{
         src: ['client/js/dom.js'],
         dest: 'public/js/asq-client.js',
-        debug: true,
         options:{
+          debug: true,
           alias: ['client/js/client-socket.js:clientSocket',
                   'client/js/dom:dom'],
           external: ["jQuery"]
@@ -53,8 +54,8 @@ module.exports = function(grunt) {
       presenter: {
         src: ['client/js/presenter.js'],
         dest: 'public/js/asq-presenter.js',
-        debug: true,
         options: {
+          debug: true,
           shim: {
             impressPresenter: {path: 'client/js/impress-presenter.js', exports: 'impress'}
           },
@@ -64,14 +65,27 @@ module.exports = function(grunt) {
       viewer: {
         src: ['client/js/viewer.js'],
         dest: 'public/js/asq-viewer.js',
-        debug: true,
         options: {
+          debug: true,
           shim: {
             impressViewer: {path: 'client/js/impress-viewer.js', exports: 'impress'}
           },
           external: ["jQuery"]
         }
       },
+      dist:{
+        src: ['client/asq-previewer/asq.js'],
+        dest: 'dist/asq-previewer/js/asq.js',
+        options: {
+          debug: false,
+          alias: [
+            'client/js/vendor/jquery-1.10.2.js:jQuery',
+            'dist/asq-previewer/js/asq-templates.js:ASQTemplates',
+            'dist/asq-previewer/js/dust-runtime.js:dust'
+          ],
+          external: ["cheerio","dustfs", "../logger"],
+        }        
+      }
     },
 
     clean: {
@@ -98,6 +112,11 @@ module.exports = function(grunt) {
           'public/js/vendor.min.js' : ['public/js/vendor.js'],
           'public/js/asq-presenter.min.js' : ['public/js/asq-presenter.js'],
           'public/js/asq-viewer.min.js' : ['public/js/asq-viewer.js']
+        }
+      },
+      dist: {
+        files: {
+          'dist/asq-previewer/js/asq.min.js' : ['dist/asq-previewer/js/asq.js'],
         }
       }
     },
@@ -128,6 +147,25 @@ module.exports = function(grunt) {
       }
     },
 
+    dust: {
+      dist: {
+        files: {
+          "dist/asq-previewer/js/asq-templates.js": "views/asq-render/**/*.dust"
+        },
+        options: {
+          basePath: "views/asq-render/" ,
+          wrapper: "commonjs",
+          wrapperOptions: {
+            returning: "dust",
+            deps: {
+              dust: "dust"
+            }
+          },
+          runtime: false
+        }
+      }
+    },
+
     //watch
     watch: {
       options:{
@@ -136,6 +174,22 @@ module.exports = function(grunt) {
       client: {
         files: ['client/js/*.js'],
         tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer'],
+        options: {
+          // spawn: false,
+          interrupt: true
+        },
+      },
+      dust:{
+        files: ['views/asq-render/**/*.dust'],
+        tasks: ['dust'],
+        options: {
+          // spawn: false,
+          interrupt: true
+        },
+      },
+      dist: {
+        files: ['lib/assessment/**/*.js', 'client/asq-previewer/**/*.js'],
+        tasks: ['browserify:dist'],
         options: {
           // spawn: false,
           interrupt: true
@@ -163,6 +217,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-dust');
 
 
   //load external taks

@@ -36,6 +36,7 @@ log/
 .komodotools
 .metadata
 .project
+.idea/*
 
 # Logs and databases #
 ######################

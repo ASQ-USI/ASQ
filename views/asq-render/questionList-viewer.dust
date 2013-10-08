@@ -1,4 +1,4 @@
-{>"questionForm-student.dust"/}
+{>"questionForm-viewer"/}
 
 {<questionContent}
   <ol>

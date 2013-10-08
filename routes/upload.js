@@ -103,9 +103,9 @@ module.exports.post = function(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          asqRenderer.render(slideShowFileHtml, parsedQuestions, "teacher")
+          asqRenderer.render(slideShowFileHtml, parsedQuestions, "presenter")
           //,
-          //asqRenderer.render(slideShowFileHtml, parsedQuestions, "student")
+          //asqRenderer.render(slideShowFileHtml, parsedQuestions, "viewer")
           ]);
     })
     //7) store new html with questions to file
@@ -113,12 +113,12 @@ module.exports.post = function(req, res) {
       function(newHtml){
         appLogger.debug('presenter and audience files rendered in memory successfully');
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
-        newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
-        newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
+        newSlideshow.presenterFile =  fileNoExt + '.asq-presenter.dust';
+        newSlideshow.viewerFile =  fileNoExt + '.asq-viewer.dust';
         
         var filePromises = [
-          pfs.writeFile(newSlideshow.teacherFile, newHtml[0]),
-          pfs.writeFile(newSlideshow.studentFile, newHtml[1])
+          pfs.writeFile(newSlideshow.presenterFile, newHtml[0]),
+          pfs.writeFile(newSlideshow.viewerFile, newHtml[1])
          ];
 
         return  require("promised-io/promise").all(filePromises);

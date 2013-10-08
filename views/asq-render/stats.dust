@@ -25,7 +25,7 @@
     </p>
     <br/>
     {:else}
-    	{>"questionList-stats.dust"/}
+    	{>"questionList-stats"/}
     {/question.correctAnswer}
     
   </div>

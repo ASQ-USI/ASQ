@@ -15,7 +15,7 @@ function editPresentation(req, res) {
       appLogger.error(err.toString());
     } else {
       /* Load presentation html file */
-      pfs.readFile(slideshow.teacherFile, 'utf-8').then(function(data) {
+      pfs.readFile(slideshow.presenterFile, 'utf-8').then(function(data) {
 
         //Array with one field per slide. Each field has questions and stats
         var slides = [];
@@ -84,12 +84,12 @@ function livePresentation(req, res) {
         };
       } else if (role === 'presenter' || role === 'assistant') {
         return {
-          template: presentation.teacherFile,
+          template: presentation.presenterFile,
           mode: 'presenter',
         };
       }
       return {
-          template: presentation.studentFile,
+          template: presentation.viewerFile,
           mode: 'viewer',
         };
   })(role, view, presentation);

@@ -24,7 +24,7 @@ module.exports.admin = function(req, res) {
     }
 
     var slideshow = session.slides;
-    res.render(slideshow.teacherFile, { 
+    res.render(slideshow.presenterFile, { 
     	title : slideshow.title,
     	mode  : 'admin',
       host  : ASQ.appHost,
@@ -50,7 +50,7 @@ module.exports.adminControll = function(req, res) {
 			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
 		} else {
 			var slideshow = session.slides;
-			fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
+			fs.readFile(slideshow.presenterFile, 'utf-8', function(error, data) {
 				//console.log(data);
 				var ids = [];
 				var presentationSkeleton;
@@ -203,7 +203,7 @@ module.exports.live = function(req, res) {
 
     if (session.slides) {
         var slideshow = session.slides;
-        res.render(slideshow.studentFile, {
+        res.render(slideshow.viewerFile, {
         	title : slideshow.title,
         	mode  : mode,
           host  : ASQ.appHost,

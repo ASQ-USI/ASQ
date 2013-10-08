@@ -2,6 +2,12 @@
   @fileoverview tests for lib/upload.js for ASQ
 **/
 
+var config    = require('../config')
+  , mongoose  = require('mongoose');
+
+// mongodb connection (Global)  
+db = mongoose.createConnection(config.host, config.dbName)
+
 var chai            = require('chai')
   , chaiAsPromised  = require("chai-as-promised")
   , expect          = chai.expect
@@ -9,22 +15,18 @@ var chai            = require('chai')
   , express         = require('express')
   , uploadHandler   = require('../routes/user/presentations/handlers').uploadPresentation
   , schemas         = require('../models')
-  , mongoose        = require('mongoose')
   , passport        = require('passport')
   , passportMock    = require('./util/mock-passport-middleware')
   , configStub      = {}
   , path            = require('path')
   , lib             = require('../lib')
   , fsUtils         = lib.utils.fs
-  , _               = require('underscore')
-  , config          = require('../config');
+  , _               = require('underscore');
 
 // support for promises
 require("mocha-as-promised")();
 chai.use(chaiAsPromised);
 
-// mongodb connection
-db = mongoose.createConnection(config.host, config.dbName);
 
 // mock user
 var User = mongoose.model('User');

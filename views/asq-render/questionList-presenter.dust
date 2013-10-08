@@ -1,4 +1,4 @@
-{>"questionForm-teacher.dust"/}
+{>"questionForm-presenter"/}
 
 {<questionContent}
   <ol>
