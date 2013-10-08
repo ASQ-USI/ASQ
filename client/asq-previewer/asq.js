@@ -9,7 +9,6 @@ var Parser = require('../../lib/assessment/parser')
   , _ = require('underscore')
 
 function init(cb){
-  throw(new Error('my wrro'))
   //detect if we need to render anything or the user is just chilin
   var search = window.location.search
   if(search.match(/viewer/)){
