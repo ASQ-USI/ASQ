@@ -77,12 +77,9 @@ module.exports = function(grunt) {
         src: ['client/asq-previewer/asq.js'],
         dest: 'dist/asq-previewer/js/asq.js',
         options: {
-          debug: false,
-          alias: [
-            'client/js/vendor/jquery-1.10.2.js:jQuery',
-            'client/asq-previewer/asq-templates.js:ASQTemplates',
-            'client/asq-previewer/dust-runtime.js:dust'
-          ],
+          debug: true,
+          alias: 'client/asq-previewer/asq.js:asq,client/js/vendor/jquery-1.10.2.js:jQuery,client/asq-previewer/asq-templates.js:ASQTemplates,client/asq-previewer/dust-runtime.js:dust' 
+          ,
           external: ["cheerio","./dustfs", "../logger"],
         }        
       }

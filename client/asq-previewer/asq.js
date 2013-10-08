@@ -1,20 +1,30 @@
-// require('when/monitor/console');
+/** @module client/asq-previewer/asq.js
+    @description Previewer for assessment microformat
+*/
+
+require('when/monitor/console');
 var Parser = require('../../lib/assessment/parser')
   , logger = console
   , MarkupGenerator = require('../../lib/assessment/markupGenerator')
   , _ = require('underscore')
 
-//detect if we need to render anything or the user is just chilin
-var search = window.location.search
-if(search.match(/viewer/)){
-  start('viewer');
-}else if(search.match(/presenter/)){
-  start('presenter');
-}else{
-  impress().init()
+function init(cb){
+  throw(new Error('my wrro'))
+  //detect if we need to render anything or the user is just chilin
+  var search = window.location.search
+  if(search.match(/viewer/)){
+    start('viewer',cb);
+  }else if(search.match(/presenter/)){
+    start('presenter',cb);
+  }else{
+    if (typeof cb !== "undefined" && typeof cb == "function"){
+      cb.call(this, null, true)
+    }
+  }
 }
 
-function start(mode){
+
+function start(userType, cb){
   //parse
   var asqParser = new Parser();
   asqParser.parse('')
@@ -24,16 +34,25 @@ function start(mode){
 
         //render
         var asqRenderer = new MarkupGenerator()
-        return asqRenderer.render('', parsedData.questions, mode);
+        return asqRenderer.render('', parsedData.questions,
+                                    { 
+                                      userType: userType,
+                                      mode: "preview"
+                                    });
       })
     .then(
       function(html){
         randomize();
-        impress().init();
+        console.log()
+        if (typeof cb !== "undefined" && typeof cb == "function"){
+          cb.call(this, null, true)
+        }
       },
       function(err){
           logger.error(err)
-          throw err;
+          if (typeof cb !== "undefined" && typeof cb == "function"){
+            cb.call(this, err)
+          }
       });
 }
 
@@ -62,3 +81,7 @@ function randomize(){
     $(this).attr('style', 'width:' + width.toString() + '%;')
   })
 }
+
+module.exports = {
+  init: init
+};
