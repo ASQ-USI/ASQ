@@ -1,3 +1,4 @@
+require('when/monitor/console');
 var AdmZip          = require('adm-zip')
   , cheerio         = require('cheerio')
   , moment          = require('moment')
@@ -8,8 +9,8 @@ var AdmZip          = require('adm-zip')
   , lib             = require('../../../lib')
   , dustHelpers     = lib.dustHelpers
   , appLogger       = lib.logger.appLogger
-  , asqParser       = lib.assessment.parser
-  , markupGenerator = lib.assessment.markupGenerator
+  , Parser       = lib.assessment.parser
+  , MarkupGenerator = lib.assessment.markupGenerator
   , fsUtils         = lib.utils.fs
   , model           = require('../../../models')
   , slideshowModel  = model.slideshowModel
@@ -165,7 +166,7 @@ function uploadPresentation(req, res) {
       function(file) {
         slideShowFileHtml = file;
         appLogger.debug('parsing main .html file for questions...');
-        return asqParser.parse(slideShowFileHtml);
+        return (new Parser).parse(slideShowFileHtml);
     })
     //5) create new questions for database
     // TODO: create questions only if they exist
@@ -196,8 +197,8 @@ function uploadPresentation(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          markupGenerator.render(slideShowFileHtml, parsedQuestions, 'teacher')
-          , markupGenerator.render(slideShowFileHtml, parsedQuestions, 'student')
+          (new MarkupGenerator()).render(slideShowFileHtml, parsedQuestions, 'presenter')
+          , (new MarkupGenerator()).render(slideShowFileHtml, parsedQuestions, 'viewer')
           ]);
     })
     //7) store new html with questions to file
@@ -207,12 +208,12 @@ function uploadPresentation(req, res) {
             + 'successfully');
         var fileNoExt =  folderPath + '/'
             + path.basename(newSlideshow.originalFile, '.html');
-        newSlideshow.teacherFile =  fileNoExt + '.asq-teacher.dust';
-        newSlideshow.studentFile =  fileNoExt + '.asq-student.dust';
+        newSlideshow.presenterFile =  fileNoExt + '.asq-presenter.dust';
+        newSlideshow.viewerFile =  fileNoExt + '.asq-viewer.dust';
         
         var filePromises = [
-          pfs.writeFile(newSlideshow.teacherFile, newHtml[0]),
-          pfs.writeFile(newSlideshow.studentFile, newHtml[1])
+          pfs.writeFile(newSlideshow.presenterFile, newHtml[0]),
+          pfs.writeFile(newSlideshow.viewerFile, newHtml[1])
          ];
 
         return  require('promised-io/promise').all(filePromises);
@@ -256,6 +257,13 @@ function uploadPresentation(req, res) {
     },
     // Error handling for all the above promises
     function(err){
+      throw err
+       appLogger.error(err)
+      for(var key in err){
+     //   if(err.hasOwnProperty(key)){
+          appLogger.error(err[key])
+       // }
+      }
       appLogger.error('During upload : ' + err.toString(), { error : err });
       pfs.unlink(req.files.upload.path).then(
         res.redirect(['/', req.user.name, '/presentations/?alert=',

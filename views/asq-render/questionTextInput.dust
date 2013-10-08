@@ -1,4 +1,4 @@
-{>"questionForm-{userType}.dust"/}
+{>"questionForm-{userType}"/}
 
 {<questionContent}
   <label class="control-label" for="inputText">Your solution:</label>

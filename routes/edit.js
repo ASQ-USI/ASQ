@@ -45,7 +45,7 @@ exports.editslideshow = function(req, res) {
 		} else {
 			/* Load presentation html file */
 
-			fs.readFile(slideshow.teacherFile, 'utf-8', function(error, data) {
+			fs.readFile(slideshow.presenterFile, 'utf-8', function(error, data) {
 
 				//Array with one field per slide. Each field has questions and stats
 				var slides = [];

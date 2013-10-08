@@ -47,8 +47,8 @@ module.exports.createSampleData = function(req, res) {
 	//Create sample Slideshow
 	var newSlideshow = new Slideshow({
 		title : "A sample slideshow for stats",
-		studentFile : "nonExistingFile.none",
-		teacherFile : "nonExistingFile.none",
+		viewerFile : "nonExistingFile.none",
+		presenterFile : "nonExistingFile.none",
 		originalFile : "nonExistingFile.none",
 		course : "A sample course",
 		lastEdit : new Date(),
