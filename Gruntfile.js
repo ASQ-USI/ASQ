@@ -80,10 +80,10 @@ module.exports = function(grunt) {
           debug: false,
           alias: [
             'client/js/vendor/jquery-1.10.2.js:jQuery',
-            'dist/asq-previewer/js/asq-templates.js:ASQTemplates',
-            'dist/asq-previewer/js/dust-runtime.js:dust'
+            'client/asq-previewer/asq-templates.js:ASQTemplates',
+            'client/asq-previewer/dust-runtime.js:dust'
           ],
-          external: ["cheerio","dustfs", "../logger"],
+          external: ["cheerio","./dustfs", "../logger"],
         }        
       }
     },
@@ -150,7 +150,7 @@ module.exports = function(grunt) {
     dust: {
       dist: {
         files: {
-          "dist/asq-previewer/js/asq-templates.js": "views/asq-render/**/*.dust"
+          "client/asq-previewer/asq-templates.js": "views/asq-render/**/*.dust"
         },
         options: {
           basePath: "views/asq-render/" ,
