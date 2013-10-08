@@ -188,8 +188,15 @@
 		<script src="js/jquery.js"></script>
     <script src="js/impress.js"></script>
     <script src="js/bootstrap.min.presentation.js"></script>
-    <!-- asq.js will initialize impress when it's done -->
     <script src="../js/asq.js"></script>
+    <script type="text/javascript">
+      var asqPreviewer = require('asq');
+      asqPreviewer.init(function(err, done){
+        if (err) throw err;
+  
+        impress().init();
+      })
+    </script>>
   </body>
 </html>
 
