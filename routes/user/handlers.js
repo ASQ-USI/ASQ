@@ -162,15 +162,15 @@ function getLivePresentations(req, res) {
                           + '/presentations/' + slideshow._id + '/live/'
                           + slideshowSessionMap[slideshow._id] 
                           + '/?role=viewer&view=presentation';
-                          
+                 console.log(slideshow)         
           })
             console.log("I am here4")
-           console.log(slideshow)
+           
           res.render('userLive', {
           livePresentations: slideshows,
           username: req.params.user,
           owner : {name: req.params.user },
-          user : { name : req.user.name, email : req.user.email }
+          user : { name : req.params.name, email : req.params.name }
         });
       },
       function(err){
