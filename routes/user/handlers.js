@@ -136,6 +136,7 @@ function updateUserSettings(req, res) {
 
 function getLivePresentations(req, res) {
   var slideshowSessionMap = {};
+  console.log("I am here")
   User.findOne({name: req.params.user}, {_id:1}).exec()
     .then(
       function(user){
@@ -146,6 +147,7 @@ function getLivePresentations(req, res) {
       })
     .then(
       function(sessions){
+          console.log("I am here2")
           var sessionIds = sessions.map(function getSessionIds(session){
             slideshowSessionMap[session.slides] = session._id
             return session.slides
@@ -154,18 +156,21 @@ function getLivePresentations(req, res) {
       })
     .then(
       function(slideshows){
+          console.log("I am here3")
           slideshows.forEach(function(slideshow){
             slideshow.liveUrl = ASQ.rootUrl + '/' + req.params.user
                           + '/presentations/' + slideshow._id + '/live/'
                           + slideshowSessionMap[slideshow._id] 
                           + '/?role=viewer&view=presentation';
-                          
+                 console.log(slideshow)         
           })
+            console.log("I am here4")
+           
           res.render('userLive', {
           livePresentations: slideshows,
           username: req.params.user,
           owner : {name: req.params.user },
-          user : { name : req.user.name, email : req.user.email }
+          user : { name : req.params.name, email : req.params.name }
         });
       },
       function(err){
