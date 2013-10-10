@@ -163,7 +163,8 @@ function getLivePresentations(req, res) {
           })
           res.render('userLive', {
           livePresentations: slideshows,
-          username: req.user.name,
+          username: req.params.user,
+          owner : {name: req.params.user },
           user : { name : req.user.name, email : req.user.email }
         });
       },
