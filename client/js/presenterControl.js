@@ -10,7 +10,7 @@ function presenterControlDOMBinder(){
 	if (window.innerHeight < 860) {
 		$('.controlBottom').addClass('hiddenThumbs');
 		$('.controlBottom').css('bottom', '-260px');
-		$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
+		$('#controlToggle a').html('<span class="glyphicon glyphicon-chevron-up"> </span> Show thumbnails <span class="glyphicon glyphicon-chevron-up"> </span>');
 	}
 
 	/*  Add thumbnails and adjust size */
@@ -76,12 +76,12 @@ function presenterControlDOMBinder(){
 			$('.controlBottom')
 				.removeClass('hiddenThumbs')
 				.css('bottom', '0px');
-			$('#controlToggle a').html('<i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i>');
+			$('#controlToggle a').html('<span class="glyphicon glyphicon-chevron-down"> </span> Hide thumbnails <span class="glyphicon glyphicon-chevron-down"> </span>');
 		}else{
 			$('.controlBottom')
 				.addClass('hiddenThumbs')
 				.css('bottom', '-260px');
-			$('#controlToggle a').html('<i class="icon-chevron-up icon-white"> </i> Show thumbnails <i class="icon-chevron-up icon-white"> </i>');
+			$('#controlToggle a').html('<span class="glyphicon glyphicon-chevron-up"> </span> Show thumbnails <span class="glyphicon glyphicon-chevron-up"> </span>');
 		}
 	});
 

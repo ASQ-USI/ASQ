@@ -21,21 +21,21 @@
       <div class="controls">
 
         <div class="row">
-          <div class="span7 hidden-phone">
+          <div class="col-sm-7 hidden-xs">
             <h4>Active slide</h4>
             {! TODO: security for invisible user !}
             <iframe id="thisSlideFrame" src="http://{host}:{port}/live/{user}?mode=invisible" width="100%" height="340px" ></iframe>
           </div>
-          <div class="span5 hidden-phone">
+          <div class="col-sm-5 hidden-xs">
             <h4>Next slide</h4>
             <iframe id="nextSlideFrame" src="/slidesRender/{slidesId}/" width="100%" height="260px" ></iframe>
           </div>
-          <div class="span5">
+          <div class="col-md-5">
             <div id="clock">
               <p>
                 <span id="hours">00</span> : <span id="min">00</span> : <span id="sec"></span>
-                <button class="btn btn-small btn-inverse" id="resetClock">
-                  <i class="icon-repeat icon-white"> </i> Reset timer
+                <button class="btn btn-sm btn-inverse" id="resetClock">
+                  <span class="glyphicon glyphicon-repeat"> </span> Reset timer
                 </button>
               </p>
             </div>
@@ -43,27 +43,27 @@
         </div>
 
         <div class="row" id="buttons">
-        	 <div class="span3 visible-phone">
-          	<div class="mobilePrev"><p><i class="icon-arrow-left icon-white"> </i>  Previous slide</p></div>
-          	<div class="mobileNext"><p><strong>Next slide</strong> <i class="icon-arrow-right icon-white"> </i> </p></div>
+        	 <div class="col-md-3 visible-xs">
+          	<div class="mobilePrev"><p><span class="glyphicon glyphicon-arrow-left"></span>  Previous slide</p></div>
+          	<div class="mobileNext"><p><strong>Next slide</strong> <span class="glyphicon glyphicon-arrow-right"> </span> </p></div>
           </div>
-          <div class="span5">
-          	<a class="btn btn-danger btn-small" id="stopSessionBtn" href="#"> Stop presentation </a>
-            <a href="/user/statistics/{slideshow._id}" class="btn btn-small btn-inverse">Show statistics</a>
-            <a href="{presentationViewUrl}" class="btn btn-small btn-inverse hidden-phone">Go to presentation view</a>
+          <div class="col-md-5">
+          	<a class="btn btn-danger btn-sm" id="stopSessionBtn" href="#"> Stop presentation </a>
+            <a href="/user/statistics/{slideshow._id}" class="btn btn-sm btn-inverse">Show statistics</a>
+            <a href="{presentationViewUrl}" class="btn btn-sm btn-inverse hidden-xs">Go to presentation view</a>
           </div>
-          <div class="span2 hidden-phone">
+          <div class="col-md-2 hidden-xs">
             <button class="btn btn-info" onclick="impress().prev()">
               Previous slide
             </button>
           </div> 
-          <div class="span2 hidden-phone">
-            <button class="btn btn-large btn-primary" type="button" id="nextButton" onclick="impress().next();">
+          <div class="col-md-2 hidden-xs">
+            <button class="btn btn-lg btn-primary" type="button" id="nextButton" onclick="impress().next();">
               Next slide
             </button>
           </div>
          
-          <div class="span2 pull-right ">
+          <div class="col-md-2 pull-right ">
             <p class="connected-viewers-number">
               Waiting for viewers.
             </p>
@@ -75,23 +75,23 @@
 
       <!-- Thumbnails controllThumbs -->
 
-      <div class="controlBottom hidden-phone">
+      <div class="controlBottom hidden-xs">
 
-        <div id="controlToggle" class="hidden-phone">
-          <a href="#" ><i class="icon-chevron-down icon-white"> </i> Hide thumbnails <i class="icon-chevron-down icon-white"> </i></a>
+        <div id="controlToggle" class="hidden-xs">
+          <a href="#" ><span class="glyphicon glyphicon-chevron-down"> </span> Hide thumbnails <span class="glyphicon glyphicon-chevron-down"> </span></a>
         </div>
 
         <div class="controlThumbs">
           <div class="thumbsWrapper">
             {#slidesThumbs}
-            <div class="thumb {id}" style="background-image: url('/slides/thumbs/{slidesId}/{$idx}-thumb.png')">
+            <div class="thumb {id}" style="background-image: url('/slides/thumbs/{slidesId}/{$idx}-thumb.png')">        
               <div class="labelsContainer">
                 <div class="labels">
                   {#questions}
-                  <span class="label label-success"><i class="icon-question-sign icon-white"></i> {.}</span>
+                  <span class="label label-success"><span class="glyphicon glyphicon-question-sign"></span> {.}</span>
                   {/questions}
                   {#stats}
-                  <span class="label label-info"><i class="icon-signal icon-white"></i> {.}</span>
+                  <span class="label label-info"><span class="glyphicon glyphicon-signal"></span> {.}</span>
                   {/stats}
                 </div>
               </div>

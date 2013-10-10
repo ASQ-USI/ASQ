@@ -46,8 +46,7 @@ module.exports = function(grunt) {
         dest: 'public/js/asq-client.js',
         options:{
           debug: true,
-          alias: ['client/js/client-socket.js:clientSocket',
-                  'client/js/dom:dom'],
+          alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom',
           external: ["jQuery"]
        }
       },
@@ -86,7 +85,8 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      slides: ["slides/*"]
+      slides: ["slides/*"],
+      testslides: ["test/slides/*"]
     },
 
     //jshint
@@ -145,6 +145,21 @@ module.exports = function(grunt) {
     },
 
     dust: {
+      asq_render: {
+        files: {
+          "lib/assessment/asqTemplates.js": "views/asq-render/**/*.dust"
+        },
+        options: {
+          basePath: "views/asq-render/" ,
+          wrapper: "commonjs",
+          wrapperOptions: {
+            deps: {
+              dust: "dustjs-linkedin"
+            }
+          },
+          runtime: false
+        }
+      },
       dist: {
         files: {
           "client/asq-previewer/asq-templates.js": "views/asq-render/**/*.dust"
@@ -205,6 +220,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['mochaTest', 'jshint', 'browserify', 'uglify']);
+  grunt.registerTask('dev', ['mochaTest', 'jshint', 'browserify','dust','less', 'watch']);
 
   //npm tasks
   grunt.loadNpmTasks('grunt-mocha-test');

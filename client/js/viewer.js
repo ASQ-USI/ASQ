@@ -12,10 +12,10 @@ var questionId = null, socket, session;
 
 $(function(){
 	var $body = $('body')
-		, host 			=  $body.attr('data-asq-host')
-    , port  		= parseInt($body.attr('data-asq-port'))
-    , sessionId = $body.attr('data-asq-session-id')
-    , mode 			= $body.attr('data-asq-socket-mode')
+		, host 			=  $body.attr('asq-host')
+    , port  		= parseInt($body.attr('asq-port'))
+    , sessionId = $body.attr('asq-session-id')
+    , mode 			= $body.attr('asq-socket-mode')
 
 	impress().init();
 	connect(host, port, sessionId, mode)
@@ -82,7 +82,7 @@ var connect = function(host, port, session, mode) {
 			//console.log(event)
 			for (var i = 0; i < event.questions.length; i++) {
 				var question = event.questions[i];
-				$this = $("[data-target-assessment-id='" + question._id + "'] .answersolutions");
+				$this = $("[target-assessment-id='" + question._id + "'] .answersolutions");
 				$this.find(".feedback").remove();
 
 				//Search for answers for this question
@@ -295,7 +295,7 @@ var statsTypes = {
 
 function drawChart() {
 	$('.stats').each(function(el) {
-		var questionId = $(this).data('target-assessment-id');
+		var questionId = $(this).attr('target-assessment-id');
 		statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
 		statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
 		statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
@@ -304,7 +304,7 @@ function drawChart() {
 
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
-	var questionId = $(this).parents().find(".stats").data('target-assessment-id');
+	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
 
 	for (var key in statsTypes) {
 		requestStats(questionId, statsTypes[key])

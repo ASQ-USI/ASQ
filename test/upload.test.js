@@ -60,57 +60,57 @@ describe('upload', function() {
    //callback tests
    describe('.post(req, res)', function(){
 
-    after(function(done){
-      // cleanup db and files
-      var Slideshow = db.model('Slideshow');
+    // after(function(done){
+    //   // cleanup db and files
+    //   var Slideshow = db.model('Slideshow');
 
-      Slideshow.find({}).exec()
-        .then(
-          function(docs){
-            var uploadPath = app.set('uploadDir');
-            var totalDocs = docs.length;
-            if(totalDocs == 0){
-              //return done(new Error("totalDocs shouldn't be 0"));
-              return done();
-            }
+    //   Slideshow.find({}).exec()
+    //     .then(
+    //       function(docs){
+    //         var uploadPath = app.set('uploadDir');
+    //         var totalDocs = docs.length;
+    //         if(totalDocs == 0){
+    //           //return done(new Error("totalDocs shouldn't be 0"));
+    //           return done();
+    //         }
 
-            _.each(docs, function(doc){
-              //remove slideshow folder
-              fsUtils.removeRecursive(uploadPath + '/' +doc.id, function(err, success){
-                if(err){
-                  return done(err)
-                }
-                //remove thumbs
-                fsUtils.removeRecursive(uploadPath + '/thumbs/' +doc.id, function(err, success){
-                  if(err){
-                    return done(err)
-                  }
+    //         _.each(docs, function(doc){
+    //           //remove slideshow folder
+    //           fsUtils.removeRecursive(uploadPath + '/' +doc.id, function(err, success){
+    //             if(err){
+    //               return done(err)
+    //             }
+    //             //remove thumbs
+    //             fsUtils.removeRecursive(uploadPath + '/thumbs/' +doc.id, function(err, success){
+    //               if(err){
+    //                 return done(err)
+    //               }
 
-                  if(--totalDocs ==0){
-                    //cleanup slideshow db
-                    Slideshow.remove({}).exec()
-                      .then(
-                        function(){
-                          //cleanup question db
-                          var Question = db.model('Question')
-                            return Question.remove({}).exec()                      
-                      })
-                      .then(
-                        function(){
-                         db.close()
-                         done();
-                      },
-                        function(err){
-                          if(err){
-                            return done(err)
-                          }
-                      });
-                    } 
-                  });         
-                });              
-            });
-        });
-    });
+    //               if(--totalDocs ==0){
+    //                 //cleanup slideshow db
+    //                 Slideshow.remove({}).exec()
+    //                   .then(
+    //                     function(){
+    //                       //cleanup question db
+    //                       var Question = db.model('Question')
+    //                         return Question.remove({}).exec()                      
+    //                   })
+    //                   .then(
+    //                     function(){
+    //                      db.close()
+    //                      done();
+    //                   },
+    //                     function(err){
+    //                       if(err){
+    //                         return done(err)
+    //                       }
+    //                   });
+    //                 } 
+    //               });         
+    //             });              
+    //         });
+    //     });
+    // });
     
     
     it.skip("should extract the questions and add them to the database");
@@ -122,7 +122,7 @@ describe('upload', function() {
       request(app)
       .post('/upload/')
       .set('Accept', 'application/json')
-      .attach('upload', 'assets/SamplePresentation.zip', 'upload')      
+      .attach('upload', 'assets/yallo.zip', 'upload')      
       .expect(302)
       .end(function(err, res){
         if (err) return done(err);
