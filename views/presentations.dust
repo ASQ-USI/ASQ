@@ -40,11 +40,11 @@
       
       {^slidesByCourses}
         <div class="row">
-          <div class="col-md-12  headline">
+          <div class="col-md-12  clearfix headline">
             <h2 class="pull-left">No courses available</h2>
-                      </div>
+          </div>
           <div class="col-md-12">
-            <p>Please upload a new presentation.</p>
+            <p class="lead">Please <a href="/upload">upload</a> a new presentation.</p>
           </div>
         </div>
       {:else}

@@ -11,10 +11,10 @@ var impress = require('impressPresenter')
 
 $(function(){
 	var $body = $('body')
-		, host 			=  $body.attr('data-asq-host')
-    , port  		= parseInt($body.attr('data-asq-port'))
-    , sessionId = $body.attr('data-asq-session-id')
-    , mode 			= $body.attr('data-asq-socket-mode')
+		, host 			=  $body.attr('asq-host')
+    , port  		= parseInt($body.attr('asq-port'))
+    , sessionId = $body.attr('asq-session-id')
+    , mode 			= $body.attr('asq-socket-mode')
 
 	impress().init();
 	connect(host, port, sessionId, mode)
@@ -176,13 +176,13 @@ function updateParticipation(submittedViewers, totalViewers, questionId) {
 	}
 
 	if (maxViewers == submittedViewers) {
-		$('[data-question-id="' + questionId + '"] .progressNum').text('All answers received (' + submittedViewers + '/' + maxViewers + '). ');
-		$('[data-question-id="' + questionId + '"] .show-stats').attr("class", "btn btn-success");
+		$('[question-id="' + questionId + '"] .progressNum').text('All answers received (' + submittedViewers + '/' + maxViewers + '). ');
+		$('[question-id="' + questionId + '"] .show-stats').attr("class", "btn btn-success");
 	} else {
-		$('[data-question-id="' + questionId + '"] .progressNum').text(submittedViewers + '/' + maxViewers + ' answers received.');
+		$('[question-id="' + questionId + '"] .progressNum').text(submittedViewers + '/' + maxViewers + ' answers received.');
 	}
 	var width = (submittedViewers / maxViewers) * 100;
-	$('[data-question-id="' + questionId + '"] .progress .bar').css('width', width + "%");
+	$('[question-id="' + questionId + '"] .progress .bar').css('width', width + "%");
 }
 
 var showStats = function() {
@@ -351,7 +351,7 @@ var statsTypes = {
 
 function drawChart() {
 	$('.stats').each(function(el) {
-		var questionId = $(this).data('target-assessment-id');
+		var questionId = $(this).attr('target-assessment-id');
 		statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
 		statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
 		statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
@@ -360,15 +360,29 @@ function drawChart() {
 
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
-	var questionId = $(this).parents().find(".stats").data('target-assessment-id');
-	console.log("huzza");
-	for (var key in statsTypes) {
-		requestStats(questionId, statsTypes[key])
-	}
+	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
+	requestDistinct(questionId)
+	// for (var key in statsTypes) {
+	// 	requestStats(questionId, statsTypes[key])
+	// }
 });
+
+function requestDistinct(questionId, obj) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		console.log(data);
+		var list = '<ul class="different-options">'
+		for (var i=1; i<data.length; i++){
+			var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
+			list += '<li>' + data[i][0]  + times + '</li>'
+		}
+		list+='</ul>'
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(1).html(list);
+	});
+}
 
 function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
+		console.log(data);
 		obj.data[questionId] = google.visualization.arrayToDataTable(data);
 		obj.chart[questionId].draw(obj.data[questionId], obj.options);
 	});

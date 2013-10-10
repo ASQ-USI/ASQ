@@ -72,17 +72,31 @@ function livePresentation(req, res) {
     appLogger.debug('Public session');
     role = 'viewer' //Public session and not whitelisted only allows viewers.
   }
-  var view = req.query.view || 'presentation';
-  var presentation = req.liveSession.slides;
+  var view = req.query.view || 'presentation'
+    , presentation = req.liveSession.slides
+    , presentationViewUrl=""
+    , presenterLiveUrl="";
+
   //TMP until roles are defined more precisly 
   appLogger.debug('Select template for ' + role + ' ' + view);
   var renderOpts = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
+
+        presentationViewUrl = ASQ.rootUrl + '/' + req.user.name + '/presentations/' 
+                            + presentation._id + '/live/' + req.liveSession.id 
+                            + '/?role=' + role+ '&view=presentation';
+
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.name + '/live/';
         return {
           template: 'presenterControl',
           mode: 'controll',
         };
       } else if (role === 'presenter' || role === 'assistant') {
+        presentationViewUrl = ASQ.rootUrl + '/' + req.user.name + '/presentations/' 
+                            + presentation._id + '/live/' + req.liveSession.id 
+                            + '/?role=' + role+ '&view=presentation';
+
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.name + '/live/';
         return {
           template: presentation.presenterFile,
           mode: 'presenter',
@@ -93,14 +107,8 @@ function livePresentation(req, res) {
           mode: 'viewer',
         };
   })(role, view, presentation);
+
   appLogger.debug('Selected template: ' + renderOpts.template);
-
-  var presentationViewUrl = ASQ.rootUrl + '/' + req.user.name + '/presentations/' 
-                            + presentation._id + '/live/' + req.liveSession.id 
-                            + '/?role=' + role+ '&view=presentation';
-  console.log(presentationViewUrl)
-
-  var presenterLiveUrl = ASQ.rootUrl + '/' + req.user.name + '/live/';
 
   res.render(renderOpts.template, {
     title : presentation.title,

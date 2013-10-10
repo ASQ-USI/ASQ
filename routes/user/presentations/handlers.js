@@ -9,7 +9,7 @@ var AdmZip          = require('adm-zip')
   , lib             = require('../../../lib')
   , dustHelpers     = lib.dustHelpers
   , appLogger       = lib.logger.appLogger
-  , Parser       = lib.assessment.parser
+  , Parser          = lib.assessment.parser
   , MarkupGenerator = lib.assessment.markupGenerator
   , fsUtils         = lib.utils.fs
   , model           = require('../../../models')
@@ -165,6 +165,15 @@ function uploadPresentation(req, res) {
     .then(    
       function(file) {
         slideShowFileHtml = file;
+        function replaceAll(find, replace, str) {
+          return str.replace(new RegExp(find, 'g'), replace);
+        }
+        slideShowFileHtml = slideShowFileHtml.toString();
+        slideShowFileHtml = replaceAll('{','ESCAPEFORDUSTBRACKETSASQ',slideShowFileHtml)
+        slideShowFileHtml = replaceAll('}','{~rb}',slideShowFileHtml)
+        slideShowFileHtml = replaceAll('ESCAPEFORDUSTBRACKETSASQ','{~lb}',slideShowFileHtml)
+       // console.log(slideShowFileHtml)
+
         appLogger.debug('parsing main .html file for questions...');
         return (new Parser).parse(slideShowFileHtml);
     })
@@ -197,8 +206,12 @@ function uploadPresentation(req, res) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          (new MarkupGenerator()).render(slideShowFileHtml, parsedQuestions, 'presenter')
-          , (new MarkupGenerator()).render(slideShowFileHtml, parsedQuestions, 'viewer')
+          (new MarkupGenerator()).render(slideShowFileHtml,
+                                         parsedQuestions,
+                                        {userType:'presenter'})
+          , (new MarkupGenerator()).render(slideShowFileHtml,
+                                         parsedQuestions,
+                                        {userType:'viewer'})
           ]);
     })
     //7) store new html with questions to file
@@ -236,7 +249,7 @@ function uploadPresentation(req, res) {
         appLogger.debug('new slideshow saved to db');
         //create thumbs
         appLogger.debug('creating thumbnails')
-        utils.createThumbs(newSlideshow);
+       // utils.createThumbs(newSlideshow);
         return pfs.unlink(req.files.upload.path);         
     })
     //10) update slideshows for user
