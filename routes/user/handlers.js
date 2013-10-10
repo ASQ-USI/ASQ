@@ -158,6 +158,7 @@ function getLivePresentations(req, res) {
       function(slideshows){
           console.log("I am here3")
           slideshows.forEach(function(slideshow){
+            console.log(slideshow)
             slideshow.liveUrl = ASQ.rootUrl + '/' + req.params.user
                           + '/presentations/' + slideshow._id + '/live/'
                           + slideshowSessionMap[slideshow._id] 
