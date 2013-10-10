@@ -136,6 +136,7 @@ function updateUserSettings(req, res) {
 
 function getLivePresentations(req, res) {
   var slideshowSessionMap = {};
+  console.log("I am here")
   User.findOne({name: req.params.user}, {_id:1}).exec()
     .then(
       function(user){
