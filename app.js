@@ -13,7 +13,7 @@ var express     = require('express')
   , fs          = require('fs')
   , redisStore  = require('connect-redis')(express)
   , http        = require('http')
-  , credentials = config.enableHTTPS ? { 
+  , credentials = config.enableHTTPS ? {
       key         : fs.readFileSync(config.keyPath),
       cert        : fs.readFileSync(config.certPath),
       ca          : fs.readFileSync(config.caPath),
@@ -79,7 +79,7 @@ dust.optimizers.format = function(ctx, node) { return node };
 //         user.isValidPassword(password, function(err, isMatch) {
 //             if (err) { return done(err); }
 //             if (!isMatch) { return done(null, false, { message: 'Invalid password' }); }
-//             return done(null, user);  
+//             return done(null, user);
 //         });
 //       })
 //     });
@@ -155,7 +155,7 @@ app.configure(function() {
     store  : redisSessionStore,
     cookie : {
       maxAge : 2592000000 // 30 days
-    } 
+    }
   }));
   app.set('sessionStore', redisSessionStore);
   //necessary initialization for passport plugin
@@ -178,14 +178,14 @@ app.configure('development', function(){
         //Passphrase should be entered at launch for production env.
         credentials.passphrase = fs.readFileSync('./ssl/pass-phrase.txt')
             .toString().trim();
-        
+
     }
     formUtils.prodValidUserForm = formUtils.isValidUserForm;
     formUtils.isValidUserForm = function(username, email, password, passwordConfirm, strict) {
       var errors = formUtils.prodValidUserForm(username, email, password, passwordConfirm, strict);
       if (errors === null || !errors.hasOwnProperty('password')) {
         return errors;
-      } else if (Object.keys(errors).length === 1 
+      } else if (Object.keys(errors).length === 1
                   && errors.password === errorMessages.password.regex) {
         appLogger.debug('[devel mode] No password constraint');
         return null;
@@ -198,7 +198,7 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler()); 
+  app.use(express.errorHandler());
 });
 
 // app.get('/', function(req, res){
@@ -265,7 +265,7 @@ app.get('/checkusername/:username/', registration.checkusername);
 //   failureRedirect : '/',
 //   failureFlash    : true
 // }),function(req, res) {
-//     var redirect_to = req.session.redirect_to ? 
+//     var redirect_to = req.session.redirect_to ?
 //       req.session.redirect_to : "/user/" + req.body.username + "/" ;
 //     res.redirect(redirect_to);
 // });
@@ -274,7 +274,7 @@ app.get('/checkusername/:username/', registration.checkusername);
 //MOVED
 //app.get('/user/:username/', ensureAuthenticated, registration.renderuser);
 
-//Serves thumbnails 
+//Serves thumbnails
 //MOVED
 //app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
 
@@ -364,7 +364,7 @@ if (config.enableHTTPS) {
         ASQ.rootUrl = "https://" + config.host + ":" + config.HTTPSPort
         appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
-    
+
     var serverHTTP = http.createServer(app).listen(config.HTTPPort, function() {
         appLogger.log("HTTP redirection ready, listening on port " + config.HTTPPort);
     });
