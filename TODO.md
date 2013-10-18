@@ -1,1 +1,17 @@
 - check what happens if the someone goes for a Url of a presentation that doesn't exist
+- Make stats more customizable
+- Reset stats.dust
+- getLivepresentation has hardcoded stuff fixed
+- IO bug
+- auth bug
+- test sockets
+- socket reconnect
+- fix progress bar going back bug
+- fix "you have a live session" logic and dialog
+- fix remember me
+- ADD delete presentations
+- write mongo script to check consistency of database
+- make sure that the parser maintains all the attributes of questions
+- check parameters that are expected from request and response objects
+- in getLivePresentations add the live url to the session not the slideshow
+- make correct answers green
