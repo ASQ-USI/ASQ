@@ -388,3 +388,7 @@ p{
 */
 .impress-enabled          { pointer-events: none }
 .impress-enabled #impress { pointer-events: auto }
+
+.asq-code-editor{
+    height:400px;
+}

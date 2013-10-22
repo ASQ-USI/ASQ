@@ -1,16 +1,18 @@
 /** @module client/asq-previewer/asq.js
     @description Previewer for assessment microformat
 */
+'use strict';
 
 require('when/monitor/console');
 var Parser = require('../../lib/assessment/parser')
   , logger = console
   , MarkupGenerator = require('../../lib/assessment/markupGenerator')
-  , _ = require('underscore')
+  , assessment = require('../js/assessment.js')
+  , _ = require('underscore');
 
 function init(cb){
   //detect if we need to render anything or the user is just chilin
-  var search = window.location.search
+  var search = window.location.search;
   if(search.match(/viewer/)){
     start('viewer',cb);
   }else if(search.match(/presenter/)){
@@ -41,8 +43,8 @@ function start(userType, cb){
       })
     .then(
       function(html){
+        assessment.initCodeEditors();
         randomize();
-        console.log()
         if (typeof cb !== "undefined" && typeof cb == "function"){
           cb.call(this, null, true)
         }

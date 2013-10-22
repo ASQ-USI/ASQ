@@ -1,22 +1,35 @@
 {question.stem|s}
 <ul class="nav nav-tabs">
+
+  {?activePanes.correct}
   <li class="active">
     <a href="#answersolutions-{statId}"  data-toggle="tab">Correct Answer</a>
   </li>
-<!--   <li>
-    <a href="#rvsw-{statId}" data-toggle="tab">Right vs. Wrong</a>
-  </li> -->
+  {/activePanes.correct}
+  
+  {?activePanes.right-vs-wrong}
   <li>
-    <a href="#mscstats-{statId}" data-toggle="tab">Distinct Options</a>
+    <a href="#rvsw-{statId}" data-toggle="tab">Right vs. Wrong</a>
   </li>
-<!--   <li>
-    <a href="#diffAns-{statId}" data-toggle="tab">Different answers</a>
-  </li> -->
+  {/activePanes.right-vs-wrong}
+  
+  {?activePanes.distinct-answers}
+  <li>
+    <a href="#mscstats-{statId}" data-toggle="tab">Distinct Answers</a>
+  </li>
+  {/activePanes.distinct-answers}
+  
+  {?activePanes.distinct-options}
+  <li>
+    <a href="#diffAns-{statId}" data-toggle="tab">Distinct Options</a>
+  </li>
+  {/activePanes.distinct-options}
 </ul>
 
 <div class="tab-content">
 
   <!--  Displays correct solution -->
+  {?activePanes.correct}
   <div class="tab-pane active" id='answersolutions-{statId}'>
     
     {?question.correctAnswer}
@@ -29,19 +42,26 @@
     {/question.correctAnswer}
     
   </div>
+  {/activePanes.correct}
 
   <!-- Displays Pie-Chart Right vs. Wrong -->
-<!--   <div class="tab-pane" id="rvsw-{statId}">
+  {?activePanes.right-vs-wrong}
+  <div class="tab-pane" id="rvsw-{statId}">
     <div id="rvswChart" class="rvswChart" style="width: 100%; height: 500px;"></div>
-  </div> -->
+  </div>
+  {/activePanes.right-vs-wrong}
 
-  <!-- Display multiple choice stats -->
+  <!-- Display distinct answers -->
+  {?activePanes.distinct-answers}
   <div class="tab-pane" id="mscstats-{statId}">
     <div id="mscstatChart" class="distinctAnswers" style="height:500px"></div>
   </div>
+  {/activePanes.distinct-answers}
 
-  <!-- Display different aswers  -->
-<!--   <div class="tab-pane" id="diffAns-{statId}">
+  <!-- Display distinct options  -->
+  {?activePanes.distinct-options}
+  <div class="tab-pane" id="diffAns-{statId}">
     <div id="diffAnsChart" class="distinctOptions" style="height:500px"></div>
-  </div> -->
+  </div>
+  {/activePanes.distinct-options}
 </div>

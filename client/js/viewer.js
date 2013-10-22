@@ -6,6 +6,7 @@
 var impress = require('impressViewer')
 , io = require('socket.io-browserify')
 , $ = window.jQuery || require('jQuery')
+, assessment = require('./assessment.js')
 
 // Save current question id;
 var questionId = null, socket, session;
@@ -16,6 +17,8 @@ $(function(){
     , port  		= parseInt($body.attr('asq-port'))
     , sessionId = $body.attr('asq-session-id')
     , mode 			= $body.attr('asq-socket-mode')
+
+  assessment.initCodeEditors();
 
 	impress().init();
 	connect(host, port, sessionId, mode)
@@ -236,6 +239,11 @@ $(function() {
 			answers.push($(this).val());
 		})
 
+		$(this).find('.asq-code-editor').each(function() {
+			console.log(ace.edit(this.id).getSession().getValue())
+			answers.push(ace.edit(this.id).getSession().getValue());
+		})
+
 		socket.emit('asq:submit', {
 			session : session,
 			answers : answers,
@@ -267,7 +275,7 @@ var statsTypes = {
 		data : [],
 		chart : [],
 		options : {
-			title : 'How often was a group of options selected',
+			title : 'Different options frequency',
 			width : 800,
 			isStacked : true,
 			legend : {
@@ -282,7 +290,7 @@ var statsTypes = {
 		data : [],
 		chart : [],
 		options : {
-			title : 'How often was an option selected',
+			title : 'Different answers frequency',
 			isStacked : true,
 			width : 800,
 			legend : {
@@ -296,20 +304,83 @@ var statsTypes = {
 function drawChart() {
 	$('.stats').each(function(el) {
 		var questionId = $(this).attr('target-assessment-id');
-		statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-		statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-		statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+		console.log($(this).find(".rvswChart").length);
+		if($(this).find(".rvswChart").length){
+			statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+		}
+		if($(this).find(".distinctOptions").length){
+			statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+		}
+		if($(this).find(".distinctAnswers").length){
+			statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+		}
 	})
 }
 
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
-	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
 
-	for (var key in statsTypes) {
-		requestStats(questionId, statsTypes[key])
+	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
+	var $question = $('.assessment[question-id='+questionId+']');
+
+	if($question.hasClass('multi-choice')){
+		for (var key in statsTypes) {
+			//if chart exists
+			if(statsTypes[key].chart[questionId]){
+				requestStats(questionId, statsTypes[key])
+			}
+		}
 	}
+	else if($question.hasClass('text-input')){
+		requestDistinct(questionId)
+	}
+	else if($question.hasClass('code-input')){
+		requestDistinctCode(questionId);
+	}	
+	
 });
+
+function requestDistinct(questionId, obj) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		console.log(data);
+		var list = '<ul class="different-options">'
+		for (var i=1; i<data.length; i++){
+			var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
+			list += '<li>' + data[i][0]  + times + '</li>'
+		}
+		list+='</ul>'
+		console.log(list)
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+	});
+}
+
+function requestDistinctCode(questionId, obj) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		var list = '<div class="accordion" id="accordion'+ questionId+'">'
+		for (var i=1; i<data.length; i++){
+			//var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
+			//list += '<li>' + data[i][0]  + times + '</li>'
+			list += ['<div class="accordion-group">',
+			'<div class="accordion-heading">',
+			'<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'+ questionId+'" href="#collapse-'+ questionId + '-' + i +'">',
+			data[i][0],
+			'</a>',
+			'<a href="#" class="correct-btn" ><i class="icon-ok"></i></a>',
+			'</div>',
+			'<div id="collapse-'+ questionId + '-' + i +'" class="accordion-body collapse">',
+			'<div class="accordion-inner">',
+			'<pre><code>',
+			data[i][0],
+			'</code></pre>',
+			'</div>',
+			'</div>',
+			'</div>'].join('');
+		}
+
+		list+='</div>'
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+	});
+}
 
 function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
