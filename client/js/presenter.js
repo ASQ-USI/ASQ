@@ -367,8 +367,6 @@ $('a[data-toggle="tab"]').on('shown', function(e) {
 	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
 	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
 	var $question = $('.assessment[question-id='+questionId+']');
-console.log('#'+questionId)
-console.log($question)
 
 	if($question.hasClass('multi-choice')){
 		for (var key in statsTypes) {
@@ -393,7 +391,7 @@ function requestDistinct(questionId, obj) {
 			list += '<li>' + data[i][0]  + times + '</li>'
 		}
 		list+='</ul>'
-		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(1).html(list);
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(2).html(list);
 	});
 }
 
@@ -422,7 +420,7 @@ function requestDistinctCode(questionId, obj) {
 		}
 
 		list+='</div>'
-		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(1).html(list);
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(2).html(list);
 		//this sucks
 		$('.correct-btn').click(function(){
       $(this).parent().toggleClass('correct-answer')
