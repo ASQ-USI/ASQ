@@ -1,0 +1,6 @@
+{>"questionForm-{userType}"/}
+
+{<questionContent}
+  <label class="control-label" for="editor-{question.id}">Your solution:</label>
+  <div id="code-editor-{question.id}" class="asq-code-editor" ></div>
+{/questionContent}
