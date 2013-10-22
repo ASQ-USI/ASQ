@@ -122,7 +122,7 @@ describe('upload', function() {
       request(app)
       .post('/upload/')
       .set('Accept', 'application/json')
-      .attach('upload', 'assets/yallo.zip', 'upload')      
+      .attach('upload', 'assets/tade.zip', 'upload')      
       .expect(302)
       .end(function(err, res){
         if (err) return done(err);

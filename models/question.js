@@ -9,7 +9,7 @@ var mongoose  = require('mongoose')
 // allowed form button types
 var formButtonTypes = 'checkbox radio'.split(' ');
 // allowed question types
-var questionTypes = 'multi-choice text-input'.split(' ');
+var questionTypes = 'multi-choice text-input code-input'.split(' ');
 
 var questionSchema = new Schema({
   // htmlId: {type:String},

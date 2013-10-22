@@ -15,3 +15,5 @@
 - check parameters that are expected from request and response objects
 - in getLivePresentations add the live url to the session not the slideshow
 - make correct answers green
+- cheerio 0.12.2 bug extra hyphens
+- filter javascript in submissions

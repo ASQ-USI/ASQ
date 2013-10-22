@@ -18,7 +18,7 @@
     "bcrypt": "~0.7.6",
     "chai": "~1.5.0",
     "chai-as-promised": "~3.3.0",
-    "cheerio": "~0.12.3",
+    "cheerio": "0.12.2",
     "connect": "2.8.x",
     "connect-flash": "~0.1.1",
     "connect-redis": "~1.4.5",
