@@ -6,6 +6,7 @@
 var impress = require('impressViewer')
 , io = require('socket.io-browserify')
 , $ = window.jQuery || require('jQuery')
+, assessment = require('./assessment.js')
 
 // Save current question id;
 var questionId = null, socket, session;
@@ -16,6 +17,8 @@ $(function(){
     , port  		= parseInt($body.attr('asq-port'))
     , sessionId = $body.attr('asq-session-id')
     , mode 			= $body.attr('asq-socket-mode')
+
+  assessment.initCodeEditors();
 
 	impress().init();
 	connect(host, port, sessionId, mode)
@@ -234,6 +237,11 @@ $(function() {
 
 		$(this).find('input[type=text]').each(function() {
 			answers.push($(this).val());
+		})
+
+		$(this).find('.asq-code-editor').each(function() {
+			console.log(ace.edit(this.id).getSession().getValue())
+			answers.push(ace.edit(this.id).getSession().getValue());
 		})
 
 		socket.emit('asq:submit', {

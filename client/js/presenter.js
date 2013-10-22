@@ -8,6 +8,7 @@
 var impress = require('impressPresenter')
 , io = require('socket.io-browserify')
 , $ = window.jQuery || require('jQuery')
+, assessment = require('./assessment.js')
 
 $(function(){
 	var $body = $('body')
@@ -15,6 +16,8 @@ $(function(){
     , port  		= parseInt($body.attr('asq-port'))
     , sessionId = $body.attr('asq-session-id')
     , mode 			= $body.attr('asq-socket-mode')
+
+  assessment.initCodeEditors();
 
 	impress().init();
 	connect(host, port, sessionId, mode)
@@ -360,11 +363,25 @@ function drawChart() {
 
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
+
 	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
-	requestDistinct(questionId)
-	// for (var key in statsTypes) {
-	// 	requestStats(questionId, statsTypes[key])
-	// }
+	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
+	var $question = $('.assessment[question-id='+questionId+']');
+console.log('#'+questionId)
+console.log($question)
+
+	if($question.hasClass('multi-choice')){
+		for (var key in statsTypes) {
+			requestStats(questionId, statsTypes[key])
+		}
+	}
+	else if($question.hasClass('text-input')){
+		requestDistinct(questionId)
+	}
+	else if($question.hasClass('code-input')){
+		requestDistinctCode(questionId);
+	}	
+	
 });
 
 function requestDistinct(questionId, obj) {
@@ -379,6 +396,41 @@ function requestDistinct(questionId, obj) {
 		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(1).html(list);
 	});
 }
+
+function requestDistinctCode(questionId, obj) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		console.log(data);
+		var list = '<div class="accordion" id="accordion'+ questionId+'">'
+		for (var i=1; i<data.length; i++){
+			//var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
+			//list += '<li>' + data[i][0]  + times + '</li>'
+			list += ['<div class="accordion-group">',
+			'<div class="accordion-heading">',
+			'<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'+ questionId+'" href="#collapse-'+ questionId + '-' + i +'">',
+			data[i][0],
+			'</a>',
+			'<a href="#" class="correct-btn" ><i class="icon-ok"></i></a>',
+			'</div>',
+			'<div id="collapse-'+ questionId + '-' + i +'" class="accordion-body collapse">',
+			'<div class="accordion-inner">',
+			'<pre><code>',
+			data[i][0],
+			'</code></pre>',
+			'</div>',
+			'</div>',
+			'</div>'].join('');
+		}
+
+		list+='</div>'
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(1).html(list);
+		//this sucks
+		$('.correct-btn').click(function(){
+      $(this).parent().toggleClass('correct-answer')
+    })
+	});
+}
+
+
 
 function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {

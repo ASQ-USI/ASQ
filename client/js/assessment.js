@@ -15,6 +15,7 @@ function initCodeEditors(){
     , theme = $(this).parents('.code-input').eq(0).data('asq-theme');
 
     aceEditor.setTheme("ace/theme/" + theme);
+    aceEditor.setFontSize(20);
     aceEditSession.setMode('ace/mode/'+ mode);
 
     //disable keyevent for document (to block impress)
