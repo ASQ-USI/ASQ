@@ -63,8 +63,8 @@ var connect = function(host, port, session, mode) {
 		 Notifies the admin of a new connection to the presentation.
 		 */
 		socket.on('asq:submitted', function(event) {
-			console.log("You've got an answer!");
-			console.log(event);
+			// console.log("You've got an answer!");
+			// console.log(event);
 			updateParticipation(event.submittedViewers, event.totalViewers, event.questionId);
 		});
 
@@ -109,6 +109,7 @@ var connect = function(host, port, session, mode) {
 		});
 
 		socket.on('asq:answer', function(event) {
+			console.log("I GOT AN ANSWER")
 			console.log(event.stats)
 			showAnswer(event.question, event.stats);
 			//Question contains the answer.
@@ -213,7 +214,6 @@ var showQuestion = function(question) {
 
 }
 var showAnswer = function(question, stats) {
-	console.log(stats.correct + "STATS!");
 	var correct = stats.correct || null;
 	var countedMcOptions = stats.countedMcOptions || null;
 	var equalAnswers = stats.equalAnswers || null;
@@ -326,7 +326,7 @@ var statsTypes = {
 		data : [],
 		chart : [],
 		options : {
-			title : 'How often was a group of options selected',
+			title : 'Different options frequency',
 			width : 800,
 			isStacked : true,
 			legend : {
@@ -341,7 +341,7 @@ var statsTypes = {
 		data : [],
 		chart : [],
 		options : {
-			title : 'How often was an option selected',
+			title : 'Different answers frequency',
 			isStacked : true,
 			width : 800,
 			legend : {
@@ -364,7 +364,6 @@ function drawChart() {
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
 
-	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
 	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
 	var $question = $('.assessment[question-id='+questionId+']');
 
@@ -397,7 +396,6 @@ function requestDistinct(questionId, obj) {
 
 function requestDistinctCode(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
-		console.log(data);
 		var list = '<div class="accordion" id="accordion'+ questionId+'">'
 		for (var i=1; i<data.length; i++){
 			//var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
@@ -420,7 +418,7 @@ function requestDistinctCode(questionId, obj) {
 		}
 
 		list+='</div>'
-		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(2).html(list);
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
 		//this sucks
 		$('.correct-btn').click(function(){
       $(this).parent().toggleClass('correct-answer')
@@ -432,7 +430,6 @@ function requestDistinctCode(questionId, obj) {
 
 function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
-		console.log(data);
 		obj.data[questionId] = google.visualization.arrayToDataTable(data);
 		obj.chart[questionId].draw(obj.data[questionId], obj.options);
 	});

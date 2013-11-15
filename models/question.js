@@ -47,9 +47,12 @@ questionSchema.methods.getSolution = function(){
 				for (var i=0; i < this.questionOptions.length; i++) {
 			  		result.push(this.questionOptions[i].correct);
 				};
-			}else{
+			}else if(this.correctAnswer){
 				result.push(this.correctAnswer);
-			}
+			}else{
+        //FIXME: is this ok?
+        result=null;
+      }
 			console.log(result);
 			return result;
 
