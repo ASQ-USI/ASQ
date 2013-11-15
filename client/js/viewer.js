@@ -304,9 +304,16 @@ var statsTypes = {
 function drawChart() {
 	$('.stats').each(function(el) {
 		var questionId = $(this).attr('target-assessment-id');
-		statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-		statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-		statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+		console.log($(this).find(".rvswChart").length);
+		if($(this).find(".rvswChart").length){
+			statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+		}
+		if($(this).find(".distinctOptions").length){
+			statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+		}
+		if($(this).find(".distinctAnswers").length){
+			statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+		}
 	})
 }
 
@@ -318,7 +325,10 @@ $('a[data-toggle="tab"]').on('shown', function(e) {
 
 	if($question.hasClass('multi-choice')){
 		for (var key in statsTypes) {
-			requestStats(questionId, statsTypes[key])
+			//if chart exists
+			if(statsTypes[key].chart[questionId]){
+				requestStats(questionId, statsTypes[key])
+			}
 		}
 	}
 	else if($question.hasClass('text-input')){
@@ -339,7 +349,8 @@ function requestDistinct(questionId, obj) {
 			list += '<li>' + data[i][0]  + times + '</li>'
 		}
 		list+='</ul>'
-		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(2).html(list);
+		console.log(list)
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
 	});
 }
 
