@@ -213,96 +213,96 @@ var showQuestion = function(question) {
 	$('#answeroptions').html(optionsstring);
 
 }
-var showAnswer = function(question, stats) {
-	var correct = stats.correct || null;
-	var countedMcOptions = stats.countedMcOptions || null;
-	var equalAnswers = stats.equalAnswers || null;
-	google.load("visualization", "1", {
-		packages : ["corechart"],
-		callback : drawChart
-	});
+// var showAnswer = function(question, stats) {
+// 	var correct = stats.correct || null;
+// 	var countedMcOptions = stats.countedMcOptions || null;
+// 	var equalAnswers = stats.equalAnswers || null;
+// 	google.load("visualization", "1", {
+// 		packages : ["corechart"],
+// 		callback : drawChart
+// 	});
 
-	//Google chart drawing for stats
-	function drawChart() {
-		console.log('GOOGLE CHART');
-		if (question.questionType === "Multiple choice") {
-			var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
-		}
-		var rvswData = google.visualization.arrayToDataTable(correct);
-		var diffAnsData = google.visualization.arrayToDataTable(equalAnswers);
+// 	//Google chart drawing for stats
+// 	function drawChart() {
+// 		console.log('GOOGLE CHART');
+// 		if (question.questionType === "Multiple choice") {
+// 			var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
+// 		}
+// 		var rvswData = google.visualization.arrayToDataTable(correct);
+// 		var diffAnsData = google.visualization.arrayToDataTable(equalAnswers);
 
-		var rvswOpt = {
-			title : 'Correct vs. Wrong',
-			'width' : 760,
-			'height' : 400,
-			chartArea : {
-				left : 0,
-				top : 0,
-				width : "600px",
-				height : "350px"
-			}
-		};
+// 		var rvswOpt = {
+// 			title : 'Correct vs. Wrong',
+// 			'width' : 760,
+// 			'height' : 400,
+// 			chartArea : {
+// 				left : 0,
+// 				top : 0,
+// 				width : "600px",
+// 				height : "350px"
+// 			}
+// 		};
 
-		var mscstatOpt = {
-			animation : {
-				duration : 1000
-			},
-			hAxis : {
-				allowContainerBoundaryTextCufoff : true,
-				slantedTextAngle : 50
-			},
-			'width' : 760,
+// 		var mscstatOpt = {
+// 			animation : {
+// 				duration : 1000
+// 			},
+// 			hAxis : {
+// 				allowContainerBoundaryTextCufoff : true,
+// 				slantedTextAngle : 50
+// 			},
+// 			'width' : 760,
 
-			'legend' : {
-				position : 'top',
-				textStyle : {
-					fontSize : 16
-				}
-			}
-		};
+// 			'legend' : {
+// 				position : 'top',
+// 				textStyle : {
+// 					fontSize : 16
+// 				}
+// 			}
+// 		};
 
-		var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
-		chart3.draw(rvswData, rvswOpt);
+// 		var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
+// 		chart3.draw(rvswData, rvswOpt);
 
-		if (question.questionType === "Multiple choice") {
-			var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
-			chart.draw(mscstatData, mscstatOpt);
-		} else {
-			$('#mscstats').css("display", 'none');
-			$('#mscstats').removeAttr('style');
-			$('#mscstatsBtn').remove();
-		}
+// 		if (question.questionType === "Multiple choice") {
+// 			var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
+// 			chart.draw(mscstatData, mscstatOpt);
+// 		} else {
+// 			$('#mscstats').css("display", 'none');
+// 			$('#mscstats').removeAttr('style');
+// 			$('#mscstatsBtn').remove();
+// 		}
 
-		var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
-		chart.draw(diffAnsData, mscstatOpt);
-	}
+// 		var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
+// 		chart.draw(diffAnsData, mscstatOpt);
+// 	}
 
 
-	$('#answerText').html('<h3>Statistics for "' + question.questionText + '"</h3>');
-	var optionsstring = '<h5>Correct answer:</h5>';
-	if (question.questionType == "Multiple choice") {
-		for (var i = 0; i < question.answeroptions.length; i++) {
-			optionsstring += '<label class="checkbox" >';
-			if (question.answeroptions[i].correct == true) {
-				optionsstring += '<i class="icon-ok"> </i> ';
-			} else {
-				optionsstring += '<i class="icon-remove"> </i> ';
-			}
-			optionsstring += question.answeroptions[i].optionText + '</label>';
-		}
-	} else {
-		optionsstring = '<span class="help-block">Correct answer.</span>';
-		optionsstring += '<p>' + +'</p>';
-		optionsstring += '<span class="help-block">Your answer.</span>';
-		optionsstring += '<input type="text" value="Norway" readonly>';
-	}
-	//google.setOnLoadCallback(drawChart);
-	//drawChart();
-	//update modal content
-	$('#answersolutions').html(optionsstring);
-	$('#question').modal('hide');
-	$('#answer').modal('show');
-};
+// 	$('#answerText').html('<h3>Statistics for "' + question.questionText + '"</h3>');
+// 	var optionsstring = '<h5>Correct answer:</h5>';
+// 	if (question.questionType == "Multiple choice") {
+// 		for (var i = 0; i < question.answeroptions.length; i++) {
+// 			optionsstring += '<label class="checkbox" >';
+// 			if (question.answeroptions[i].correct == true) {
+// 				optionsstring += '<i class="icon-ok"> </i> ';
+// 			} else {
+// 				optionsstring += '<i class="icon-remove"> </i> ';
+// 			}
+// 			optionsstring += question.answeroptions[i].optionText + '</label>';
+// 		}
+// 	} else {
+// 		optionsstring = '<span class="help-block">Correct answer.</span>';
+// 		optionsstring += '<p>' + +'</p>';
+// 		optionsstring += '<span class="help-block">Your answer.</span>';
+// 		optionsstring += '<input type="text" value="Norway" readonly>';
+// 	}
+// 	//google.setOnLoadCallback(drawChart);
+// 	//drawChart();
+// 	//update modal content
+// 	$('#answersolutions').html(optionsstring);
+// 	$('#question').modal('hide');
+// 	$('#answer').modal('show');
+// };
 
 google.load("visualization", "1", {
 	packages : ["corechart"]
@@ -355,9 +355,16 @@ var statsTypes = {
 function drawChart() {
 	$('.stats').each(function(el) {
 		var questionId = $(this).attr('target-assessment-id');
-		statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-		statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-		statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+		console.log($(this).find(".rvswChart").length);
+		if($(this).find(".rvswChart").length){
+			statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+		}
+		if($(this).find(".distinctOptions").length){
+			statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+		}
+		if($(this).find(".distinctAnswers").length){
+			statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+		}
 	})
 }
 
@@ -369,7 +376,10 @@ $('a[data-toggle="tab"]').on('shown', function(e) {
 
 	if($question.hasClass('multi-choice')){
 		for (var key in statsTypes) {
-			requestStats(questionId, statsTypes[key])
+			//if chart exists
+			if(statsTypes[key].chart[questionId]){
+				requestStats(questionId, statsTypes[key])
+			}
 		}
 	}
 	else if($question.hasClass('text-input')){
@@ -390,7 +400,7 @@ function requestDistinct(questionId, obj) {
 			list += '<li>' + data[i][0]  + times + '</li>'
 		}
 		list+='</ul>'
-		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(2).html(list);
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
 	});
 }
 
@@ -430,6 +440,7 @@ function requestDistinctCode(questionId, obj) {
 
 function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
+		console.log(data)
 		obj.data[questionId] = google.visualization.arrayToDataTable(data);
 		obj.chart[questionId].draw(obj.data[questionId], obj.options);
 	});
