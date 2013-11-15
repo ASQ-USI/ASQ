@@ -275,7 +275,7 @@ var statsTypes = {
 		data : [],
 		chart : [],
 		options : {
-			title : 'How often was a group of options selected',
+			title : 'Different options frequency',
 			width : 800,
 			isStacked : true,
 			legend : {
@@ -290,7 +290,7 @@ var statsTypes = {
 		data : [],
 		chart : [],
 		options : {
-			title : 'How often was an option selected',
+			title : 'Different answers frequency',
 			isStacked : true,
 			width : 800,
 			legend : {
@@ -312,12 +312,64 @@ function drawChart() {
 
 
 $('a[data-toggle="tab"]').on('shown', function(e) {
-	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
 
-	for (var key in statsTypes) {
-		requestStats(questionId, statsTypes[key])
+	var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
+	var $question = $('.assessment[question-id='+questionId+']');
+
+	if($question.hasClass('multi-choice')){
+		for (var key in statsTypes) {
+			requestStats(questionId, statsTypes[key])
+		}
 	}
+	else if($question.hasClass('text-input')){
+		requestDistinct(questionId)
+	}
+	else if($question.hasClass('code-input')){
+		requestDistinctCode(questionId);
+	}	
+	
 });
+
+function requestDistinct(questionId, obj) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		console.log(data);
+		var list = '<ul class="different-options">'
+		for (var i=1; i<data.length; i++){
+			var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
+			list += '<li>' + data[i][0]  + times + '</li>'
+		}
+		list+='</ul>'
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane').eq(2).html(list);
+	});
+}
+
+function requestDistinctCode(questionId, obj) {
+	$.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
+		var list = '<div class="accordion" id="accordion'+ questionId+'">'
+		for (var i=1; i<data.length; i++){
+			//var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
+			//list += '<li>' + data[i][0]  + times + '</li>'
+			list += ['<div class="accordion-group">',
+			'<div class="accordion-heading">',
+			'<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'+ questionId+'" href="#collapse-'+ questionId + '-' + i +'">',
+			data[i][0],
+			'</a>',
+			'<a href="#" class="correct-btn" ><i class="icon-ok"></i></a>',
+			'</div>',
+			'<div id="collapse-'+ questionId + '-' + i +'" class="accordion-body collapse">',
+			'<div class="accordion-inner">',
+			'<pre><code>',
+			data[i][0],
+			'</code></pre>',
+			'</div>',
+			'</div>',
+			'</div>'].join('');
+		}
+
+		list+='</div>'
+		$('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+	});
+}
 
 function requestStats(questionId, obj) {
 	$.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {

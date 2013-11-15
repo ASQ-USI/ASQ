@@ -1,49 +1,70 @@
 {question.stem|s}
 <ul class="nav nav-tabs">
+
+  {?activePanes.correct}
   <li class="active">
     <a href="#answersolutions-{statId}"  data-toggle="tab">Correct Answer</a>
   </li>
+  {/activePanes.correct}
+  
+  {?activePanes.right-vs-wrong}
   <li>
     <a href="#rvsw-{statId}" data-toggle="tab">Right vs. Wrong</a>
   </li>
+  {/activePanes.right-vs-wrong}
+  
+  {?activePanes.distinct-answers}
   <li>
-    <a href="#mscstats-{statId}" data-toggle="tab">Multiple Choice Statistics</a>
+    <a href="#mscstats-{statId}" data-toggle="tab">Distinct Answers</a>
   </li>
+  {/activePanes.distinct-answers}
+  
+  {?activePanes.distinct-options}
   <li>
-    <a href="#diffAns-{statId}" data-toggle="tab">Different answers</a>
+    <a href="#diffAns-{statId}" data-toggle="tab">Distinct Options</a>
   </li>
+  {/activePanes.distinct-options}
 </ul>
 
 <div class="tab-content">
 
   <!--  Displays correct solution -->
+  {?activePanes.correct}
   <div class="tab-pane answersolutions active" id='answersolutions-{statId}'>
     {?question.correctAnswer}
     {:else}
       <ol>
-			  {#question.questionOptions formButtonType=question.formButtonType htmlId=question.htmlId}
-			    <li class="{classList}" >
-			      <label class="{formButtonType}">
-			        <input type="{formButtonType}" name="{htmlId}" value="{$idx}" disabled> {text|s}
-			      </label>
-			    </li>{~n}
-			  {/question.questionOptions}
-			</ol>
+        {#question.questionOptions formButtonType=question.formButtonType htmlId=question.htmlId}
+          <li class="{classList}" >
+            <label class="{formButtonType}">
+              <input type="{formButtonType}" name="{htmlId}" value="{$idx}" disabled> {text|s}
+            </label>
+          </li>{~n}
+        {/question.questionOptions}
+      </ol>
     {/question.correctAnswer}
   </div>
+  {/activePanes.correct}
 
   <!-- Displays Pie-Chart Right vs. Wrong -->
+  {?activePanes.right-vs-wrong}
   <div class="tab-pane" id="rvsw-{statId}">
     <div id="rvswChart" class="rvswChart" style="width: 100%; height: 500px;"></div>
   </div>
+  {/activePanes.right-vs-wrong}
 
-  <!-- Display multiple choice stats -->
+  <!-- Display distinct answers -->
+  {?activePanes.distinct-answers}
   <div class="tab-pane" id="mscstats-{statId}">
     <div id="mscstatChart" class="distinctAnswers" style="height:500px"></div>
   </div>
+  {/activePanes.distinct-answers}
 
-  <!-- Display different aswers  -->
+  <!-- Display distinct options  -->
+  {?activePanes.distinct-options}
   <div class="tab-pane" id="diffAns-{statId}">
     <div id="diffAnsChart" class="distinctOptions" style="height:500px"></div>
   </div>
+  {/activePanes.distinct-options}
 </div>
+
