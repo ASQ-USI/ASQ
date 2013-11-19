@@ -1,11 +1,14 @@
-<div class="thumbContainer">
-  <div class="thumb" id="{_id}">
-    <div class="info" >
-      <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
+<div class="thumb-container" id="{_id}">
+  <div class="flipbox">
+    <div class="thumb-info" >
+<!--       <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div> -->
+        <div class="thumb-bg" style="background-image: url('http://placehold.it/260x190')"> </div>
       <h4>{title}</h4>
     </div>
-    <div class="buttons-container">
-      <div class="buttons">
+    <div class="thumb-actions">
+      <a href="#remove" class="remove">&times;</a>
+      <div class="thumb-buttons-container">
+      <div class="thumb-buttons">
         <div class="btn-group">
           <!-- boiler jQuery -->
           <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"> Start Presentation
@@ -31,10 +34,11 @@
         <a href="/user/statistics/{_id}" class="btn btn-info"><span class="glyphicon glyphicon-signal icon-white"> </span> Show Statistics</a>
         <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><span class="glyphicon glyphicon-pencil icon-white"> </span> Edit Presentation</a>
       </div>
-    </div>
-    <div class="dates">
-      <p><span class="glyphicon glyphicon-play"></span> {lastSession}</p>
-      <p><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
+      </div>
+      <div class="thumb-dates">
+        <p><span class="glyphicon glyphicon-play"></span> {lastSession}</p>
+        <p><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
+      </div>
     </div>
   </div>
 </div>

@@ -4,12 +4,12 @@ var fs             = require('fs')
   , chaiAsPromised = require("chai-as-promised")
   , Parser         = require('../lib/assessment/parser')
   , asqParser      = new Parser()
-  , expectedMC     = require('./fixtures/multiple-choice')
-  , expectedTI     = require('./fixtures/text-input')
+  , expectedMC     = require('./fixtures/microformat/multiple-choice')
+  , expectedTI     = require('./fixtures/microformat/text-input')
   , cheerio        = require('cheerio')
   , assert         = chai.assert
   , expect         = chai.expect
-  , _              = require("underscore");
+  , _              = require("lodash");
 
 require("mocha-as-promised")();
 chai.use(chaiAsPromised);
@@ -17,16 +17,16 @@ chai.use(chaiAsPromised);
 describe('AsqParser', function() {
 
   // assets for multi-choice
-  var mCHtml = fs.readFileSync( "test/fixtures/multiple-choice.html" ),
+  var mCHtml = fs.readFileSync( "test/fixtures/microformat/multiple-choice.html" ),
     htmlMCString    = cheerio.load( mCHtml ).html(),
   //assets for multi-choice without id
-    mCNoIDHtml = fs.readFileSync( "test/fixtures/multiple-choice-no-id.html" ),
+    mCNoIDHtml = fs.readFileSync( "test/fixtures/microformat/multiple-choice-no-id.html" ),
     htmlMCNoIDString    = cheerio.load( mCNoIDHtml ).html(),
   //assets for text-input
-    tIHtml = fs.readFileSync( "test/fixtures/text-input.html" ),
+    tIHtml = fs.readFileSync( "test/fixtures/microformat/text-input.html" ),
     htmlTIString    = cheerio.load( tIHtml ).html(),
   //assets for text-input without id
-    tINoIDHtml = fs.readFileSync( "test/fixtures/text-input-no-id.html" ),
+    tINoIDHtml = fs.readFileSync( "test/fixtures/microformat/text-input-no-id.html" ),
     htmlTINoIDString    = cheerio.load( tINoIDHtml ).html();
 
    //callback tests for multi-choice questions

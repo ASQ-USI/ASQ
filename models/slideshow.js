@@ -13,12 +13,12 @@ var slideshowSchema = new Schema({
   originalFile:{type:String},
   presenterFile:{type:String},
   viewerFile:{type:String},
-  owner: { type: ObjectId },
+  owner: { type: ObjectId, ref: 'User', required: true },
   questions: [ObjectId],
   questionsPerSlide: [questionsPerSlideSchema],
   statsPerSlide: [statsPerSlideSchema],
   links: {type: Array, default: []},
-  lastSession: {type: Date, default: Date.now},
+  lastSession: {type: Date, default: null},
   lastEdit: {type: Date, default: Date.now}
 });
 
@@ -27,24 +27,170 @@ slideshowSchema.virtual('path').get(function() {
   return './slides/' + this._id + '/';
 });
 
-//remove sessions before removing a slideshow
-slideshowSchema.pre('remove', true, function(next,done){
+//check if owner exists
+slideshowSchema.pre('save', true, function(next, done){
   next();
+  var User = db.model('User');
+  User.findOne({_id : this.owner}, function(err, owner) {
+    if(err) done(err)
+    if (!owner) {
+      return done(new Error('Owner field must be a real owner _id'));
+    }
+    done();
+  });
+});
+
+//check if questions exist
+slideshowSchema.pre('save', true, function(next, done){
+  next();
+
+  var self=this
+    , Question = db.model('Question');
+
+  if(self.questions.length ==0) return done();
+  
+  Question.find({_id : {$in: this.questions}}, function(err, questions) {
+    if(err) done(err)
+    if (questions.length != self.questions.length) {
+      return done(new Error('All question items should have a real question _id'));
+    }
+    done();
+  });
+});
+
+//check if questionsPerSlide are valid
+slideshowSchema.pre('save', true, function(next, done){
+  next();
+
+  var self=this
+    , questions = self.questions
+    , questionsPerSlide =  self.questionsPerSlide
+    , Question = db.model('Question');
+
+  //maybe we have no questions
+  if(questions.length == 0){
+    if (questionsPerSlide.length ==0){
+      //mo questions no questionsPerslide, we're ok
+      return done();
+    } else{
+      return done(new Error('There are no questions so '
+        +'questionsPerSlide.length should equal 0'));
+    }
+  }
+
+  // or maybe we have questions but no questionsPerSlide
+  if (questionsPerSlide.length ==0){ 
+    return done(new Error('There should be at least a '
+      + 'slide with a question, since questions.length > 0'));
+  }
+
+
+  //check if all questionsPerSlide are  present in the questions array
+  var totalQuestions = [];
+  questionsPerSlide.forEach(function(qps){
+    qps.questions.forEach(function(q){
+
+      if(questions.indexOf(q) == -1){
+        return done(new Error(q + ' was found in questionsPerSlide'
+          + ' but not in the questions array'));
+      }
+
+      if(totalQuestions.indexOf(q) == -1){
+       totalQuestions.push(q.toString())
+      }
+    });  
+  });
+
+  //check if all questions are  present in the questionsPerSlide array
+  questions.forEach(function(q){
+     if(totalQuestions.indexOf(q.toString()) == -1){
+        return done(new Error(q + ' was found in questions'
+          + ' but not in the questionsPerSlide array'));
+      }
+  });
+
+  //everything ok
+  done();
+});
+
+
+//check if statsPerSlide are valid
+slideshowSchema.pre('save', true, function(next, done){
+  next();
+
+  var self=this
+    , questions = self.questions
+    , statsPerSlide =  self.statsPerSlide
+    , Question = db.model('Question');
+
+  //maybe we have no questions
+  if(questions.length == 0){
+    if (statsPerSlide.length ==0){
+      //mo questions no statsPerslide, we're ok
+      return done();
+    } else{
+      return done(new Error('There are no questions so '
+        +'statsPerSlide.length should equal 0'));
+    }
+  }
+
+  //check if all statsPerSlide are  present in the questions array
+  statsPerSlide.forEach(function(qps){
+    qps.statQuestions.forEach(function(q){
+      if(questions.indexOf(q) == -1){
+        return done(new Error(q + ' was found in statsPerSlide'
+          + ' but not in the questions array'));
+      }
+    });  
+  });
+
+  //everything ok
+  done();
+});
+
+//remove sessions before removing a slideshow
+// we want this to execute serial before we start
+// deleting stuff
+slideshowSchema.pre('remove', function(next){
   var Session = db.model('Session');
+
   Session.findOne({ 
-    slides       : this._id,
-    isTerminated : false
+    slides : this._id,
+    endDate: null
   }, function(err, session) {
+    if(err) next(err)
     if (session) {
       return next(new Error('This presentation is being broadcast and cannot be '
         + 'removed.'));
     }
     next();
   });
-  // Session.remove({slides : this.id}, function(err){
-  //   if (err) { done(err)}
-  //   done();
-  // })
+});
+
+//remove sessions before removing a slideshow
+slideshowSchema.pre('remove', true, function(next,done){
+  next();
+
+  var Session = db.model('Session');
+
+  //we do not call remove on the model...
+  Session.find({ slides : this._id}, function(err, sessions){
+    if (err) done(err);
+
+    var total = sessions.length;
+    if(!total) done();
+
+    sessions.forEach(function(session){
+      // ... but on an instance so that the middleware 
+      // will run
+      session.remove(function(err, removed){
+        if (err) done(err);
+        if(--total == 0){
+          done();
+        }
+      });
+    });
+  });
 
 });
 
@@ -52,13 +198,26 @@ slideshowSchema.pre('remove', true, function(next,done){
 // questions will remove the related answers in their own pre()
 slideshowSchema.pre('remove', true, function(next,done){
   next();
-    var Question = db.model('Question');
+  var Question = db.model('Question');
 
-  //delete sessions
-  Question.remove({_id : {$in : this.questions}}, function(err){
-    if (err) { done(err)}
-    done();
-  })
+  //we do not call remove on the model...
+  Question.find({_id : {$in : this.questions}}, function(err, questions){
+    if (err) done(err);
+
+    var total = questions.length;
+    if(!total) done();
+
+    questions.forEach(function(question){
+      // ... but on an instance so that the middleware 
+      // will run
+      question.remove(function(err, removed){
+        if (err) done(err);
+        if(--total == 0){
+          done();
+        }
+      });
+    });
+  });
 
 });
 

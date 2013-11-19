@@ -8,6 +8,7 @@
 'use strict';
 
 var $ = require("jQuery")
+  , request = require('superagent')
   , form = require('./form.js')
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder
 
@@ -79,13 +80,9 @@ function psesentationsDOMBinder(){
       $('#iOSWebAppInfo').popover('destroy');
     };
     
-    $('.thumb').click(function (event) {
-        
+    $('.thumb-container').on('click.toFlip', '.flipbox' ,function (event) {
         event.stopPropagation();
-        $(".thumb").removeClass("flipped").css("z-index", "1");
-        
-        $(this).addClass("flipped");
-        $(this).parent().css("z-index", "10");
+         $(this).addClass('flipped');
     });
 
     $('.dropdown-toggle').click(function(event) {
@@ -93,8 +90,59 @@ function psesentationsDOMBinder(){
       $(this).parent().toggleClass("open");
     });
 
+    //remove slideshow
+    $('.thumb-container').on('click.removeSlideshow','.remove', function(event){
+      event.preventDefault();
+      var shouldDelete = confirm('Are you sure you want to delete this slideshow?')
+      if(shouldDelete==false) return;
+
+      var $thumb = $(this).parents('.thumb-container')
+        , serverErr =null
+        , serverRes=null;
+
+      // animate thumb
+      $thumb
+        .addClass('removed-item')
+        .data('animation-ended', false)
+        .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', 
+          function(e) {
+            $(this).data('animation-ended', true)
+            if (serverErr || serverRes){
+              finalResult(serverErr, serverRes)
+            }        
+        });
+
+      // send delete request to server
+      request
+        .del($thumb.attr('id'))
+        .set('Content-Type', 'application/json')
+        .end(function(err, res){
+          serverErr=err;
+          serverRes=res;
+
+          if($thumb.data('animation-ended') == true){
+            finalResult(err,res)
+          }//otherwise $thumb is going to call finalResult on animation end
+        });
+
+
+      //finalResult is going to be called when both 
+      // the animation and and the AJAX call are finished
+      function finalResult(err, res){
+        if(err || res.statusType!=2){
+          console.log(err, res.statusType)
+          $thumb.removeClass('removed-item');
+          alert('Something went wrong with removing your presentation: ' + 
+            (err!=null ? err.message : JSON.stringify(res.body)));
+          return;
+        }
+        $thumb.remove(); 
+      }
+
+    })
+
     
-    $(".buttons a").click(function (event) {
+    $(".thumb-buttons a").click(function (event) {
         event.preventDefault();
         var $this = $(this);
 
@@ -123,9 +171,8 @@ function psesentationsDOMBinder(){
     });
     
     
-    $(document).click(function () {
-        $(".thumb").removeClass("flipped");
-        $(".thumb").parent().css("z-index", "100");
+    $(document).on('click.notThumb',function () {
+        $(".thumb-container .flipbox").removeClass("flipped");
     });
   })
 }
@@ -155,13 +202,13 @@ function userLiveDOMBinder(){
       $('#iOSWebAppInfo').popover('destroy');
     };
     
-    $('.thumb').click(function (event) {
+    $('.thumb-container .flipbox').click(function (event) {
         
         event.stopPropagation();
-        $(".thumb").removeClass("flipped").css("z-index", "1");
+        // $(".thumb").removeClass("flipped").css("z-index", "1");
         
         $(this).addClass("flipped");
-        $(this).parent().css("z-index", "10");
+        // $(this).parent().css("z-index", "10");
     });
 
     $('.dropdown-toggle').click(function(event) {
@@ -201,8 +248,8 @@ function userLiveDOMBinder(){
     
     
     $(document).click(function () {
-        $(".thumb").removeClass("flipped");
-        $(".thumb").parent().css("z-index", "100");
+        $(".thumb-container .flipbox").removeClass("flipped");
+        // $(".thumb").parent().css("z-index", "100");
     });
   })
 }

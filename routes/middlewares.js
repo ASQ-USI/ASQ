@@ -47,6 +47,7 @@ function isRouteOwner(req, res, next) {
   } else if (req.params.user != req.user.name) {
     next(new Error('Is not owner'));
   } else {
+    req.isOwner=true;
     next();
   }
 }

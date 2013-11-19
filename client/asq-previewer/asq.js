@@ -8,7 +8,7 @@ var Parser = require('../../lib/assessment/parser')
   , logger = console
   , MarkupGenerator = require('../../lib/assessment/markupGenerator')
   , assessment = require('../js/assessment.js')
-  , _ = require('underscore');
+  , _ = require('lodash');
 
 function init(cb){
   //detect if we need to render anything or the user is just chilin
