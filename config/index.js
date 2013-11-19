@@ -7,7 +7,7 @@
 
 var
 winston     = require('winston'),
-_           = require('underscore'),
+_           = require('lodash'),
 fs          = require('fs'),
 defaultConf = {},
 env         = process.env.NODE_ENV || 'development',

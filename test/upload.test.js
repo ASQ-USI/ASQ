@@ -6,7 +6,7 @@ var config    = require('../config')
   , mongoose  = require('mongoose');
 
 // mongodb connection (Global)  
-db = mongoose.createConnection(config.host, config.dbName)
+db = mongoose.createConnection(config.host, config.dbName);
 
 var chai            = require('chai')
   , chaiAsPromised  = require("chai-as-promised")
@@ -21,7 +21,7 @@ var chai            = require('chai')
   , path            = require('path')
   , lib             = require('../lib')
   , fsUtils         = lib.utils.fs
-  , _               = require('underscore');
+  , _               = require('lodash');
 
 // support for promises
 require("mocha-as-promised")();
@@ -122,7 +122,7 @@ describe('upload', function() {
       request(app)
       .post('/upload/')
       .set('Accept', 'application/json')
-      .attach('upload', 'assets/tade.zip', 'upload')      
+      .attach('upload', 'assets/SamplePresentation.zip', 'upload')      
       .expect(302)
       .end(function(err, res){
         if (err) return done(err);

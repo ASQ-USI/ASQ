@@ -2,8 +2,7 @@ var chai         = require('chai')
 , chaiAsPromised = require("chai-as-promised")
 , assert         = chai.assert
 , expect         = chai.expect
-, express        = require('express')
-, lib        = require('../lib')
+, express        = require('express');
 
 
 // support for promises

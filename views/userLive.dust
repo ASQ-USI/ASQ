@@ -38,15 +38,18 @@
               <div class="row accordion-body collapse in" id="course-{idx}">
                 <div class="col-md-12 accordion-inner">
                   {#livePresentations username=username}
-                  <div class="thumbContainer">
-                    <div class="thumb" id="{_id}">
-                      <div class="info" >
-                        <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div>
+                  <div class="thumb-container">
+                    <div class="flipbox" id="{_id}">
+                      <div class="thumb-info" >
+                        <!-- <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div> -->
+                        <div class="thumb-bg" style="background-image: url('http://placehold.it/260x190')"> </div>
                         <h4>{title}</h4>
                       </div>
-                      <div class="buttons-container" style="height:100%;">
-                        <div class="buttons">
-                          <a href="{liveUrl}" class="btn btn-primary"><span class="glyphicon glyphicon-picture"> </span> Join presentation</a>
+                      <div class="thumb-actions" >
+                        <div class="thumb-buttons-container" style="height:100%;">
+                          <div class="thumb-buttons">
+                            <a href="{liveUrl}" class="btn btn-primary"><span class="glyphicon glyphicon-picture"> </span> Join presentation</a>
+                          </div>
                         </div>
                       </div>
 

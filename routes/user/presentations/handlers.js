@@ -4,8 +4,9 @@ var AdmZip          = require('adm-zip')
   , moment          = require('moment')
   , path            = require('path')
   , pfs             = require('promised-io/fs')
-  , _               = require('underscore')
+  , _               = require('lodash')
   , when            = require('when')
+  , nodefn          = require("when/node/function")
   , lib             = require('../../../lib')
   , dustHelpers     = lib.dustHelpers
   , appLogger       = lib.logger.appLogger
@@ -15,34 +16,69 @@ var AdmZip          = require('adm-zip')
   , model           = require('../../../models')
   , slideshowModel  = model.slideshowModel
   , questionModel   = model.questionModel
-  , utils           = require('./utils');
+  , utils           = require('./utils')
+  , errFormatter    = require('../../../lib/utils/responseHelper').restErrorFormatter;
 
 function deletePresentation(req, res) {
-  if (req.params.user === req.user.name) {
-    var User      = db.model('User')
-      , Slideshow = db.model('Slideshow');
+  var  Slideshow = db.model('Slideshow');
 
-    Slideshow.findOne({
-      _id   : req.params.presentationId,
-      owner : req.user._id
-    }).exec()
-    .then(
-    function(slideshow){
-      return slideshow.remove().exec()
-    })
-    .then(
-    function(){
-      res.redirect('/' + req.user.name +
-        '/presentations/?alert=Slideshow deleted&type=succes');
-    },
-    function(err){
-      res.redirect('/' + req.user.name +
-        '/presentations?alert=Something went wrong. The Great ASQ Server said: '
-        + err.toString() + '&type=error');
-      throw err;
-      
-    });
-  }
+  var INVALID_PRESENTATION_ID_MSG = 'Invalid presentation Id'
+    , errorList = {
+      'Invalid presentation Id': {
+        statusCode:400,
+        type:'invalid_request_error'
+      }
+    }
+
+  Slideshow.findOne({
+    _id   : req.params.presentationId,
+    owner : req.user._id
+  }).exec()
+  .then(
+
+  //validate slideshow
+  function(slideshow) {
+      console.log(slideshow)
+      if (slideshow) return nodefn.call(slideshow.remove.bind(slideshow));
+      throw Error(INVALID_PRESENTATION_ID_MSG)
+  })
+  .then(
+
+  //success response
+  function(removed){
+    //JSON
+    if(req.accepts('application/json')){
+      res.json({
+        "id": removed._id,
+        "deleted": true
+      });
+      return;
+    }
+    //HTML
+    res.redirect('/' + req.user.name +
+      '/presentations/?alert=Slideshow deleted&type=succes');
+  },
+
+  //err response
+  function(err){
+    console.log(err)
+
+    var responseObj = errFormatter(err)
+
+    //JSON
+    if(req.accepts('application/json')){
+      res.json(responseObj.statusCode,{
+        "type": responseObj.type,
+        "message": responseObj.message
+      });
+      return;
+    }
+    //HTML
+    res.redirect('/' + req.user.name +
+      '/presentations?alert=Something went wrong. The Great ASQ Server said: '
+      + err.toString() + '&type=error');
+        
+  });
 }
 
 function getPresentation(req, res) {
@@ -110,6 +146,7 @@ function listPresentations(req, res) {
 
       res.render('presentations', {
         username        : req.user.name,
+        isOwner         : req.isOwner,
         slidesByCourses : slidesByCourse,
         JSONIter        : dustHelpers.JSONIter,
         host            : ASQ.appHost,

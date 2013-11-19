@@ -8,14 +8,13 @@ var chai           = require('chai')
   , expect         = chai.expect
   , request        = require('supertest')
   , express        = require('express')
-  , upload         = require('../routes/upload')
   , schemas        = require('../models')
   , mongoose       = require('mongoose')
   , passport       = require('passport')
   , passportMock   = require('./util/mock-passport-middleware')
   , configStub     = {}
   , path           = require('path')
-  , _              = require('underscore')
+  , _              = require('lodash')
   , statistics     = require('../routes/statistics')
   , config          = require('../config');
 
@@ -27,7 +26,7 @@ chai.use(chaiAsPromised);
 db = mongoose.createConnection('127.0.0.1', config.dbName);
 
 
-// setup a small app for the upload test
+// setup a small app for the test
 var app = express();
 app.get('/stats/getStats', statistics.getStats);
 
