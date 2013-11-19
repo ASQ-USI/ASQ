@@ -32,7 +32,7 @@ var app = express();
 app.get('/stats/getStats', statistics.getStats);
 
 //saves id of created question
-var questionID
+var questionID;
 
 //Load required models
 var Question = db.model('Question', schemas.questionSchema);
