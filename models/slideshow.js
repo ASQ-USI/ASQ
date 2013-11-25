@@ -148,7 +148,7 @@ slideshowSchema.pre('save', true, function(next, done){
   done();
 });
 
-//remove sessions before removing a slideshow
+// first check if presentation has a live session
 // we want this to execute serial before we start
 // deleting stuff
 slideshowSchema.pre('remove', function(next){
