@@ -63,7 +63,7 @@ function deletePresentation(req, res) {
   function(err){
     console.log(err)
 
-    var responseObj = errFormatter(err)
+    var responseObj = errFormatter(errorList ,err)
 
     //JSON
     if(req.accepts('application/json')){

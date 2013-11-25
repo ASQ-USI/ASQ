@@ -78,7 +78,7 @@ describe('Slideshow model:', function() {
       });
     });
 
-    it('with at least one question, should have at least one item inquestionsPerSlide', function(done){
+    it('with at least one question, should have at least one item in questionsPerSlide', function(done){
       var slideshow = new Slideshow(slideshowObjectWithQButNoQPerSlides);
 
       slideshow.save(function(err, saved){
