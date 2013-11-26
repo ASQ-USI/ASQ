@@ -40,8 +40,6 @@ function errorHandler(options){
      ? err.message
      : 'something went wrong on ASQ\'s end';
 
-     console.log('KARATE', noStackErrorMessage)
-
     if(showStack) {
       // html
       if (req.accepts('html')) {
