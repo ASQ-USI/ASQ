@@ -6,7 +6,7 @@ var AdmZip          = require('adm-zip')
   , pfs             = require('promised-io/fs')
   , _               = require('lodash')
   , when            = require('when')
-  , nodefn          = require("when/node/function")
+  , nodefn          = require('when/node/function')
   , lib             = require('../../../lib')
   , dustHelpers     = lib.dustHelpers
   , appLogger       = lib.logger.appLogger
@@ -17,18 +17,13 @@ var AdmZip          = require('adm-zip')
   , slideshowModel  = model.slideshowModel
   , questionModel   = model.questionModel
   , utils           = require('./utils')
-  , errFormatter    = require('../../../lib/utils/responseHelper').restErrorFormatter;
+  , errFormatter    = require('../../../lib/utils/responseHelper').restErrorFormatter
+  , errorTypes      = require('../../errorTypes'); 
 
-function deletePresentation(req, res) {
+function deletePresentation(req, res, next) {
   var  Slideshow = db.model('Slideshow');
 
-  var INVALID_PRESENTATION_ID_MSG = 'Invalid presentation Id'
-    , errorList = {
-      'Invalid presentation Id': {
-        statusCode:400,
-        type:'invalid_request_error'
-      }
-    }
+  errorTypes.add('invalid_request_error');
 
   Slideshow.findOne({
     _id   : req.params.presentationId,
@@ -38,9 +33,9 @@ function deletePresentation(req, res) {
 
   //validate slideshow
   function(slideshow) {
-      console.log(slideshow)
       if (slideshow) return nodefn.call(slideshow.remove.bind(slideshow));
-      throw Error(INVALID_PRESENTATION_ID_MSG)
+      //no slideshow
+      next(Error.create().http(404, 'Invalid presentation Id', {type:'invalid_request_error'}));
   })
   .then(
 
@@ -61,27 +56,11 @@ function deletePresentation(req, res) {
 
   //err response
   function(err){
-    console.log(err)
-
-    var responseObj = errFormatter(errorList ,err)
-
-    //JSON
-    if(req.accepts('application/json')){
-      res.json(responseObj.statusCode,{
-        "type": responseObj.type,
-        "message": responseObj.message
-      });
-      return;
-    }
-    //HTML
-    res.redirect('/' + req.user.name +
-      '/presentations?alert=Something went wrong. The Great ASQ Server said: '
-      + err.toString() + '&type=error');
-        
+    if(err) return next(err) 
   });
 }
 
-function getPresentation(req, res) {
+function getPresentation(req, res, next) {
   appLogger.debug(req.liveSession);
   var id = req.params.presentationId;
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
@@ -96,7 +75,7 @@ function getPresentation(req, res) {
   });
 }
 
-function getPresentationFiles(req, res) {
+function getPresentationFiles(req, res, next) {
   var id = req.params.presentationId;
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
   Slideshow.findById(id, function(err, slideshow) {
@@ -110,7 +89,7 @@ function getPresentationFiles(req, res) {
   });
 }
 
-function listPresentations(req, res) {
+function listPresentations(req, res, next) {
   appLogger.debug('list presentations');
   if (req.params.user === req.user.name) {
     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
@@ -119,7 +98,7 @@ function listPresentations(req, res) {
     }, '_id title course lastSession lastEdit',
     function processPresentations(err, slides) {
       if (err) {
-        throw err;
+        return next(err);
       }
       var slidesByCourse = null; //to evaluate as false in dustjs
 
@@ -163,12 +142,12 @@ function listPresentations(req, res) {
   }
 }
 
-function updatePresentation(req, res) {
+function updatePresentation(req, res, next) {
   appLogger.error('NOT IMPLEMENTED: Updating a presentation is not supported.');
   res.send(405, 'Cannot update a presentation so far...');
 }
 
-function uploadPresentation(req, res) {
+function uploadPresentation(req, res, next) {
   //STEPS TO CREATE A NEW SLIDESHOW
 
   // 1) create new Slideshow model
@@ -307,14 +286,7 @@ function uploadPresentation(req, res) {
     },
     // Error handling for all the above promises
     function(err){
-      throw err
-       appLogger.error(err)
-      for(var key in err){
-     //   if(err.hasOwnProperty(key)){
-          appLogger.error(err[key])
-       // }
-      }
-      appLogger.error('During upload : ' + err.toString(), { error : err });
+      next(err)
       pfs.unlink(req.files.upload.path).then(
         res.redirect(['/', req.user.name, '/presentations/?alert=',
             err.toString(), '&type=error'].join(''))

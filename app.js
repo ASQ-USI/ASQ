@@ -1,6 +1,10 @@
 /**
     @fileoverview app main file, for initialization of the server
 */
+
+//enhanced errors, useful for status codes, type etc
+require('simple-errors');
+
 var config = require('./config')
 // Globals: mongoose, db, and schemas
 mongoose = require('mongoose');
@@ -35,7 +39,8 @@ var express     = require('express')
   , passport        = lib.passport.init()
   , formUtils       = lib.utils.form
   , errorMessages   = lib.errorMessages
-  , middleware      = require('./routes/middlewares');
+  , middleware      = require('./routes/middleware')
+  , errorMiddleware      = require('./routes/errorMiddleware');
 
 
 //don't remove whitespace
@@ -163,16 +168,15 @@ app.configure(function() {
   app.use(flash());
   app.use(passport.session());
   app.use(app.router);
-  app.use(function(err, req, res, next){
-    appLogger.error(err.stack);
-    res.send(500, 'Something broke!');
-  });
+
+  app.use(errorMiddleware.logErrors);
+
   app.param('liveId', middleware.setLiveSession);
   app.use(slashes()); //Append slashes at the end of urls. (MUST BE at the end!)
 });
 
 app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+    app.use(errorMiddleware.errorHandler({showStack: true }));
 
     if (config.enableHTTPS) {
         //Passphrase should be entered at launch for production env.
@@ -198,7 +202,7 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler());
+  app.use(errorMiddleware.errorHandler());
 });
 
 // app.get('/', function(req, res){

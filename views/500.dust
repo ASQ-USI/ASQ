@@ -1,11 +1,70 @@
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
-		<title>ASQ - Error</title>
+		<title>Server Error · ASQ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable= no">
+
+    <style>
+  body {
+  margin: 0;
+  padding: 80px 100px;
+  font: 13px "Helvetica Neue", "Lucida Grande", "Arial";
+  background: #333;
+  color: #E9E9E9;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #C07777;
+}
+h1 em, h2 em {
+  padding: 0 5px;
+  font-weight: normal;
+}
+h1 {
+  font-size: 60px;
+}
+h2 {
+  margin-top: 10px;
+}
+h3 {
+  margin: 5px 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+  font-size: 18px;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  margin: 5px 0;
+  padding: 3px 8px;
+  list-style: none;
+}
+p {
+  line-height: 1.5;
+}
+#stacktrace {
+  margin-top: 15px;
+  font-family: monospace;
+}
+
+  </style>
+
   </head>
 		
   <body>
-		<h1>Internal server error</h1>
-		<p>{where}: {error}</p>
+    <h1>Oops! ASQ is not feeling well</h1>
+    <h2><em>{statusCode}</em> {error}</h2>
+    <ul id="stacktrace">
+    {#stack}
+      <li>{.}</li>
+    {/stack}
+    </ul>
   </body>
 </html>
