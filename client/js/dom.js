@@ -115,7 +115,7 @@ function psesentationsDOMBinder(){
       // send delete request to server
       request
         .del($thumb.attr('id'))
-        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
         .end(function(err, res){
           serverErr=err;
           serverRes=res;
