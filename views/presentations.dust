@@ -2,10 +2,11 @@
 <html lang="en">
   <head>
     {>htmlHead/}
+    
     <title>ASQ - My Presentations</title>
   </head>
 
-  <body>
+  <body class='no-touch'>
 
     <!---   top menu -->
     {>menu/}
@@ -56,10 +57,10 @@
                 <!--<a class="deleteSlideshows pull-right controls" href="#"><i class="icon-trash icon-white"> </i> Delete Slideshows</a>-->
               </div>
             </div>
-            <div class="row accordion-body collapse in" id="course-{idx}">
-              <div class="col-md-12 accordion-inner">
+            <div class=" accordion-body collapse in" id="course-{idx}">
+              <div class=" accordion-inner">
                 {#value}
-                  {>presentationThumb /}
+                  {>presentationThumb position=$idx/}
                 {/value}
               </div>
             </div>

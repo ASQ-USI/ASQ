@@ -1,8 +1,8 @@
-<div class="thumb-container" id="{_id}">
+<div class="thumb-container" id="{_id}" data-sort-position="{position}">
   <div class="flipbox">
     <div class="thumb-info" >
 <!--       <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div> -->
-        <div class="thumb-bg" style="background-image: url('http://placehold.it/260x190')"> </div>
+        <div class="thumb-bg" style="background-image: url('http://placehold.it/240x175')"> </div>
       <h4>{title}</h4>
     </div>
     <div class="thumb-actions">

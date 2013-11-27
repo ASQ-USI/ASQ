@@ -108,15 +108,14 @@ a.accordion-toggle:hover {
 }
 /* -- Style for presentation thumbnails on startpage -- */
 .thumb-container {
-  width: 260px;
-  height: 190px;
-  margin: 0px 15px 15px 15px;
+  width: 240px;
+  height: 175px;
+  margin: 12px 24px;
   float: left;
   position: relative;
   z-index: 1;
 }
 .flipbox {
-  margin-top: 20px;
   color: #000;
   position: relative;
   display: block;
@@ -130,10 +129,11 @@ a.accordion-toggle:hover {
   -o-transform-style: preserve-3d;
   -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
-  -webkit-transition: -webkit-transform 1s;
-  -moz-transition: -moz-transform 1s;
-  -o-transition: -o-transform 1s;
-  transition: -webkit-transform 1s,-moz-transform 1s,-o-transform 1s,transform 1s;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .flipbox > * {
   display: block;
@@ -143,6 +143,11 @@ a.accordion-toggle:hover {
   width: 100%;
   height: 100%;
   background: white;
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  transform: rotateY(180deg);
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   -o-backface-visibility: hidden;
@@ -221,25 +226,28 @@ h4 {
   background-color: #000;
   text-shadow: black 0px 0px 500px;
 }
-.thumb-info:hover .thumb-bg {
+body.no-touch .thumb-info:hover .thumb-bg,
+.thumb-info.title .thumb-bg {
   opacity: 0.1;
   box-shadow: inset 3px 3px 0px #6666cc, inset -3px -3px 0px #6666cc;
   box-shadow: inset 3px 3px 0px #ffffff, inset -3px -3px 0px #ffffff;
 }
-.thumb-info:hover h4 {
+body.no-touch .thumb-info:hover h4,
+.thumb-info.title h4 {
   display: table-cell;
 }
 .thumb-dates {
   background-color: #ddd;
   width: 100%;
-  height: 28px;
+  height: 26px;
   position: absolute;
   bottom: 0;
 }
 .thumb-dates p {
-  font-size: 13px;
+  font-size: 11px;
   display: inline;
-  padding: 5px;
+  padding: 0 4px;
+  line-height: 26px;
   float: left;
   margin: 0;
 }
@@ -251,7 +259,7 @@ h4 {
   background-color: #efefef;
   box-shadow: 0px 50px 100px black;
   text-align: center;
-  height: 162px;
+  height: 151px;
   width: 100%;
 }
 .thumb-buttons-container:before {
@@ -259,9 +267,6 @@ h4 {
   display: inline-block;
   height: 100%;
   vertical-align: middle;
-  margin-right: -0.25em;
-  /* Adjusts for spacing */
-
 }
 .thumb-buttons {
   position: relative;
@@ -270,7 +275,7 @@ h4 {
   vertical-align: middle;
 }
 .thumb-buttons .btn-group {
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   position: relative;
   display: inline-block;
   font-size: 0;
@@ -279,7 +284,7 @@ h4 {
   height: auto;
 }
 .thumb-buttons .btn-group button {
-  width: 150px;
+  width: 140px;
 }
 .thumb-buttons .btn-group .dropdown-toggle {
   width: auto;
@@ -287,9 +292,12 @@ h4 {
 .thumb-buttons .btn-group .btn:first-child {
   width: 130px;
 }
+.thumb-buttons * {
+  font-size: 13px;
+}
 .thumb-buttons > .btn {
   width: 156px;
-  margin: 4px 0;
+  margin: 3px 0;
 }
 .100WidthHeight {
   width: 100%;
@@ -649,32 +657,10 @@ h4 {
   -webkit-box-shadow: 1px 1px 3px #000;
   box-shadow: 1px 1px 3px #000;
 }
-.removed-item {
-  -webkit-animation: removed-item-animation 1s cubic-bezier(0.55, -0.04, 0.91, 0.94) forwards;
-  -moz-animation: removed-item-animation 1s cubic-bezier(0.55, -0.04, 0.91, 0.94) forwards;
-  -o-animation: removed-item-animation 1s cubic-bezier(0.55, -0.04, 0.91, 0.94) forwards;
-  animation: removed-item-animation 1s cubic-bezier(0.55, -0.04, 0.91, 0.94) forwards;
-  -webkit-transform-origin: 0%, 100%;
-  -moz-transform-origin: 0%, 100%;
-  -o-transform-origin: 0%, 100%;
-  -ms-transform-origin: 0%, 100%;
-  transform-origin: 0%, 100%;
-}
-@keyframes removed-item-animation {
-  0% {
-    opacity: 1;
-    -webkit-transform: rotateZ(0deg);
-    -moz-transform: rotateZ(0deg);
-    -o-transform: rotateZ(0deg);
-    -ms-transform: rotateZ(0deg);
-    transform: rotateZ(0deg);
-  }
-  100% {
-    opacity: 0;
-    -webkit-transform: translateY(600px) rotateZ(90deg);
-    -moz-transform: translateY(600px) rotateZ(90deg);
-    -o-transform: translateY(600px) rotateZ(90deg);
-    -ms-transform: translateY(600px) rotateZ(90deg);
-    transform: translateY(600px) rotateZ(90deg);
-  }
+lesshat-selector {
+  -lh-property: 0; } 
+@-webkit-keyframes removed-item-animation{ 0%{opacity: 1; -webkit-transform: rotateZ(0); } 100%{ opacity: 0; -webkit-transform:translateY(600px) rotateZ(90deg); }}
+@-moz-keyframes removed-item-animation{ 0%{opacity: 1; -moz-transform: rotateZ(0); } 100%{ opacity: 0; -moz-transform:translateY(600px) rotateZ(90deg); }}
+@-o-keyframes removed-item-animation{ 0%{opacity: 1; -o-transform: rotateZ(0); } 100%{ opacity: 0; -o-transform:translateY(600px) rotateZ(90deg); }}
+@keyframes removed-item-animation{ 0%{opacity: 1-webkit-transform: rotateZ(0);-moz-transform: rotateZ(0);-ms-transform: rotateZ(0);transform: rotateZ(0); } 100%{ opacity: 0-webkit-transform:translateY(600px) rotateZ(90deg);-moz-transform:translateY(600px) rotateZ(90deg);-ms-transform:translateY(600px) rotateZ(90deg);transform:translateY(600px) rotateZ(90deg); };
 }
