@@ -10,7 +10,7 @@
 var $ = require("jQuery")
   , request = require('superagent')
   , form = require('./form.js')
-  , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder
+  , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
 
 var binders = {
   'menu'   : menuDOMBinder,
@@ -57,6 +57,12 @@ function signInDOMBinder(){
 
 // presentations.dust
 function psesentationsDOMBinder(){
+  //enable no-touch classes
+  if ('ontouchstart' in document) {
+    $('body').removeClass('no-touch');
+  }
+  
+  //iphone/ipad install as web-app pop up
   $(function(){
     if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
       $('#iOSWebAppInfo').popover({
@@ -74,75 +80,87 @@ function psesentationsDOMBinder(){
       });
       $('#iOSWebAppInfo').popover('show');
     }
+
+    //isotope
+    var $container = $('.accordion-inner');
     
-    document.addEventListener("touchstart", hidePopover, false);
+    $container.isotope({
+      itemSelector: '.thumb-container',
+      filter: ':not(.removed-item)',
+      sortBy: 'position',
+      getSortData : {
+        position : function ( $elem ) {
+          return parseInt( $elem.data('sort-position'), 10 );
+        }
+      }
+    });
+
+    var $documentHammered = $(document).hammer();
+    
+    $documentHammered.on("touch", hidePopover);
     function hidePopover(){
       $('#iOSWebAppInfo').popover('destroy');
     };
-    
-    $('.thumb-container').on('click.toFlip', '.flipbox' ,function (event) {
-        event.stopPropagation();
-         $(this).addClass('flipped');
-    });
 
-    $('.dropdown-toggle').click(function(event) {
-      event.stopPropagation();
-      $(this).parent().toggleClass("open");
-    });
+    $documentHammered
+      // flip to show slideshow actions
+      .on('tap', '.flipbox' ,function (event) {
+          event.stopPropagation();
+          $('.flipbox')
+            .not($(this).addClass('flipped'))
+            .removeClass('flipped');
+      })
 
-    //remove slideshow
-    $('.thumb-container').on('click.removeSlideshow','.remove', function(event){
-      event.preventDefault();
-      var shouldDelete = confirm('Are you sure you want to delete this slideshow?')
-      if(shouldDelete==false) return;
+      // flip to front fa
+      .on('tap',function () {
+        $(".thumb-container .flipbox").removeClass("flipped");
+      })
 
-      var $thumb = $(this).parents('.thumb-container')
-        , serverErr =null
-        , serverRes=null;
+      //show slideshow title
+      .on('swiperight', '.thumb-info' ,function (event) {
+        console.log('pinchin')
+          $(this).addClass('title')
+      })
 
-      // animate thumb
-      $thumb
-        .addClass('removed-item')
-        .data('animation-ended', false)
-        .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', 
-          function(e) {
-            $(this).data('animation-ended', true)
-            if (serverErr || serverRes){
-              finalResult(serverErr, serverRes)
-            }        
-        });
+      //show slideshow screenshot
+      .on('swipeleft', '.thumb-info' ,function (event) {
+        console.log('pinchout')
+          $(this).removeClass('title')
+      })
+      
+      //remove slideshow
+      .on('tap', '.thumb-container .remove' ,function(event) {
+        event.preventDefault();
+        var shouldDelete = confirm('Are you sure you want to delete this slideshow?')
+        if(shouldDelete==false) return;
 
-      // send delete request to server
-      request
-        .del($thumb.attr('id'))
-        .set('Accept', 'application/json')
-        .end(function(err, res){
-          serverErr=err;
-          serverRes=res;
+        var $thumb = $(this).parents('.thumb-container');
 
-          if($thumb.data('animation-ended') == true){
-            finalResult(err,res)
-          }//otherwise $thumb is going to call finalResult on animation end
-        });
+        // clone thumb in case server responds with failure
+        var $clone = $thumb.clone();
+        //delete from DOM
+        $container.isotope('remove', $thumb);
+          
+        // send delete request to server
+        request
+          .del($thumb.attr('id'))
+          .set('Accept', 'application/json')
+          .end(function(err, res){
+            if(err || res.statusType!=2){
+              $container.isotope('insert', $clone);
+              alert('Something went wrong with removing your presentation: ' + 
+                (err!=null ? err.message : JSON.stringify(res.body)));
+              return;
+            }
+            //empty clone
+            $clone= null;
+          });
+      })
 
-
-      //finalResult is going to be called when both 
-      // the animation and and the AJAX call are finished
-      function finalResult(err, res){
-        if(err || res.statusType!=2){
-          console.log(err, res.statusType)
-          $thumb.removeClass('removed-item');
-          alert('Something went wrong with removing your presentation: ' + 
-            (err!=null ? err.message : JSON.stringify(res.body)));
-          return;
-        }
-        $thumb.remove(); 
-      }
-
-    })
-
-    
-    $(".thumb-buttons a").click(function (event) {
+    // start presentation action
+    .on('tap', '.thumb-buttons a.btn' ,function(event) {
+    // $(".thumb-buttons a").click(function (event) {
+      console.log('I am in')
         event.preventDefault();
         var $this = $(this);
 
@@ -170,10 +188,6 @@ function psesentationsDOMBinder(){
         }
     });
     
-    
-    $(document).on('click.notThumb',function () {
-        $(".thumb-container .flipbox").removeClass("flipped");
-    });
   })
 }
 

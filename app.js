@@ -42,10 +42,13 @@ var express     = require('express')
   , middleware      = require('./routes/middleware')
   , errorMiddleware      = require('./routes/errorMiddleware');
 
+  require('dustjs-helpers');
+
 
 //don't remove whitespace
 dust.optimizers.format = function(ctx, node) { return node };
 
+console.log(dust.helpers)
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into a`nd deserialize users out of the session.  Typically,
@@ -374,7 +377,7 @@ if (config.enableHTTPS) {
     });
 
 } else {
-    var server = http.createServer(app).listen(app.get('port'), function(){
+    var server = http.createServer(app).listen(app.get('port'), '0.0.0.0', function(){
       ASQ.rootUrl = "http://" + config.host + ":" + config.HTTPPort
       appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });

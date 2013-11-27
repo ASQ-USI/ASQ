@@ -5,7 +5,9 @@
 <link href="/css/bootstrap.min.css" rel="stylesheet">
 <!-- <link href="/css/bootstrap-2.2.1.min.css" rel="stylesheet">
 <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
+<link rel='stylesheet' type="text/css"  href='/css/isotope.css' />
 <link rel='stylesheet' type="text/css"  href='/css/style.css' />
+
 <!-- <link rel='stylesheet' type="text/css" media='screen and (min-width: 979px)' href='/css/style.css' /> -->
 <!-- <link rel='stylesheet' type="text/css" media='screen and (max-width: 978px)' href='/css/phone.css' /> -->
 <script src="/js/vendor.js"></script>

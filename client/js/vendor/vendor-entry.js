@@ -5,3 +5,5 @@
 'use strict';
 
 require('bootstrap');
+require('isotope');
+require('jqueryHammer')
