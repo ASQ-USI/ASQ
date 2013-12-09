@@ -78,12 +78,16 @@ function postRegister(req, res) {
 } 
 
 function getSignIn(req, res) {
+  // console.log('hello',req.flash('error'))
+  console.log('is it me youre looking for',req.flash())
   res.render('signIn', {
-      fromRegister : false
+      fromRegister : false,
+      // errorMsg: req.flash()
     });
 }
 
 function postSignIn(req, res) {
+  console.log('I made it')
   var redirect_to = req.session.redirect_to ? 
       req.session.redirect_to : '/' + req.body.username + '/' ;
   res.redirect(redirect_to);
