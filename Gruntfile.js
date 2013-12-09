@@ -3,6 +3,9 @@
 **/
 'use strict';
 
+var fs = require("fs")
+  , path = require("path");
+
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -197,15 +200,14 @@ module.exports = function(grunt) {
         files: ['client/js/*.js'],
         tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer'],
         options: {
-          // spawn: false,
-          interrupt: true
+          spawn: false
+          // interrupt: true
         },
       },
       dust:{
         files: ['views/asq-render/**/*.dust'],
         tasks: ['dust'],
         options: {
-          // spawn: false,
           interrupt: true
         },
       },
@@ -213,24 +215,56 @@ module.exports = function(grunt) {
         files: ['lib/assessment/**/*.js', 'client/asq-previewer/**/*.js'],
         tasks: ['browserify:dist'],
         options: {
-          // spawn: false,
           interrupt: true
         },
       },
       less: {
-        files: ['client/less/**/*.less'],
+        files: ['client/less/*.less'],
         tasks: ['less:development'],
         options: {
-          // spawn: false,
+          interrupt: true
+        },
+      },
+      minimal: {
+        files: ['client/js/*.js', 'views/asq-render/**/*.dust', 'client/less/**/*.less'],
+        tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'dust', 'less:development'],
+        options: {
           interrupt: true
         },
       }
     }
   });
 
-  // Default task(s).
-  grunt.registerTask('default', ['mochaTest', 'jshint', 'browserify', 'uglify']);
-  grunt.registerTask('dev', ['mochaTest', 'jshint', 'browserify','dust','less', 'watch']);
+  // Our custom tasks.
+  grunt.registerTask('default', ['build']);
+  grunt.registerTask('build', ['maybeless', 'dust', 'browserify', 'uglify']);
+  grunt.registerTask('devwatch', ['build', 'watch:minimal']);
+
+  //ported from togetherjs
+  //https://github.com/mozilla/togetherjs/blob/develop/Gruntfile.js
+  grunt.registerTask('maybeless', 'Maybe compile togetherjs.less', function () {
+  var sources = grunt.file.expand(['client/less/*.less']);
+  var found = false;
+  sources.forEach(function (fn) {
+    var source = fs.statSync(fn);
+    var basename = path.basename(fn)
+    var destFn = 'public/css/' + basename.substr(0, basename.length-4) + 'css';
+    if (! fs.existsSync(destFn)) {
+      found = true;
+      return;
+    }
+    var dest = fs.statSync(destFn);
+    if (source.mtime.getTime() > dest.mtime.getTime()) {
+      grunt.log.writeln('Destination LESS out of date: ' + destFn.cyan);
+      found = true;
+    }
+  });
+  if (found) {
+    grunt.task.run('less');
+  } else {
+    grunt.log.writeln('No .less files need regenerating.');
+  }
+});
 
   //npm tasks
   grunt.loadNpmTasks('grunt-mocha-test');

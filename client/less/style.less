@@ -1,5 +1,5 @@
 // mixins
-@import "lesshat.less";
+@import "lib/lesshat.less";
 
 body{
     background-image: url("../img/pattern5.jpg");
@@ -197,7 +197,7 @@ a.accordion-toggle:hover {
   background-position: center; 
   background-repeat:  no-repeat;
   position: absolute;
-  z-index: 15;
+  z-index: 1;
   .transition(opacity 0.3s);
   box-shadow: inset 3px 3px 0px #ccc, 
   inset -3px -3px 0px #ccc,
@@ -222,6 +222,29 @@ h4{
       inset 0px 0px 8px #000;
   background-color: #000;
   text-shadow: black 0px 0px 500px;
+}
+
+.thumb-live-container {
+  position: absolute;
+  top: 8px;
+  right: 4px;
+  z-index: 2;
+  .perspective(40px);
+  .transform-style(preserve-3d);
+  .perspective-origin(50% 40%);
+}
+
+.thumb-live {
+  padding: 2px 1px 1px 1px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 10px;  
+  letter-spacing: 0.1pt;
+  color: #d9534f;
+  border: 2px solid #d9534f;
+  .rotateY(20deg);
+  -webkit-font-smoothing: antialiased;
 }
 
 body.no-touch .thumb-info:hover , .thumb-info.title{

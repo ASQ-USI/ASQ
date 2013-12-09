@@ -118,13 +118,11 @@ function psesentationsDOMBinder(){
 
       //show slideshow title
       .on('swiperight', '.thumb-info' ,function (event) {
-        console.log('pinchin')
           $(this).addClass('title')
       })
 
       //show slideshow screenshot
       .on('swipeleft', '.thumb-info' ,function (event) {
-        console.log('pinchout')
           $(this).removeClass('title')
       })
       

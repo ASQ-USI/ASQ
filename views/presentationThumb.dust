@@ -2,8 +2,13 @@
   <div class="flipbox">
     <div class="thumb-info" >
 <!--       <div class="bg" style="background-image: url('/slides/thumbs/{_id}/0-thumb.png')"> </div> -->
-        <div class="thumb-bg" style="background-image: url('http://placehold.it/240x175')"> </div>
+      <div class="thumb-bg" style="background-image: url('http://placehold.it/240x175')">   <!-- <img class='thumb-live' src="http://openclipart.org/people/graingert/1313942991.svg" width=50/>  --> 
+      </div>
       <h4>{title}</h4>
+      <div class='thumb-live-container'>
+        <div class='thumb-live'>live</div>
+      </div>
+      
     </div>
     <div class="thumb-actions">
       <a href="#remove" class="remove">&times;</a>
