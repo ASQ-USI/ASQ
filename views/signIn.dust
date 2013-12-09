@@ -24,6 +24,21 @@
 						{/fromRegister}
 					{/message}
 
+					{?alert}
+						{?alert.success}
+					<div class="alert alert-success">{alert.success}</div>
+					  {/alert.success}
+					  {?alert.info}
+					<div class="alert alert-info">{alert.info}</div>
+					  {/alert.info}
+					  {?alert.warning}
+					<div class="alert alert-warning">{alert.warning}</div>
+					  {/alert.warning}
+					  {?alert.error}
+					<div class="alert alert-danger">{alert.error}</div>
+					  {/alert.error}
+					{/alert}
+
 					<form class="form-signin" action="/sign_in" method="post">
 						<!-- <h2 class="form-signin-heading">Please sign in</h2> -->
 						<input type="text" name="username" class="form-control" placeholder="Username" autofocus="">
