@@ -1,6 +1,7 @@
 var lib     = require('../lib') 
   , utils     = lib.utils.form
-  , appLogger = lib.logger.appLogger;
+  , appLogger = lib.logger.appLogger
+  , _ = require('lodash');
 
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
@@ -78,18 +79,17 @@ function postRegister(req, res) {
 } 
 
 function getSignIn(req, res) {
-  // console.log('hello',req.flash('error'))
-  console.log('is it me youre looking for',req.flash())
   res.render('signIn', {
       fromRegister : false,
-      // errorMsg: req.flash()
+      alert: req.flash()
     });
 }
 
 function postSignIn(req, res) {
   console.log('I made it')
-  var redirect_to = req.session.redirect_to ? 
-      req.session.redirect_to : '/' + req.body.username + '/' ;
+  var redirect_to = req.session.redirect_to 
+    ? req.session.redirect_to
+    : '/' + req.body.username + '/' ;
   res.redirect(redirect_to);
 }
 
