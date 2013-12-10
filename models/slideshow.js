@@ -34,7 +34,7 @@ slideshowSchema.pre('save', true, function(next, done){
   User.findOne({_id : this.owner}, function(err, owner) {
     if(err) done(err)
     if (!owner) {
-      return done(new Error('Owner field must be a real owner _id'));
+      return done(new Error('Owner field must be a real User _id'));
     }
     done();
   });
@@ -52,7 +52,7 @@ slideshowSchema.pre('save', true, function(next, done){
   Question.find({_id : {$in: this.questions}}, function(err, questions) {
     if(err) done(err)
     if (questions.length != self.questions.length) {
-      return done(new Error('All question items should have a real question _id'));
+      return done(new Error('All question items should have a real Question _id'));
     }
     done();
   });
@@ -133,7 +133,7 @@ slideshowSchema.pre('save', true, function(next, done){
         +'statsPerSlide.length should equal 0'));
     }
   }
-
+  
   //check if all statsPerSlide are  present in the questions array
   statsPerSlide.forEach(function(qps){
     qps.statQuestions.forEach(function(q){

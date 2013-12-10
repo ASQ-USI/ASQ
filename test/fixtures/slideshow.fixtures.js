@@ -73,107 +73,107 @@ var sPerSlide3 = new QuestionsPerSlide({
 });
 
 exports.slideshowWithInvalidOwner = {
-    _id: ids.slideshowWithInvalidOwnerId,
-    title: 'test presentation that has invalid owner',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.nonExistantOwnerId,
-    questions: [ids.question1Id , ids.question2Id, ids.question3Id],
-    questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3],
-    statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
-  };
+  _id: ids.slideshowWithInvalidOwnerId,
+  title: 'test presentation that has invalid owner',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.nonExistantOwnerId,
+  questions: [ids.question1Id , ids.question2Id, ids.question3Id],
+  questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3],
+  statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
+};
 
 exports.slideshowWithInvalidQuestions = {
-    _id: ids.slideshowWithInvalidQuestionsId,
-    title: 'test presentation that has invalid questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.questionInvalid1Id , ids.questionInvalid2Id],
-    questionsPerSlide: [qPerSlideInvalid1, qPerSlideInvalid2],
-    statsPerSlide: [sPerSlide1, sPerSlide2]
-  };
+  _id: ids.slideshowWithInvalidQuestionsId,
+  title: 'test presentation that has invalid questions',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id,
+  questions: [ids.questionInvalid1Id , ids.questionInvalid2Id],
+  questionsPerSlide: [qPerSlideInvalid1, qPerSlideInvalid2],
+  statsPerSlide: [sPerSlide1, sPerSlide2]
+};
 
 exports.slideshowWithQPerSlidesButNoQ = {
-    _id: ids.slideshowWithQPerSlidesButNoQId,
-    title: 'test presentation that has questionsPerSlide but no questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
-  };
+  _id: ids.slideshowWithQPerSlidesButNoQId,
+  title: 'test presentation that has questionsPerSlide but no questions',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id,
+  questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
+};
 
 exports.slideshowWithQButNoQPerSlides = {
-    _id: ids.slideshowWithQButNoQPerSlidesId,
-    title: 'test presentation that has questionsPerSlide but no questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.question1Id],
-  };
+  _id: ids.slideshowWithQButNoQPerSlidesId,
+  title: 'test presentation that has questionsPerSlide but no questions',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id,
+  questions: [ids.question1Id],
+};
 
 exports.slideshowWithNoQNoQPerSlides = {
-    _id: ids.slideshowWithNoQNoQPerSlidesId,
-    title: 'test presentation that has no questions and no questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id
-  };
+  _id: ids.slideshowWithNoQNoQPerSlidesId,
+  title: 'test presentation that has no questions and no questionsPerSlide',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id
+};
 
 exports.slideshowWithMoreQThanQPerSlides = {
-    _id: ids.slideshowWithMoreQThanQPerSlidesId,
-    title: 'test presentation that has more questions than questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.question1Id , ids.question3Id],
-    questionsPerSlide: [qPerSlide1]
-  };
+  _id: ids.slideshowWithMoreQThanQPerSlidesId,
+  title: 'test presentation that has more questions than questionsPerSlide',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id,
+  questions: [ids.question1Id , ids.question3Id],
+  questionsPerSlide: [qPerSlide1]
+};
 
 exports.slideshowWithMoreQPerSlidesThanQ = {
-    _id: ids.slideshowWithMoreQPerSlidesThanQId,
-    title: 'test presentation that has more questionsPerSlide than questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.question1Id , ids.question2Id],
-    questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
-  };
+  _id: ids.slideshowWithMoreQPerSlidesThanQId,
+  title: 'test presentation that has more questionsPerSlide than questions',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id,
+  questions: [ids.question1Id , ids.question2Id],
+  questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
+};
 
 exports.slideshowWithNoQNoSPerSlides = {
-    _id: ids.slideshowWithNoQNoSPerSlidesId,
-    title: 'test presentation that has more questions than questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id
-  };
+  _id: ids.slideshowWithNoQNoSPerSlidesId,
+  title: 'test presentation that has more questions than questionsPerSlide',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id
+};
 
 exports.slideshowWithSPerSlidesButNoQ = {
-    _id: ids.slideshowWithSPerSlidesButNoQId,
-    title: 'test presentation that has more questions than questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
-  };
+  _id: ids.slideshowWithSPerSlidesButNoQId,
+  title: 'test presentation that has more questions than questionsPerSlide',
+  course: 'General',
+  originalFile: "index.html",
+  presenterFile: "index.asq-presenter.html",
+  viewerFile: "index.asq-viewer.html",
+  owner: ids.owner1Id,
+  statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
+};
 
 exports.fixtures = {};
 

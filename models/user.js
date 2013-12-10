@@ -12,8 +12,9 @@ var userSchema = new Schema({
 	name: { type: String, unique: true },
 	password: { type: String, required: true},
 	email: { type:String, required: true },
-	slides: { type: [ObjectId], default: [] },
-	current: { type: ObjectId, default: null }
+	slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
+	current: { type: ObjectId, default: null }, //FIXME: remove me
+	liveSessions : [{ type: Schema.Types.ObjectId, ref: 'Session' }]
 });
 
 userSchema.pre('save', function(next) {
