@@ -46,7 +46,7 @@ describe('Slideshow model:', function() {
       var slideshow = new Slideshow(slideshowObjectWithInvalidOwner);
       slideshow.save(function(err, saved){
         should.exist(err)
-        err.message.should.equal('Owner field must be a real owner _id')
+        err.message.should.equal('Owner field must be a real User _id');
         done();
       });
     });
@@ -54,8 +54,8 @@ describe('Slideshow model:', function() {
     it('should have valid questions', function(done){
       var slideshow = new Slideshow(slideshowObjectWithInvalidQuestions);
       slideshow.save(function(err, saved){
-        should.exist(err)
-        err.message.should.equal('All question items should have a real question _id')
+        should.exist(err);
+        err.message.should.equal('All question items should have a real question _id');
         done();
       });
     });
@@ -64,15 +64,15 @@ describe('Slideshow model:', function() {
       var slideshow = new Slideshow(slideshowObjectWithMoreQThanQPerSlides);
 
       slideshow.save(function(err, saved){
-        should.exist(err)
+        should.exist(err);
         err.message.should.equal(ids.question3Id + ' was found in questions'
-          + ' but not in the questionsPerSlide array')
+          + ' but not in the questionsPerSlide array');
 
         var slideshow2 = new Slideshow(slideshowObjectWithMoreQPerSlidesThanQ);
         slideshow2.save(function(err, saved){
-          should.exist(err)
+          should.exist(err);
           err.message.should.equal(ids.question3Id + ' was found in questionsPerSlide'
-          + ' but not in the questions array')
+          + ' but not in the questions array');
            done();
         });
       });
@@ -82,9 +82,9 @@ describe('Slideshow model:', function() {
       var slideshow = new Slideshow(slideshowObjectWithQButNoQPerSlides);
 
       slideshow.save(function(err, saved){
-        should.exist(err)
+        should.exist(err);
         err.message.should.equal('There should be at least a '
-          + 'slide with a question, since questions.length > 0')
+          + 'slide with a question, since questions.length > 0');
           done();
       });
     });
@@ -92,13 +92,13 @@ describe('Slideshow model:', function() {
     it('with 0 questions, should have 0 questionsPerSlide', function(done){
       var slideshow = new Slideshow(slideshowObjectWithNoQNoQPerSlides);
       slideshow.save(function(err, saved){
-        should.not.exist(err)
+        should.not.exist(err);
 
         var slideshow2 = new Slideshow(slideshowObjectWithQPerSlidesButNoQ);
         slideshow2.save(function(err, saved){
-          should.exist(err)
+          should.exist(err);
           err.message.should.equal('There are no questions so '
-          +'questionsPerSlide.length should equal 0')
+          +'questionsPerSlide.length should equal 0');
           done();
         });
       });
@@ -107,13 +107,13 @@ describe('Slideshow model:', function() {
     it('with 0 questions, should have 0 statsPerSlide', function(done){
       var slideshow = new Slideshow(slideshowObjectWithNoQNoSPerSlides);
       slideshow.save(function(err, saved){
-        should.not.exist(err)
+        should.not.exist(err);
 
         var slideshow2 = new Slideshow(slideshowObjectWithSPerSlidesButNoQ);
         slideshow2.save(function(err, saved){
-          should.exist(err)
+          should.exist(err);
           err.message.should.equal('There are no questions so '
-          +'statsPerSlide.length should equal 0')
+          +'statsPerSlide.length should equal 0');
           done();
         });
       });
@@ -133,12 +133,12 @@ describe('Slideshow model:', function() {
 
     it("should remove associated sessions", function(done){
       Slideshow.findOne({_id: ids.slideshowNormalId}, function(err, slideshow){
-        if (err) return done(err)
+        if (err) return done(err);
         slideshow.remove(function(err, removed){
-          if(err) return done(err)
+          if(err) return done(err);
           // check if we have sessions associated with this slideshow
           Session.find({$or:[{_id: ids.session1Id} , {slides : removed._id}]}, function(err, sessions){
-            if (err) return done(err)
+            if (err) return done(err);
             sessions.length.should.equal(0);
             done();
           })
@@ -148,12 +148,12 @@ describe('Slideshow model:', function() {
 
     it("should remove associated questions", function(done){
       Slideshow.findOne({_id: ids.slideshowNormalId}, function(err, slideshow){
-        if (err) return done(err)
+        if (err) return done(err);
         slideshow.remove(function(err, removed){
-          if(err) return done(err)
+          if(err) return done(err);
           // check if we have questions associated with this slideshow
           Question.find({_id : {$in : removed.questions}}, function(err, questions){
-            if (err) return done(err)
+            if (err) return done(err);
             questions.length.should.equal(0);
             done();
           })

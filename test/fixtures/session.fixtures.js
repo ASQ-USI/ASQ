@@ -10,7 +10,15 @@ var ids = exports.ids ={
 
   //slideshow ids
   slideshowNormalId: ObjectId(),
-  slideshowWithInvalidOwnerId: ObjectId(), 
+  nonExistantslideshowId : ObjectId(),
+
+  //session ids
+  sessionWithInvalidPresenterId: ObjectId(),
+  sessionWithValidPresenterId: ObjectId(),
+  sessionWithInvalidPresentationId: ObjectId(),
+  sessionWithValidPresentationId: ObjectId(),
+
+
   slideshowWithInvalidQuestionsId: ObjectId(), 
   slideshowLiveId: ObjectId(),
 
@@ -59,121 +67,176 @@ var qPerSlideInvalid2 = new QuestionsPerSlide({
   questions: [ids.questionInvalid2Id]
 });
 
-var sPerSlide1 = new QuestionsPerSlide({
+var sPerSlide1 = new StatsPerSlide({
   slideHtmlId: 'slide04',
   statQuestions: [ids.question1Id]
 });
-var sPerSlide2 = new QuestionsPerSlide({
+var sPerSlide2 = new StatsPerSlide({
   slideHtmlId: 'slide06',
   statQuestions: [ids.question2Id]
 });
-var sPerSlide3 = new QuestionsPerSlide({
+var sPerSlide3 = new StatsPerSlide({
   slideHtmlId: 'slide08',
   statQuestions: [ids.question3Id]
 });
 
-exports.slideshowWithInvalidOwner = {
-    _id: ids.slideshowWithInvalidOwnerId,
-    title: 'test presentation that has invalid owner',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.nonExistantOwnerId,
-    questions: [ids.question1Id , ids.question2Id, ids.question3Id],
-    questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3],
-    statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
-  };
+exports.sessionWithInvalidPresenter = {
+  _id: ids.sessionWithInvalidPresenterId,
+  activeQuestions: [],
+  activeSlide: "slide01",
+  activeStatsQuestions: [],
+  answers: [],
+  authLevel: "public",
+  endDate: null,
+  presenter: ids.nonExistantOwnerId,
+  questionsDisplayed: [],
+  showingAnswer: false,
+  showingQuestion: false,
+  slides: ids.slideshowNormalId,
+  started: false,
+  viewers: []
+};
 
-exports.slideshowWithInvalidQuestions = {
-    _id: ids.slideshowWithInvalidQuestionsId,
-    title: 'test presentation that has invalid questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.questionInvalid1Id , ids.questionInvalid2Id],
-    questionsPerSlide: [qPerSlideInvalid1, qPerSlideInvalid2],
-    statsPerSlide: [sPerSlide1, sPerSlide2]
-  };
+exports.sessionWithValidPresenter = {
+  _id: ids.sessionWithValidPresenterId,
+  activeQuestions: [],
+  activeSlide: "slide01",
+  activeStatsQuestions: [],
+  answers: [],
+  authLevel: "public",
+  endDate: null,
+  presenter: ids.owner1Id,
+  questionsDisplayed: [],
+  showingAnswer: false,
+  showingQuestion: false,
+  slides: ids.slideshowNormalId,
+  started: false,
+  viewers: []
+};
 
-exports.slideshowWithQPerSlidesButNoQ = {
-    _id: ids.slideshowWithQPerSlidesButNoQId,
-    title: 'test presentation that has questionsPerSlide but no questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
-  };
+exports.sessionWithInvalidPresentation = {
+  _id: ids.sessionWithInvalidPresentationId,
+  activeQuestions: [],
+  activeSlide: "slide01",
+  activeStatsQuestions: [],
+  answers: [],
+  authLevel: "public",
+  endDate: null,
+  presenter: ids.owner1Id,
+  questionsDisplayed: [],
+  showingAnswer: false,
+  showingQuestion: false,
+  slides: ids.nonExistantslideshowId,
+  started: false,
+  viewers: []
+};
 
-exports.slideshowWithQButNoQPerSlides = {
-    _id: ids.slideshowWithQButNoQPerSlidesId,
-    title: 'test presentation that has questionsPerSlide but no questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.question1Id],
-  };
+exports.sessionWithValidPresentation = {
+  _id: ids.sessionWithValidPresentationId,
+  activeQuestions: [],
+  activeSlide: "slide01",
+  activeStatsQuestions: [],
+  answers: [],
+  authLevel: "public",
+  endDate: null,
+  presenter: ids.owner1Id,
+  questionsDisplayed: [],
+  showingAnswer: false,
+  showingQuestion: false,
+  slides: ids.slideshowNormalId,
+  started: false,
+  viewers: []
+};
 
-exports.slideshowWithNoQNoQPerSlides = {
-    _id: ids.slideshowWithNoQNoQPerSlidesId,
-    title: 'test presentation that has no questions and no questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id
-  };
+// exports.slideshowWithInvalidQuestions = {
+//     _id: ids.slideshowWithInvalidQuestionsId,
+//     title: 'test presentation that has invalid questions',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id,
+//     questions: [ids.questionInvalid1Id , ids.questionInvalid2Id],
+//     questionsPerSlide: [qPerSlideInvalid1, qPerSlideInvalid2],
+//     statsPerSlide: [sPerSlide1, sPerSlide2]
+//   };
 
-exports.slideshowWithMoreQThanQPerSlides = {
-    _id: ids.slideshowWithMoreQThanQPerSlidesId,
-    title: 'test presentation that has more questions than questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.question1Id , ids.question3Id],
-    questionsPerSlide: [qPerSlide1]
-  };
+// exports.slideshowWithQPerSlidesButNoQ = {
+//     _id: ids.slideshowWithQPerSlidesButNoQId,
+//     title: 'test presentation that has questionsPerSlide but no questions',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id,
+//     questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
+//   };
 
-exports.slideshowWithMoreQPerSlidesThanQ = {
-    _id: ids.slideshowWithMoreQPerSlidesThanQId,
-    title: 'test presentation that has more questionsPerSlide than questions',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    questions: [ids.question1Id , ids.question2Id],
-    questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
-  };
+// exports.slideshowWithQButNoQPerSlides = {
+//     _id: ids.slideshowWithQButNoQPerSlidesId,
+//     title: 'test presentation that has questionsPerSlide but no questions',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id,
+//     questions: [ids.question1Id],
+//   };
 
-exports.slideshowWithNoQNoSPerSlides = {
-    _id: ids.slideshowWithNoQNoSPerSlidesId,
-    title: 'test presentation that has more questions than questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id
-  };
+// exports.slideshowWithNoQNoQPerSlides = {
+//     _id: ids.slideshowWithNoQNoQPerSlidesId,
+//     title: 'test presentation that has no questions and no questionsPerSlide',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id
+//   };
 
-exports.slideshowWithSPerSlidesButNoQ = {
-    _id: ids.slideshowWithSPerSlidesButNoQId,
-    title: 'test presentation that has more questions than questionsPerSlide',
-    course: 'General',
-    originalFile: "index.html",
-    presenterFile: "index.asq-presenter.html",
-    viewerFile: "index.asq-viewer.html",
-    owner: ids.owner1Id,
-    statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
-  };
+// exports.slideshowWithMoreQThanQPerSlides = {
+//     _id: ids.slideshowWithMoreQThanQPerSlidesId,
+//     title: 'test presentation that has more questions than questionsPerSlide',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id,
+//     questions: [ids.question1Id , ids.question3Id],
+//     questionsPerSlide: [qPerSlide1]
+//   };
+
+// exports.slideshowWithMoreQPerSlidesThanQ = {
+//     _id: ids.slideshowWithMoreQPerSlidesThanQId,
+//     title: 'test presentation that has more questionsPerSlide than questions',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id,
+//     questions: [ids.question1Id , ids.question2Id],
+//     questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
+//   };
+
+// exports.slideshowWithNoQNoSPerSlides = {
+//     _id: ids.slideshowWithNoQNoSPerSlidesId,
+//     title: 'test presentation that has more questions than questionsPerSlide',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id
+//   };
+
+// exports.slideshowWithSPerSlidesButNoQ = {
+//     _id: ids.slideshowWithSPerSlidesButNoQId,
+//     title: 'test presentation that has more questions than questionsPerSlide',
+//     course: 'General',
+//     originalFile: "index.html",
+//     presenterFile: "index.asq-presenter.html",
+//     viewerFile: "index.asq-viewer.html",
+//     owner: ids.owner1Id,
+//     statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
+//   };
 
 exports.fixtures = {};
 
@@ -316,36 +379,36 @@ exports.fixtures.Slideshow = {
 };
 
 //models.Session
-exports.fixtures.Session = [
-{
-  _id: ids.session1Id,
-  activeQuestions: [],
-  activeSlide: "slide01",
-  activeStatsQuestions: [],
-  answers: [],
-  authLevel: "public",
-  endDate: Date.now(),
-  presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
-  slides: ids.slideshowNormalId,
-  started: false,
-  viewers: []
-},
-{
-  activeQuestions: [],
-  activeSlide: "slide02",
-  activeStatsQuestions: [],
-  answers: [],
-  authLevel: "public",
-  endDate: null,
-  presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
-  slides: ids.slideshowLiveId,
-  started: false,
-  viewers: []
-}
-]
+// exports.fixtures.Session = [
+// {
+//   _id: ids.session1Id,
+//   activeQuestions: [],
+//   activeSlide: "slide01",
+//   activeStatsQuestions: [],
+//   answers: [],
+//   authLevel: "public",
+//   endDate: Date.now(),
+//   presenter: ids.owner1Id,
+//   questionsDisplayed: [],
+//   showingAnswer: false,
+//   showingQuestion: false,
+//   slides: ids.slideshowNormalId,
+//   started: false,
+//   viewers: []
+// },
+// {
+//   activeQuestions: [],
+//   activeSlide: "slide02",
+//   activeStatsQuestions: [],
+//   answers: [],
+//   authLevel: "public",
+//   endDate: null,
+//   presenter: ids.owner1Id,
+//   questionsDisplayed: [],
+//   showingAnswer: false,
+//   showingQuestion: false,
+//   slides: ids.slideshowLiveId,
+//   started: false,
+//   viewers: []
+// }
+// ]

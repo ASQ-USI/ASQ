@@ -5,6 +5,8 @@ var asyncblock = require('asyncblock')
   , appLogger  = lib.logger.appLogger
   , presUtils  = lib.utils.presentation
   , config     = require('../../../../config')
+  , when       = require('when')
+  , nodefn     = require('when/node/function')
 
 function editPresentation(req, res) {
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
@@ -137,57 +139,122 @@ function livePresentationFiles(req, res) {
 }
 
 
-function startPresentation(req, res) {
-  appLogger.debug('New session from ' + req.user.name);
-  var slidesId = req.params.presentationId;
+// function startPresentation(req, res) {
+//   appLogger.debug('New session from ' + req.user.name);
+//   var slidesId = req.params.presentationId;
 
-  asyncblock(function(flow) {
+//   asyncblock(function(flow) {
 
-    //Error Handling
-    flow.errorCallback = function errorCallback(err) {
-      appLogger.error('Presentation Start\n' + err);
-      return res.redirect(500, ['/', req.user.name,
-          '/?alert=Something went wrong. The Great ASQ Server said: ',
-          err.toString(), '&type=error'].join(''));
-    }
+//     //Error Handling
+//     flow.errorCallback = function errorCallback(err) {
+//       appLogger.error('Presentation Start\n' + err);
+//       return res.redirect(500, ['/', req.user.name,
+//           '/?alert=Something went wrong. The Great ASQ Server said: ',
+//           err.toString(), '&type=error'].join(''));
+//     }
 
-    //Find slideshow
-    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-    Slideshow.findOne({ 
-      _id   : slidesId,
-      owner : req.user._id }, flow.set('slideshow'));
+//     //Find slideshow
+//     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
+//     Slideshow.findOne({ 
+//       _id   : slidesId,
+//       owner : req.user._id }, flow.set('slideshow'));
 
-    //Instantiate a new session
-    var Session = db.model('Session', schemas.sessionSchema);
-    var newSession = new Session();
-    newSession.presenter = req.user._id;
-    newSession.slides = flow.get('slideshow')._id;
-    newSession.authLevel = ( Session.schema.path('authLevel').enumValues
-      .indexOf(req.query.al) > -1 ) ? req.query.al : 'public';
+//     //Instantiate a new session
+//     var Session = db.model('Session', schemas.sessionSchema);
+//     var newSession = new Session();
+//     newSession.presenter = req.user._id;
+//     newSession.slides = flow.get('slideshow')._id;
+//     newSession.authLevel = ( Session.schema.path('authLevel').enumValues
+//       .indexOf(req.query.al) > -1 ) ? req.query.al : 'public';
     
-    //Save the new session
-    newSession.save(flow.add());
+//     //Save the new session
+//     newSession.save(flow.add());
 
-    //Generate the white list for the level
-    presUtils.generateWhitelist[newSession.authLevel]
-      (newSession._id, newSession.presenter, flow.add());
+//     //Generate the white list for the level
+//     presUtils.generateWhitelist[newSession.authLevel]
+//       (newSession._id, newSession.presenter, flow.add());
 
-    //Update the suer's current session
-    var User = db.model('User', schemas.userSchema);
-    User.findByIdAndUpdate(req.user._id, {
-      current : newSession._id }, flow.add());
+//     //Update the suer's current session
+//     var User = db.model('User', schemas.userSchema);
+//     User.findByIdAndUpdate(req.user._id, {
+//       current : newSession._id }, flow.add());
 
-    //Update slideshow's last presnetation to now
-    flow.get('slideshow').lastSession = new Date();
-    flow.get('slideshow').save(flow.add());
+//     //Update slideshow's last presentation to now
+//     flow.get('slideshow').lastSession = new Date();
+//     flow.get('slideshow').save(flow.add());
 
-    //Wait to finish and redirect
-    flow.wait();
-    appLogger.info('Starting new ' + newSession.authLevel + ' session');
-    res.location(['/', req.user.name, '/presentations/', newSession.slides,
-      '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
-    res.send(201);
-  });
+//     //Wait to finish and redirect
+//     flow.wait();
+//     appLogger.info('Starting new ' + newSession.authLevel + ' session');
+//     res.location(['/', req.user.name, '/presentations/', newSession.slides,
+//       '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
+//     res.send(201);
+//   });
+// }
+
+
+function startPresentation(req, res, next) {
+  appLogger.debug('New session from ' + req.user.name);
+
+  var Slideshow = db.model('Slideshow')
+    , Session = db.model('Session')
+    , User = db.model('User', schemas.userSchema)
+    , slidesId = req.params.presentationId
+    , newSession;
+
+  //Find slideshow
+  Slideshow.findOne({ 
+    _id   : slidesId,
+    owner : req.user._id })
+  .exec()
+  .then(
+    function(slideshow){
+      if(!slideshow){
+        return when.reject(new Error('No slideshow with this id'))
+      } //FIXME create proper error like in list presentations
+
+      slideshow.lastSession = new Date();
+
+      //Instantiate a new session
+      newSession = new Session();
+      newSession.presenter = req.user._id;
+      newSession.slides = slideshow._id;
+      newSession.authLevel = ( Session.schema.path('authLevel').enumValues
+        .indexOf(req.query.al) > -1 ) ? req.query.al : 'public';
+      //update liveSessions of user
+      var userPromise = User.findById(req.user._id).exec()
+      .then(
+        function(user){
+          if(!user){
+            return when.reject(new Error('No user with this id'))
+          } //FIXME create proper error like in list presentations
+          user.liveSessions.addToSet(newSession._id)
+          return nodefn.call(user.save.bind(user))
+        }
+      );
+
+      return when.all([
+        nodefn.call(slideshow.save.bind(slideshow)),
+        nodefn.call(newSession.save.bind(newSession)),
+        userPromise
+      ]);
+    }
+  ).then(
+    function(){
+      return nodefn.call(presUtils.generateWhitelist[newSession.authLevel]
+          , newSession._id, newSession.presenter)
+    }
+  ).then(
+    function(){
+      appLogger.info('Starting new ' + newSession.authLevel + ' session');
+      res.location(['/', req.user.name, '/presentations/', newSession.slides,
+        '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
+      res.send(201);
+    },
+    function(err){
+      next(err)
+    }
+  );
 }
 
 module.exports = {

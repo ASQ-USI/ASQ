@@ -30,6 +30,51 @@ sessionSchema.virtual('isTerminated').get(function() {
   return this.endDate !== null;
 });
 
+//we do not allow more than one live session for the same user and the same slideshow
+sessionSchema.pre('save', true, function(next, done){
+  next();
+  var Session = db.model('Session');
+  Session.findOne({
+    _id : {$ne: this._id},
+    presenter: this.presenter,
+    slides: this.slides,
+    endDate: null,
+  }, function(err, session) {
+    if(err) done(err)
+    if (session) {
+      return done(new Error('A live session with the specified user and presentation already exists'));
+    }
+    done();
+  });
+});
+
+//slideshow should exist
+sessionSchema.pre('save', true, function(next, done){
+  next();
+  var Slideshow = db.model('Slideshow');
+  Slideshow.findOne({_id : this.slides}, function(err, slideshow) {
+    if(err) done(err)
+    if (!slideshow) {
+      return done(new Error('Slides field must be a real Slideshow _id'));
+    }
+    done();
+  });
+});
+
+//presenter should exist
+sessionSchema.pre('save', true, function(next, done){
+  next();
+  var User = db.model('User');
+  User.findOne({_id : this.presenter}, function(err, presenter) {
+    if(err) done(err)
+    if (!presenter) {
+      return done(new Error('Presenter field must be a real User _id'));
+    }
+    done();
+  });
+});
+
+
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
 
   var deferred = when.defer()
