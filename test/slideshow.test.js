@@ -15,17 +15,6 @@ var mongooseFixtures = require('./util/mongoose-fixtures')
   , slFixtures = require('./fixtures/slideshow.fixtures')
   , ids = slFixtures.ids
   , fixtures = slFixtures.fixtures
-  , slideshowObjectWithInvalidOwner = slFixtures.slideshowWithInvalidOwner
-  , slideshowObjectWithInvalidQuestions = slFixtures.slideshowWithInvalidQuestions
-  , slideshowObjectWithQPerSlidesButNoQ = slFixtures.slideshowWithQPerSlidesButNoQ
-  , slideshowObjectWithQButNoQPerSlides = slFixtures.slideshowWithQButNoQPerSlides
-  , slideshowObjectWithNoQNoQPerSlides = slFixtures.slideshowWithNoQNoQPerSlides
-  , slideshowObjectWithMoreQThanQPerSlides = slFixtures.slideshowWithMoreQThanQPerSlides
-  , slideshowObjectWithMoreQPerSlidesThanQ = slFixtures.slideshowWithMoreQPerSlidesThanQ
-  
-  , slideshowObjectWithNoQNoSPerSlides = slFixtures.slideshowWithNoQNoSPerSlides
-  , slideshowObjectWithSPerSlidesButNoQ = slFixtures.slideshowWithSPerSlidesButNoQ
-
   , Session = db.model("Session")
   , Slideshow = db.model("Slideshow")
   , Question = db.model("Question")
@@ -43,7 +32,7 @@ describe('Slideshow model:', function() {
     });
 
     it('should have a valid owner', function(done){
-      var slideshow = new Slideshow(slideshowObjectWithInvalidOwner);
+      var slideshow = new Slideshow(slFixtures.slideshowWithInvalidOwner);
       slideshow.save(function(err, saved){
         should.exist(err)
         err.message.should.equal('Owner field must be a real User _id');
@@ -52,23 +41,23 @@ describe('Slideshow model:', function() {
     });
 
     it('should have valid questions', function(done){
-      var slideshow = new Slideshow(slideshowObjectWithInvalidQuestions);
+      var slideshow = new Slideshow(slFixtures.slideshowWithInvalidQuestions);
       slideshow.save(function(err, saved){
         should.exist(err);
-        err.message.should.equal('All question items should have a real question _id');
+        err.message.should.equal('All question items should have a real Question _id');
         done();
       });
     });
 
     it('should have valid questionsPerSlide', function(done){
-      var slideshow = new Slideshow(slideshowObjectWithMoreQThanQPerSlides);
+      var slideshow = new Slideshow(slFixtures.slideshowWithMoreQThanQPerSlides);
 
       slideshow.save(function(err, saved){
         should.exist(err);
         err.message.should.equal(ids.question3Id + ' was found in questions'
           + ' but not in the questionsPerSlide array');
 
-        var slideshow2 = new Slideshow(slideshowObjectWithMoreQPerSlidesThanQ);
+        var slideshow2 = new Slideshow(slFixtures.slideshowWithMoreQPerSlidesThanQ);
         slideshow2.save(function(err, saved){
           should.exist(err);
           err.message.should.equal(ids.question3Id + ' was found in questionsPerSlide'
@@ -79,7 +68,7 @@ describe('Slideshow model:', function() {
     });
 
     it('with at least one question, should have at least one item in questionsPerSlide', function(done){
-      var slideshow = new Slideshow(slideshowObjectWithQButNoQPerSlides);
+      var slideshow = new Slideshow(slFixtures.slideshowWithQButNoQPerSlides);
 
       slideshow.save(function(err, saved){
         should.exist(err);
@@ -90,11 +79,11 @@ describe('Slideshow model:', function() {
     });
 
     it('with 0 questions, should have 0 questionsPerSlide', function(done){
-      var slideshow = new Slideshow(slideshowObjectWithNoQNoQPerSlides);
+      var slideshow = new Slideshow(slFixtures.slideshowWithNoQNoQPerSlides);
       slideshow.save(function(err, saved){
         should.not.exist(err);
 
-        var slideshow2 = new Slideshow(slideshowObjectWithQPerSlidesButNoQ);
+        var slideshow2 = new Slideshow(slFixtures.slideshowWithQPerSlidesButNoQ);
         slideshow2.save(function(err, saved){
           should.exist(err);
           err.message.should.equal('There are no questions so '
@@ -105,11 +94,11 @@ describe('Slideshow model:', function() {
     });
 
     it('with 0 questions, should have 0 statsPerSlide', function(done){
-      var slideshow = new Slideshow(slideshowObjectWithNoQNoSPerSlides);
+      var slideshow = new Slideshow(slFixtures.slideshowWithNoQNoSPerSlides);
       slideshow.save(function(err, saved){
         should.not.exist(err);
 
-        var slideshow2 = new Slideshow(slideshowObjectWithSPerSlidesButNoQ);
+        var slideshow2 = new Slideshow(slFixtures.slideshowWithSPerSlidesButNoQ);
         slideshow2.save(function(err, saved){
           should.exist(err);
           err.message.should.equal('There are no questions so '
@@ -119,7 +108,6 @@ describe('Slideshow model:', function() {
       });
     });
   });
-
 
 
   describe('removing a slideshow', function(){

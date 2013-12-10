@@ -6,22 +6,12 @@ var SlideshowModel = require('../../models/slideshow')
 // ids
 var ObjectId = require('mongoose').Types.ObjectId
 var ids = exports.ids ={
+  //session ids
   session1Id: ObjectId(),
 
   //slideshow ids
   slideshowNormalId: ObjectId(),
-  slideshowWithInvalidOwnerId: ObjectId(), 
-  slideshowWithInvalidQuestionsId: ObjectId(), 
   slideshowLiveId: ObjectId(),
-
-  slideshowWithQPerSlidesButNoQId: ObjectId(),
-  slideshowWithQButNoQPerSlidesId: ObjectId(),
-  slideshowWithNoQNoQPerSlidesId: ObjectId(),
-  slideshowWithMoreQThanQPerSlidesId: ObjectId(),
-  slideshowWithMoreQPerSlidesThanQId: ObjectId(),
-
-  slideshowWithNoQNoSPerSlidesId: ObjectId(),
-  slideshowWithSPerSlidesButNoQId: ObjectId(),
 
   //owner ids
   owner1Id    : ObjectId(),
@@ -59,21 +49,20 @@ var qPerSlideInvalid2 = new QuestionsPerSlide({
   questions: [ids.questionInvalid2Id]
 });
 
-var sPerSlide1 = new QuestionsPerSlide({
+var sPerSlide1 = new StatsPerSlide({
   slideHtmlId: 'slide04',
   statQuestions: [ids.question1Id]
 });
-var sPerSlide2 = new QuestionsPerSlide({
+var sPerSlide2 = new StatsPerSlide({
   slideHtmlId: 'slide06',
   statQuestions: [ids.question2Id]
 });
-var sPerSlide3 = new QuestionsPerSlide({
+var sPerSlide3 = new StatsPerSlide({
   slideHtmlId: 'slide08',
   statQuestions: [ids.question3Id]
 });
 
 exports.slideshowWithInvalidOwner = {
-  _id: ids.slideshowWithInvalidOwnerId,
   title: 'test presentation that has invalid owner',
   course: 'General',
   originalFile: "index.html",
@@ -86,7 +75,6 @@ exports.slideshowWithInvalidOwner = {
 };
 
 exports.slideshowWithInvalidQuestions = {
-  _id: ids.slideshowWithInvalidQuestionsId,
   title: 'test presentation that has invalid questions',
   course: 'General',
   originalFile: "index.html",
@@ -94,12 +82,10 @@ exports.slideshowWithInvalidQuestions = {
   viewerFile: "index.asq-viewer.html",
   owner: ids.owner1Id,
   questions: [ids.questionInvalid1Id , ids.questionInvalid2Id],
-  questionsPerSlide: [qPerSlideInvalid1, qPerSlideInvalid2],
-  statsPerSlide: [sPerSlide1, sPerSlide2]
+  questionsPerSlide: [qPerSlideInvalid1, qPerSlideInvalid2]
 };
 
 exports.slideshowWithQPerSlidesButNoQ = {
-  _id: ids.slideshowWithQPerSlidesButNoQId,
   title: 'test presentation that has questionsPerSlide but no questions',
   course: 'General',
   originalFile: "index.html",
@@ -110,7 +96,6 @@ exports.slideshowWithQPerSlidesButNoQ = {
 };
 
 exports.slideshowWithQButNoQPerSlides = {
-  _id: ids.slideshowWithQButNoQPerSlidesId,
   title: 'test presentation that has questionsPerSlide but no questions',
   course: 'General',
   originalFile: "index.html",
@@ -121,7 +106,6 @@ exports.slideshowWithQButNoQPerSlides = {
 };
 
 exports.slideshowWithNoQNoQPerSlides = {
-  _id: ids.slideshowWithNoQNoQPerSlidesId,
   title: 'test presentation that has no questions and no questionsPerSlide',
   course: 'General',
   originalFile: "index.html",
@@ -131,7 +115,6 @@ exports.slideshowWithNoQNoQPerSlides = {
 };
 
 exports.slideshowWithMoreQThanQPerSlides = {
-  _id: ids.slideshowWithMoreQThanQPerSlidesId,
   title: 'test presentation that has more questions than questionsPerSlide',
   course: 'General',
   originalFile: "index.html",
@@ -143,7 +126,6 @@ exports.slideshowWithMoreQThanQPerSlides = {
 };
 
 exports.slideshowWithMoreQPerSlidesThanQ = {
-  _id: ids.slideshowWithMoreQPerSlidesThanQId,
   title: 'test presentation that has more questionsPerSlide than questions',
   course: 'General',
   originalFile: "index.html",
@@ -155,7 +137,6 @@ exports.slideshowWithMoreQPerSlidesThanQ = {
 };
 
 exports.slideshowWithNoQNoSPerSlides = {
-  _id: ids.slideshowWithNoQNoSPerSlidesId,
   title: 'test presentation that has more questions than questionsPerSlide',
   course: 'General',
   originalFile: "index.html",
@@ -165,7 +146,6 @@ exports.slideshowWithNoQNoSPerSlides = {
 };
 
 exports.slideshowWithSPerSlidesButNoQ = {
-  _id: ids.slideshowWithSPerSlidesButNoQId,
   title: 'test presentation that has more questions than questionsPerSlide',
   course: 'General',
   originalFile: "index.html",

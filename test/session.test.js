@@ -67,6 +67,21 @@ describe('Session model:', function() {
         });
       });
     });
+
+    it('should be the only live session for a specific presentation from the same user', function(done){
+      //first session with same user and presentation
+      var sessionInvalid = new Session(seFixtures.sessionWithSamePresentationAndUser1);
+      sessionInvalid.save(function(err, saved){
+
+        //second session with same user and presentation
+        var sessionvalid = new Session(seFixtures.sessionWithSamePresentationAndUser2);
+        sessionvalid.save(function(err, saved){
+          should.exist(err)
+          err.message.should.equal('A live session with the specified user and presentation already exists')
+          done();
+        });
+      });
+    });
   });
 
   describe('A saved session', function(){
@@ -89,7 +104,7 @@ describe('Session model:', function() {
 
   });
 
-  describe('removing a slideshow', function(){
+  describe('removing a session', function(){
 
     beforeEach(function(done){
       mongooseFixtures.load(fixtures, db, function(err){
@@ -100,7 +115,6 @@ describe('Session model:', function() {
 
     it.skip("should remove associated answers", function(done){
     });
-
 
   });
 });

@@ -6,30 +6,15 @@ var SlideshowModel = require('../../models/slideshow')
 // ids
 var ObjectId = require('mongoose').Types.ObjectId
 var ids = exports.ids ={
-  session1Id: ObjectId(),
 
   //slideshow ids
   slideshowNormalId: ObjectId(),
+  slideshowNormal2Id: ObjectId(),
+  slideshowLiveId: ObjectId(),
   nonExistantslideshowId : ObjectId(),
 
   //session ids
-  sessionWithInvalidPresenterId: ObjectId(),
-  sessionWithValidPresenterId: ObjectId(),
-  sessionWithInvalidPresentationId: ObjectId(),
-  sessionWithValidPresentationId: ObjectId(),
-
-
-  slideshowWithInvalidQuestionsId: ObjectId(), 
-  slideshowLiveId: ObjectId(),
-
-  slideshowWithQPerSlidesButNoQId: ObjectId(),
-  slideshowWithQButNoQPerSlidesId: ObjectId(),
-  slideshowWithNoQNoQPerSlidesId: ObjectId(),
-  slideshowWithMoreQThanQPerSlidesId: ObjectId(),
-  slideshowWithMoreQPerSlidesThanQId: ObjectId(),
-
-  slideshowWithNoQNoSPerSlidesId: ObjectId(),
-  slideshowWithSPerSlidesButNoQId: ObjectId(),
+  session1Id: ObjectId(),
 
   //owner ids
   owner1Id    : ObjectId(),
@@ -81,7 +66,6 @@ var sPerSlide3 = new StatsPerSlide({
 });
 
 exports.sessionWithInvalidPresenter = {
-  _id: ids.sessionWithInvalidPresenterId,
   activeQuestions: [],
   activeSlide: "slide01",
   activeStatsQuestions: [],
@@ -98,7 +82,6 @@ exports.sessionWithInvalidPresenter = {
 };
 
 exports.sessionWithValidPresenter = {
-  _id: ids.sessionWithValidPresenterId,
   activeQuestions: [],
   activeSlide: "slide01",
   activeStatsQuestions: [],
@@ -115,7 +98,6 @@ exports.sessionWithValidPresenter = {
 };
 
 exports.sessionWithInvalidPresentation = {
-  _id: ids.sessionWithInvalidPresentationId,
   activeQuestions: [],
   activeSlide: "slide01",
   activeStatsQuestions: [],
@@ -132,7 +114,6 @@ exports.sessionWithInvalidPresentation = {
 };
 
 exports.sessionWithValidPresentation = {
-  _id: ids.sessionWithValidPresentationId,
   activeQuestions: [],
   activeSlide: "slide01",
   activeStatsQuestions: [],
@@ -148,95 +129,37 @@ exports.sessionWithValidPresentation = {
   viewers: []
 };
 
-// exports.slideshowWithInvalidQuestions = {
-//     _id: ids.slideshowWithInvalidQuestionsId,
-//     title: 'test presentation that has invalid questions',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id,
-//     questions: [ids.questionInvalid1Id , ids.questionInvalid2Id],
-//     questionsPerSlide: [qPerSlideInvalid1, qPerSlideInvalid2],
-//     statsPerSlide: [sPerSlide1, sPerSlide2]
-//   };
+exports.sessionWithSamePresentationAndUser1 = {
+  activeQuestions: [],
+  activeSlide: "slide01",
+  activeStatsQuestions: [],
+  answers: [],
+  authLevel: "public",
+  endDate: null,
+  presenter: ids.owner1Id,
+  questionsDisplayed: [],
+  showingAnswer: false,
+  showingQuestion: false,
+  slides: ids.slideshowNormalId,
+  started: false,
+  viewers: []
+};
 
-// exports.slideshowWithQPerSlidesButNoQ = {
-//     _id: ids.slideshowWithQPerSlidesButNoQId,
-//     title: 'test presentation that has questionsPerSlide but no questions',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id,
-//     questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
-//   };
-
-// exports.slideshowWithQButNoQPerSlides = {
-//     _id: ids.slideshowWithQButNoQPerSlidesId,
-//     title: 'test presentation that has questionsPerSlide but no questions',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id,
-//     questions: [ids.question1Id],
-//   };
-
-// exports.slideshowWithNoQNoQPerSlides = {
-//     _id: ids.slideshowWithNoQNoQPerSlidesId,
-//     title: 'test presentation that has no questions and no questionsPerSlide',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id
-//   };
-
-// exports.slideshowWithMoreQThanQPerSlides = {
-//     _id: ids.slideshowWithMoreQThanQPerSlidesId,
-//     title: 'test presentation that has more questions than questionsPerSlide',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id,
-//     questions: [ids.question1Id , ids.question3Id],
-//     questionsPerSlide: [qPerSlide1]
-//   };
-
-// exports.slideshowWithMoreQPerSlidesThanQ = {
-//     _id: ids.slideshowWithMoreQPerSlidesThanQId,
-//     title: 'test presentation that has more questionsPerSlide than questions',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id,
-//     questions: [ids.question1Id , ids.question2Id],
-//     questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3]
-//   };
-
-// exports.slideshowWithNoQNoSPerSlides = {
-//     _id: ids.slideshowWithNoQNoSPerSlidesId,
-//     title: 'test presentation that has more questions than questionsPerSlide',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id
-//   };
-
-// exports.slideshowWithSPerSlidesButNoQ = {
-//     _id: ids.slideshowWithSPerSlidesButNoQId,
-//     title: 'test presentation that has more questions than questionsPerSlide',
-//     course: 'General',
-//     originalFile: "index.html",
-//     presenterFile: "index.asq-presenter.html",
-//     viewerFile: "index.asq-viewer.html",
-//     owner: ids.owner1Id,
-//     statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3]
-//   };
+exports.sessionWithSamePresentationAndUser2 = {
+  activeQuestions: [],
+  activeSlide: "slide01",
+  activeStatsQuestions: [],
+  answers: [],
+  authLevel: "public",
+  endDate: null,
+  presenter: ids.owner1Id,
+  questionsDisplayed: [],
+  showingAnswer: false,
+  showingQuestion: false,
+  slides: ids.slideshowNormalId,
+  started: false,
+  viewers: []
+};
 
 exports.fixtures = {};
 
@@ -364,6 +287,19 @@ exports.fixtures.Slideshow = {
     statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3],
   },
 
+  slideshowNormal2: {
+    _id: ids.slideshowNormal2Id,
+    title: 'test presentation 2',
+    course: 'General',
+    originalFile: "index.html",
+    presenterFile: "index.asq-presenter.html",
+    viewerFile: "index.asq-viewer.html",
+    owner: ids.owner1Id,
+    questions: [ids.question1Id , ids.question2Id, ids.question3Id],
+    questionsPerSlide: [qPerSlide1, qPerSlide2, qPerSlide3],
+    statsPerSlide: [sPerSlide1, sPerSlide2, sPerSlide3],
+  },
+
   slideshowLive: {
     _id: ids.slideshowLiveId,
     title: 'test presentation that is going to be live',
@@ -379,36 +315,20 @@ exports.fixtures.Slideshow = {
 };
 
 //models.Session
-// exports.fixtures.Session = [
-// {
-//   _id: ids.session1Id,
-//   activeQuestions: [],
-//   activeSlide: "slide01",
-//   activeStatsQuestions: [],
-//   answers: [],
-//   authLevel: "public",
-//   endDate: Date.now(),
-//   presenter: ids.owner1Id,
-//   questionsDisplayed: [],
-//   showingAnswer: false,
-//   showingQuestion: false,
-//   slides: ids.slideshowNormalId,
-//   started: false,
-//   viewers: []
-// },
-// {
-//   activeQuestions: [],
-//   activeSlide: "slide02",
-//   activeStatsQuestions: [],
-//   answers: [],
-//   authLevel: "public",
-//   endDate: null,
-//   presenter: ids.owner1Id,
-//   questionsDisplayed: [],
-//   showingAnswer: false,
-//   showingQuestion: false,
-//   slides: ids.slideshowLiveId,
-//   started: false,
-//   viewers: []
-// }
-// ]
+exports.fixtures.Session = [
+{
+  _id: ids.session1Id,
+  activeQuestions: [],
+  activeSlide: "slide01",
+  activeStatsQuestions: [],
+  answers: [],
+  authLevel: "public",
+  endDate: null,
+  presenter: ids.owner1Id,
+  questionsDisplayed: [],
+  showingAnswer: false,
+  showingQuestion: false,
+  slides: ids.slideshowNormal2Id,
+  started: false,
+  viewers: []
+}];
