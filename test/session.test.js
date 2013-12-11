@@ -116,5 +116,8 @@ describe('Session model:', function() {
     it.skip("should remove associated answers", function(done){
     });
 
+    it.skip("should remove it from user's liveSession list", function(done){
+    });
+
   });
 });

@@ -16,9 +16,12 @@
       <a href="#remove" class="remove">&times;</a>
       <div class="thumb-buttons-container">
       <div class="thumb-buttons">
+        {?isLive}
+        <a href="/user/statistics/{_id}" class="btn btn-danger"><span class="glyphicon glyphicon-stop icon-white"> </span> Stop</a>
+        {:else}
         <div class="btn-group">
           <!-- boiler jQuery -->
-          <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"> Start Presentation
+          <a href="#" class="btn btn-primary start" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><span class="glyphicon glyphicon-play icon-white"> </span> Start
           </a>
           <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
@@ -38,6 +41,7 @@
             </li>
           </ul>
         </div>
+        {/isLive}
         <a href="/user/statistics/{_id}" class="btn btn-info"><span class="glyphicon glyphicon-signal icon-white"> </span> Show Statistics</a>
         <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><span class="glyphicon glyphicon-pencil icon-white"> </span> Edit Presentation</a>
       </div>
