@@ -224,10 +224,11 @@ function startPresentation(req, res, next) {
       //update liveSessions of user
       var userPromise = User.findById(req.user._id).exec()
       .then(
-        function(user){
+        function onUser(user){
           if(!user){
             return when.reject(new Error('No user with this id'))
           } //FIXME create proper error like in list presentations
+          user.current = (newSession._id)
           user.liveSessions.addToSet(newSession._id)
           return nodefn.call(user.save.bind(user))
         }
@@ -240,18 +241,18 @@ function startPresentation(req, res, next) {
       ]);
     }
   ).then(
-    function(){
+    function generateWhitelist(){
       return nodefn.call(presUtils.generateWhitelist[newSession.authLevel]
           , newSession._id, newSession.presenter)
     }
   ).then(
-    function(){
+    function sendReponse(){
       appLogger.info('Starting new ' + newSession.authLevel + ' session');
       res.location(['/', req.user.name, '/presentations/', newSession.slides,
         '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
       res.send(201);
     },
-    function(err){
+    function errorHandler(err){
       next(err)
     }
   );

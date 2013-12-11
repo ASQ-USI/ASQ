@@ -48,7 +48,6 @@ var express     = require('express')
 //don't remove whitespace
 dust.optimizers.format = function(ctx, node) { return node };
 
-console.log(dust.helpers)
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into a`nd deserialize users out of the session.  Typically,

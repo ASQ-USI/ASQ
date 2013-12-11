@@ -13,16 +13,16 @@ var AdmZip          = require('adm-zip')
   , Parser          = lib.assessment.parser
   , MarkupGenerator = lib.assessment.markupGenerator
   , fsUtils         = lib.utils.fs
+  , Slideshow       = db.model('Slideshow')
+  , User            = db.model('User')
   , model           = require('../../../models')
   , slideshowModel  = model.slideshowModel
   , questionModel   = model.questionModel
   , utils           = require('./utils')
   , errFormatter    = require('../../../lib/utils/responseHelper').restErrorFormatter
-  , errorTypes      = require('../../errorTypes'); 
+  , errorTypes      = require('../../errorTypes');
 
 function deletePresentation(req, res, next) {
-  var  Slideshow = db.model('Slideshow');
-
   errorTypes.add('invalid_request_error');
 
   Slideshow.findOne({
@@ -63,7 +63,6 @@ function deletePresentation(req, res, next) {
 function getPresentation(req, res, next) {
   appLogger.debug(req.liveSession);
   var id = req.params.presentationId;
-  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 
   Slideshow.findById(id, function(err, slideshow) {
     if(slideshow){
@@ -77,7 +76,6 @@ function getPresentation(req, res, next) {
 
 function getPresentationFiles(req, res, next) {
   var id = req.params.presentationId;
-  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
   Slideshow.findById(id, function(err, slideshow) {
     if (slideshow && req.params[0] == slideshow.originalFile) {
       res.redirect(301, '/' + req.user.name + '/presentations/' + id + '/');
@@ -91,15 +89,32 @@ function getPresentationFiles(req, res, next) {
 
 function listPresentations(req, res, next) {
   appLogger.debug('list presentations');
+
   if (req.params.user === req.user.name) {
-    var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-    Slideshow.find({
+
+    var userPromise = User.findOne({
+      _id: req.user._id,
+    }, 'liveSessions')
+    .populate('liveSessions')
+    .exec();
+
+    var slideshowPromise = Slideshow.find({
       owner : req.user._id
-    }, '_id title course lastSession lastEdit',
-    function processPresentations(err, slides) {
-      if (err) {
-        return next(err);
+    }, '_id title course lastSession lastEdit').exec();
+
+    when.all([userPromise, slideshowPromise])
+    .then(
+      function onAll(results){
+        processPresentations(results[0], results[1]);
       }
+    );
+
+    function processPresentations(user, slides) {
+      var live={};
+      user.liveSessions.forEach(function(session){
+        live[session.slides.toString()]=true;
+      });
+
       var slidesByCourse = null; //to evaluate as false in dustjs
 
       if (typeof slides != "undefined" 
@@ -109,6 +124,13 @@ function listPresentations(req, res, next) {
         slidesByCourse = {};
         for (var i = 0; i < slides.length; i++) {
           var slideshow = slides[i].toJSON();
+          if (!live.hasOwnProperty(slideshow._id)) {
+            slideshow.isLive = false;
+          }else{
+            slideshow.isLive = live[slideshow._id]
+          }
+          console.log(slideshow.isLive)
+
           if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
             slidesByCourse[slideshow.course] = [];
           }
@@ -130,12 +152,14 @@ function listPresentations(req, res, next) {
         JSONIter        : dustHelpers.JSONIter,
         host            : ASQ.appHost,
         port            : app.get('port'),
-        id              : req.user.current,
+        id              : req.user.current, //FIXME: remove?
         alert           : req.query.alert,
         type            : type,
         session         : req.user.current
       });
-    });
+    }
+
+
   } else {
     //For now redirect to your presentations.
     res.redirect('/' + req.user.name + '/presentations/');
@@ -151,8 +175,7 @@ function uploadPresentation(req, res, next) {
   //STEPS TO CREATE A NEW SLIDESHOW
 
   // 1) create new Slideshow model
-  var Slideshow = db.model('Slideshow')
-  , slideShowFileHtml
+  var slideShowFileHtml
   , slideShowQuestions
   , parsedQuestions
   , parsedStats;
@@ -270,7 +293,6 @@ function uploadPresentation(req, res, next) {
     })
     //10) update slideshows for user
     .then(function(){
-      var User = db.model('User');
       return User.findByIdAndUpdate(req.user._id, {
         $push: { slides : newSlideshow._id }
       }).exec();
