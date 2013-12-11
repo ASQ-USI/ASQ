@@ -48,51 +48,6 @@ var express     = require('express')
 //don't remove whitespace
 dust.optimizers.format = function(ctx, node) { return node };
 
-// Passport session setup.
-//   To support persistent login sessions, Passport needs to be able to
-//   serialize users into a`nd deserialize users out of the session.  Typically,
-//   this will be as simple as storing the user ID when serializing, and finding
-//   the user by ID when deserializing.
-
-// passport.serializeUser(function(user, done) {
-//   done(null, user._id);
-// });
-
-// passport.deserializeUser(function(id, done) {
-//     var User = db.model('User', schemas.userSchema);
-//     var out = User.findById(id, function (err, user) {
-//         if (user) {
-//             done(err, user);
-//         } else {
-//             done(null,new Error('User ' + id + ' does not exist'));
-//         }
-//       })
-//     });
-
-// // Use the LocalStrategy within Passport.
-// //   Strategies in passport require a `verify` function, which accepts
-// //   credentials (in this case, a username and password), and invoke a callback
-// //   with a user object.  In the real world, this would query a database;
-// //   however, in this example we are using a baked-in set of users.
-
-// passport.use(new LocalStrategy(
-//   function(username, password, done) {
-//     // asynchronous verification, for effect...
-//     process.nextTick(function () {
-//     var User = db.model('User', schemas.userSchema);
-//     var out = User.findOne({ name: username }, function (err, user) {
-//         if (err) { return done(err); }
-//         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-//         user.isValidPassword(password, function(err, isMatch) {
-//             if (err) { return done(err); }
-//             if (!isMatch) { return done(null, false, { message: 'Invalid password' }); }
-//             return done(null, user);
-//         });
-//       })
-//     });
-//   }
-// ));
-
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
@@ -207,30 +162,9 @@ app.configure('production', function(){
   app.use(errorMiddleware.errorHandler());
 });
 
-// app.get('/', function(req, res){
-  // res.render('index2', {
-    // title: 'Testing out dust.js server-side rendering',
-    // username: "Welcome Max"
-  // });
-// });
-
-/** Routing */
-//MOVED
- // app.get('/', ensureAuthenticated, function(req, res){
- //   res.redirect('/user');
- // });
-
-//MOVED
-/** Initialize a new session with slides matching the id */
-//app.get('/user/start/:id', ensureAuthenticated, routes.slides.start);
-
 /** Stop a user current session **/
 app.get('/user/stop', ensureAuthenticated, routes.slides.stop);
 
-/** Edit user account settings **/
-//MOVED
-// app.get('/user/settings', ensureAuthenticated, registration.settings);
-// app.post('/user/settings', ensureAuthenticated, registration.saveSettings);
 
 /** Join the session of user */
 app.get('/live/:user/', authentication.authorizeSession, routes.slides.live);
@@ -242,86 +176,11 @@ app.get('/admincontroll/*', ensureAuthenticated, routes.slides.adminStatic);
 app.get('/admin/',  ensureAuthenticated, routes.slides.admin);
 app.get('/admin/*', ensureAuthenticated, routes.slides.adminStatic);
 
-/** Upload new slides */
-//MOVED
-//app.post('/user/upload/', ensureAuthenticated, routes.upload.post);
-//app.get('/user/upload/', ensureAuthenticated, routes.upload.show);
-
-//Someone types /signup URL, which has no meaning. He is redirected.
-//MOVED
-// app.get('/signup/', function(req, res){
-//   res.redirect('/');
-// });
 
 app.get('/checkusername/:username/', registration.checkusername);
 
-//Registration happened.
-//MOVED
-//app.post('/signup', registration.signup);
-
-//Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
-//MOVED
-// app.get('/user/', ensureAuthenticated, function(req,res) {
-//     res.redirect('/user/'+req.user.name + '/');
-// });
-
-//Someone tries to Log In, if plugin authenticates the user he sees his profile page, otherwise gets redirected
-//MOVED
-// app.post('/user', passport.authenticate('local', {
-//   failureRedirect : '/',
-//   failureFlash    : true
-// }),function(req, res) {
-//     var redirect_to = req.session.redirect_to ?
-//       req.session.redirect_to : "/user/" + req.body.username + "/" ;
-//     res.redirect(redirect_to);
-// });
-
-//Someone types /user URL, if he's authenticated he sees his profile page, otherwise gets redirected
-//MOVED
-//app.get('/user/:username/', ensureAuthenticated, registration.renderuser);
-
-//Serves thumbnails
-//MOVED
-//app.get('/slides/thumbs/:id/:file', ensureAuthenticated, routes.slides.serveThumbs)
-
-//REDIRECT LOOP FOR SOME REASON
-// app.get('/user/edit/', ensureAuthenticated, function (req,res) {
-//     res.redirect("/user/edit")
-// });
-
-// app.get('/user/edithtml/', ensureAuthenticated, function (req,res) {
-//     res.redirect("/user/edit")
-// });
-
-// app.get('/user/editstyle/', ensureAuthenticated, function (req,res) {
-//     res.redirect("/user/edit")
-// });
-// app.get('/user/editquestions/', ensureAuthenticated, function (req,res) {
-//     res.redirect("/user/edit")
-// });
-
-//MOVED
-//app.get('/user/edit/:id', ensureAuthenticated, editFunctions.editslideshow);
 
 app.get('/user/editquestions/:id', ensureAuthenticated, editFunctions.editquestions);
-
-//app.post('/user/edit/:id', ensureAuthenticated, editFunctions.addquestion);
-
-//app.post('/user/editquestions/:id', ensureAuthenticated, editFunctions.addquestion);
-
-//app.get('/user/delete/:id', ensureAuthenticated, editFunctions.deletequestion);
-
-//MOVED
-//pp.del('/slideshows/:id', ensureAuthenticated, editFunctions.deleteSlideshow);
-
-//app.get('/stats/:id/', ensureAuthenticated, registration.sendstats);
-
-//The user logs out, and get redirected
-//MOVED
-// app.get('/logout/', function(req, res){
-//   req.logout();
-//   res.redirect('/');
-// });
 
 
 // Crash at start with node.js 0.10.10
@@ -341,12 +200,6 @@ app.post('/user/savedetails/:id', ensureAuthenticated, editFunctions.saveDetails
 app.get('/slidesInFrame/:id/', function(req,res){
 	res.render('slidesIFrame', {user: req.user.name, id: req.params.id, url: req.query.url});
 });
-//MOVED
-// app.get('/slidesRender/:id', routes.slides.render);
-// app.get('/slidesRender/:id/*',  routes.slides.renderStatic);
-
-//Show splash screen for starting presentations
-//app.get('/slidesSplashScreen', routes.slides.splashScreen)
 
 //Test call to create sample stats data
 app.get('/stats/createSampleData', statistics.createSampleData)
@@ -354,13 +207,8 @@ app.get('/stats/createSampleData', statistics.createSampleData)
 //Request statistical data for Google Chart
 app.get('/stats/getStats', statistics.getStats)
 
-
 //Render test page
 app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: req.query.questionId})});
-
-// Crash at start with node.js 0.10.10
-//app.get('/render/', ensureAuthenticated, registration.parsequestion);
-//app.get('/render2/',  registration.sendanswer);
 
 routes.setUp(app, middleware);
 
