@@ -17,3 +17,6 @@
 - make correct answers green
 - cheerio 0.12.2 bug extra hyphens
 - filter javascript in submissions
+-Front end Tests
+ - click start presentation button
+ - Delete session
