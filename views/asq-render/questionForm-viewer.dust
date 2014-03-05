@@ -1,8 +1,10 @@
 <form action="">
-  
   {+questionContent/}
   <input type="hidden" name="question-id" value={question.id}>
   <p class="text-right">
+    <span class="asq-rating">
+      <span>&#9734;</span><span>&#9734;</span><span>&#9734;</span><span>&#9734;</span><span>&#9734;</span>
+    </span>
     <button type="submit" class="btn btn-success">Submit</button>
   </p>
 </form>

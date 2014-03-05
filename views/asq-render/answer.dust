@@ -6,19 +6,19 @@
     <a href="#answersolutions-{statId}"  data-toggle="tab">Correct Answer</a>
   </li>
   {/activePanes.correct}
-  
+
   {?activePanes.right-vs-wrong}
   <li>
     <a href="#rvsw-{statId}" data-toggle="tab">Right vs. Wrong</a>
   </li>
   {/activePanes.right-vs-wrong}
-  
+
   {?activePanes.distinct-answers}
   <li>
     <a href="#mscstats-{statId}" data-toggle="tab">Distinct Answers</a>
   </li>
   {/activePanes.distinct-answers}
-  
+
   {?activePanes.distinct-options}
   <li>
     <a href="#diffAns-{statId}" data-toggle="tab">Distinct Options</a>
