@@ -102,6 +102,12 @@ module.exports = function(grunt) {
       testslides: ["test/slides/*"]
     },
 
+    command : {
+        deploy: {
+            cmd  : 'git push production devel'
+        }
+    },
+
     //jshint
     jshint: {
       all: ['Gruntfile.js'
@@ -239,6 +245,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['build']);
   grunt.registerTask('build', ['maybeless', 'dust', 'browserify', 'uglify']);
   grunt.registerTask('devwatch', ['build', 'watch:minimal']);
+  grunt.registerTask('deploy', ['command:deploy']);
 
   //ported from togetherjs
   //https://github.com/mozilla/togetherjs/blob/develop/Gruntfile.js
@@ -270,6 +277,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-commands');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-uglify');
