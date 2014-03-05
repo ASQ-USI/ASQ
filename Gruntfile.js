@@ -106,7 +106,8 @@ module.exports = function(grunt) {
         deploy: {
             command  : 'git push production devel',
             options: {
-              stdout: true
+              stdout: true,
+              stderr: true
             }
         }
     },
