@@ -2,8 +2,25 @@
   {+questionContent/}
   <input type="hidden" name="question-id" value={question.id}>
   <p class="text-right">
-    <span class="asq-rating">
-      <span>&#9734;</span><span>&#9734;</span><span>&#9734;</span><span>&#9734;</span><span>&#9734;</span>
+    <span class="asq-rating-widget">
+      <span class="label label-info">Confidence:</span>
+      <span class="asq-rating">
+        <input type="radio" id="asq-rating-self-{question.id}-1"
+        class="asq-rating-input" name="asq-rating-self-{question.id}">
+        <label for="asq-rating-self-{question.id}-1" class="asq-rating-star"></label>
+        <input type="radio" id="asq-rating-self-{question.id}-2"
+        class="asq-rating-input" name="asq-rating-self-{question.id}">
+        <label for="asq-rating-self-{question.id}-2" class="asq-rating-star"></label>
+        <input type="radio" id="asq-rating-self-{question.id}-3"
+        class="asq-rating-input" name="asq-rating-self-{question.id}">
+        <label for="asq-rating-self-{question.id}-3" class="asq-rating-star"></label>
+        <input type="radio" id="asq-rating-self-{question.id}-4"
+        class="asq-rating-input" name="asq-rating-self-{question.id}">
+        <label for="asq-rating-self-{question.id}-4" class="asq-rating-star"></label>
+        <input type="radio" id="asq-rating-self-{question.id}-5"
+        class="asq-rating-input" name="asq-rating-self-{question.id}">
+        <label for="asq-rating-self-{question.id}-5" class="asq-rating-star"></label>
+    </span>
     </span>
     <button type="submit" class="btn btn-success">Submit</button>
   </p>
