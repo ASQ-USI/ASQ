@@ -3,7 +3,7 @@ var mongoose  = require('mongoose')
   , ObjectId  = Schema.ObjectId;
 
 var assessmentSchema = new Schema({
-  session  : { type: ObjectId, ref: 'Answer', required: true }
+  session  : { type: ObjectId, ref: 'Answer', required: true },
   answer   : { type: ObjectId, ref: 'Answer', required: true },
   assessee : { type: ObjectId, ref: 'User', required: true },
   assessor : { type: ObjectId, ref: 'User', required: true },
