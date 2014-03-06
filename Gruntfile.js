@@ -278,15 +278,7 @@ module.exports = function(grunt) {
 });
 
   //npm tasks
-  grunt.loadNpmTasks('grunt-mocha-test');
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-dust');
-  grunt.loadNpmTasks('grunt-shell');
+  require('load-grunt-tasks')(grunt);
 
 
   //load external taks
