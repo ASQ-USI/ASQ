@@ -554,6 +554,11 @@ exports.getSessionStats = function(req, res) {
 }
 /** Given a userName, find it's current session **/
 var sessionFromUserName = function(userName, callback) {
+	callback(
+		new Error('Depreciated: user does not have the current field anymore.'),
+		null
+	);
+	return false;
 	var User = db.model('User', schemas.userSchema);
 	//console.log('user');
 	//console.log(userName);
