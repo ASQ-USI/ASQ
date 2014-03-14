@@ -20,8 +20,13 @@
 *.tar
 
 
-# Node.js #
-###########
+# Hidden Files and Folders #
+############################
+.*
+!/.gitignore
+
+# Node.js & ASQ #
+#################
 node_modules/
 slides/
 config/config.*
