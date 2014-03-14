@@ -388,3 +388,45 @@ p{
 */
 .impress-enabled          { pointer-events: none }
 .impress-enabled #impress { pointer-events: auto }
+
+.asq-rating-widget {
+    vertical-align: middle;
+    margin-right: 1em;
+}
+
+.asq-rating-widget > small {
+    vertical-align: text-top;
+}
+.asq-rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    margin-left: .2em;
+}
+
+.asq-rating-star{
+    display: inline-block;
+    position: relative;
+    width: 1.1em;
+}
+
+.asq-rating .asq-rating-star:before {
+    content: "\2606";
+}
+
+.asq-rating:hover .asq-rating-star:hover:before,
+.asq-rating:hover .asq-rating-star:hover ~ .asq-rating-star:before,
+.asq-rating-input:checked ~ .asq-rating-star:before {
+   content: "\2605";
+}
+
+.asq-rating:hover .asq-rating-star:before {
+    content: "\2606";
+}
+
+.asq-rating:hover .asq-rating-input:checked + .asq-rating-star:before {
+    color: #5cb85c;
+}
+
+.asq-rating-input {
+    display: none;
+}
