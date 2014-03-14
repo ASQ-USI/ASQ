@@ -57,7 +57,9 @@
     "validator": "~1.2.2",
     "when": "~2.4.0",
     "winston": "~0.7.2",
-    "superagent": "~0.15.7"
+    "superagent": "~0.15.7",
+    "mongoose-schema-extend": "^0.1.7",
+    "sillyname": "0.0.3"
   },
   "engines": {
     "node": "0.10.x",
