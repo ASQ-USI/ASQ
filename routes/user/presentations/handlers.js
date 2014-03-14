@@ -15,6 +15,7 @@ var AdmZip          = require('adm-zip')
   , fsUtils         = lib.utils.fs
   , Slideshow       = db.model('Slideshow')
   , User            = db.model('User')
+  , Session         = db.model('Session')
   , model           = require('../../../models')
   , slideshowModel  = model.slideshowModel
   , questionModel   = model.questionModel
@@ -89,80 +90,71 @@ function getPresentationFiles(req, res, next) {
 
 function listPresentations(req, res, next) {
   appLogger.debug('list presentations');
+  // var userPromise = User.findOne({
+  //   _id: req.user._id,
+  // }, 'liveSessions')
+  // .populate('liveSessions')
+  // .exec();
 
-  if (req.params.user === req.user.name) {
+  var sessionPromise = Session.getLiveSessions(req.user._id);
 
-    var userPromise = User.findOne({
-      _id: req.user._id,
-    }, 'liveSessions')
-    .populate('liveSessions')
-    .exec();
+  var slideshowPromise = Slideshow.find({
+    owner : req.user._id
+  }, '_id title course lastSession lastEdit').exec();
 
-    var slideshowPromise = Slideshow.find({
-      owner : req.user._id
-    }, '_id title course lastSession lastEdit').exec();
+  when.all([sessionPromise, slideshowPromise])
+  .then(
+    function onAll(results){
+      processPresentations(results[0], results[1]);
+    }
+  );
 
-    when.all([userPromise, slideshowPromise])
-    .then(
-      function onAll(results){
-        processPresentations(results[0], results[1]);
-      }
-    );
+  function processPresentations(sessions, slides) {
+    var live={};
+    sessions.forEach(function(session){
+      live[session.slides.toString()]=true;
+    });
 
-    function processPresentations(user, slides) {
-      var live={};
-      user.liveSessions.forEach(function(session){
-        live[session.slides.toString()]=true;
-      });
+    var slidesByCourse = null; //to evaluate as false in dustjs
 
-      var slidesByCourse = null; //to evaluate as false in dustjs
-
-      if (typeof slides != "undefined" 
-            && slides != null
-            && slides.length > 0) {
-        
-        slidesByCourse = {};
-        for (var i = 0; i < slides.length; i++) {
-          var slideshow = slides[i].toJSON();
-          if (!live.hasOwnProperty(slideshow._id)) {
-            slideshow.isLive = false;
-          }else{
-            slideshow.isLive = live[slideshow._id]
-          }
-          console.log(slideshow.isLive)
-
-          if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
-            slidesByCourse[slideshow.course] = [];
-          }
-          slideshow.lastEdit = moment( slideshow.lastEdit)
-              .format('DD.MM.YYYY HH:mm');
-          slideshow.lastSession = moment( slideshow.lastSession)
-              .format('DD.MM.YYYY HH:mm');
-          slidesByCourse[slideshow.course].push(slideshow);
+    if (typeof slides != "undefined"
+          && slides != null
+          && slides.length > 0) {
+      slidesByCourse = {};
+      for (var i = 0; i < slides.length; i++) {
+        var slideshow = slides[i].toJSON();
+        if (!live.hasOwnProperty(slideshow._id)) {
+          slideshow.isLive = false;
+        }else{
+          slideshow.isLive = live[slideshow._id]
         }
+
+        if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
+          slidesByCourse[slideshow.course] = [];
+        }
+        slideshow.lastEdit = moment( slideshow.lastEdit)
+            .format('DD.MM.YYYY HH:mm');
+        slideshow.lastSession = moment( slideshow.lastSession)
+            .format('DD.MM.YYYY HH:mm');
+        slidesByCourse[slideshow.course].push(slideshow);
       }
-
-      var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
-          ? 'alert-' + req.query.type : '';
-
-      res.render('presentations', {
-        username        : req.user.name,
-        isOwner         : req.isOwner,
-        slidesByCourses : slidesByCourse,
-        JSONIter        : dustHelpers.JSONIter,
-        host            : ASQ.appHost,
-        port            : app.get('port'),
-        id              : req.user.current, //FIXME: remove?
-        alert           : req.query.alert,
-        type            : type,
-        session         : req.user.current
-      });
     }
 
+    var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
+        ? 'alert-' + req.query.type : '';
 
-  } else {
-    //For now redirect to your presentations.
-    res.redirect('/' + req.user.name + '/presentations/');
+    res.render('presentations', {
+      username        : req.user.name,
+      isOwner         : req.isOwner,
+      slidesByCourses : slidesByCourse,
+      JSONIter        : dustHelpers.JSONIter,
+      host            : ASQ.appHost,
+      port            : app.get('port'),
+      //id              : req.user.current, //FIXME: remove?
+      alert           : req.query.alert,
+      type            : type,
+      //session         : req.user.current
+    });
   }
 }
 
@@ -198,10 +190,10 @@ function uploadPresentation(req, res, next) {
     })
     .then(
       function(filePath){
-        return pfs.readFile(filePath);     
+        return pfs.readFile(filePath);
     })
     //4) parse questions
-    .then(    
+    .then(
       function(file) {
         slideShowFileHtml = file;
         function replaceAll(find, replace, str) {

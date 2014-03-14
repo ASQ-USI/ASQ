@@ -72,14 +72,14 @@ function livePresentation(req, res) {
     role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
   } else {
     appLogger.debug('Public session');
-    role = 'viewer' //Public session and not whitelisted only allows viewers.
+    role = 'viewer'; //Public session and not whitelisted only allows viewers.
   }
-  var view = req.query.view || 'presentation'
-    , presentation = req.liveSession.slides
-    , presentationViewUrl=""
-    , presenterLiveUrl="";
+  var view                = req.query.view || 'presentation'
+    , presentation        = req.liveSession.slides
+    , presentationViewUrl = ''
+    , presenterLiveUrl    = '';
 
-  //TMP until roles are defined more precisly 
+  //TMP until roles are defined more precisely
   appLogger.debug('Select template for ' + role + ' ' + view);
   var renderOpts = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
@@ -228,8 +228,8 @@ function startPresentation(req, res, next) {
           if(!user){
             return when.reject(new Error('No user with this id'))
           } //FIXME create proper error like in list presentations
-          user.current = (newSession._id)
-          user.liveSessions.addToSet(newSession._id)
+          // user.current = (newSession._id)
+          // user.liveSessions.addToSet(newSession._id)
           return nodefn.call(user.save.bind(user))
         }
       );
@@ -243,7 +243,7 @@ function startPresentation(req, res, next) {
   ).then(
     function generateWhitelist(){
       return nodefn.call(presUtils.generateWhitelist[newSession.authLevel]
-          , newSession._id, newSession.presenter)
+          , newSession._id, req.user)
     }
   ).then(
     function sendReponse(){

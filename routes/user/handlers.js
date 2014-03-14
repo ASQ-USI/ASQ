@@ -1,10 +1,11 @@
 'use strict';
 
-var validInputs = require('../../lib').utils.form.isvalidUserForm
+var when        = require('when')
   , moment      = require('moment')
   , lib         = require('../../lib')
   , appLogger   = lib.logger.appLogger
   , dustHelpers = lib.dustHelpers
+  , validInputs = require('../../lib').utils.form.isvalidUserForm
   , Slideshow   = db.model('Slideshow')
   , User        = db.model('User')
   , Session     = db.model('Session');
@@ -55,10 +56,10 @@ function getUserPage(req, res) {
         JSONIter        : dustHelpers.JSONIter,
         host            : ASQ.appHost,
         port            : app.get('port'),
-        id              : req.user.current,
+        //id              : req.user.current,
         alert           : req.query.alert,
         type            : type,
-        session         : req.user.current
+        //session         : req.user.current
       });
     });
   } else {
@@ -104,7 +105,7 @@ function updateUserSettings(req, res) {
   });
   
   // Select fields to update
-  var newValues = {}
+  var newValues = {};
   if(username.length > 0){
     newValues.name = username;
   }
@@ -130,7 +131,7 @@ function updateUserSettings(req, res) {
       user:  newValues,
       alert: 'Account successfully updated!',
       type: 'success'
-    }); 
+    });
   });
 }
 
@@ -140,44 +141,46 @@ function getLivePresentations(req, res) {
   User.findOne({name: req.params.user}, {_id:1}).exec()
     .then(
       function(user){
-        return Session
-          .where('presenter').equals(user._id)
-          .where('endDate').equals(null)
-          .exec()
+        if (!user) {
+          return when.reject(new Error('User not found.'));
+        }
+        return Session.getLiveSessions(user._id);
       })
     .then(
       function(sessions){
-          console.log("I am here2")
-          var sessionIds = sessions.map(function getSessionIds(session){
-            slideshowSessionMap[session.slides] = session._id
-            return session.slides
-          })
+        console.log("I am here2")
+        var sessionIds = sessions.map(function getSessionIds(session){
+          slideshowSessionMap[session.slides] = session._id
+          return session.slides
+        })
           return Slideshow.find({_id : {$in : sessionIds}}).exec();
       })
     .then(
       function(slideshows){
-          console.log("I am here3")
-          slideshows.forEach(function(slideshow){
-            slideshow.liveUrl = ASQ.rootUrl + '/' + req.params.user
-                          + '/presentations/' + slideshow._id + '/live/'
-                          + slideshowSessionMap[slideshow._id] 
-                          + '/?role=viewer&view=presentation';
-                 console.log(slideshow)         
-          })
-            console.log("I am here4")
-           
-          res.render('userLive', {
-          livePresentations: slideshows,
-          username: req.params.user,
-          owner : {name: req.params.user },
-          user : { name : req.params.name, email : req.params.name }
+        console.log("I am here3")
+        slideshows.forEach(function(slideshow){
+          slideshow.liveUrl = ASQ.rootUrl + '/' + req.params.user
+                        + '/presentations/' + slideshow._id + '/live/'
+                        + slideshowSessionMap[slideshow._id]
+                        + '/?role=viewer&view=presentation';
+               console.log(slideshow)
+        })
+          console.log("I am here4")
+
+        res.render('userLive', {
+        livePresentations: slideshows,
+        username: req.params.user,
+        owner : {name: req.params.user },
+        user : { name : req.params.name, email : req.params.name }
         });
-      },
+      })
+    .then(null,
       function(err){
         var where = "@ getLivePresentations";
-        appLogger.error(where + ': ' + err);
-        res.render('500', { where: where , error: err });
-      })
+        err = err instanceof Error ? err : new Error(err);
+        appLogger.error(where + ': ', { error: err.stack });
+        res.render('500', { where: where , error: err, stack: err.stack });
+      });
 }
 
 module.exports = {
