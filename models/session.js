@@ -16,11 +16,11 @@ var sessionSchema = new Schema({
 	startDate: {type: Date, default: Date.now },
   endDate: { type: Date, default: null },
 	viewers: {type: Array, default: []},
-  
+
 	answers: { type:[ObjectId], ref: 'Answer'},
 	showingQuestion: { type: Boolean, default: false}, //maybe don't need it -> used to get a new connection up to date if it connects un the middle of a session
 	showingAnswer: { type: Boolean, default: false}, //maybe don't need it -> same as above
-	started: { type: Boolean, default: false}, 
+	started: { type: Boolean, default: false},
 	questionsDisplayed: { type: [ObjectId], ref: 'Question'}, //maybe don't need it
   activeQuestions: [ObjectId],
   activeStatsQuestions : [ObjectId]
@@ -40,7 +40,7 @@ sessionSchema.pre('save', true, function(next, done){
     slides: this.slides,
     endDate: null,
   }, function(err, session) {
-    if(err) done(err)
+    if(err) done(err);
     if (session) {
       return done(new Error('A live session with the specified user and presentation already exists'));
     }
@@ -74,6 +74,37 @@ sessionSchema.pre('save', true, function(next, done){
   });
 });
 
+sessionSchema.statics.getLiveSessions = function getLiveSessions(userId, callback) {
+  var deferred = when.defer();
+  this.find({ presenter: userId, endDate: null},
+  function onLiveSessions(err, sessions) {
+    if (callback & (typeof(callback) == "function")) {
+      callback(err, sessions);
+      return
+    } else if (err) {
+      deferred.reject(err);
+    } else {
+    deferred.resolve(sessions);
+    }
+  });
+  return deferred.promise;
+}
+
+sessionSchema.statics.getLiveSessionIds = function getLiveSessionIds(userId, callback) {
+  var deferred = when.defer();
+  this.find({ presenter: userId, endDate: null}, '_id',
+  function onLiveSessions(err, sessions) {
+    if (callback & (typeof(callback) == "function")) {
+      callback(err, sessions);
+      return
+    } else if (err) {
+      deferred.reject(err);
+    } else {
+    deferred.resolve(sessions);
+    }
+  });
+  return deferred.promise;
+}
 
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
 
@@ -85,7 +116,7 @@ sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
       deferred.resolve(slideshow.getQuestionsForSlide(slideHtmlId));
     }
    ,function(err, slideshow) {
-      throw err;  
+      throw err;
   });
 
   return deferred.promise;
