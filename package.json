@@ -15,6 +15,7 @@
   "dependencies": {
     "formidable": "1.0.0",
     "adm-zip": "~0.4.3",
+    "asq-microformat":"ASQ-USI/asq-microformat#060c45",
     "async": "~0.2.9",
     "asyncblock": "~2.1.13",
     "bcrypt": "~0.7.6",

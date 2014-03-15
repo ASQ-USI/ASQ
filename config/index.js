@@ -90,7 +90,7 @@ conf = {
       json: false
     }
   }
-}
+};
 
 
 // check for default configuration
