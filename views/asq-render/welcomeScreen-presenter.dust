@@ -1,9 +1,0 @@
-<p>
-  <strong>Join this presentation:</strong>
-</p>
-<h3 class="slideshow-url">{presenterLiveUrl}</h3>
-<div class="connected-viewers-icons">
-</div>
-<p class="connected-viewers-number">
-  Waiting for viewers
-</p>

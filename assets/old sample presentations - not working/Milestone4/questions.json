@@ -1,8 +1,0 @@
-[
-{"questionText":"Quality of the Lecture: HTML5/CSS3","questionType":"Multiple choice","afterslide":"2","options":[{"optionText":"poor","correct":true},{"optionText":"ok","correct":true},{"optionText":"good","correct":true},{"optionText":"excellent","correct":true}]},
-{"questionText":"Quality of the Lecture: Functional JavaScript","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"poor","correct":true},{"optionText":"ok","correct":true},{"optionText":"good","correct":true},{"optionText":"excellent","correct":true}]},
-{"questionText":"Quality of the Lecture: Object-Oriented JavaScript","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"poor","correct":true},{"optionText":"ok","correct":true},{"optionText":"good","correct":true},{"optionText":"excellent","correct":true}]},
-{"questionText":"Quality of the Lecture: Node.JS","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"poor","correct":true},{"optionText":"ok","correct":true},{"optionText":"good","correct":true},{"optionText":"excellent","correct":true}]},
-{"questionText":"Quality of the Lecture: Express.JS MVC","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"poor","correct":true},{"optionText":"ok","correct":true},{"optionText":"good","correct":true},{"optionText":"excellent","correct":true}]},
-{"questionText":"Quality of the Lecture: AJAX","questionType":"Multiple choice","afterslide":"3","options":[{"optionText":"poor","correct":true},{"optionText":"ok","correct":true},{"optionText":"good","correct":true},{"optionText":"excellent","correct":true}]}
-]

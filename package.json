@@ -76,8 +76,6 @@
     "grunt-contrib-less": "~0.7.0",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-dust": "~0.6.1",
-    "grunt-mocha-test": "~0.7.0",
     "grunt-shell": "~0.6.4",
     "karma": "~0.10",
     "load-grunt-tasks": "~0.4.0",

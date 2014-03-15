@@ -6,7 +6,7 @@
 var impress = require('impressViewer')
 , io = require('socket.io-browserify')
 , $ = window.jQuery || require('jQuery')
-, assessment = require('./assessment.js')
+, assessment = require('asq-microformat').assessment;
 
 // Save current question id;
 var questionId = null, socket, session;

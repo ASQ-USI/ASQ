@@ -1,6 +1,0 @@
-{>"questionForm-{userType}"/}
-
-{<questionContent}
-  <label class="control-label" for="inputText">Your solution:</label>
-  <input type="text" class="" id="inputText" placeholder="Your solution">
-{/questionContent}
