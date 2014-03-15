@@ -21,7 +21,8 @@ var chai            = require('chai')
   , path            = require('path')
   , lib             = require('../lib')
   , fsUtils         = lib.utils.fs
-  , _               = require('lodash');
+  , _               = require('lodash')
+  ,mongooseFixtures = require('./util/mongoose-fixtures')
 
 // support for promises
 require("mocha-as-promised")();
@@ -49,6 +50,14 @@ app.configure(function() {
   }));
   app.use(passportMock.initialize(mockUser));
   return app.use(passport.session());
+
+  app.use(app.router);
+  // error handler that route is going to 'next' to, if
+  // there's an error
+  app.use(function(err, req, res, next){
+    console.log('edwwwwwwww')
+    throw err;
+  });
 });
 
 //upload root
@@ -60,57 +69,65 @@ describe('upload', function() {
    //callback tests
    describe('.post(req, res)', function(){
 
-    // after(function(done){
-    //   // cleanup db and files
-    //   var Slideshow = db.model('Slideshow');
+    //load a real user to the db
+    before(function(done){
+      mongooseFixtures.load({User: [mockUser]}, db, function(err){
+        if (err) done(err);
+        done();
+      });
+    });
 
-    //   Slideshow.find({}).exec()
-    //     .then(
-    //       function(docs){
-    //         var uploadPath = app.set('uploadDir');
-    //         var totalDocs = docs.length;
-    //         if(totalDocs == 0){
-    //           //return done(new Error("totalDocs shouldn't be 0"));
-    //           return done();
-    //         }
+    after(function(done){
+      // cleanup db and files
+      var Slideshow = db.model('Slideshow');
 
-    //         _.each(docs, function(doc){
-    //           //remove slideshow folder
-    //           fsUtils.removeRecursive(uploadPath + '/' +doc.id, function(err, success){
-    //             if(err){
-    //               return done(err)
-    //             }
-    //             //remove thumbs
-    //             fsUtils.removeRecursive(uploadPath + '/thumbs/' +doc.id, function(err, success){
-    //               if(err){
-    //                 return done(err)
-    //               }
+      Slideshow.find({}).exec()
+        .then(
+          function(docs){
+            var uploadPath = app.set('uploadDir');
+            var totalDocs = docs.length;
+            if(totalDocs == 0){
+              //return done(new Error("totalDocs shouldn't be 0"));
+              return done();
+            }
 
-    //               if(--totalDocs ==0){
-    //                 //cleanup slideshow db
-    //                 Slideshow.remove({}).exec()
-    //                   .then(
-    //                     function(){
-    //                       //cleanup question db
-    //                       var Question = db.model('Question')
-    //                         return Question.remove({}).exec()                      
-    //                   })
-    //                   .then(
-    //                     function(){
-    //                      db.close()
-    //                      done();
-    //                   },
-    //                     function(err){
-    //                       if(err){
-    //                         return done(err)
-    //                       }
-    //                   });
-    //                 } 
-    //               });         
-    //             });              
-    //         });
-    //     });
-    // });
+            _.each(docs, function(doc){
+              //remove slideshow folder
+              fsUtils.removeRecursive(uploadPath + '/' +doc.id, function(err, success){
+                if(err){
+                  return done(err)
+                }
+                //remove thumbs
+                // fsUtils.removeRecursive(uploadPath + '/thumbs/' +doc.id, function(err, success){
+                //   if(err){
+                //     return done(err)
+                //   }
+
+                  if(--totalDocs ==0){
+                    //cleanup slideshow db
+                    Slideshow.remove({}).exec()
+                      .then(
+                        function(){
+                          //cleanup question db
+                          var Question = db.model('Question')
+                            return Question.remove({}).exec()                      
+                      })
+                      .then(
+                        function(){
+                         db.close()
+                         done();
+                      },
+                        function(err){
+                          if(err){
+                            return done(err)
+                          }
+                      });
+                    } 
+                  //});         
+                });              
+            });
+        });
+    });
     
     
     it.skip("should extract the questions and add them to the database");
