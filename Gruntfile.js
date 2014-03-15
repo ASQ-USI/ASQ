@@ -201,6 +201,12 @@ module.exports = function(grunt) {
       }
     },
 
+    //parallel tasks
+    concurrent: {
+      compile: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'browserify:dist', 'dust', 'less'],
+      uglify: ['uglify:build', 'uglify:dist'],
+    },
+
     //watch
     watch: {
       options:{
@@ -241,6 +247,13 @@ module.exports = function(grunt) {
         options: {
           interrupt: true
         },
+      },
+      concurrent: {
+        files: ['client/js/*.js', 'views/asq-render/**/*.dust', 'client/less/**/*.less'],
+        tasks: ['concurrent'],
+        options: {
+          interrupt: true
+        },
       }
     }
   });
@@ -248,7 +261,9 @@ module.exports = function(grunt) {
   // Our custom tasks.
   grunt.registerTask('default', ['build']);
   grunt.registerTask('build', ['maybeless', 'dust', 'browserify', 'uglify']);
+  grunt.registerTask('build-concurrent', ['concurrent:compile', 'concurrent:uglify']);
   grunt.registerTask('devwatch', ['build', 'watch:minimal']);
+  grunt.registerTask('devwatch-concurrent', ['build-concurrent', 'watch:concurrent']);
   grunt.registerTask('deploy', ['shell:deploy']);
 
   //ported from togetherjs
@@ -280,8 +295,7 @@ module.exports = function(grunt) {
   //npm tasks
   require('load-grunt-tasks')(grunt);
 
-
-  //load external taks
+  //load custom tasks
   grunt.loadTasks('./tasks');
 
 };
