@@ -12,16 +12,6 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
-    //mocha tests
-    mochaTest: {
-      test: {
-        options: {
-          reporter: 'spec'
-        },
-        src: ['test/**/*.js']
-      }
-    },
-
     //browserify
     browserify: {
       vendor:{
@@ -84,16 +74,6 @@ module.exports = function(grunt) {
           },
           external: ["jQuery"]
         }
-      },
-      dist:{
-        src: ['client/asq-previewer/asq.js'],
-        dest: 'dist/asq-previewer/js/asq.js',
-        options: {
-          debug: true,
-          alias: 'client/asq-previewer/asq.js:asq,client/js/vendor/jquery-1.10.2.js:jQuery,client/asq-previewer/asq-templates.js:ASQTemplates,client/asq-previewer/dust-runtime.js:dust' 
-          ,
-          external: ["cheerio","./dustfs", "../logger"],
-        }        
       }
     },
 
@@ -133,11 +113,6 @@ module.exports = function(grunt) {
           'public/js/asq-presenter.min.js' : ['public/js/asq-presenter.js'],
           'public/js/asq-viewer.min.js' : ['public/js/asq-viewer.js']
         }
-      },
-      dist: {
-        files: {
-          'dist/asq-previewer/js/asq.min.js' : ['dist/asq-previewer/js/asq.js'],
-        }
       }
     },
 
@@ -167,44 +142,10 @@ module.exports = function(grunt) {
       }
     },
 
-    dust: {
-      asq_render: {
-        files: {
-          "lib/assessment/asqTemplates.js": "views/asq-render/**/*.dust"
-        },
-        options: {
-          basePath: "views/asq-render/" ,
-          wrapper: "commonjs",
-          wrapperOptions: {
-            deps: {
-              dust: "dustjs-linkedin"
-            }
-          },
-          runtime: false
-        }
-      },
-      dist: {
-        files: {
-          "client/asq-previewer/asq-templates.js": "views/asq-render/**/*.dust"
-        },
-        options: {
-          basePath: "views/asq-render/" ,
-          wrapper: "commonjs",
-          wrapperOptions: {
-            returning: "dust",
-            deps: {
-              dust: "dust"
-            }
-          },
-          runtime: false
-        }
-      }
-    },
-
     //parallel tasks
     concurrent: {
-      compile: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'browserify:dist', 'dust', 'less'],
-      uglify: ['uglify:build', 'uglify:dist'],
+      compile: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'less'],
+      uglify: ['uglify'],
     },
 
     //watch
@@ -218,20 +159,6 @@ module.exports = function(grunt) {
         options: {
           spawn: false
           // interrupt: true
-        },
-      },
-      dust:{
-        files: ['views/asq-render/**/*.dust'],
-        tasks: ['dust'],
-        options: {
-          interrupt: true
-        },
-      },
-      dist: {
-        files: ['lib/assessment/**/*.js', 'client/asq-previewer/**/*.js'],
-        tasks: ['browserify:dist'],
-        options: {
-          interrupt: true
         },
       },
       less: {
@@ -249,7 +176,7 @@ module.exports = function(grunt) {
         },
       },
       concurrent: {
-        files: ['client/js/*.js', 'views/asq-render/**/*.dust', 'client/less/**/*.less'],
+        files: ['client/js/*.js', 'client/less/**/*.less'],
         tasks: ['concurrent'],
         options: {
           interrupt: true
@@ -260,7 +187,7 @@ module.exports = function(grunt) {
 
   // Our custom tasks.
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['maybeless', 'dust', 'browserify', 'uglify']);
+  grunt.registerTask('build', ['maybeless', 'browserify', 'uglify']);
   grunt.registerTask('build-concurrent', ['concurrent:compile', 'concurrent:uglify']);
   grunt.registerTask('devwatch', ['build', 'watch:minimal']);
   grunt.registerTask('devwatch-concurrent', ['build-concurrent', 'watch:concurrent']);

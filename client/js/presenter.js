@@ -8,7 +8,7 @@
 var impress = require('impressPresenter')
 , io = require('socket.io-browserify')
 , $ = window.jQuery || require('jQuery')
-, assessment = require('./assessment.js')
+, assessment = require('asq-microformat').assessment;
 
 $(function(){
 	var $body = $('body')
