@@ -7,7 +7,9 @@ var validInputs = require('../../lib').utils.form.isvalidUserForm
   , dustHelpers = lib.dustHelpers
   , Slideshow   = db.model('Slideshow')
   , User        = db.model('User')
-  , Session     = db.model('Session');
+  , Session     = db.model('Session')
+  , util        = require('../../lib/utils/routes');
+
 
 // GET /:user
 function getUserPage(req, res) {
@@ -46,8 +48,7 @@ function getUserPage(req, res) {
         }
       }
 
-      var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
-          ? 'alert-' + req.query.type : '';
+      var type = utils.getAlertTypeClass(req);
 
       res.render('user', {
         username        : req.user.name,

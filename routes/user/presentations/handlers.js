@@ -19,9 +19,10 @@ var AdmZip          = require('adm-zip')
   , model           = require('../../../models')
   , slideshowModel  = model.slideshowModel
   , questionModel   = model.questionModel
-  , utils           = require('./utils')
+  , thumbUtils      = require('./utils')
   , errFormatter    = require('../../../lib/utils/responseHelper').restErrorFormatter
-  , errorTypes      = require('../../errorTypes');
+  , errorTypes      = require('../../errorTypes')
+  , utils           = require('../../../lib/utils/routes')
 
 function deletePresentation(req, res, next) {
   errorTypes.add('invalid_request_error');
@@ -52,7 +53,7 @@ function deletePresentation(req, res, next) {
     }
     //HTML
     res.redirect('/' + req.user.name +
-      '/presentations/?alert=Slideshow deleted&type=succes');
+      '/presentations/?alert=Slideshow deleted&type=success');
   },
 
   //err response
@@ -143,8 +144,7 @@ function listPresentations(req, res, next) {
         }
       }
 
-      var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
-          ? 'alert-' + req.query.type : '';
+      var type = utils.getAlertTypeClass(req);
 
       res.render('presentations', {
         username        : req.user.name,
@@ -289,7 +289,7 @@ function uploadPresentation(req, res, next) {
         appLogger.debug('new slideshow saved to db');
         //create thumbs
         appLogger.debug('creating thumbnails')
-       // utils.createThumbs(newSlideshow);
+       // thumbUtils.createThumbs(newSlideshow);
         return pfs.unlink(req.files.upload.path);         
     })
     //10) update slideshows for user

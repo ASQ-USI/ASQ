@@ -6,10 +6,10 @@
 - auth bug
 - test sockets
 - socket reconnect
-- fix progress bar going back bug
-- fix "you have a live session" logic and dialog
-- fix remember me
-- ADD delete presentations
+- FIX: progress bar going back bug
+- FIX: "you have a live session" logic and dialog
+- FIX: remember me
+- ADD" delete presentations
 - write mongo script to check consistency of database
 - make sure that the parser maintains all the attributes of questions
 - check parameters that are expected from request and response objects
@@ -20,3 +20,6 @@
 -Front end Tests
  - click start presentation button
  - Delete session
+ - checkusername/ should be performed every 100ms delay
+ - check email address the same way we do with check usename
+ - FIX: when someone clicks upload with nothing we get an error
