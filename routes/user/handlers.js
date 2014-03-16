@@ -8,7 +8,7 @@ var validInputs = require('../../lib').utils.form.isvalidUserForm
   , Slideshow   = db.model('Slideshow')
   , User        = db.model('User')
   , Session     = db.model('Session')
-  , util        = require('../../lib/utils/routes');
+  , utils        = require('../../lib/utils/routes');
 
 
 // GET /:user

@@ -6,7 +6,7 @@ var schemas   = require("../models")
 , dustHelpers = require('../lib/dust-helpers')
 , check       = require('validator').check
 , appLogger   = require('../lib/logger').appLogger
-, util 			  = require('../lib/utils/routes');
+, utils			  = require('../lib/utils/routes');
 
 exports.isValidUserName = function(candidateUser) {
 	// Match string between 3 and 12 chars starting with a letter, lower or upper case 
