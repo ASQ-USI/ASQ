@@ -509,7 +509,7 @@ exports.getSessionStats = function(req, res) {
 						//Render it after last question added!
 						if (questions.length == slideshow.questions.length) {
 							var userId = req.user._id;
-							sessionFromUserName(req.user.name, function(err, session) {
+							sessionFromUserName(req.user.username, function(err, session) {
 								if (err)
 									throw err;
 									
@@ -519,7 +519,7 @@ exports.getSessionStats = function(req, res) {
 								}
 
 								res.render('statistics', {
-									username : req.user.name,
+									username : req.user.username,
 									session : sessionArray,
 									title : slideshow.title,
 									questions : questions,
@@ -563,7 +563,7 @@ var sessionFromUserName = function(userName, callback) {
 	//console.log('user');
 	//console.log(userName);
 	User.findOne({
-		name : userName
+		username : userName
 	}, function(err, user) {
 		if (err)
 			callback(err);

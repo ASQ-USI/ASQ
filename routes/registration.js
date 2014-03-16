@@ -80,7 +80,7 @@ exports.signup = function(req, res) {
 	// Username availability and saving
 	var User = db.model('User', schemas.userSchema);
 	var out = User.findOne({
-		name : req.body.signupusername
+		username : req.body.signupusername
 	}, function(err, user) {
 		if (user) {
 			res.render('signIn', {
@@ -89,7 +89,7 @@ exports.signup = function(req, res) {
 			});
 		} else {
 			var newUser = new User({
-				name : req.body.signupusername,
+				username : req.body.signupusername,
 				password : req.body.signuppassword,
 				email : req.body.signupemail
 			});
@@ -109,7 +109,7 @@ exports.checkusername = function(req, res) {
 	User = db.model('User', schemas.userSchema);
 	var response = '0';
 	var out = User.findOne({
-		name : req.params.username
+		username : req.params.username
 	}, function(err, user) {
 		if (user) {
 			response = '1';
@@ -181,7 +181,7 @@ exports.saveSettings = function(req, res){
 	var User = db.model('User', schemas.userSchema);
 	//Test if username already exists
 	var out = User.findOne({
-		name : req.body.inputUsername
+		username : req.body.inputUsername
 	}, function(err, user) {
 		if (user) {
 			res.render('settings', {
@@ -226,7 +226,7 @@ exports.saveSettings = function(req, res){
 
 //MOVED
 exports.renderuser = function(req, res) {
-	if (req.params.username == req.user.name) {
+	if (req.params.username == req.user.username) {
 		var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
 		Slideshow.find({
 			owner : req.user._id
@@ -257,7 +257,7 @@ exports.renderuser = function(req, res) {
 			res.render('user', {
 				slidesByCourses: slidesByCourse,
 				JSONIter : dustHelpers.JSONIter,
-				username : req.user.name,
+				username : req.user.username,
 				host : ASQ.appHost,
 				port : app.get('port'),
 				id : req.user.current,
@@ -267,7 +267,7 @@ exports.renderuser = function(req, res) {
 			});
 		});
 	} else {
-		res.redirect('/user/' + req.user.name + '/');
+		res.redirect('/user/' + req.user.username + '/');
 	}
 }
 

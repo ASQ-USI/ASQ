@@ -18,7 +18,7 @@ module.exports.admin = function(req, res) {
   sessionFromUserId(userId, function(err, session) {
     if (err) throw err;
     if (!session || !session.id) {
-      res.redirect('/user/' + req.user.name + 
+      res.redirect('/user/' + req.user.username + 
       	'/?alert=You have no session running!&type=error');
       return;
     }
@@ -29,7 +29,7 @@ module.exports.admin = function(req, res) {
     	mode  : 'admin',
       host  : ASQ.appHost,
       port  : app.get('port'),
-      user  : req.user.name,
+      user  : req.user.username,
       pass  : '&bull;&bull;&bull;&bull;&bull;&bull;',
       path  : path.relative(app.get('views'), slideshow.path + 'index.html'),
       links : slideshow.links,
@@ -47,7 +47,7 @@ module.exports.adminControll = function(req, res) {
 		if (err)
 			throw err;
 		if (!session.id) {
-			res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
+			res.redirect('/user/' + req.user.username + '/?alert=You have no session running!&type=error');
 		} else {
 			var slideshow = session.slides;
 			fs.readFile(slideshow.presenterFile, 'utf-8', function(error, data) {
@@ -101,7 +101,7 @@ module.exports.adminControll = function(req, res) {
 					mode  : true,
 					host  : ASQ.appHost,
 					port  : app.get('port'),
-					user  : req.user.name,
+					user  : req.user.username,
 					pass  : '&bull;&bull;&bull;&bull;&bull;&bull;',
 					id    : session.id,
 					date  : session.date,
@@ -150,14 +150,14 @@ module.exports.render = function(req, res) {
 		// if (err)
 			// throw err;
 		// if (!session.id) {
-			// res.redirect('/user/' + req.user.name + '/?alert=You have no session running!&type=error');
+			// res.redirect('/user/' + req.user.username + '/?alert=You have no session running!&type=error');
 		// } else {
 			// var slideshow = session.slideshow;
   			// res.render('slidesSplashScreen',{
   					// title : slideshow.title,
 					// host : ASQ.appHost,
 					// port : app.get('port'),
-					// user : req.user.name}
+					// user : req.user.username}
 					// );
   		// }
   // });
@@ -251,7 +251,7 @@ module.exports.start = function(req, res) {
 		//Error Handling
 		flow.errorCallback = function errorCallback(err) {
 			appLogger.error("Presentation Start\n" + err);
-			res.redirect(302, '/user/' + req.user.name 
+			res.redirect(302, '/user/' + req.user.username 
 				+ '/?alert=Something went wrong. The Great ASQ Server said: '
 				+ err + '&type=error');
 			return;
@@ -308,14 +308,14 @@ module.exports.stop = function(req, res) {
 	}, function(err, user) {
 		if (err) { throw err; }
 		if (!user) {
-			res.redirect('/user/' + req.user.name 
+			res.redirect('/user/' + req.user.username 
 			+ '/?alert=Something went wrong. The Great ASQ Server said: User not found');
 		}
 		
 		var WhitelistEntry = db.model('WhitelistEntry', schemas.whitelistEntrySchema);
 		WhitelistEntry.remove({ session : user.current }, function(err) {
 			if (err) { throw err; }
-			res.redirect('/user/' + req.user.name 
+			res.redirect('/user/' + req.user.username 
 			+ '/?alert=Your session was stopped. You have no session running&type=info');
 		});
 	});

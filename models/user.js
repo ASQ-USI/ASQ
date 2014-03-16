@@ -12,16 +12,30 @@ var mongoose   = require('mongoose')
 
 
 var baseUserSchema = new Schema({
-  screenName: {type: String, default: generateName, required: true}
+  screenName: {type: String, default: function defName() {return generateName();} , required: true}
 },
   { collection: 'users', discriminatorKey: '_type' });
 
 var registeredUserSchema = baseUserSchema.extend({
-  name: { type: String, unique: true, sparse: true, required: true },
-  password: { type: String, required: true},
-  email: { type:String, required: true },
+  username: { type: String, unique: true, sparse: true, required: true, lowercase: true },
+  password: { type: String, required: true },
+  firstname: { type: String, required: true, set: capitalize }, //TODO add fields in signup form, fullname method and signup check on both client and server
+  lastname: { type: String, required: true, set: capitalize },
+  email: { type: String, required: true, sparse: true, unique: true }, // Exactly only one email per account
   slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
 });
+
+registeredUserSchema.virtual('fullname').get(function getFullname() {
+  return this.firstname + ' ' + this.lastname;
+});
+
+registeredUserSchema.methods.isValidPassword = function isValidPassword(candidate, callback) {
+  bcrypt.compare(candidate, this.password, function onPwdCompare(err, isMatch) {
+    if (err) return callback(err);
+
+    callback(null, isMatch);
+  });
+};
 
 registeredUserSchema.pre('save', function(next) {
   var user = this;
@@ -41,14 +55,6 @@ registeredUserSchema.pre('save', function(next) {
   });
 });
 
-registeredUserSchema.methods.isValidPassword = function(candidate, callback) {
-  bcrypt.compare(candidate, this.password, function(err, isMatch) {
-    if (err) return callback(err);
-
-    callback(null, isMatch);
-  });
-};
-
 // Temporary user with public sessions
 var guestUserSchema = baseUserSchema.extend({
   token : { type: String }, //Express cookie (for now...)
@@ -57,6 +63,11 @@ var guestUserSchema = baseUserSchema.extend({
 
 mongoose.model('User', registeredUserSchema);
 mongoose.model('GuestUser', guestUserSchema);
+
+function capitalize (val) {
+  if ('string' != typeof val) val = '';
+  return val.charAt(0).toUpperCase() + val.substring(1);
+}
 
 module.exports = {
   registeredUserSchema : registeredUserSchema,

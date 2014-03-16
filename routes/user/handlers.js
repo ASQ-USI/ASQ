@@ -15,7 +15,7 @@ function getUserPage(req, res) {
   if (!req.isAuthenticated()) {
     res.send(200, 'Public user page of ' + req.params.user + '.');
   } 
-  else if (req.user.name === req.params.user) {
+  else if (req.user.username === req.params.user) {
 
     // TODO: this is the same as 
     // routes/user/presentations/handlers.js:listPresentations
@@ -51,7 +51,7 @@ function getUserPage(req, res) {
           ? 'alert-' + req.query.type : '';
 
       res.render('user', {
-        username        : req.user.name,
+        username        : req.user.username,
         slidesByCourses : slidesByCourse,
         JSONIter        : dustHelpers.JSONIter,
         host            : ASQ.appHost,
@@ -63,15 +63,15 @@ function getUserPage(req, res) {
       });
     });
   } else {
-    res.send(200, 'Hello ' + req.user.name 
+    res.send(200, 'Hello ' + req.user.username 
         + '! You are viewing the user page of ' + req.params.user + '.');
   }
 }
 
 function getUserSettings(req, res) {
   res.render('settings', {
-    username : req.user.name,
-    user : { name : req.user.name, email : req.user.email }
+    username : req.user.username,
+    user : { name : req.user.username, email : req.user.email }
   });
 }
 
@@ -87,7 +87,7 @@ function updateUserSettings(req, res) {
 
   if (errors !== null) {
     res.render('settings', {
-      username : req.user.name,
+      username : req.user.username,
       alert : errors.toString(),
       type  : 'error'
     }); //TODO handle errors display on page
@@ -95,10 +95,10 @@ function updateUserSettings(req, res) {
 
   // Checking user name uniqueness
   //Check if username already exists
-  User.findOne({ name : username }, function(err, user) {
+  User.findOne({ username : username }, function(err, user) {
     if (user) {
       return res.render('settings', {
-        username : req.user.name,
+        username : req.user.username,
         message : 'Username already taken'
       });
     }
@@ -121,13 +121,13 @@ function updateUserSettings(req, res) {
   user.set(newValues);
   user.save(function(err, user) {
     if (err) res.render('settings', {
-      username : req.user.name,
+      username : req.user.username,
       user: newValues,
       alert: 'Something went wrong. Your data was not saved.',
       type: 'error'
     });
     res.render('settings', {
-      username : req.user.name,
+      username : req.user.username,
       user:  newValues,
       alert: 'Account successfully updated!',
       type: 'success'
@@ -138,7 +138,7 @@ function updateUserSettings(req, res) {
 function getLivePresentations(req, res) {
   var slideshowSessionMap = {};
   console.log("I am here")
-  User.findOne({name: req.params.user}, {_id:1}).exec()
+  User.findOne({username: req.params.user}, {_id:1}).exec()
     .then(
       function(user){
         if (!user) {

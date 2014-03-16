@@ -51,7 +51,7 @@ function deletePresentation(req, res, next) {
       return;
     }
     //HTML
-    res.redirect('/' + req.user.name +
+    res.redirect('/' + req.user.username +
       '/presentations/?alert=Slideshow deleted&type=succes');
   },
 
@@ -79,7 +79,7 @@ function getPresentationFiles(req, res, next) {
   var id = req.params.presentationId;
   Slideshow.findById(id, function(err, slideshow) {
     if (slideshow && req.params[0] == slideshow.originalFile) {
-      res.redirect(301, '/' + req.user.name + '/presentations/' + id + '/');
+      res.redirect(301, '/' + req.user.username + '/presentations/' + id + '/');
     } else if (slideshow) {
       res.sendfile(slideshow.path + req.params[0]);
     } else {
@@ -144,7 +144,7 @@ function listPresentations(req, res, next) {
         ? 'alert-' + req.query.type : '';
 
     res.render('presentations', {
-      username        : req.user.name,
+      username        : req.user.username,
       isOwner         : req.isOwner,
       slidesByCourses : slidesByCourse,
       JSONIter        : dustHelpers.JSONIter,
@@ -294,7 +294,7 @@ function uploadPresentation(req, res, next) {
       function(user){
         appLogger.debug('upload zip file unlinked');
         appLogger.info(newSlideshow.title + ' uploaded successfully!');
-        res.redirect(['/', req.user.name, '/presentations/?alert=',
+        res.redirect(['/', req.user.username, '/presentations/?alert=',
             newSlideshow.title, ' uploaded successfully!&type=success']
             .join(''));
     },
@@ -302,7 +302,7 @@ function uploadPresentation(req, res, next) {
     function(err){
       next(err)
       pfs.unlink(req.files.upload.path).then(
-        res.redirect(['/', req.user.name, '/presentations/?alert=',
+        res.redirect(['/', req.user.username, '/presentations/?alert=',
             err.toString(), '&type=error'].join(''))
       );
     });

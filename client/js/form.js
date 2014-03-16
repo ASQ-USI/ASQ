@@ -25,22 +25,28 @@ var form = module.exports = {
     setup : setup
 }
 
+//TODO Proper check using promises
+//Use same validation as the server
+//Check email against the server for uniqueness and set default username as email up to the @
 //signin form
 function signInFormBinder(){
-  var iconOkHtml = '<span class="glyphings glyphings-ok"></span>'
+  var iconOkHtml  = '<span class="glyphings glyphings-ok"></span>'
+    , firstnameOk = false
+    , lastnameOk  = false
+    , emailOk     = false
     , usernameOk  = false
-    , emailOk    = false
-    , pwdOk      = false;
+    , pwdOk       = false;
 
   var validators = {
+    'inputFirstname'      : validateFirstname,
+    'inputLastname'       : validateLastname,
+    'inputEmail'          : validateEmail,
     'inputUsername'       : checkUsername,
-    'inputEmail'          : validateMail,
     'inputRepeatPassword' : validatePassword
   };
 
   function checkAllOk() {
-    if (pwdOk && emailOk && usernameOk) {
-
+    if (firstnameOk && lastnameOk && emailOk && usernameOk && pwdOk) {
       $('#createAccount')
         .removeClass('disabled')
         .disabled = false;
@@ -83,10 +89,27 @@ function signInFormBinder(){
       .fail(function(jqXHR, textStatus){
         console.log( "Check username failed: " + textStatus );
       })
-    return false;  
+    return false;
   }
 
-  function validateMail() {
+  //TODO Validation of first and last name
+  function validateFirstname() {
+    firstnameOk = false;
+    var firstname = $.trim($("#inputFirstname").val());
+    firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
+    firstnameOk = true;
+    checkAllOk();
+  }
+
+  function validateLastname() {
+    lastnameOk = false;
+    var lastname = $.trim($("#inputLastname").val());
+    var lastname.charAt(0).toUpperCase() + lastname.slice(1);
+    lastnameOk = true;
+    checkAllOk();
+  }
+
+  function validateEmail() {
 
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     var address = $('#inputEmail').val();
