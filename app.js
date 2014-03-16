@@ -142,8 +142,8 @@ app.configure('development', function(){
 
     }
     formUtils.prodValidUserForm = formUtils.isValidUserForm;
-    formUtils.isValidUserForm = function(username, email, password, passwordConfirm, strict) {
-      var errors = formUtils.prodValidUserForm(username, email, password, passwordConfirm, strict);
+    formUtils.isValidUserForm = function(firstname, lastname, email, username, password, passwordConfirm, strict) {
+      var errors = formUtils.prodValidUserForm(firstname, lastname, email, username, password, passwordConfirm, strict);
       if (errors === null || !errors.hasOwnProperty('password')) {
         return errors;
       } else if (Object.keys(errors).length === 1

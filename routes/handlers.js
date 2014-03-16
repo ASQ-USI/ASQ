@@ -6,7 +6,7 @@ var lib     = require('../lib')
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
     //redirect to user homepage
-    res.redirect('/' + req.user.name);
+    res.redirect('/' + req.user.username);
   } else{
     //render asq homepage
     res.render('landingPage');
@@ -16,36 +16,37 @@ function getHomePage(req, res) {
 function getRegister(req, res) {
   //TODO Code a real sign up page.
   res.render('signIn', {
-        'fromRegister': true
+        formRegister: true
       });
 }
 
 function postRegister(req, res) {
   //TODO change those horrible signup...
-  var username        = req.body.signupusername;
-  var email           = req.body.signupemail;
-  var password        = req.body.signuppassword;
-  var passwordConfirm = req.body.signuppasswordconfirm
+  var data = {};
+  data.firstname      = req.body.signupfirstname;
+  data.lastname       = req.body.signuplastname;
+  data.screenName     = data.firstname + ' ' + data.lastname;
+  data.email          = req.body.signupemail;
+  data.username       = req.body.signupusername;
+  data.password       = req.body.signuppassword;
+  var passwordConfirm = req.body.signuppasswordconfirm;
 
-  var validUserForm = utils.isValidUserForm(username,
-      email, password, passwordConfirm);
+  var validUserForm = utils.isValidUserForm( data.firstname, data.lastname,
+    data.email, data.username, data.password, passwordConfirm
+  );
 
   if (validUserForm === null) { //TODO handle errors
      // Username availability and saving
     var User = db.model('User', schemas.userSchema);
-    User.findOne({ name : username },
+    User.findOne({ username : data.username },
       function(err, user) {
         if (user) {
           res.render('signIn', { //TODO render proper register page
             message    : 'Username ' + user + ' already taken',
-            fromRegister : true
+            formRegister : true
           });
         } else {
-        var newUser = new User({
-          name     : username,
-          password : password,
-          email    : email
-        });
+        var newUser = new User(data);
         newUser.save(function(err) {
           if (err) {
             appLogger.error('Registration - ' + err.toString());
@@ -62,7 +63,7 @@ function postRegister(req, res) {
                   + err.toString()
               });
             }
-            res.redirect('/' + username
+            res.redirect('/' + data.username
                 + '/?alert=Registration Succesful&type=success');
           });
         });
@@ -73,14 +74,14 @@ function postRegister(req, res) {
     res.render('signIn', {
       message : 'Something went wrong. The great ASQ Server said: You specified wrong data',
        // + validUserForm.toString(),
-      fromRegister : true
+      formRegister : true
       });
   }
 } 
 
 function getSignIn(req, res) {
   res.render('signIn', {
-      fromRegister : false,
+      formRegister : false,
       alert: req.flash()
     });
 }
@@ -100,7 +101,7 @@ function signOut(req, res) {
 }
 
 function getUploadForm(req, res) {
-  res.render('upload', { username: req.user.name });
+  res.render('upload', { username: req.user.username });
 }
 
 module.exports = {

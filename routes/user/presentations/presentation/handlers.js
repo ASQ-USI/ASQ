@@ -84,21 +84,21 @@ function livePresentation(req, res) {
   var renderOpts = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
 
-        presentationViewUrl = ASQ.rootUrl + '/' + req.user.name + '/presentations/' 
+        presentationViewUrl = ASQ.rootUrl + '/' + req.user.username + '/presentations/' 
                             + presentation._id + '/live/' + req.liveSession.id 
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.name + '/live/';
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.username + '/live/';
         return {
           template: 'presenterControl',
           mode: 'controll',
         };
       } else if (role === 'presenter' || role === 'assistant') {
-        presentationViewUrl = ASQ.rootUrl + '/' + req.user.name + '/presentations/' 
+        presentationViewUrl = ASQ.rootUrl + '/' + req.user.username + '/presentations/' 
                             + presentation._id + '/live/' + req.liveSession.id 
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.name + '/live/';
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.username + '/live/';
         return {
           template: presentation.presenterFile,
           mode: 'presenter',
@@ -128,7 +128,7 @@ function livePresentationFiles(req, res) {
   var presentation = req.liveSession.slides;
   var file = req.params[0];
   if (presentation && file === presentation.originalFile) {
-    res.redirect(301, ['/', req.user.name, '/presentations/',
+    res.redirect(301, ['/', req.user.username, '/presentations/',
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
@@ -140,7 +140,7 @@ function livePresentationFiles(req, res) {
 
 
 // function startPresentation(req, res) {
-//   appLogger.debug('New session from ' + req.user.name);
+//   appLogger.debug('New session from ' + req.user.username);
 //   var slidesId = req.params.presentationId;
 
 //   asyncblock(function(flow) {
@@ -148,7 +148,7 @@ function livePresentationFiles(req, res) {
 //     //Error Handling
 //     flow.errorCallback = function errorCallback(err) {
 //       appLogger.error('Presentation Start\n' + err);
-//       return res.redirect(500, ['/', req.user.name,
+//       return res.redirect(500, ['/', req.user.username,
 //           '/?alert=Something went wrong. The Great ASQ Server said: ',
 //           err.toString(), '&type=error'].join(''));
 //     }
@@ -186,7 +186,7 @@ function livePresentationFiles(req, res) {
 //     //Wait to finish and redirect
 //     flow.wait();
 //     appLogger.info('Starting new ' + newSession.authLevel + ' session');
-//     res.location(['/', req.user.name, '/presentations/', newSession.slides,
+//     res.location(['/', req.user.username, '/presentations/', newSession.slides,
 //       '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
 //     res.send(201);
 //   });
@@ -194,7 +194,7 @@ function livePresentationFiles(req, res) {
 
 
 function startPresentation(req, res, next) {
-  appLogger.debug('New session from ' + req.user.name);
+  appLogger.debug('New session from ' + req.user.username);
 
   var Slideshow = db.model('Slideshow')
     , Session = db.model('Session')
@@ -248,7 +248,7 @@ function startPresentation(req, res, next) {
   ).then(
     function sendReponse(){
       appLogger.info('Starting new ' + newSession.authLevel + ' session');
-      res.location(['/', req.user.name, '/presentations/', newSession.slides,
+      res.location(['/', req.user.username, '/presentations/', newSession.slides,
         '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
       res.send(201);
     },

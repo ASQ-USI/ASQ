@@ -103,15 +103,15 @@ exports.saveDetails = function(req, res) {
 			throw err;
 		res.redirect('/user/edit/' + slideshow._id + '?alert=Slideshow successfully updated &type=succes');
 	});
-	//res.redirect('/user/' + req.user.name + '?alert=Slideshow successfully updated &type=succes');
+	//res.redirect('/user/' + req.user.username + '?alert=Slideshow successfully updated &type=succes');
 }
 
 //MOVED
 exports.deleteSlideshow = function(req, res) {
-	console.log(req.user.name)
+	console.log(req.user.username)
 	var User = db.model('User')
 	, Slideshow = db.model('Slideshow');
-	User.findOne({name: req.user.name}).exec()
+	User.findOne({username: req.user.username}).exec()
 	.then(function(user){
 		return Slideshow.findOne({_id: req.params.id, owner: user.id}).exec()
 	})
@@ -151,7 +151,7 @@ exports.deleteSlideshow = function(req, res) {
 // 					}
 // 				});
 // 				slideshow.remove();
-// 				res.redirect('/user/' + req.user.name);
+// 				res.redirect('/user/' + req.user.username);
 // 			});
 
 // 		}
@@ -169,7 +169,7 @@ exports.edithtml = function(req, res) {
 			fs.readFile(folderHTML, 'utf-8', function(error, data) {
 				//console.log(req.params.id + " "+ data);
 				res.render('edithtml', {
-					username : req.user.name,
+					username : req.user.username,
 					html : data,
 					id : req.params.id,
 					title : slideshow.title,
@@ -205,7 +205,7 @@ exports.savehtml = function(req, res) {
 				} else {
 					//createThumb(req.params.id);
 					res.render('edithtml', {
-						username : req.user.name,
+						username : req.user.username,
 						html : req.body.editorvalue,
 						id : req.params.id,
 						title : slideshow.title,
@@ -232,7 +232,7 @@ exports.editstyle = function(req, res) {
 			fs.readFile(folderHTML, 'utf-8', function(error, data) {
 				// console.log(req.params.id + " "+ data);
 				res.render('editstyle', {
-					username : req.user.name,
+					username : req.user.username,
 					html : data,
 					id : req.params.id,
 					title : slideshow.title,
@@ -267,7 +267,7 @@ exports.savestyle = function(req, res) {
 					console.log(err);
 				}
 				res.render('editstyle', {
-					username : req.user.name,
+					username : req.user.username,
 					html : req.body.editorvalue,
 					id : req.params.id,
 					title : slideshow.title,
@@ -354,7 +354,7 @@ exports.editquestions = function(req, res) {
 // console.log("########################2");
 // res.render('editQuestions', {
 // arrayquestions : questions,
-// username : req.user.name,
+// username : req.user.username,
 // title : slideshow.title
 // });
 // }
@@ -367,7 +367,7 @@ exports.editquestions = function(req, res) {
 // console.log("########################3");
 // res.render('editQuestions', {
 // arrayquestions : questions,
-// username : req.user.name,
+// username : req.user.username,
 // title : slideshow.title
 // });
 // }
@@ -380,7 +380,7 @@ exports.editquestions = function(req, res) {
 // console.log("########################5");
 // res.render('editQuestions', {
 // arrayquestions : questions,
-// username : req.user.name,
+// username : req.user.username,
 // title : slideshow.title
 // });
 // }

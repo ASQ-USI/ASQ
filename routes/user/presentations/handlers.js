@@ -53,7 +53,7 @@ function deletePresentation(req, res, next) {
       return;
     }
     //HTML
-    res.redirect('/' + req.user.name +
+    res.redirect('/' + req.user.username +
       '/presentations/?alert=Slideshow deleted&type=success');
   },
 
@@ -81,7 +81,7 @@ function getPresentationFiles(req, res, next) {
   var id = req.params.presentationId;
   Slideshow.findById(id, function(err, slideshow) {
     if (slideshow && req.params[0] == slideshow.originalFile) {
-      res.redirect(301, '/' + req.user.name + '/presentations/' + id + '/');
+      res.redirect(301, '/' + req.user.username + '/presentations/' + id + '/');
     } else if (slideshow) {
       res.sendfile(slideshow.path + req.params[0]);
     } else {
@@ -143,23 +143,11 @@ function listPresentations(req, res, next) {
 
       var type = utils.getAlertTypeClass(req);
 
-      res.render('presentations', {
-        username        : req.user.name,
-        isOwner         : req.isOwner,
-        slidesByCourses : slidesByCourse,
-        JSONIter        : dustHelpers.JSONIter,
-        host            : ASQ.appHost,
-        port            : app.get('port'),
-        id              : req.user.current, //FIXME: remove?
-        alert           : req.query.alert,
-        type            : type,
-        session         : req.user.current
-      });
-    }
+
 
 
     res.render('presentations', {
-      username        : req.user.name,
+      username        : req.user.username,
       isOwner         : req.isOwner,
       slidesByCourses : slidesByCourse,
       JSONIter        : dustHelpers.JSONIter,
@@ -309,7 +297,7 @@ function uploadPresentation(req, res, next) {
       function(user){
         appLogger.debug('upload zip file unlinked');
         appLogger.info(newSlideshow.title + ' uploaded successfully!');
-        res.redirect(['/', req.user.name, '/presentations/?alert=',
+        res.redirect(['/', req.user.username, '/presentations/?alert=',
             newSlideshow.title, ' uploaded successfully!&type=success']
             .join(''));
     },
@@ -317,7 +305,7 @@ function uploadPresentation(req, res, next) {
     function(err){
       next(err)
       pfs.unlink(req.files.upload.path).then(
-        res.redirect(['/', req.user.name, '/presentations/?alert=',
+        res.redirect(['/', req.user.username, '/presentations/?alert=',
             err.toString(), '&type=error'].join(''))
       );
     });

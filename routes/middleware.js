@@ -10,7 +10,7 @@ function forceSSL(req, res, next) {
         (app.get('port') === '443' ? '' : (':' + app.get('port'))),
         req.url].join(''));
   }
-  next();
+  next(null);
 }
 
 // Simple route middleware to ensure user is authenticated.
@@ -19,23 +19,11 @@ function forceSSL(req, res, next) {
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function isAuthenticated(req, res, next) {
-  req.isAuthenticated() ? next() : next(new Error('Could not authenticate'));
-  // if (req.isAuthenticated()) {
-  //     return next();
-  // }
-  // if (req.url=="/") {
-  //     res.render('index', {
-  //     'message': req.flash('error'),
-  //     'fromsignup': false
-  //   });
-  // } else {
-  //     res.redirect("/");
-  // }
-  // return false; //Ensure a value is always returned
+  req.isAuthenticated() ? next(null) : next(new Error('Could not authenticate'));
 }
 
 function isNotAuthenticated(req, res, next) {
-  !req.isAuthenticated() ? next() : next(new Error('Already authenticated'));
+  !req.isAuthenticated() ? next(null) : next(new Error('Already authenticated'));
 }
 
 /*  For a route with the user parameter, check if the request comes from the
@@ -44,11 +32,11 @@ function isNotAuthenticated(req, res, next) {
 function isRouteOwner(req, res, next) {
   if (!req.params.user) {
     next(new Error('Invalid route: missing user parameter.'));
-  } else if (req.params.user != req.user.name) {
+  } else if (req.params.user != req.user.username) {
     next(new Error('Is not owner'));
   } else {
     req.isOwner=true;
-    next();
+    next(null);
   }
 }
 
@@ -63,7 +51,7 @@ function setLiveSession(req, res, next, liveId) {
     .exec().then(function onSession(session) {
       if (session) {
         req.liveSession = session;
-        return next();
+        return next(null);
       } else {
         return next(new Error('Failed to load session.'));
       }
