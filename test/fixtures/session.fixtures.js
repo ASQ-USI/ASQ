@@ -167,11 +167,12 @@ exports.fixtures = {};
 exports.fixtures.User = {
   owner1: {
     _id: ids.owner1Id,
-    name: 'test user',
+    firstname: 'Test',
+    lastname: 'User',
+    username: 'testuser',
+    screenName: 'Test User',
     password: 'abcedfghiklmnopqrstuvwxyz',
     email: 'user@test.com',
-    slides: [ids.slideshowNormalId, ids.slideshowLiveId],
-    current: ids.slideshowLiveId
   }
 }
 
