@@ -8,7 +8,7 @@ var cheerio  = require('cheerio')
 , path       = require('path')
 , schemas    = require('../models')
 , asyncblock = require('asyncblock')
-, lib 		   = require('../lib');
+, lib 		   = require('../lib')
 , appLogger  = lib.logger.appLogger;
 
 /** Renders the slideshow for admins */

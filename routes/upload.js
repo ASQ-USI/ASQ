@@ -44,11 +44,11 @@ module.exports.post = function(req, res) {
   , slideShowFileHtml
   , slideShowQuestions
   , parsedQuestions
-  , parsedStats
+  , parsedStats;
 
   var newSlideshow = new Slideshow({
-    title:req.files.upload.name,
-    owner: req.user._id
+    title : req.files.upload.name,
+    owner : req.user._id
   });
 
   // 2) unzip files
@@ -66,7 +66,6 @@ module.exports.post = function(req, res) {
       function(filePath){
         return pfs.readFile(filePath);     
     })
-
     //4) parse questions
     .then(    
       function(file) {
@@ -200,7 +199,7 @@ function createThumb(slideshow) {
       url = url.join("");
       
       for(var i = 0; i < ids.length; i++){
-        console.debug("calling: " + call + i + " -s 0.3 " + url + ids[i]);
+        appLogger.debug("calling: " + call + i + " -s 0.3 " + url + ids[i]);
         exec(call + i + " -s 0.3 " + url + ids[i], flow.add());
   			flow.wait();
       }
