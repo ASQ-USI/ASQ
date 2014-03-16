@@ -16,6 +16,7 @@ var answerSchema = new Schema({
   session     : {type: ObjectId, ref:'Session'},
   submission  : [],
   correctness : { type: Number, min: 0, max: 100 },
+  confidence  : { type: Number, min: 1, max: 5, default: 0 }, // 0 = not set
   logData     : [answerLogSchema]
 });
 

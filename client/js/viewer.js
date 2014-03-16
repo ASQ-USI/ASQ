@@ -130,7 +130,7 @@ var connect = function(host, port, session, mode, token) {
       $('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 50px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.</p></div>');
     });
 
-  })
+  }) //TODO Check if this works
   .on('connect_failed', function(reason) {
     console.error('unable to connect to namespace', reason);
     $('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
@@ -246,19 +246,19 @@ $(function() {
       answers.push(ace.edit(this.id).getSession().getValue());
     })
 
-    // Get confidence score
-    var score = $('input.asq-rating-input:checked').val() || -1;
+    // Get confidence
+    var confidence = $('input.asq-rating-input:checked').val() || -1;
 
     socket.emit('asq:submit', {
       session : session,
       answers : answers,
-      score   : score,
+      confidence : confidence,
       questionId : questionId
     });
     console.log('submitted answer for question with id:' + questionId);
     console.log('Answer');
     console.dir(answers);
-    console.dir(score);
+    console.dir(confidence);
   })
 })
 
