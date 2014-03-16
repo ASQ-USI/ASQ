@@ -140,6 +140,7 @@ function listPresentations(req, res, next) {
             .format('DD.MM.YYYY HH:mm');
         slidesByCourse[slideshow.course].push(slideshow);
       }
+    }
 
       var type = utils.getAlertTypeClass(req);
 

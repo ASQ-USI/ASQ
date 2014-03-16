@@ -188,6 +188,13 @@ module.exports = function(grunt) {
         options: {
           interrupt: true
         },
+      },
+      all: {
+        files: ['client/js/*.js', 'views/asq-render/**/*.dust', 'client/less/**/*.less'],
+        tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'dust', 'less:development', 'browserify:dist'],
+        options: {
+          interrupt: true
+        },
       }
     }
   });
