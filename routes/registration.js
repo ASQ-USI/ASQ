@@ -6,7 +6,7 @@ var schemas   = require("../models")
 , dustHelpers = require('../lib/dust-helpers')
 , check       = require('validator').check
 , appLogger   = require('../lib/logger').appLogger
-, util 			  = require('util');
+, util 			  = require('../lib/utils/routes');
 
 exports.isValidUserName = function(candidateUser) {
 	// Match string between 3 and 12 chars starting with a letter, lower or upper case 
@@ -251,8 +251,7 @@ exports.renderuser = function(req, res) {
 				}
 			}
 
-			var type = req.query.type && /(succes|error|info)/g.test(req.query.type) 
-					? 'alert-' + req.query.type : '';
+			var type = utils.getAlertTypeClass(req);
 
 			res.render('user', {
 				slidesByCourses: slidesByCourse,
