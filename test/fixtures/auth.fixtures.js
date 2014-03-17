@@ -24,6 +24,7 @@ var tokens = {
   validUser0  : 'EBOLB7tXkdxDhkZvEq9fLNaJ',
   validUser1  : 'LXdUVGHL8ZZ6Yl3HhTx3VpNS',
   validUser2  : 'RbWZX5sjtfNpBpYFw2ZwnU04',
+  validUser3  : 'eQz-GdoFv7IVY8H_PA2KHd88',
   validGuest1 : 'zJO4FXB4hwzlp5wsdM0TTXaF',
   validGuest2 : 'cdOhuMCHltV3WYxScL0wl2aA',
   validGuest3 : 'zdSAKdqtzr_-Fl9rdfShC1Mv',
@@ -37,7 +38,7 @@ var handshakes = {
   },
   validViewer : {
     "query"   : { "sid"    : ids.validSession },
-    "headers" : { "cookie" : tokens.validUser1 }
+    "headers" : { "cookie" : tokens.validUser3 }
   },
   invalidSession : {
     "query"   : { "sid"    : ids.invalidSession },
@@ -165,6 +166,13 @@ fixtures.WhitelistEntry = [
   },
   {
     session     : ids.validSession,
+    uid         : fixtures.User[1]._id,
+    screenName  : fixtures.User[1].screenName,
+    role        : 'viewer',
+    token       : tokens.validUser3
+  },
+  {
+    session     : ids.validSession,
     uid         : fixtures.GuestUser[0]._id,
     token       : fixtures.GuestUser[0].token,
     screenName  : fixtures.GuestUser[0].screenName,
@@ -188,8 +196,8 @@ var reqs = {
     "isAuthenticated" : function isAuthenticated() { return true; }
   },
   registeredWhite : {
-    "headers" : { "cookie" : tokens.validUser1 },
-    "user" : fixtures.User[1],
+    "headers" : { "cookie" : tokens.validUser3 },
+    "user" : fixtures.User[2],
     "liveSession" : fixtures.Session[0],
     "session" : {
       "touch" : function touch() {}
