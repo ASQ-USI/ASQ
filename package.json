@@ -96,7 +96,6 @@
   "keywords": [
     "node.js"
   ],
-  "license": "BSD",
-  "readmeFilename": "README.md",
-  "gitHead": "d786bbdb65d2a0e2d44d73047b1352a2c5718592"
+  "license": "MIT",
+  "readmeFilename": "README.md"
 }
