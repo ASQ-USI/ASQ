@@ -42,8 +42,10 @@ var express     = require('express')
   , middleware      = require('./routes/middleware')
   , errorMiddleware      = require('./routes/errorMiddleware');
 
-  require('dustjs-helpers');
 
+//Setup Dust.js helpers and options
+require('dustjs-helpers');
+require('lib/dust-helpers')(dust)
 
 //don't remove whitespace
 dust.optimizers.format = function(ctx, node) { return node };

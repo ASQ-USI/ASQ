@@ -10,7 +10,7 @@ var $ = require('jQuery')
 
 
 var binders = {
-  'signIn' : signInFormBinder,
+  'signup' : signupFormBinder,
 }
 
 function setup(viewName){
@@ -29,7 +29,7 @@ var form = module.exports = {
 //Use same validation as the server
 //Check email against the server for uniqueness and set default username as email up to the @
 //signin form
-function signInFormBinder(){
+function signupFormBinder(){
   var iconOkHtml  = '<span class="glyphings glyphings-ok"></span>'
     , firstnameOk = false
     , lastnameOk  = false
@@ -104,7 +104,7 @@ function signInFormBinder(){
   function validateLastname() {
     lastnameOk = false;
     var lastname = $.trim($("#inputLastname").val());
-    var lastname.charAt(0).toUpperCase() + lastname.slice(1);
+    lastname = lastname.charAt(0).toUpperCase() + lastname.slice(1);
     lastnameOk = true;
     checkAllOk();
   }
@@ -153,21 +153,21 @@ function signInFormBinder(){
     //in case the browser autcompletes
     setTimeout(function(){
       $(inputSelectors).each(function(){
-        if ($.trim($(this).val()) !='') $(this).trigger('keyup.asq.signin')
+        if ($.trim($(this).val()) !='') $(this).trigger('keyup.asq.signup')
       })
     }, 500)
     
-    $('#signup').on('keyup.asq.signin', inputSelectors, function(event){
+    $('#signup').on('keyup.asq.signup', inputSelectors, function(event){
         var id = event.target.id;
         if (validators.hasOwnProperty(id) 
           && 'function' == typeof(validators[id]))  validators[id]();
       });
 
-    $('#createAccount').on('click.asq.signin', function(event) {
+    $('#createAccount').on('click.asq.signup', function(event) {
       event.preventDefault()
       if ($(this).hasClass('disabled')) return;
       $('#signup').submit();
     })
   });
 
-} /* end of signInFormBinder */
+} /* end of signupFormBinder */

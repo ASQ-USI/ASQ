@@ -8,6 +8,7 @@ body{
     background-color: #333;
 }
 
+
 #mainContainer{
   
 }
@@ -30,6 +31,24 @@ body{
 @media (min-width: 768px){
   .navbar {
     border-radius: 0px;
+  }
+}
+
+.navbar .divider-vertical {
+height: 50px;
+margin: 0 9px;
+border-right: 1px solid #ffffff;
+border-left: 1px solid #DFDFDF;
+}
+
+.navbar-inverse .divider-vertical {
+border-right-color: #222222;
+border-left-color: #111111;
+}
+
+@media (max-width: 767px) {
+.navbar-collapse .nav > .divider-vertical {
+    display: none;
   }
 }
 
@@ -659,3 +678,78 @@ h2{
 
 }
 .keyframes(~'removed-item-animation, 0%{opacity: 1; transform: rotateZ(0); } 100%{ opacity: 0; transform:translateY(600px) rotateZ(90deg); }');
+
+
+/*  REGISTER FORM */
+
+.page-canvas {
+  background: #f8f8f8;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.1);
+  position: relative;
+  width: 888px;
+  margin: 0 auto;
+  color: #000000;
+}
+
+.signup-wrapper {
+margin: 0 auto 10px;
+display: block;
+width: 585px;
+clear: both;
+}
+
+.signup-wrapper h1{
+  margin:0;
+  padding: 40px 0 20px 0;
+}
+
+#signup-form{
+  padding: 10px 0;
+}
+
+#signup-form fieldset {
+  margin-bottom: 15px;
+}
+
+#signup-form .controls{
+  position:relative;
+}
+
+#signup-form .form-control {
+  display:inline-block;
+  width: 382px;
+}
+
+#signup-form div.sidetip {
+margin-top: 8px;
+position: absolute;
+left: 402px;
+width: 250px;
+}
+
+#signup-form div.sidetip p {
+  font-size: 13px;
+  line-height: 16px;
+  color: gray;
+  // display: none;
+}
+
+#signup-form div.sidetip p.active {
+    display: block
+}
+
+#signup-form div.sidetip p.checking {
+  background-repeat: no-repeat;
+  background-position: center left;
+  background-image: url(/img/spinner-small.gif);
+  padding-left: 18px;
+}
+
+#signup-form div.sidetip p.error {
+    color: #c33
+}
+
+#signup-form div.sidetip p.isaok {
+    color: #390
+}

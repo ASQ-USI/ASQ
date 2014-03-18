@@ -49,7 +49,7 @@
           </div>
         </div>
       {:else}
-        {#JSONIter:slidesByCourses username=username}
+        {@JSONIter:slidesByCourses username=username}
             <div class="row accordion-heading">
               <div class="col-md-12 clearfix headline">
                 <h2 class="pull-left">{key}</h2>

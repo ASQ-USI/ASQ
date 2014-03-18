@@ -8,7 +8,6 @@ var AdmZip          = require('adm-zip')
   , when            = require('when')
   , nodefn          = require('when/node/function')
   , lib             = require('../../../lib')
-  , dustHelpers     = lib.dustHelpers
   , appLogger       = lib.logger.appLogger
   , microformat     = require('asq-microformat')
   , Parser          = microformat.parser
@@ -151,7 +150,6 @@ function listPresentations(req, res, next) {
       username        : req.user.username,
       isOwner         : req.isOwner,
       slidesByCourses : slidesByCourse,
-      JSONIter        : dustHelpers.JSONIter,
       host            : ASQ.appHost,
       port            : app.get('port'),
       //id              : req.user.current, //FIXME: remove?

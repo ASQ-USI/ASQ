@@ -1,6 +1,6 @@
 /*
 * Require this in your views to setup the dom bindings by calling
-* <pre>dom.bindingsFor(viewName)</pre>. The function bindingsFor will search for
+* <pre>dom.bindingsFor(viewName)</pre>. The function <pre>bindingsFor</pre> will search for
 * a <pre>viewName</pre> property in the binders and, if it's a function, it
 * will call it. This way you can specify dom logic per view. Moreover this is 
 * a good place to setup the form bindings as well.
@@ -15,7 +15,7 @@ var $ = require("jQuery")
 var binders = {
   'menu'   : menuDOMBinder,
   'user'   : userDOMBinder,
-  'signIn' : signInDOMBinder,
+  'signup' : signupDOMBinder,
   'presentations'    : psesentationsDOMBinder,
   'presenterControl' : presenterControlDOMBinder,
   'userLive' : userLiveDOMBinder
@@ -45,13 +45,13 @@ function menuDOMBinder(){
 
 
 // signIn.dust
-function signInDOMBinder(){
-  form.setup('signIn');
+function signupDOMBinder(){
+  form.setup('signup');
 
   $(function(){
-    var fromRegister = $('body').attr('data-from-register');
-    fromRegister = typeof fromRegister == 'undefined' ? false : Boolean(fromRegister);
-    if(fromRegister)$('#register-modal').modal('show');
+    var fromsignup = $('body').attr('data-from-signup');
+    fromsignup = typeof fromsignup == 'undefined' ? false : Boolean(fromsignup);
+    if(fromsignup)$('#signup-modal').modal('show');
   });
 }
 

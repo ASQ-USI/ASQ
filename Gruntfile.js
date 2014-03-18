@@ -122,7 +122,7 @@ module.exports = function(grunt) {
           paths: ["client/less"]
         },
         files: {
-          "public/css/signin.css": "client/less/signin.less",
+          "public/css/login.css": "client/less/login.less",
           "public/css/logoAnim.css": "client/less/logoAnim.less",
           "public/css/phone.css": "client/less/phone.less",
           "public/css/style.css": "client/less/style.less"
@@ -134,7 +134,7 @@ module.exports = function(grunt) {
           yuicompress: true
         },
         files: {
-          "public/css/signin.css": "client/less/signin.less",
+          "public/css/login.css": "client/less/login.less",
           "public/css/logoAnim.css": "client/less/logoAnim.less",
           "public/css/phone.css": "client/less/phone.less",
           "public/css/style.css": "client/less/style.less"
@@ -144,7 +144,7 @@ module.exports = function(grunt) {
 
     //parallel tasks
     concurrent: {
-      compile: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'less'],
+      compile: ['less', 'browserify:client', 'browserify:presenter', 'browserify:viewer'],
       uglify: ['uglify'],
     },
 
@@ -168,30 +168,9 @@ module.exports = function(grunt) {
           interrupt: true
         },
       },
-      minimal: {
-        files: ['client/js/*.js', 'views/asq-render/**/*.dust', 'client/less/**/*.less'],
-        tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'dust', 'less:development'],
-        options: {
-          interrupt: true
-        },
-      },
       concurrent: {
         files: ['client/js/*.js', 'client/less/**/*.less'],
         tasks: ['concurrent'],
-        options: {
-          interrupt: true
-        },
-      },
-      all: {
-        files: ['client/js/*.js', 'views/asq-render/**/*.dust', 'client/less/**/*.less'],
-        tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'dust', 'less:development', 'browserify:dist'],
-        options: {
-          interrupt: true
-        },
-      },
-      all: {
-        files: ['client/js/*.js', 'views/asq-render/**/*.dust', 'client/less/**/*.less'],
-        tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer', 'dust', 'less:development', 'browserify:dist'],
         options: {
           interrupt: true
         },
@@ -203,8 +182,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['build']);
   grunt.registerTask('build', ['maybeless', 'browserify', 'uglify']);
   grunt.registerTask('build-concurrent', ['concurrent:compile', 'concurrent:uglify']);
-  grunt.registerTask('devwatch', ['build', 'watch:minimal']);
-  grunt.registerTask('devwatch-concurrent', ['build-concurrent', 'watch:concurrent']);
+  grunt.registerTask('devwatch', ['build-concurrent', 'watch:concurrent']);
   grunt.registerTask('deploy', ['shell:deploy']);
 
   //ported from togetherjs

@@ -23,3 +23,4 @@
  - checkusername/ should be performed every 100ms delay
  - check email address the same way we do with check usename
  - FIX: when someone clicks upload with nothing we get an error
+ - FIX: if public page doesn't exist do not show it. e.g. http://localhost:3000/register/ 

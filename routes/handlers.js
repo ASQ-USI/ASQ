@@ -13,14 +13,14 @@ function getHomePage(req, res) {
   }
 }
 
-function getRegister(req, res) {
-  //TODO Code a real sign up page.
-  res.render('signIn', {
-        formRegister: true
-      });
+function getSignup(req, res) {
+  //TODO Code a real signup page.
+  res.render('signup', {
+    tipMessages : require('../lib/forms/signupFormMessages')
+  });
 }
 
-function postRegister(req, res) {
+function postSignup(req, res) {
   //TODO change those horrible signup...
   var data = {};
   data.firstname      = req.body.signupfirstname;
@@ -41,16 +41,16 @@ function postRegister(req, res) {
     User.findOne({ username : data.username },
       function(err, user) {
         if (user) {
-          res.render('signIn', { //TODO render proper register page
+          res.render('login', { //TODO render proper signup page
             message    : 'Username ' + user + ' already taken',
-            formRegister : true
+            formsignup : true
           });
         } else {
         var newUser = new User(data);
         newUser.save(function(err) {
           if (err) {
             appLogger.error('Registration - ' + err.toString());
-            res.render('signIn', {
+            res.render('login', {
               message : 'Something went wrong. The great ASQ Server said: '
                   + err.toString()
             });
@@ -58,7 +58,7 @@ function postRegister(req, res) {
           req.login(newUser, function(err) {
             if (err) {
               appLogger.error('First login - ' + err.toString());
-              res.render('signIn', {
+              res.render('login', {
               message : 'Something went wrong. The great ASQ Server said: '
                   + err.toString()
               });
@@ -71,22 +71,22 @@ function postRegister(req, res) {
     });
   }else{
     console.log(validUserForm)
-    res.render('signIn', {
+    res.render('login', {
       message : 'Something went wrong. The great ASQ Server said: You specified wrong data',
        // + validUserForm.toString(),
-      formRegister : true
+      formSignup : true
       });
   }
 } 
 
-function getSignIn(req, res) {
-  res.render('signIn', {
-      formRegister : false,
+function getLogin(req, res) {
+  res.render('login', {
+      formSignup : false,
       alert: req.flash()
     });
 }
 
-function postSignIn(req, res) {
+function postLogin(req, res) {
   console.log('I made it')
   var redirect_to = req.session.redirect_to 
     ? req.session.redirect_to
@@ -94,8 +94,8 @@ function postSignIn(req, res) {
   res.redirect(redirect_to);
 }
 
-function signOut(req, res) {
-  appLogger.debug('Sign out');
+function logout(req, res) {
+  appLogger.debug('logout');
   req.logout();
   res.redirect('/');
 }
@@ -106,10 +106,10 @@ function getUploadForm(req, res) {
 
 module.exports = {
   getHomePage   : getHomePage,
-  getRegister   : getRegister,
-  postRegister  : postRegister,
-  getSignIn     : getSignIn,
-  postSignIn    : postSignIn,
-  signOut       : signOut,
+  getSignup   : getSignup,
+  postSignup  : postSignup,
+  getLogin     : getLogin,
+  postLogin    : postLogin,
+  logout       : logout,
   getUploadForm : getUploadForm
 }

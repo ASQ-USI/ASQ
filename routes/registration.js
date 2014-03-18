@@ -2,8 +2,6 @@ var schemas   = require("../models")
 , Slideshow   = require("../models/slideshow")
 , fs          = require("fs")
 , moment      = require('moment')
-, dust        = require('dustjs-linkedin')
-, dustHelpers = require('../lib/dust-helpers')
 , check       = require('validator').check
 , appLogger   = require('../lib/logger').appLogger
 , utils			  = require('../lib/utils/routes');
@@ -255,7 +253,6 @@ exports.renderuser = function(req, res) {
 
 			res.render('user', {
 				slidesByCourses: slidesByCourse,
-				JSONIter : dustHelpers.JSONIter,
 				username : req.user.username,
 				host : ASQ.appHost,
 				port : app.get('port'),
@@ -269,18 +266,3 @@ exports.renderuser = function(req, res) {
 		res.redirect('/user/' + req.user.username + '/');
 	}
 }
-
-dust.helpers.formatDate = function (chunk, context, bodies, params) {
-   	 var value = dust.helpers.tap(params.value, chunk, context),
-        timestamp,
-        month,
-        date,
-        year;
-
-    timestamp = new Date(value);
-    month = timestamp.getMonth() + 1;
-    date = timestamp.getDate();
-    year = timestamp.getFullYear();
-
-    return chunk.write(date + '.' + month + '.' + year);
-};

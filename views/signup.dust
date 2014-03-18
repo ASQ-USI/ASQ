@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	{>htmlHead/}
+    <title>Sign up for ASQ</title>
+
+  </head>
+  
+  <body>
+  <!-- Tips and error for forms based on Twitter https://twitter.com/signup -->
+  {>signupMenu/}
+
+  <div class="container" id="mainContainer">
+
+	  <div class="page-canvas">
+	  	<div class="signup-wrapper">
+	  		
+				<h1>Sign up for ASQ</h1>
+<!-- 					{?message}
+						<div class="alert alert-block">
+							<h4>{message}</h4>
+						</div>	
+						
+						<br/>
+					{/message}					
+					 -->
+					<form id="signup-form" action="/signup" method="post">
+
+						<fieldset>
+							
+					  	<div class="form-group" id="groupFirstname">
+								<label class="control-label" for="inputFirstname" >First name</label>
+					    	<div class="controls">
+			            {?tipMessages.firstname}
+			            	{>sidetip:tipMessages.firstname/}
+			            {/tipMessages.firstname}
+						     	<input type="text" class="form-control" id="inputFirstname" placeholder="Rodney" name="signupfirstname" >					     		
+					    	</div>
+					  	</div>
+
+							<div class="form-group" id="groupLastname">
+								<label class="control-label" for="inputLastname" >Last name</label>
+						    	<div class="controls">
+				            {?tipMessages.lastName}
+			            		{>sidetip:tipMessages.lastName/}
+			            	{/tipMessages.lastName}
+						     		<input type="text" class="form-control" id="inputLastname" placeholder="Mullen" name="signuplastname" >
+						    	</div>
+						  	</div>
+
+							<div class="form-group" id="groupEmail">
+								<label class="control-label" for="inputEmail">Email</label>
+								<div class="controls">
+								 	{?tipMessages.email}
+			            	{>sidetip:tipMessages.email/}
+			            {/tipMessages.email}
+									<input type="email" class="form-control" id="inputEmail" placeholder="rodney.mullen@usi.ch" name="signupemail">
+						  		</div>
+							</div>
+
+							<div class="form-group" id="groupUsername">
+								<label class="control-label" for="inputUsername"> Select your username</label>
+						    	<div class="controls">
+						    		{?tipMessages.username}
+			            		{>sidetip:tipMessages.username/}
+			            	{/tipMessages.username}
+						     		<input type="text" class="form-control" id="inputUsername" placeholder="rodney" name="signupusername" >
+						    	</div>
+						  	</div>
+							
+							<div class="form-group" id="groupPassword1">
+								<label class="control-label" for="inputPassword">Password</label>
+								<div class="controls">
+									{?tipMessages.password}
+			            		{>sidetip:tipMessages.password/}
+			            {/tipMessages.password}
+									<input type="password" class="form-control" id="inputPassword" placeholder="supersecret" name="signuppassword">
+								</div>
+							</div>
+							
+							<div class="form-group" id="groupPassword2">
+								<label class="control-label" for="inputRepeatPassword">Repeat password</label>
+								<div class="controls">
+									{?tipMessages.passwordConfirm}
+			            		{>sidetip:tipMessages.passwordConfirm/}
+			            {/tipMessages.passwordConfirm}
+									<input type="password" class="form-control" id="inputRepeatPassword" placeholder="supersecret" name="signuppasswordconfirm">
+								</div>
+								
+							</div>
+							<input class="btn btn-primary disabled" id="createAccount" type="submit" value="Create Account"/>
+						</fieldset>
+					</form>
+
+	  	</div> <!-- end div#row -->
+	  </div> <!-- end div#signup-wrapper -->
+
+ </div> <!-- end div#page-canvas -->
+
+
+
+		<script>
+			/* dom bindings for the page */
+			require('dom').bindingsFor('signup');
+		</script>
+	</body>
+</html>

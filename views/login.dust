@@ -3,11 +3,11 @@
   <head>
   	{>htmlHead/}
     <title>ASQ - Sign in</title>
-    <link href='/css/signin.css' rel='stylesheet'/>
+    <link href='/css/login.css' rel='stylesheet'/>
 
   </head>
   
-  <body data-from-register="{formRegister}">
+  <body data-from-signup="{formSignup}">
 
 			<div id="login-wrapper" class="container">
 
@@ -16,12 +16,12 @@
 
 					<img src="/img/logo-big.png" alt="ASQ logo"/>
 					{?message}
-						{^formRegister}
+						{^formSignup}
 						<p>&nbsp;</p>	
 							<div class="alert alert-block">
 								<h4>{message}</h4>
 							</div>	
-						{/formRegister}
+						{/formSignup}
 					{/message}
 
 					{?alert}
@@ -65,10 +65,10 @@
 						</div>
 
 						<button type="submit" class="btn btn-primary">Log in</button>
-						<button type="button" class="btn" data-toggle="modal" data-target="#register-modal">Register</button>
+						<button type="button" class="btn" data-toggle="modal" data-target="#signup-modal">signup</button>
 					</form> -->
-						<div class="register-field">
-							<a href="/#register-modal" data-toggle="modal">Register</a>
+						<div class="signup-field">
+							<a href="/#signup-modal" data-toggle="modal">signup</a>
 						</div>
 
 				</div>
@@ -80,14 +80,14 @@
 
 			</div>
 
-			<div id="register-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="register-modal-label" aria-hidden="true">
+			<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="signup-modal-label" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 								×
 							</button>
-							<h3 id="register-modal-label">Register on ASQ</h3>
+							<h3 id="signup-modal-label">Register on ASQ</h3>
 						</div>
 						<div class="modal-body">
 							{?message}
@@ -98,7 +98,7 @@
 								<br/>
 							{/message}					
 							
-							<form id="signup" class="form-horizontal" action="/register" method="post">
+							<form id="signup" class="form-horizontal" action="/signup" method="post">
 							  	<div class="form-group" id="groupFirstname">
 									<label class="control-label" for="inputFirstname" >Firstname</label>
 							    	<div class="controls">

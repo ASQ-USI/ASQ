@@ -8,19 +8,19 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/', handlers.getHomePage);
 
   //Get the register page
-  app.get('/register/', middleware.isNotAuthenticated, handlers.getRegister);
+  app.get('/signup/', middleware.isNotAuthenticated, handlers.getSignup);
 
   //Register as a new user
-  app.post('/register', middleware.isNotAuthenticated, handlers.postRegister);
+  app.post('/signup', middleware.isNotAuthenticated, handlers.postSignup);
 
   //Get teh sign in page
-  app.get('/sign_in/', middleware.isNotAuthenticated, handlers.getSignIn);
+  app.get('/login/', middleware.isNotAuthenticated, handlers.getLogin);
 
   //Sign in
-  app.post('/sign_in', middleware.localAuthenticate, handlers.postSignIn);
+  app.post('/login', middleware.localAuthenticate, handlers.postLogin);
 
   //Sign out
-  app.post('/sign_out', middleware.isAuthenticated, handlers.signOut);
+  app.post('/logout', middleware.isAuthenticated, handlers.logout);
 
   //Upload form
   app.get('/upload/', middleware.isAuthenticated, handlers.getUploadForm);
