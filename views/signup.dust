@@ -34,16 +34,16 @@
 			            {?tipMessages.firstname}
 			            	{>sidetip:tipMessages.firstname/}
 			            {/tipMessages.firstname}
-						     	<input type="text" class="form-control" id="inputFirstname" placeholder="Rodney" name="signupfirstname" >					     		
+						     	<input type="text" class="form-control" id="inputFirstname" placeholder="Rodney" name="signupfirstname" autofocus>					     		
 					    	</div>
 					  	</div>
 
 							<div class="form-group" id="groupLastname">
 								<label class="control-label" for="inputLastname" >Last name</label>
 						    	<div class="controls">
-				            {?tipMessages.lastName}
-			            		{>sidetip:tipMessages.lastName/}
-			            	{/tipMessages.lastName}
+				            {?tipMessages.lastname}
+			            		{>sidetip:tipMessages.lastname/}
+			            	{/tipMessages.lastname}
 						     		<input type="text" class="form-control" id="inputLastname" placeholder="Mullen" name="signuplastname" >
 						    	</div>
 						  	</div>

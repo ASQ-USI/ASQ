@@ -41,7 +41,7 @@
 
 					<form class="form-signin" action="/sign_in" method="post">
 						<!-- <h2 class="form-signin-heading">Please sign in</h2> -->
-						<input type="text" name="username" class="form-control" placeholder="Username" autofocus="">
+						<input type="text" name="username" class="form-control" placeholder="Username" autofocus>
 						<input type="password" name="password" class="form-control" placeholder="Password">
 						<label class="checkbox">
 							<input type="checkbox" value="remember-me"> Remember me

@@ -149,24 +149,33 @@ function signupFormBinder(){
 
   $(function(){
     var inputSelectors = 'input[type=text], input[type=email], input[type=password]';
-
-    //in case the browser autcompletes
-    setTimeout(function(){
-      $(inputSelectors).each(function(){
-        if ($.trim($(this).val()) !='') $(this).trigger('keyup.asq.signup')
-      })
-    }, 500)
+    // //in case the browser autcompletes
+    // setTimeout(function(){
+    //   $(inputSelectors).each(function(){
+    //     if ($.trim($(this).val()) !='') $(this).trigger('keyup.asq.signup')
+    //   })
+    // }, 500)
     
-    $('#signup').on('keyup.asq.signup', inputSelectors, function(event){
-        var id = event.target.id;
-        if (validators.hasOwnProperty(id) 
-          && 'function' == typeof(validators[id]))  validators[id]();
-      });
+    // $('#signup').on('keyup.asq.signup', inputSelectors, function(event){
+    //     var id = event.target.id;
+    //     if (validators.hasOwnProperty(id) 
+    //       && 'function' == typeof(validators[id]))  validators[id]();
+    //   });
 
-    $('#createAccount').on('click.asq.signup', function(event) {
-      event.preventDefault()
-      if ($(this).hasClass('disabled')) return;
-      $('#signup').submit();
+    // $('#createAccount').on('click.asq.signup', function(event) {
+    //   event.preventDefault()
+    //   if ($(this).hasClass('disabled')) return;
+    //   $('#signup').submit();
+    // })
+
+    //show top for first input that has the autofocus attribure 
+    // and is currently in focus   
+    $('input:focus[autofocus]').siblings('div.sidetip').find('p.tip').addClass('active')
+    $(document).on('focus', inputSelectors, function(){
+      console.log('focused')
+      $(this).siblings('div.sidetip')
+        .find('p.tip').addClass('active')
+        .siblings().removeClass('active');
     })
   });
 

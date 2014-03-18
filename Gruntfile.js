@@ -155,7 +155,7 @@ module.exports = function(grunt) {
       },
       client: {
         files: ['client/js/*.js'],
-        tasks: ['browserify:client', 'browserify:presenter', 'browserify:viewer'],
+        tasks: ['concurrent:compile'],
         options: {
           spawn: false
           // interrupt: true
@@ -167,13 +167,6 @@ module.exports = function(grunt) {
         options: {
           interrupt: true
         },
-      },
-      concurrent: {
-        files: ['client/js/*.js', 'client/less/**/*.less'],
-        tasks: ['concurrent'],
-        options: {
-          interrupt: true
-        },
       }
     }
   });
@@ -182,7 +175,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['build']);
   grunt.registerTask('build', ['maybeless', 'browserify', 'uglify']);
   grunt.registerTask('build-concurrent', ['concurrent:compile', 'concurrent:uglify']);
-  grunt.registerTask('devwatch', ['build-concurrent', 'watch:concurrent']);
+  grunt.registerTask('devwatch', ['build-concurrent', 'watch']);
   grunt.registerTask('deploy', ['shell:deploy']);
 
   //ported from togetherjs
