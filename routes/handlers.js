@@ -1,4 +1,5 @@
-var lib     = require('../lib') 
+var lib     = require('../lib')
+  , validation = require('../sahred/validation')
   , utils     = lib.utils.form
   , appLogger = lib.logger.appLogger
   , _ = require('lodash');
@@ -29,55 +30,60 @@ function postSignup(req, res) {
   data.email          = req.body.signupemail;
   data.username       = req.body.signupusername;
   data.password       = req.body.signuppassword;
-  var passwordConfirm = req.body.signuppasswordconfirm;
+  data.passwordConfirm = req.body.signuppasswordconfirm;
 
-  var validUserForm = utils.isValidUserForm( data.firstname, data.lastname,
-    data.email, data.username, data.password, passwordConfirm
-  );
+  var errs = validation.getErrorsInSignUp(data);
 
-  if (validUserForm === null) { //TODO handle errors
-     // Username availability and saving
-    var User = db.model('User', schemas.userSchema);
-    User.findOne({ username : data.username },
-      function(err, user) {
-        if (user) {
-          res.render('login', { //TODO render proper signup page
-            message    : 'Username ' + user + ' already taken',
-            formsignup : true
-          });
+  errEmail = (!!errs.email) ? true :
+  User.count({ email: data.email, _type: 'User' }).exec();
+
+  errUsername = (!!errs.username) ? true :
+  User.count({ username: data.username, _type: 'User' }).exec();
+
+  when.join(validEmail, validUsername)
+  .then(
+    function onDbCheck(data) {
+      if (!errs.email) {
+        errs.email = data[0] === 0 ? null : 'taken';
+      }
+      if (!errs.username) {
+        errs.username = data[1] === 0 ? null : 'taken';
+      }
+      for (var err in errs) {
+        if (!! errs[err]) {
+          return when.reject(errs);
+        }
+      }
+      var newUser = new User(data);
+      var deferred = when.defer();
+      newUser.save(function(err, savedUser) {
+        if (err) {
+          throw err;
         } else {
-        var newUser = new User(data);
-        newUser.save(function(err) {
-          if (err) {
-            appLogger.error('Registration - ' + err.toString());
-            res.render('login', {
-              message : 'Something went wrong. The great ASQ Server said: '
-                  + err.toString()
-            });
-          }
-          req.login(newUser, function(err) {
-            if (err) {
-              appLogger.error('First login - ' + err.toString());
+          deferred.resolve(err);
+        }
+      });
+      return deferred.promise;
+  }).then(
+    function onNewUser(user) {
+      req.login(user, function onLogin(err) {
+        if (err) {
+          var error = new Error('User created but login faild with: ' +
               res.render('login', {
               message : 'Something went wrong. The great ASQ Server said: '
-                  + err.toString()
-              });
-            }
-            res.redirect('/' + data.username
-                + '/?alert=Registration Succesful&type=success');
-          });
-        });
-      }
-    });
-  }else{
-    console.log(validUserForm)
-    res.render('login', {
-      message : 'Something went wrong. The great ASQ Server said: You specified wrong data',
-       // + validUserForm.toString(),
-      formSignup : true
+            err.toString());
+          throw error;
+        }
+        res.redirect('/' + user.username +
+          '/?alert=Registration%20Succesful&type=success');
       });
-  }
-} 
+  }).then(null,
+    function onError() {
+      res.render('signup', {
+        tipMessages : require('../lib/forms/signupFormMessages')
+      });
+    });
+}
 
 function getLogin(req, res) {
   res.render('login', {
@@ -88,7 +94,7 @@ function getLogin(req, res) {
 
 function postLogin(req, res) {
   console.log('I made it')
-  var redirect_to = req.session.redirect_to 
+  var redirect_to = req.session.redirect_to
     ? req.session.redirect_to
     : '/' + req.body.username + '/' ;
   res.redirect(redirect_to);
