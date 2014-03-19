@@ -34,6 +34,7 @@ config/config.*
 !config/config.travis.js
 log/
 *.orig
+**/dump.rdb
 
 # IDE Files #
 #############
