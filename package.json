@@ -54,7 +54,7 @@
     "supertest": "~0.6.0",
     "uglify-js": "~2.3.6",
     "unzip": "~0.1.7",
-    "validator": "~1.2.2",
+    "validator": "~3.5.0",
     "when": "~2.4.0",
     "winston": "~0.7.2",
     "superagent": "~0.15.7",
