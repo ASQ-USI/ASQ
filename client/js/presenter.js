@@ -29,8 +29,8 @@ $(function(){
 
 var connect = function(host, port, session, mode, token) {
   var started = false;
-  var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' +
-                          session + '&token=' + token);
+  var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session)
+  //+ '&token=' + token ); TODO use token for socket auth.
 
   var updateViewersCount = function(event) {
     if (!event.connectedClients)
