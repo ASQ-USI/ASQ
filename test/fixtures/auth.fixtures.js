@@ -181,10 +181,14 @@ fixtures.WhitelistEntry = [
 ];
 
 var reqs = {
-  missingHeaders : { "liveSession" : fixtures.Session[0] },
+  missingHeaders : {
+    "liveSession" : fixtures.Session[0],
+    "isAuthenticated" : function isAuthenticated() { return false; }
+  },
   missingToken : {
     "headers" : {},
     "liveSession" : fixtures.Session[0],
+    "isAuthenticated" : function isAuthenticated() { return false; }
   },
   registeredNotWhite : {
     "headers" : { "cookie" : tokens.validUser2 },
