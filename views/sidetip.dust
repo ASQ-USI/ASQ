@@ -1,7 +1,7 @@
 	<div class="sidetip">
     <p class="tip">{tip}</p>
     {@JSONIter:isaok}
-    <p class="{key} isaok"><span class="glyphicon glyphicon-ok"></span> {value}</p>
+    <p class="{key} isaok "><span class="glyphicon glyphicon-ok"></span> {value}</p>
     {/JSONIter}
     {?checking}
     <p class="checking">{checking}</p>

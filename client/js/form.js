@@ -168,9 +168,10 @@ function signupFormBinder(){
     //   $('#signup').submit();
     // })
 
-    //show top for first input that has the autofocus attribure 
+    //show tip for first input that has the autofocus attribute 
     // and is currently in focus   
     $('input:focus[autofocus]').siblings('div.sidetip').find('p.tip').addClass('active')
+    
     $(document).on('focus', inputSelectors, function(){
       console.log('focused')
       $(this).siblings('div.sidetip')

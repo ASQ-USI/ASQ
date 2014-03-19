@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
   	{>htmlHead/}
-    <title>Sign up for ASQ</title>
+    <title>ASQ - Sign up for ASQ</title>
 
   </head>
   
@@ -40,13 +40,13 @@
 
 							<div class="form-group" id="groupLastname">
 								<label class="control-label" for="inputLastname" >Last name</label>
-						    	<div class="controls">
-				            {?tipMessages.lastname}
-			            		{>sidetip:tipMessages.lastname/}
-			            	{/tipMessages.lastname}
-						     		<input type="text" class="form-control" id="inputLastname" placeholder="Mullen" name="signuplastname" >
-						    	</div>
-						  	</div>
+					    	<div class="controls">
+			            {?tipMessages.lastname}
+		            		{>sidetip:tipMessages.lastname/}
+		            	{/tipMessages.lastname}
+					     		<input type="text" class="form-control" id="inputLastname" placeholder="Mullen" name="signuplastname" >
+					    	</div>
+						  </div>
 
 							<div class="form-group" id="groupEmail">
 								<label class="control-label" for="inputEmail">Email</label>

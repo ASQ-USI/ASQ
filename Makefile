@@ -13,9 +13,8 @@ test-unit:
 		$(MOCHA_OPTS)
 
 test-acceptance:
-	@NODE_ENV=test ./node_modules/.bin/mocha \
-		--reporter $(REPORTER) \
-		--bail \
+	@NODE_ENV=test casperjs test \
+		--log-level=debug \
 		test/acceptance/*.js
 
 test-cov: lib-cov
