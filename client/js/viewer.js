@@ -28,9 +28,9 @@ $(function(){
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session, mode, token) {
   var started = false;
-  session = session;
-  socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session
-    + '&token=' + token );
+  var session = session;
+  var socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session)
+    //+ '&token=' + token ); TODO use token for socket auth.
   
   socket.on('connect', function(event) {
     // console.log("connected")
