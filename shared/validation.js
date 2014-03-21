@@ -10,7 +10,7 @@ function getErrorFirstname(candidate) {
   return null;
 }
 
-function getErrorLastName(candidate) {
+function getErrorLastname(candidate) {
   if (validator.isNull(candidate)) {
     return 'blank';
   }
@@ -54,22 +54,26 @@ function getErrorUsername(candidate) {
           ])) {
     return 'taken';
   }
-  if (!validator.matches(candidate, '(?=[a-z])(?=^.{3,50}$)[a-z0-9_\\-\.]*$')) {
+  if (!validator.matches(candidate, '(?=[a-z])(?=^.{1,15}$)[a-z0-9_\\-\.]*$')) {
     return 'invalid';
   }
   return null;
 }
 
-function getErrorPassword(candidate, confirmation) {
+function getErrorPassword(candidate) {
   if (validator.isNull(candidate)) {
     return 'blank';
   }
-  if (validator.matches(candidate,
+  if (!validator.matches(candidate,
       '(?=^.{8,50}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s)[0-9a-zA-Z:!@#%_\\(\\)\\$\\^\\&\\*\\-\\.\\?]*$'
       )) {
     return 'invalid';
   }
-  if (validator.equals(candidate, confirmation)) {
+  return null;
+}
+
+function getErrorPasswordConfirm(candidate, password) {
+  if (!validator.equals(candidate, password)) {
     return 'mismatch';
   }
   return null;
@@ -82,19 +86,22 @@ function getErrorPassword(candidate, confirmation) {
  */
 function getErrorsSignUp(data) {
   var err = {};
-  err.fistname = getErrorFirstname(data.firstname);
-  err.lastname = getErrorLastName(data.lastname);
-  err.email    = getErrorEmail(data.email);
-  err.username = getErrorUsername(data.username);
-  err.password = getErrorPassword(data.password, data.passwordConfirm);
+  err.fistname        = getErrorFirstname(data.firstname);
+  err.lastname        = getErrorLastname(data.lastname);
+  err.email           = getErrorEmail(data.email);
+  err.username        = getErrorUsername(data.username);
+  err.password        = getErrorPassword(data.password);
+  err.passwordConfirm = getErrorPasswordConfirm(data.passwordConfirm,
+    data.password);
   return err;
 }
 
 module.exports = {
-  isFirstname : isFirstname,
-  isLastName  : isLastName,
-  isEmail     : isEmail,
-  isUsername  : isUsername,
-  isPassword  : isPassword,
-  isSignUp    : isSignUp,
+  getErrorFirstname       : getErrorFirstname,
+  getErrorLastname        : getErrorLastname,
+  getErrorEmail           : getErrorEmail,
+  getErrorUsername        : getErrorUsername,
+  getErrorPassword        : getErrorPassword,
+  getErrorPasswordConfirm : getErrorPasswordConfirm,
+  getErrorsSignUp         : getErrorsSignUp,
 }

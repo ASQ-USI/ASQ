@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "adm-zip": "~0.4.3",
-    "asq-microformat":"ASQ-USI/asq-microformat#060c45",
+    "asq-microformat": "ASQ-USI/asq-microformat#060c45",
     "async": "~0.2.9",
     "asyncblock": "~2.1.13",
     "bcrypt": "~0.7.6",
@@ -39,7 +39,6 @@
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
     "passport.socketio": "~0.0.5",
-    "path": "~0.4.9",
     "promised-io": "~0.3.3",
     "redis": "~0.8.4",
     "rimraf": "~2.1.4",
@@ -84,7 +83,8 @@
     "proxyquire": "~0.5.0",
     "grunt-dust": "~0.6.1",
     "sinon": "^1.9.0",
-    "sinon-chai": "^2.5.0"
+    "sinon-chai": "^2.5.0",
+    "casperjs": "^1.1.0-beta3"
   },
   "scripts": {
     "test": "make test-unit",

@@ -1,4 +1,4 @@
-	<div class="sidetip">
+<div class="sidetip">
     <p class="tip">{tip}</p>
     {@JSONIter:isaok}
     <p class="{key} isaok "><span class="glyphicon glyphicon-ok"></span> {value}</p>
@@ -6,7 +6,7 @@
     {?checking}
     <p class="checking">{checking}</p>
     {/checking}
-    {@JSONIter:error}
-    <p class="{key} error"><span class="glyphicon glyphicon-remove"></span> {value}</p>
+    {@JSONIter:error activate=activate.field}
+    <p class="{key} error {?activate}activate{/activate}"><span class="glyphicon glyphicon-remove"></span>{activate}{value}</p>
     {/JSONIter}
 </div>
