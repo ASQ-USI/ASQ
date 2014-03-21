@@ -1,12 +1,23 @@
 <div class="sidetip">
     <p class="tip">{tip}</p>
-    {@JSONIter:isaok}
-    <p class="{key} isaok "><span class="glyphicon glyphicon-ok"></span> {value}</p>
+    {@JSONIter:isaok activate=activate}
+    <p class="{key} isaok {@eq key=params.activate value=key}active{/eq}"><span class="glyphicon glyphicon-ok"></span> {value}</p>
     {/JSONIter}
     {?checking}
     <p class="checking">{checking}</p>
     {/checking}
-    {@JSONIter:error activate=activate.field}
-    <p class="{key} error {?activate}activate{/activate}"><span class="glyphicon glyphicon-remove"></span>{activate}{value}</p>
+    {@JSONIter:error field=field activate=activate}
+    <p class="{key} error {@eq key=params.activate value=key}active{/eq}">
+        <span class="glyphicon glyphicon-remove"></span>
+        {@eq key=params.field value="email"}
+            {@eq key=value value=taken}
+                {value|s}
+            {:else}
+                {value}
+            {/eq}
+        {:else}
+            {value}
+        {/eq}
+    </p>
     {/JSONIter}
 </div>

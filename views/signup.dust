@@ -32,7 +32,7 @@
 							<label class="control-label" for="inputFirstname" >First name</label>
 							<div class="controls">
 								{?tipMessages.firstname}
-								{>sidetip:tipMessages.firstname field="firstname"/}
+								{>sidetip:tipMessages.firstname field="firstname" activate=activate.firstname/}
 								{/tipMessages.firstname}
 								<input type="text" class="form-control" id="inputFirstname" autocomplete="off" arias-required="true" placeholder="Rodney" name="signupfirstname" 
 								{?data.firstname}value="{data.firstname}"{/data.firstname}autofocus>
@@ -43,7 +43,7 @@
 							<label class="control-label" for="inputLastname" >Last name</label>
 							<div class="controls">
 								{?tipMessages.lastname}
-								{>sidetip:tipMessages.lastname field="lastname"/}
+								{>sidetip:tipMessages.lastname field="lastname" activate=activate.lastname/}
 								{/tipMessages.lastname}
 								<input type="text" class="form-control" id="inputLastname" autocomplete="off" arias-required="true" placeholder="Mullen" name="signuplastname"
 								{?data.lastname}value="{data.lastname}"{/data.lastname}>
@@ -54,7 +54,7 @@
 							<label class="control-label" for="inputEmail">Email</label>
 							<div class="controls">
 								{?tipMessages.email}
-								{>sidetip:tipMessages.email field="email"/}
+								{>sidetip:tipMessages.email field="email" activate=activate.email/}
 								{/tipMessages.email}
 								<input type="email" class="form-control" id="inputEmail" autocomplete="off" arias-required="true" placeholder="rodney.mullen@usi.ch" name="signupemail" {?data.email}value="{data.email}"{/data.email}>
 							</div>
@@ -64,7 +64,7 @@
 							<label class="control-label" for="inputUsername"> Select your username</label>
 							<div class="controls">
 								{?tipMessages.username}
-								{>sidetip:tipMessages.username field="username"/}
+								{>sidetip:tipMessages.username field="username" activate=activate.username/}
 								{/tipMessages.username}
 								<input type="text" class="form-control" id="inputUsername" autocomplete="off" arias-required="true" placeholder="rodney" name="signupusername" {?data.username}value="{data.username}"{/data.username}>
 							</div>
@@ -74,7 +74,7 @@
 							<label class="control-label" for="inputPassword">Password</label>
 							<div class="controls">
 								{?tipMessages.password}
-								{>sidetip:tipMessages.password field="password"/}
+								{>sidetip:tipMessages.password field="password" activate=activate.password/}
 								{/tipMessages.password}
 								<input type="password" class="form-control" id="inputPassword" autocomplete="off" arias-required="true" placeholder="supersecret" name="signuppassword">
 							</div>
@@ -83,14 +83,15 @@
 						<div class="form-group" id="groupPassword2">
 							<label class="control-label" for="inputRepeatPassword">Repeat password</label>
 							<div class="controls">
-								{?tipMessages.passwordConfirm}
-								{>sidetip:tipMessages.passwordConfirm field="passwordConfirm"/}
-								{/tipMessages.passwordConfirm}
+								{?tipMessages.passwordRepeat}
+								{>sidetip:tipMessages.passwordRepeat field="passwordRepeat"
+									activate=activate.passwordRepeat/}
+								{/tipMessages.passwordRepeat}
 								<input type="password" class="form-control" id="inputRepeatPassword" autocomplete="off" arias-required="true" placeholder="supersecret" name="signuppasswordconfirm">
 							</div>
 
 						</div>
-						<input class="btn btn-primary disabled" id="createAccount" type="submit" value="Create Account"/>
+						<input class="btn btn-primary" id="createAccount" type="submit" value="Create Account"/>
 					</fieldset>
 				</form>
 

@@ -27,13 +27,13 @@ function getSignup(req, res) {
 function postSignup(req, res) {
   //TODO change those horrible signup...
   var data = {};
-  data.firstname       = req.body.signupfirstname;
-  data.lastname        = req.body.signuplastname;
-  data.screenName      = data.firstname + ' ' + data.lastname;
-  data.email           = req.body.signupemail;
-  data.username        = req.body.signupusername;
-  data.password        = req.body.signuppassword;
-  data.passwordConfirm = req.body.signuppasswordconfirm;
+  data.firstname      = req.body.signupfirstname;
+  data.lastname       = req.body.signuplastname;
+  data.screenName     = data.firstname + ' ' + data.lastname;
+  data.email          = req.body.signupemail;
+  data.username       = req.body.signupusername;
+  data.password       = req.body.signuppassword;
+  data.passwordRepeat = req.body.signuppasswordconfirm;
 
   var errs = validation.getErrorsSignUp(data);
 
@@ -83,13 +83,22 @@ function postSignup(req, res) {
       });
   }).then(null,
     function onError(err) {
-      appLogger.error('On signup: ' + err.toString(), { err: err.stack });
-      console.dir(err);
-      res.render('signup', {
+      if (err instanceof Error) {
+        appLogger.error('On signup: ' + err.toString(), { err: err.stack });
+        throw err;
+      } else {
+        for (var key in err) {
+          if (err[key] == null) {
+            err[key] = 'ok';
+          }
+        }
+        console.dir(err);
+        res.render('signup', {
         tipMessages : signupFormMessages,
         activate : err,
         data : data
       });
+      }
     });
 }
 
@@ -126,9 +135,7 @@ function emailAvailable(req, res) {
     throw err;
   }
   var response = {};
-  response.blank = false;
-  response.invalid = false;
-  response.taken = false;
+  response.err = null;
   response.msg = null;
   response.username = null;
   var email = !! req.query.email ? req.query.email.trim() : null;
@@ -136,7 +143,7 @@ function emailAvailable(req, res) {
   var err = validation.getErrorEmail(email);
   var promise = null;
   if (!! err) {
-    response[err] = true;
+    response.err = err;
     response.msg = signupFormMessages.email.error[err];
     res.json(response); // Invalid email
     return;
@@ -145,7 +152,7 @@ function emailAvailable(req, res) {
   .then( 
     function onEmail(count) {
       if (count !== 0) {
-        response.taken = true;
+        response.err = 'taken';
         response.msg = signupFormMessages.email.error.taken;
         res.json(response); // Taken email
         return null;
@@ -183,15 +190,13 @@ function usernameAvailable(req, res) {
     throw err;
   }
   var response = {};
-  response.blank = false;
-  response.invalid = false;
-  response.taken = false;
+  response.err = null;
   response.msg = null;
   var username = !! req.query.username ? req.query.username.trim() : null;
   var err = validation.getErrorUsername(username);
   console.log('%s -> %s', username, err);
   if (!! err) {
-    response[err] = true;
+    response.err = err;
     response.msg = signupFormMessages.username.error[err];
     res.json(response); // Blank or Invalid username (or taken for reserved routes)
     return;
@@ -200,7 +205,7 @@ function usernameAvailable(req, res) {
   .then(
     function onUser(count) {
       if (count !== 0) {
-        response.taken = true;
+        response.err = 'taken';
         response.msg = signupFormMessages.username.taken;
         res.json(response); // Taken username
       } else {
