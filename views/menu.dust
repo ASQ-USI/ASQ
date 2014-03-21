@@ -24,7 +24,7 @@
         <li> <a href="/{username}/settings">Settings</a></li>
         <li class="divider-vertical"></li>
         <li>
-          <form id="logoutForm" method="post" action="/sign_out" style="display: none; opacity: 0;"></form>
+          <form id="logoutForm" method="post" action="/logout" style="display: none; opacity: 0;"></form>
           <a href="#" id="logoutAnchor">Log out</a>
         </li>
       </ul>

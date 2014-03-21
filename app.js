@@ -5,49 +5,45 @@
 //enhanced errors, useful for status codes, type etc
 require('simple-errors');
 
-var config = require('./config')
-// Globals: mongoose, db, and schemas
-mongoose = require('mongoose');
-db = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
-schemas = require('./models');
+var config = require('./config');
+// Globals : mongoose, db, and schemas
+mongoose   = require('mongoose');
+db         = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
+schemas    = require('./models');
 
-var express     = require('express')
-  , http          = require('http')
-  , path        = require('path')
-  , fs          = require('fs')
-  , redisStore  = require('connect-redis')(express)
-  , http        = require('http')
-  , credentials = config.enableHTTPS ? {
-      key         : fs.readFileSync(config.keyPath),
-      cert        : fs.readFileSync(config.certPath),
-      ca          : fs.readFileSync(config.caPath),
-      requestCert : config.requestCert,
-      rejectUnauthorized : config.rejectUnauthorized,
-    } : {}
-  , appLogger     = require('./lib/logger').appLogger
-  , cons            = require('consolidate')
-  , dust            = require('dustjs-linkedin')
-  , slashes         = require("connect-slashes")
-  , flash           = require('connect-flash')
-  , lib             = require('./lib')
-  , routes          = require('./routes')
-  , registration    = require('./routes/registration')
-  , editFunctions   = require('./routes/edit')
-  , statistics      = require('./routes/statistics')
-  , appLogger       = lib.logger.appLogger
-  , authentication  = lib.authentication
-  , passport        = lib.passport.init()
-  , formUtils       = lib.utils.form
-  , errorMessages   = lib.errorMessages
-  , middleware      = require('./routes/middleware')
-  , errorMiddleware      = require('./routes/errorMiddleware');
-
+var cons          = require('consolidate')
+, dust            = require('dustjs-linkedin')
+, express         = require('express')
+, flash           = require('connect-flash')
+, fs              = require('fs')
+, http            = require('http')
+, path            = require('path')
+, redisStore      = require('connect-redis')(express)
+, slashes         = require('connect-slashes')
+, credentials     = config.enableHTTPS ? {
+    key                : fs.readFileSync(config.keyPath),
+    cert               : fs.readFileSync(config.certPath),
+    ca                 : fs.readFileSync(config.caPath),
+    requestCert        : config.requestCert,
+    rejectUnauthorized : config.rejectUnauthorized,
+  } : {}
+, lib             = require('./lib')
+, appLogger       = lib.logger.appLogger
+, authentication  = lib.authentication
+, passport        = lib.passport.init()
+, editFunctions   = require('./routes/edit')
+, errorMessages   = lib.errorMessages
+, errorMiddleware = require('./routes/errorMiddleware')
+, middleware      = require('./routes/middleware')
+, registration    = require('./routes/registration')
+, routes          = require('./routes')
+, statistics      = require('./routes/statistics');
 
 //Setup Dust.js helpers and options
 require('dustjs-helpers');
-require('lib/dust-helpers')(dust)
+lib.dustHelpers(dust);
 
-//don't remove whitespace
+//don't remove whitespace <- WUT?
 dust.optimizers.format = function(ctx, node) { return node };
 
 // Simple route middleware to ensure user is authenticated.
@@ -143,21 +139,22 @@ app.configure('development', function(){
             .toString().trim();
 
     }
-    formUtils.prodValidUserForm = formUtils.isValidUserForm;
-    formUtils.isValidUserForm = function(firstname, lastname, email, username, password, passwordConfirm, strict) {
-      var errors = formUtils.prodValidUserForm(firstname, lastname, email, username, password, passwordConfirm, strict);
-      if (errors === null || !errors.hasOwnProperty('password')) {
-        return errors;
-      } else if (Object.keys(errors).length === 1
-                  && errors.password === errorMessages.password.regex) {
-        appLogger.debug('[devel mode] No password constraint');
-        return null;
-      } else if (errors.password === errorMessages.password.regex) {
-        appLogger.debug('[devel mode] No password constraint');
-        delete errors.password;
-      }
-      return errors;
-    }
+
+    // formUtils.prodValidUserForm = formUtils.isValidUserForm;
+    // formUtils.isValidUserForm = function(firstname, lastname, email, username, password, passwordConfirm, strict) {
+    //   var errors = formUtils.prodValidUserForm(firstname, lastname, email, username, password, passwordConfirm, strict);
+    //   if (errors === null || !errors.hasOwnProperty('password')) {
+    //     return errors;
+    //   } else if (Object.keys(errors).length === 1
+    //               && errors.password === errorMessages.password.regex) {
+    //     appLogger.debug('[devel mode] No password constraint');
+    //     return null;
+    //   } else if (errors.password === errorMessages.password.regex) {
+    //     appLogger.debug('[devel mode] No password constraint');
+    //     delete errors.password;
+    //   }
+    //   return errors;
+    // }
 });
 
 app.configure('production', function(){

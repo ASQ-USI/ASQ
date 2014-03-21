@@ -19,8 +19,8 @@ var baseUserSchema = new Schema({
 var registeredUserSchema = baseUserSchema.extend({
   username: { type: String, unique: true, sparse: true, required: true, lowercase: true },
   password: { type: String, required: true },
-  firstname: { type: String, required: true, set: capitalize }, //TODO add fields in signup form, fullname method and signup check on both client and server
-  lastname: { type: String, required: true, set: capitalize },
+  firstname: { type: String, required: true},
+  lastname: { type: String, required: true},
   email: { type: String, required: true, sparse: true, unique: true }, // Exactly only one email per account
   slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
 });
@@ -63,11 +63,6 @@ var guestUserSchema = baseUserSchema.extend({
 
 mongoose.model('User', registeredUserSchema);
 mongoose.model('GuestUser', guestUserSchema);
-
-function capitalize (val) {
-  if ('string' != typeof val) val = '';
-  return val.charAt(0).toUpperCase() + val.substring(1);
-}
 
 module.exports = {
   registeredUserSchema : registeredUserSchema,

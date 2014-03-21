@@ -25,6 +25,12 @@ module.exports.setUp = function setUp(app, middleware) {
   //Upload form
   app.get('/upload/', middleware.isAuthenticated, handlers.getUploadForm);
 
+  // Check email availability
+  app.get('/email_available/', handlers.emailAvailable);
+
+  // Check username availability
+  app.get('/username_available/', handlers.usernameAvailable);
+
   //Set up routes starting with /:user/*
   user.setUp(app, middleware);
 }
