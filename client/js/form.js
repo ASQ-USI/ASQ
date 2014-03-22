@@ -55,7 +55,7 @@ function signupFormBinder(){
                 $el.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
               } else {
                 $el.siblings('div.sidetip').children('p.isaok').addClass('active');
-                isValid.email = true;
+                isValid.inputEmail = true;
               }
               // Set username from email
               if (!!reply.username && !$('#inputUsername').val()) {
@@ -63,7 +63,7 @@ function signupFormBinder(){
                 userInput.val(reply.username);
                 userInput.siblings('div.sidetip').children().removeClass('active');
                 userInput.siblings('div.sidetip').children('p.isaok').addClass('active');
-                isValid.username = true;
+                isValid.inputUsername = true;
               }
             })
             .fail(function(jqXHR, textStatus){
@@ -85,7 +85,7 @@ function signupFormBinder(){
                 $el.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
               } else {
                 $el.siblings('div.sidetip').children('p.isaok').addClass('active');
-                isValid.username = true;
+                isValid.inputUsername = true;
               }
             })
             .fail(function(jqXHR, textStatus) {
@@ -101,7 +101,7 @@ function signupFormBinder(){
               $el.siblings('div.sidetip').children('p.' + err).addClass('active');
             } else {
               $el.siblings('div.sidetip').children('p.isaok').addClass('active');
-              isValid.password = true;
+              isValid.inputPassword = true;
             }
             var repeat = $('#inputRepeatPassword');
             var errRepeat = validation.getErrorPasswordRepeat(repeat.val(), $el.val());
@@ -109,12 +109,12 @@ function signupFormBinder(){
             var isErr = !! errRepeat;
             repeat.siblings('div.sidetip')
               .children('p.' + (isErr ? errRepeat : 'isaok')).addClass('active');
-            isValid.passwordRepeat = isErr;
+            isValid.inputRepeatPassword = isErr;
         });
       },
 
       'inputRepeatPassword' : function checkPasswordRepeat() {
-        isValid.passwordRepeat = false;
+        isValid.inputRepeatPassword = false;
         var $el = $('#inputRepeatPassword');
         $el.val($.trim($el.val()));
         var err = validation.getErrorPasswordRepeat($el.val(),
@@ -124,7 +124,7 @@ function signupFormBinder(){
           $el.siblings('div.sidetip').children('p.'+err).addClass('active');
         } else {
           $el.siblings('div.sidetip').children('p.isaok').addClass('active');
-          isValid.passwordRepeat = true;
+          isValid.inputRepeatPassword = true;
         }
       }
     };
