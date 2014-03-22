@@ -41,7 +41,7 @@ function isRouteOwner(req, res, next) {
 }
 
 var localAuthenticate = passport.authenticate('local', {
-  failureRedirect : '/sign_in/',
+  failureRedirect : '/login/',
   failureFlash    : true
 });
 
