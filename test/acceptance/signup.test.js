@@ -11,9 +11,8 @@
 //   it('should refuse passwords that do not match');
 //   it('should accept complete submissions');
 // });
-var casper = require('casper').create();
-var screenshotPath = "./test/acceptance/screenshots/";
 
+var screenshotPath = "./test/acceptance/screenshots/";
 
 //remote console messages
 casper.on('remote.message', function(message) {
