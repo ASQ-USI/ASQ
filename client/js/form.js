@@ -8,6 +8,7 @@
 'use strict'
 var $        = require('jQuery')
 , _          = require ('lodash')
+, effects    = require('./effects')
 , validation = require('../../shared/validation');
 
 
@@ -26,35 +27,34 @@ var form = module.exports = {
     setup : setup
 }
 
-//TODO Proper check using promises
-//Use same validation as the server
-//Check email against the server for uniqueness and set default username as email up to the @
 //signin form
 function signupFormBinder(){
 
   $(function(){
     var inputSelectors = 'input[type=text], input[type=email], input[type=password]';
 
-    var validate = {
+    var validateFn = {
       'inputFirstname' : function checkFirstname() {
-        console.log('Firstname trigger check');
         defaultValidate('inputFirstname', validation.getErrorFirstname);
       },
 
       'inputLastname' : function checkLastname() {
-        console.log('Lastname trigger check');
         defaultValidate('inputLastname', validation.getErrorLastname);
       },
 
       'inputEmail' : function checkEmail() {
         defaultValidate('inputEmail', validation.getErrorEmail,
-          function emailServerCheck(elem) {
-            $.ajax('/email_available/?email=' + elem.val().toLowerCase())
+          function emailServerCheck(err, $el) {
+            if (!! err) {
+              $el.siblings('div.sidetip').children('p.' + err).addClass('active');
+              return;
+            }
+            $.ajax('/email_available/?email=' + $el.val().toLowerCase())
             .done(function(reply) {
               if (!!reply.err) {
-                elem.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
+                $el.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
               } else {
-                elem.siblings('div.sidetip').children('p.isaok').addClass('active');
+                $el.siblings('div.sidetip').children('p.isaok').addClass('active');
                 isValid.email = true;
               }
               // Set username from email
@@ -64,7 +64,6 @@ function signupFormBinder(){
                 userInput.siblings('div.sidetip').children().removeClass('active');
                 userInput.siblings('div.sidetip').children('p.isaok').addClass('active');
                 isValid.username = true;
-                //userInput.select();
               }
             })
             .fail(function(jqXHR, textStatus){
@@ -75,47 +74,56 @@ function signupFormBinder(){
 
       'inputUsername' : function checkUsername() {
         defaultValidate('inputUsername', validation.getErrorUsername,
-          function usernameServerCheck(elem) {
-            $.ajax('/username_available/?username=' + elem.val())
+          function usernameServerCheck(err, $el) {
+            if (!! err) {
+              $el.siblings('div.sidetip').children('p.' + err).addClass('active');
+              return;
+            }
+            $.ajax('/username_available/?username=' + $el.val())
             .done(function(reply) {
               if (!! reply.err) {
-                elem.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
+                $el.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
               } else {
-                elem.siblings('div.sidetip').children('p.isaok').addClass('active');
+                $el.siblings('div.sidetip').children('p.isaok').addClass('active');
                 isValid.username = true;
               }
             })
             .fail(function(jqXHR, textStatus) {
+              console.log( "Username availibility check failed: " + textStatus );
             });
         });
       },
 
       'inputPassword' : function checkPassword() {
         defaultValidate('inputPassword', validation.getErrorPassword,
-          function repeatPassword(elem) {
-            elem.siblings('div.sidetip').children('p.isaok').addClass('active');
-            isValid.password = true;
+          function repeatPassword(err, $el) {
+            if (!! err) {
+              $el.siblings('div.sidetip').children('p.' + err).addClass('active');
+            } else {
+              $el.siblings('div.sidetip').children('p.isaok').addClass('active');
+              isValid.password = true;
+            }
             var repeat = $('#inputRepeatPassword');
-            var err = validation.getErrorPasswordRepeat(repeat.val(), elem.val());
+            var errRepeat = validation.getErrorPasswordRepeat(repeat.val(), $el.val());
             repeat.siblings('div.sidetip').children().removeClass('active');
-            var isErr = !! err;
+            var isErr = !! errRepeat;
             repeat.siblings('div.sidetip')
-              .children('p.' + (isErr ? err : 'isaok')).addClass('active');
+              .children('p.' + (isErr ? errRepeat : 'isaok')).addClass('active');
             isValid.passwordRepeat = isErr;
         });
       },
 
       'inputRepeatPassword' : function checkPasswordRepeat() {
         isValid.passwordRepeat = false;
-        var elem = $('#inputRepeatPassword');
-        elem.val($.trim(elem.val()));
-        var err = validation.getErrorPasswordRepeat(elem.val(),
+        var $el = $('#inputRepeatPassword');
+        $el.val($.trim($el.val()));
+        var err = validation.getErrorPasswordRepeat($el.val(),
           $('#inputPassword').val());
-        elem.siblings('div.sidetip').children().removeClass('active');
+        $el.siblings('div.sidetip').children().removeClass('active');
         if (!! err) {
-          elem.siblings('div.sidetip').children('p.'+err).addClass('active');
+          $el.siblings('div.sidetip').children('p.'+err).addClass('active');
         } else {
-          elem.siblings('div.sidetip').children('p.isaok').addClass('active');
+          $el.siblings('div.sidetip').children('p.isaok').addClass('active');
           isValid.passwordRepeat = true;
         }
       }
@@ -151,12 +159,12 @@ function signupFormBinder(){
     });
 
     // Check after a while on input.
-    $(document).on('input', inputSelectors, function onInput(evt) {
+    $(document).on('input keypress', inputSelectors, function onInput(evt) {
       var id = evt.target.id;
       clearTimeout(timer[id]);
       timer[id] = setTimeout(function(){
-        if (_.isFunction(validate[id])) {
-          validate[id]();
+        if (_.isFunction(validateFn[id])) {
+          validateFn[id]();
         }
       }, 200);
     });
@@ -165,43 +173,28 @@ function signupFormBinder(){
     $(document).on('blur', inputSelectors, function onLeave(evt){
       var id = evt.target.id;
       clearTimeout(timer[id]);
-      if (_.isFunction(validate[id])) {
-        validate[id]();
+      if (_.isFunction(validateFn[id])) {
+        validateFn[id]();
       }
     });
 
-    // Prevent submission on enter if inputs are not all valid
+    // Prevent submission on enter if inputs are not all valid.
     $(document).keydown(function checkBeforeSubmit(evt) {
       if(evt.keyCode == 13 && !validationFunction()) {
         evt.preventDefault();
+        effects.bounce($('#createAccount'));
         return false;
       }
     });
 
+    // Prevent submission on click if inputs are not all valid.
     $(document).on('click', '#createAccount', function checkBeforeSubmit (evt) {
       if(! validationFunction()) {
         evt.preventDefault();
-        bounce($('#createAccount'));
+        effects.bounce($(this));
         return false;
       }
     });
-
-   function bounce(elem) {
-    console.log('boucing');
-    bounceOnce(elem, -15, 100, function(){
-      bounceOnce(elem, -10, 75);
-    });
-
-    function bounceOnce(elem, distance, duration, cb){
-      elem.animate({ left: "-=" + distance, position: 'aboslute' }, duration, function onAnim1() {
-        elem.animate({ left: "+=" + distance, position: 'aboslute' }, 150, function onAnim2() {
-          if(!!cb && _.isFunction(cb)) {
-            cb();
-          }
-        });
-      });
-    }
-  }
 
     // Default validation handling for inputs
     // @param {String} id - the id of the input to validate
@@ -210,20 +203,21 @@ function signupFormBinder(){
     // @param {Function} cb - a callback to call if there is no error.
     function defaultValidate(id, checkFn, cb) {
       isValid[id] = false;
-      var elem = $('#' + id);
-      elem.val($.trim(elem.val()));
-      var err = checkFn(elem.val());
-      elem.siblings('div.sidetip').children().removeClass('active');
-      if (!! err) {
-        elem.siblings('div.sidetip').children('p.' + err).addClass('active');
-      } else if (cb && (typeof(cb) == "function")) {
-        cb(elem);
+      var $el = $('#' + id);
+      $el.val($.trim($el.val()));
+      var err = checkFn($el.val());
+      $el.siblings('div.sidetip').children().removeClass('active');
+      if (!!cb && _.isFunction(cb)) {
+        cb(err, $el);
+      } else if (!! err) {
+        $el.siblings('div.sidetip').children('p.' + err).addClass('active');
       } else {
-        elem.siblings('div.sidetip').children('p.isaok').addClass('active');
+        $el.siblings('div.sidetip').children('p.isaok').addClass('active');
         isValid[id] = true;
       }
     }
 
+    // Assert all fields are valid.
     function validationFunction(){
       for (var key in isValid) {
         if (!isValid[key]) {
