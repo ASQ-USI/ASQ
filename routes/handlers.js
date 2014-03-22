@@ -30,7 +30,7 @@ function postSignup(req, res) {
   data.firstname      = req.body.signupfirstname;
   data.lastname       = req.body.signuplastname;
   data.screenName     = data.firstname + ' ' + data.lastname;
-  data.email          = req.body.signupemail;
+  data.email          = req.body.signupemail.toLowerCase();
   data.username       = req.body.signupusername;
   data.password       = req.body.signuppassword;
   data.passwordRepeat = req.body.signuppasswordconfirm;

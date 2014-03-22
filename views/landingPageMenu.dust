@@ -24,11 +24,11 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-          <a href="/register">Register</a>
+          <a href="/signup/">Sign Up</a>
         </li>
         <li class="divider-vertical"></li>
         <li>
-          <a href="/sign_in">Sign In</a>
+          <a href="/login">Log In</a>
         </li>
       </ul>
     </nav><!-- /.navbar-collapse -->  

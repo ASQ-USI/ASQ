@@ -37,7 +37,8 @@ var cons          = require('consolidate')
 , middleware      = require('./routes/middleware')
 , registration    = require('./routes/registration')
 , routes          = require('./routes')
-, statistics      = require('./routes/statistics');
+, statistics      = require('./routes/statistics')
+, validation      = require('./shared/validation');
 
 //Setup Dust.js helpers and options
 require('dustjs-helpers');
@@ -139,22 +140,13 @@ app.configure('development', function(){
             .toString().trim();
 
     }
-
-    // formUtils.prodValidUserForm = formUtils.isValidUserForm;
-    // formUtils.isValidUserForm = function(firstname, lastname, email, username, password, passwordConfirm, strict) {
-    //   var errors = formUtils.prodValidUserForm(firstname, lastname, email, username, password, passwordConfirm, strict);
-    //   if (errors === null || !errors.hasOwnProperty('password')) {
-    //     return errors;
-    //   } else if (Object.keys(errors).length === 1
-    //               && errors.password === errorMessages.password.regex) {
-    //     appLogger.debug('[devel mode] No password constraint');
-    //     return null;
-    //   } else if (errors.password === errorMessages.password.regex) {
-    //     appLogger.debug('[devel mode] No password constraint');
-    //     delete errors.password;
-    //   }
-    //   return errors;
-    // }
+    validation.getErrorPassword = function devGetErrorPassword(candidate) {
+      if (validator.isNull(candidate)) {
+        return 'blank';
+      }
+      appLogger.debug('[devel mode] No password constraint');
+      return null;
+    }
 });
 
 app.configure('production', function(){

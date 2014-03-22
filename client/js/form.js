@@ -19,7 +19,6 @@ function setup(viewName){
   if (binders.hasOwnProperty(viewName) && typeof binders[viewName] == 'function'){
     binders[viewName]();
   }else{
-    console.log("No Form Bindings for "+ viewName);
   }
 }
 
@@ -48,10 +47,9 @@ function signupFormBinder(){
       },
 
       'inputEmail' : function checkEmail() {
-        console.log('Email trigger check');
         defaultValidate('inputEmail', validation.getErrorEmail,
           function emailServerCheck(elem) {
-            $.ajax('/email_available/?email=' + elem.val())
+            $.ajax('/email_available/?email=' + elem.val().toLowerCase())
             .done(function(reply) {
               if (!!reply.err) {
                 elem.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
@@ -76,26 +74,23 @@ function signupFormBinder(){
       },
 
       'inputUsername' : function checkUsername() {
-        console.log('Username trigger check');
         defaultValidate('inputUsername', validation.getErrorUsername,
           function usernameServerCheck(elem) {
             $.ajax('/username_available/?username=' + elem.val())
             .done(function(reply) {
               if (!! reply.err) {
-                elem.siblings('div.sidetip').children('p.' + err).addClass('active');
+                elem.siblings('div.sidetip').children('p.' + reply.err).addClass('active');
               } else {
                 elem.siblings('div.sidetip').children('p.isaok').addClass('active');
                 isValid.username = true;
               }
             })
             .fail(function(jqXHR, textStatus) {
-              console.log( "Username availibility check failed: " + textStatus );
             });
         });
       },
 
       'inputPassword' : function checkPassword() {
-        console.log('Password trigger check');
         defaultValidate('inputPassword', validation.getErrorPassword,
           function repeatPassword(elem) {
             elem.siblings('div.sidetip').children('p.isaok').addClass('active');
@@ -163,36 +158,33 @@ function signupFormBinder(){
         if (_.isFunction(validate[id])) {
           validate[id]();
         }
-      }, 1000);
+      }, 200);
     });
 
     //Check imediately on leave.
     $(document).on('blur', inputSelectors, function onLeave(evt){
       var id = evt.target.id;
-      console.log('Blur event on ' + id);
       clearTimeout(timer[id]);
       if (_.isFunction(validate[id])) {
         validate[id]();
       }
     });
 
-   //  // Prevent submission on enter if inputs are not all valid
-   // $(document).keydown(function checkBeforeSubmit(evt) {
-   //    if(evt.keyCode == 13 && !validationFunction()) {
-   //      console.log('I won\'t submit');
-   //      evt.preventDefault();
-   //      return false;
-   //    }
-   //  });
+    // Prevent submission on enter if inputs are not all valid
+    $(document).keydown(function checkBeforeSubmit(evt) {
+      if(evt.keyCode == 13 && !validationFunction()) {
+        evt.preventDefault();
+        return false;
+      }
+    });
 
-   // $(document).on('click', '#createAccount', function checkBeforeSubmit (evt) {
-   //  if(! validationFunction()) {
-   //    evt.preventDefault();
-   //    bounce($('#createAccount'));
-   //    console.log('I won\'t click');
-   //    return false;
-   //  }
-   // });
+    $(document).on('click', '#createAccount', function checkBeforeSubmit (evt) {
+      if(! validationFunction()) {
+        evt.preventDefault();
+        bounce($('#createAccount'));
+        return false;
+      }
+    });
 
    function bounce(elem) {
     console.log('boucing');

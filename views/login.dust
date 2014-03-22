@@ -1,170 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-  	{>htmlHead/}
-    <title>ASQ - Sign in</title>
-    <link href='/css/login.css' rel='stylesheet'/>
-
-  </head>
-  
-  <body data-from-signup="{formSignup}">
-
-			<div id="login-wrapper" class="container">
-
-
-				<div class="login-box">
-
-					<img src="/img/logo-big.png" alt="ASQ logo"/>
-					{?message}
-						{^formSignup}
-						<p>&nbsp;</p>	
-							<div class="alert alert-block">
-								<h4>{message}</h4>
-							</div>	
-						{/formSignup}
-					{/message}
-
-					{?alert}
-						{?alert.success}
-					<div class="alert alert-success">{alert.success}</div>
-					  {/alert.success}
-					  {?alert.info}
-					<div class="alert alert-info">{alert.info}</div>
-					  {/alert.info}
-					  {?alert.warning}
-					<div class="alert alert-warning">{alert.warning}</div>
-					  {/alert.warning}
-					  {?alert.error}
-					<div class="alert alert-danger">{alert.error}</div>
-					  {/alert.error}
-					{/alert}
-
-					<form class="form-signin" action="/sign_in" method="post">
-						<!-- <h2 class="form-signin-heading">Please sign in</h2> -->
-						<input type="text" name="username" class="form-control" placeholder="Username" autofocus>
-						<input type="password" name="password" class="form-control" placeholder="Password">
-						<label class="checkbox">
-							<input type="checkbox" value="remember-me"> Remember me
-						</label>
-						<button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
-					</form>
-<!-- 
-					<form name="login" class="form-horizontal" action="/sign_in" method="post">
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon">Username</span>
-								<input class="span2" id="prependedInput" type="text" name="username" placeholder="" autofocus="autofocus"/>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon"> Password </span>
-								<input type="password" name="password" class="span2" id="prependedInput" type="password" placeholder=""/>
-
-							</div>
-						</div>
-
-						<button type="submit" class="btn btn-primary">Log in</button>
-						<button type="button" class="btn" data-toggle="modal" data-target="#signup-modal">signup</button>
-					</form> -->
-						<div class="signup-field">
-							<a href="/#signup-modal" data-toggle="modal">signup</a>
-						</div>
-
-				</div>
-
-
-				<div class="signup">
-
-				</div>
-
-			</div>
-
-			<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="signup-modal-label" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-								×
-							</button>
-							<h3 id="signup-modal-label">Register on ASQ</h3>
-						</div>
-						<div class="modal-body">
-							{?message}
-								<div class="alert alert-block">
-									<h4>{message}</h4>
-								</div>	
-								
-								<br/>
-							{/message}					
-							
-							<form id="signup" class="form-horizontal" action="/signup" method="post">
-							  	<div class="form-group" id="groupFirstname">
-									<label class="control-label" for="inputFirstname" >Firstname</label>
-							    	<div class="controls">
-							     		<input type="text" class="form-control" id="inputFirstname" placeholder="MyFirstname" name="signupfirstname" >
-							     		<span class="help-inline" id="checkfirst"> </span>
-							    	</div>
-							  	</div>
-
-								<div class="form-group" id="groupLastname">
-									<label class="control-label" for="inputLastname" >Lastname</label>
-							    	<div class="controls">
-							     		<input type="text" class="form-control" id="inputLastname" placeholder="MyLastname" name="signuplastname" >
-							     		<span class="help-inline" id="checklast"> </span>
-							    	</div>
-							  	</div>
-
-								<div class="form-group" id="groupEmail">
-									<label class="control-label" for="inputEmail">Email</label>
-									<div class="controls">
-										<input type="email" class="form-control" id="inputEmail" placeholder="my.name@usi.ch" name="signupemail">
-										<span class="help-inline" id="checkmail"> </span>
-							  		</div>
-								</div>
-
-								<div class="form-group" id="groupUsername">
-									<label class="control-label" for="inputUsername" >Username</label>
-							    	<div class="controls">
-							     		<input type="text" class="form-control" id="inputUsername" placeholder="MyUsername" name="signupusername" >
-							     		<span class="help-inline" id="checkuser"> </span>
-							    	</div>
-							  	</div>
-								
-								<div class="form-group" id="groupPassword1">
-									<label class="control-label" for="inputPassword">Password</label>
-									<div class="controls">
-										<input type="password" class="form-control" id="inputPassword" placeholder="Password" name="signuppassword">
-										<span id ="checkpwd" class="help-inline"></span>
-									</div>
-								</div>
-								
-								<div class="form-group" id="groupPassword2">
-									<label class="control-label" for="inputRepeatPassword">Repeat password</label>
-									<div class="controls">
-										<input type="password" class="form-control" id="inputRepeatPassword" placeholder="Password" name="signuppasswordconfirm">
-										<span id ="checkpwd2" class="help-inline"></span>
-									</div>
-									
-								</div>
-							</form>
-						</div>
-						<div class="modal-footer">
-							<button class="btn" data-dismiss="modal" aria-hidden="true">
-								Close
-							</button>
-							<button class="btn btn-primary disabled" id="createAccount" >
-								Create Account
-							</button>
-						</div>						
+<head>
+	{>htmlHead/}
+	<title>ASQ - Log In</title>
+	<link href='/css/login.css' rel='stylesheet'/>
+</head>
+<body data-from-signup="{formSignup}">
+	<div id="login-wrapper" class="container">
+		<div class="login-box">
+			<img src="/img/logo-big.png" alt="ASQ logo"/>
+			{?message}
+				{^formSignup}
+					<p>&nbsp;</p>
+					<div class="alert alert-block">
+						<h4>{message}</h4>
 					</div>
-				</div>
+				{/formSignup}
+			{/message}
 
+			{?alert}
+				{?alert.success}
+					<div class="alert alert-success">{alert.success}</div>
+				{/alert.success}
+				{?alert.info}
+					<div class="alert alert-info">{alert.info}</div>
+				{/alert.info}
+				{?alert.warning}
+					<div class="alert alert-warning">{alert.warning}</div>
+				{/alert.warning}
+				{?alert.error}
+					<div class="alert alert-danger">{alert.error}</div>
+				{/alert.error}
+			{/alert}
+
+			<form class="form-signin" action="/login" method="post">
+				<input type="text" name="username" class="form-control" placeholder="Username" autofocus>
+				<input type="password" name="password" class="form-control" placeholder="Password">
+				<label class="checkbox">
+					<input type="checkbox" value="remember-me"> Remember me
+				</label>
+				<button type="submit" class="btn btn-lg btn-primary btn-block">Log In</button>
+			</form>
+			<div class="signup-field">
+				<a href="/signup">signup</a>
 			</div>
-
-		<script>
-			/* dom bindings for the page */
-			require('dom').bindingsFor('signIn');
-		</script>
-	</body>
+		</div>
+	</div>
+	<script>
+		/* dom bindings for the page */
+		require('dom').bindingsFor('signIn');
+	</script>
+</body>
 </html>
