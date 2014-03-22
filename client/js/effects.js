@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 function bounce($el) {
   bounceOnce($el, -15, 100, function(){
     bounceOnce($el, -10, 75);
