@@ -5,7 +5,6 @@ var when        = require('when')
   , lib         = require('../../lib')
   , appLogger   = lib.logger.appLogger
   , dustHelpers = lib.dustHelpers
-  , validInputs = require('../../lib').utils.form.isvalidUserForm
   , Slideshow   = db.model('Slideshow')
   , User        = db.model('User')
   , Session     = db.model('Session')
@@ -84,7 +83,7 @@ function updateUserSettings(req, res) {
   var strict          = false;
 
   // Checking input validity
-  var errors = validInputs(username, email, password, passwordConfirm, strict);
+  var errors = new Error('FIXME: Use the new validation module.');
 
   if (errors !== null) {
     res.render('settings', {
