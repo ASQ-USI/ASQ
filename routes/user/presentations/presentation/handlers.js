@@ -6,7 +6,7 @@ var asyncblock = require('asyncblock')
   , presUtils  = lib.utils.presentation
   , config     = require('../../../../config')
   , when       = require('when')
-  , nodefn     = require('when/node/function')
+  , nodefn     = require('when/node/function');
 
 function editPresentation(req, res) {
   var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
@@ -111,7 +111,6 @@ function livePresentation(req, res) {
   })(role, view, presentation);
 
   appLogger.debug('Selected template: ' + renderOpts.template);
-
   res.render(renderOpts.template, {
     title : presentation.title,
     host  : process.env.HOST,
