@@ -14,7 +14,7 @@
       <div class="container" id="mainContainer">
         <div class="row">
           <h1 >Welcome to ASQ</h1>
-          <p class="lead">Please <a href="/signup">sign up</a> or <a href="/login">log in</a>.</p>
+          <p class="lead">Please <a href="/signup">sign up for ASQ</a> or <a href="/login">sign in</a>.</p>
         </div>
 
       </div><!-- /.container -->

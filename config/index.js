@@ -32,7 +32,7 @@ conf = {
   clientsLimit: 50,
 
   //HTTPS Settings
-  //Enable HTTPS (default: true)
+  //Enable HTTPS (default: false)
   enableHTTPS: false,
   //Key path needed for HTTPS (default: './ssl/server.key')
   keyPath: "./ssl/server.key",
@@ -40,7 +40,7 @@ conf = {
   certPath: "./ssl/server.crt",
   //CA path needed for HTTPS (default: './ssl/ca.crt')
   caPath: "./ssl/ca.crt",
-  //Request a certificate for HTTPS (default: true)
+  //Request a certificate for HTTPS (default: false)
   requestCert: false,
   //Reject unauthorized requests for HTTPS (default: false)
   rejectUnauthorized: false,
@@ -52,6 +52,22 @@ conf = {
   mongoDBPort: 27017,
   //Database name (default: 'asq')
   dbName: "asq",
+
+
+  //LDAP Settings
+  //Enable LDAP (default: false)
+  enableLdap: false,
+
+  ldapOptions:{
+    //ldap server URL (default: ldap://myldapserver.com)
+    url : 'ldap://myldapserver.com',
+    //ldap base to search (default: o=example)
+    searchBase : 'o=example',
+    //scope for the search. One of base, one, or sub. (default: base)
+    searchScope: 'base',
+    //field to search username, NOT a search filter (default: uid)
+    searchUserField: 'uid'
+  },
 
   //Slideshow
   //Upload directory.Make sure you have the correct permissions.
