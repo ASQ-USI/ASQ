@@ -111,7 +111,22 @@ function getLogin(req, res) {
 
 function postLogin(req, res) {
   console.log('I made it')
-  var redirect_to = req.session.redirect_to
+  var redirect_to = req.session.redirect_to 
+    ? req.session.redirect_to
+    : '/' + req.user.username + '/' ;
+  res.redirect(redirect_to);
+}
+
+function getLoginCampus(req, res) {
+  res.render('loginCampus', {
+      formSignup : false,
+      alert: req.flash()
+    });
+}
+
+function postLoginCampus(req, res) {
+  console.log('I made it with campus login')
+  var redirect_to = req.session.redirect_to 
     ? req.session.redirect_to
     : '/' + req.body.username + '/' ;
   res.redirect(redirect_to);
@@ -227,6 +242,8 @@ module.exports = {
   postSignup        : postSignup,
   getLogin          : getLogin,
   postLogin         : postLogin,
+  getLoginCampus  : getLoginCampus,
+  postLoginCampus : postLoginCampus,
   logout            : logout,
   getUploadForm     : getUploadForm,
   emailAvailable    : emailAvailable,

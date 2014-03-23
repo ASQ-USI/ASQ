@@ -23,6 +23,10 @@ var registeredUserSchema = baseUserSchema.extend({
   lastname: { type: String, required: true},
   email: { type: String, required: true, sparse: true, unique: true }, // Exactly only one email per account
   slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
+  ldap:{
+    id: { type: String , unique: true, sparse: true, required: true },
+    username: { type: String, unique: true, sparse: true, required: true }
+  }
 });
 
 registeredUserSchema.virtual('fullname').get(function getFullname() {
@@ -34,6 +38,20 @@ registeredUserSchema.methods.isValidPassword = function isValidPassword(candidat
     if (err) return callback(err);
 
     callback(null, isMatch);
+  });
+};
+
+registeredUserSchema.statics.isValidUser = function(username, password, done) {
+  var criteria = (username.indexOf('@') === -1) ? {username: username} : {email: username};
+    this.findOne(criteria, function(err, user){
+    if(err) {return done(err)};
+    if(!user) {return done(null, false, { message : 'Incorrect username or email.' })};
+   
+    user.isValidPassword(password, function(err, isMatch) {
+      if (err) { return done(err); }
+      if (!isMatch) { return done(null, false, { message: 'Invalid password' }); }
+      return done(null, user);
+    });;
   });
 };
 
