@@ -45,6 +45,11 @@ var localAuthenticate = passport.authenticate('local', {
   failureFlash    : true
 });
 
+var ldapAuthenticate = passport.authenticate('ldapauth', {
+  failureRedirect : '/login/',
+  failureFlash    : true
+});
+
 function setLiveSession(req, res, next, liveId) {
   var Session = db.model('Session', schemas.sessionSchema);
   Session.findOne({ _id: liveId, endDate: null }).populate('slides')
@@ -66,6 +71,7 @@ module.exports = {
   isAuthenticated    : isAuthenticated,
   isNotAuthenticated : isNotAuthenticated,
   isRouteOwner       : [ isAuthenticated, isRouteOwner ],
+  ldapAuthenticate   : ldapAuthenticate,
   localAuthenticate  : localAuthenticate,
   setLiveSession     : setLiveSession
 }

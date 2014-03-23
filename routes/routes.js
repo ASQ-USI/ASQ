@@ -13,11 +13,23 @@ module.exports.setUp = function setUp(app, middleware) {
   //Register as a new user
   app.post('/signup', middleware.isNotAuthenticated, handlers.postSignup);
 
-  //Get teh sign in page
+    //Get the register page
+  app.get('/signup-campus/', middleware.isNotAuthenticated, handlers.getSignupCampus);
+
+  //Register as a new user
+  app.post('/signup-campus', middleware.isNotAuthenticated, handlers.postSignupCampus);
+
+  //Get the login page
   app.get('/login/', middleware.isNotAuthenticated, handlers.getLogin);
 
-  //Sign in
+  //Login
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
+
+  //Get the campus login page
+  app.get('/login-campus/', middleware.isNotAuthenticated, handlers.getLoginCampus);
+
+  //Login with campus
+  app.post('/login-campus', middleware.ldapAuthenticate, handlers.postLoginCampus);
 
   //Sign out
   app.post('/logout', middleware.isAuthenticated, handlers.logout);

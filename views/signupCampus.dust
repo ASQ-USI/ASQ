@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	{>htmlHead/}
+    <title>ASQ - Sign up for ASQ</title>
+
+  </head>
+  
+  <body>
+  <!-- Tips and error for forms based on Twitter https://twitter.com/signup -->
+  {>signupMenu/}
+
+  <div class="container" id="mainContainer">
+
+	  <div class="page-canvas">
+	  	<div class="signup-wrapper">
+	  		
+				<h1>Sign up for ASQ</h1>
+<!-- 					{?message}
+						<div class="alert alert-block">
+							<h4>{message}</h4>
+						</div>	
+						
+						<br/>
+					{/message}					
+					 -->
+					<form id="signup-form" action="/signup-campus" method="post">
+
+						<fieldset>
+
+							<div class="form-group" id="groupUsername">
+								<label class="control-label" for="inputUsername"> Select your ASQ username</label>
+					    	<div class="controls">
+					    		{?tipMessages.username}
+		            		{>sidetip:tipMessages.username/}
+		            	{/tipMessages.username}
+					     		<input type="text" class="form-control" id="inputUsername" placeholder="rodney" name="signupusername" >
+					    	</div>
+					  	</div>
+							
+							<div class="form-group" id="groupCampusUsername">
+								<label class="control-label" for="inputCampusUsername">Campus username</label>
+								<div class="controls">
+									<input type="text" class="form-control" id="inputCampusUsername" placeholder="rodney" name="username">
+								</div>
+							</div>
+							
+							<div class="form-group" id="groupCampusPassword">
+								<label class="control-label" for="inputCampusPassword">NetId Password</label>
+								<div class="controls">
+									<input type="password" class="form-control" id="inputCampusPassword" placeholder="supersecret" name="password">
+								</div>
+								
+							</div>
+							<input class="btn btn-primary disabled" id="createAccount" type="submit" value="Create Account"/>
+						</fieldset>
+					</form>
+
+	  	</div> <!-- end div#row -->
+	  </div> <!-- end div#signup-wrapper -->
+
+ </div> <!-- end div#page-canvas -->
+
+
+
+		<script>
+			/* dom bindings for the page */
+			require('dom').bindingsFor('signupCampus');
+		</script>
+	</body>
+</html>
