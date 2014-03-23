@@ -20,6 +20,7 @@ var cons          = require('consolidate')
 , path            = require('path')
 , redisStore      = require('connect-redis')(express)
 , slashes         = require('connect-slashes')
+, microformat     = require('asq-microformat')
 , credentials     = config.enableHTTPS ? {
     key                : fs.readFileSync(config.keyPath),
     cert               : fs.readFileSync(config.certPath),
@@ -40,13 +41,8 @@ var cons          = require('consolidate')
 , statistics      = require('./routes/statistics')
 , validation      = require('./shared/validation');
 
-//Setup Dust.js helpers and options
-require('dustjs-helpers');
-lib.dustHelpers(dust);
-
 //don't remove whitespace <- WUT?
 dust.optimizers.format = function(ctx, node) { return node };
-
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
@@ -73,7 +69,7 @@ process.env.PORT = process.env.PORT || (config.enableHTTPS ? config.HTTPSPort : 
 appLogger.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
-app.engine('dust', cons.dust);
+
 
 
 // Global namespace
@@ -91,9 +87,16 @@ appLogger.log('Clients limit: ' + clientsLimit);
 
 /** Configure express */
 app.configure(function() {
+
   app.set('port', process.env.PORT);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'dust');
+  app.enable('view cache');
+  app.engine('dust', cons.dust);
+  //Setup Dust.js helpers and options
+  require('dustjs-helpers');
+  lib.dustHelpers(dust);
+  microformat.templates(dust);
   if (config.enableHTTPS) {
     app.use(middleware.forceSSL);
   }
