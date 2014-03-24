@@ -101,10 +101,14 @@ function postSignup(req, res) {
 }
 
 function getSignupCampus(req, res) {
+  var username = req.flash('username');
+  console.log(username);
   //TODO Code a real signup page.
   res.render('signupCampus', {
     tipMessages : require('../lib/forms/signupCampusFormMessages'),
-    info : req.flash("info")
+    info : req.flash("info"),
+    error : req.flash("error"),
+    username : username
   });
 }
 

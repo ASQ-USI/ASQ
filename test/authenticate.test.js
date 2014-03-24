@@ -105,14 +105,26 @@ describe('routes/handlers.postSignupCampus', function() {
     });
   });
 
-  it.skip("should reject an existing username ", function(done){
+  it("should reject an existing username ", function(done){
     request(app)
     .post('/signup-campus') 
     .type('form')
     .send({signupusername: "asqldap"})
     .expect(200)
     .end(function(err, res){
-      // expect(res.text).to.contain('You need to register an ASQ username')
+      expect(res.text).to.contain('<p class="taken error active"><span class="glyphicon glyphicon-remove"></span>This username is already taken!</p>')
+      if (err) return done(err);
+      done()
+    });
+  });
+
+  it("should reject when username is empty ", function(done){
+    request(app)
+    .post('/signup-campus') 
+    .type('form')
+    .expect(200)
+    .end(function(err, res){
+      expect(res.text).to.contain('p class="blank error active"><span class="glyphicon glyphicon-remove"></span>A username is required!</p>');
       if (err) return done(err);
       done()
     });

@@ -17,11 +17,17 @@
 	  		
 				<h1>Sign up for ASQ with your campus account</h1>
 
-					{?alert}
+				{?alert}
 			      <div class="alert alert-{type}">
 			        {alert}
 			      </div>
 		      {/alert}
+
+		      {?error}
+			      <div class="alert alert-danger">
+			        {error}
+			      </div>
+		      {/error}
 
 		      {?info}
 			      <div class="alert alert-info">
@@ -37,16 +43,16 @@
 								<label class="control-label" for="inputUsername"> Select your ASQ username</label>
 					    	<div class="controls">
 					    		{?tipMessages.username}
-		            		{>sidetip:tipMessages.username/}
-		            	{/tipMessages.username}
-					     		<input type="text" class="form-control" id="inputUsername" placeholder="rodney" name="signupusername" >
+									{>sidetip:tipMessages.username field="username" activate=activate.username/}
+								{/tipMessages.username}
+					     		<input type="text" class="form-control" id="inputUsername" placeholder="rodney" name="signupusername">
 					    	</div>
 					  	</div>
 							
 							<div class="form-group" id="groupCampusUsername">
 								<label class="control-label" for="inputCampusUsername">Campus username</label>
 								<div class="controls">
-									<input type="text" class="form-control" id="inputCampusUsername" placeholder="rodney" name="username">
+									<input type="text" class="form-control"  autocomplete="off" id="inputCampusUsername" placeholder="rodney" name="username"{?username} value="{username}"{/username}>
 								</div>
 							</div>
 							
