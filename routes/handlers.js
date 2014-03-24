@@ -100,15 +100,25 @@ function postSignup(req, res) {
     });
 }
 
-function getSignupCampus(req, res) {
+function getSignupCampus(req, res, next) {
   var username = req.flash('username');
-  console.log(username);
-  //TODO Code a real signup page.
-  res.render('signupCampus', {
-    tipMessages : require('../lib/forms/signupCampusFormMessages'),
-    info : req.flash("info"),
-    error : req.flash("error"),
-    username : username
+  User.count({ username: username, _type: 'User' }).exec()
+  .then(
+    function onCount(count) {
+      var activate = {};
+      var asqUsername = null;
+      if (count === 0) {
+        asqUsername = username;
+        activate.username = 'ok';        
+      }
+      res.render('signupCampus', {
+        tipMessages : require('../lib/forms/signupCampusFormMessages'),
+        info : req.flash("info"),
+        error : req.flash("error"),
+        campusUsername : username,
+        asqUsername : asqUsername,
+        activate : activate
+      });
   });
 }
 
@@ -118,8 +128,6 @@ function postSignupCampus(req, res) {
   }
 
   var errs = validation.getErrorsSignupCampus(data);
-
-//  var errs = { username: null}
 
   errUsername = (!!errs.username) 
     ? when.resolve(true) 
