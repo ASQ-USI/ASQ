@@ -35,7 +35,7 @@
 								{>sidetip:tipMessages.firstname field="firstname" activate=activate.firstname/}
 								{/tipMessages.firstname}
 								<input type="text" class="form-control" id="inputFirstname" autocomplete="off" arias-required="true" placeholder="Rodney" name="signupfirstname" 
-								{?data.firstname}value="{data.firstname}"{/data.firstname}autofocus>
+								{?data.firstname}value="{data.firstname}" {/data.firstname}autofocus>
 							</div>
 						</div>
 

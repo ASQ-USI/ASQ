@@ -40,26 +40,26 @@
 						<fieldset>
 
 							<div class="form-group" id="groupUsername">
-								<label class="control-label" for="inputUsername"> Select your ASQ username</label>
-					    	<div class="controls">
-					    		{?tipMessages.username}
-									{>sidetip:tipMessages.username field="username" activate=activate.username/}
-								{/tipMessages.username}
-					     		<input type="text" class="form-control" id="inputUsername" placeholder="rodney" name="signupusername">
-					    	</div>
-					  	</div>
+									<label class="control-label" for="inputUsername"> Select your ASQ username</label>
+						    	<div class="controls">
+						    		{?tipMessages.username}
+										{>sidetip:tipMessages.username field="username" activate=activate.username/}
+									{/tipMessages.username}
+						     		<input type="text" class="form-control" id="inputUsername" placeholder="rodney" name="signupusername" {?asqUsername} value="{asqUsername}"{:else}autofocus{/asqUsername}>
+						    	</div>
+						  	</div>
 							
 							<div class="form-group" id="groupCampusUsername">
 								<label class="control-label" for="inputCampusUsername">Campus username</label>
 								<div class="controls">
-									<input type="text" class="form-control"  autocomplete="off" id="inputCampusUsername" placeholder="rodney" name="username"{?username} value="{username}"{/username}>
+									<input type="text" class="form-control"  autocomplete="off" id="inputCampusUsername" placeholder="rodney" name="username"{?campusUsername} value="{campusUsername}"{/campusUsername}>
 								</div>
 							</div>
 							
 							<div class="form-group" id="groupCampusPassword">
 								<label class="control-label" for="inputCampusPassword">NetId Password</label>
 								<div class="controls">
-									<input type="password" class="form-control" id="inputCampusPassword" placeholder="supersecret" name="password">
+									<input type="password" class="form-control" id="inputCampusPassword" placeholder="supersecret" name="password"{?asqUsername} autofocus{/asqUsername}>
 								</div>
 								
 							</div>
