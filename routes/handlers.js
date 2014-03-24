@@ -156,7 +156,7 @@ function getLoginCampus(req, res) {
 function postLoginCampus(req, res) {
   var redirect_to = req.session.redirect_to 
     ? req.session.redirect_to
-    : '/' + req.body.username + '/' ;
+    : '/' + req.user.username + '/' ;
   res.redirect(redirect_to);
 }
 
