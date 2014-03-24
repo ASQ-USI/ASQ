@@ -73,7 +73,7 @@ function postSignup(req, res) {
       appLogger.info('New user registered: %s (%s)', user.username, user.email);
       req.login(user, function onLogin(err) {
         if (err) {
-          var error = new Error('User created but login faild with: ' +
+          var error = new Error('User created but login failed with: ' +
             err.toString());
           throw error;
         }
@@ -83,8 +83,8 @@ function postSignup(req, res) {
   }).then(null,
     function onError(err) {
       if (err instanceof Error) {
-        appLogger.error('On signup: ' + err.toString(), { err: err.stack });
-        throw err;
+        appLogger.error('During sign up: ' + err.toString(), { err: err.stack });
+        next(err);
       } else {
         for (var key in err) {
           if (err[key] == null) {
@@ -225,12 +225,11 @@ function getUploadForm(req, res) {
   res.render('upload', { username: req.user.username });
 }
 
-function emailAvailable(req, res) {
+function emailAvailable(req, res, next) {
   if (req.accepts('json', 'text', 'application/json') == undefined) {
-    var err = new Error('Only accepts json.');
-    err.name = 'Not acceptable';
-    err.htmlCode = 406; // Error HTML code (ASQ-Specific)
-    throw err;
+    var err = Error.create().http(406, 'Only accepts json.', { type: 'not_acceptable_error' });
+    next(err);
+    return;
   }
   var response = {};
   response.err = null;
@@ -285,10 +284,9 @@ function emailAvailable(req, res) {
 
 function usernameAvailable(req, res) {
   if (req.accepts('json', 'text', 'application/json') == undefined) {
-    var err = new Error('Only accepts json.');
-    err.name = 'Not acceptable';
-    err.htmlCode = 406; // Error HTML code (ASQ-Specific)
-    throw err;
+    var err = Error.create().http(406, 'Only accepts json.', { type: 'not_acceptable_error' });
+    next(err);
+    return;
   }
   var response = {};
   response.err = null;

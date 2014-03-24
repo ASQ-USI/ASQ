@@ -13069,742 +13069,283 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],15:[function(require,module,exports){
-var defaultError = module.exports = {
-    isEmail: 'Invalid email',
-    isUrl: 'Invalid URL',
-    isIP: 'Invalid IP',
-    isAlpha: 'Invalid characters',
+},{}],13:[function(require,module,exports){
+/*!
+ * Copyright (c) 2014 Chris O'Hara <cohara87@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
     isAlphanumeric: 'Invalid characters',
     isHexadecimal: 'Invalid hexadecimal',
     isHexColor: 'Invalid hexcolor',
     isNumeric: 'Invalid number',
-    isLowercase: 'Invalid characters',
-    isUppercase: 'Invalid characters',
-    isInt: 'Invalid integer',
+ * permit persons to whom the Software is furnished to do so, subject to
     isDecimal: 'Invalid decimal',
     isDivisibleBy: 'Not divisible',
-    notNull: 'String is empty',
-    isNull: 'String is not empty',
-    notEmpty: 'String is empty',
-    equals: 'Not equal',
-    contains: 'Invalid characters',
-    notContains: 'Invalid characters',
-    regex: 'Invalid characters',
-    notRegex: 'Invalid characters',
-    len: 'String is not in range',
-    isUUID: 'Not a UUID',
-    isDate: 'Not a date',
-    isAfter: 'Invalid date',
-    isBefore: 'Invalid date',
-    isIn: 'Unexpected value or invalid argument',
-    notIn: 'Unexpected value or invalid argument',
-    min: 'Invalid number',
-    max: 'Invalid number',
-    isArray: 'Not an array',
-    isCreditCard: 'Invalid credit card'
-};
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
-
-},{}],16:[function(require,module,exports){
-var entities = {
-    '&nbsp;': '\u00a0',
-    '&iexcl;': '\u00a1',
-    '&cent;': '\u00a2',
-    '&pound;': '\u00a3',
-    '&euro;': '\u20ac',
-    '&yen;': '\u00a5',
-    '&brvbar;': '\u0160',
-    '&sect;': '\u00a7',
-    '&uml;': '\u0161',
-    '&copy;': '\u00a9',
-    '&ordf;': '\u00aa',
-    '&laquo;': '\u00ab',
-    '&not;': '\u00ac',
-    '&shy;': '\u00ad',
-    '&reg;': '\u00ae',
-    '&macr;': '\u00af',
-    '&deg;': '\u00b0',
-    '&plusmn;': '\u00b1',
-    '&sup2;': '\u00b2',
-    '&sup3;': '\u00b3',
-    '&acute;': '\u017d',
-    '&micro;': '\u00b5',
-    '&para;': '\u00b6',
-    '&middot;': '\u00b7',
-    '&cedil;': '\u017e',
-    '&sup1;': '\u00b9',
-    '&ordm;': '\u00ba',
-    '&raquo;': '\u00bb',
-    '&frac14;': '\u0152',
-    '&frac12;': '\u00bd',
-    '&frac34;': '\u0178',
-    '&iquest;': '\u00bf',
-    '&Agrave;': '\u00c0',
-    '&Aacute;': '\u00c1',
-    '&Acirc;': '\u00c2',
-    '&Atilde;': '\u00c3',
-    '&Auml;': '\u00c4',
-    '&Aring;': '\u00c5',
-    '&AElig;': '\u00c6',
-    '&Ccedil;': '\u00c7',
-    '&Egrave;': '\u00c8',
-    '&Eacute;': '\u00c9',
-    '&Ecirc;': '\u00ca',
-    '&Euml;': '\u00cb',
-    '&Igrave;': '\u00cc',
-    '&Iacute;': '\u00cd',
-    '&Icirc;': '\u00ce',
-    '&Iuml;': '\u00cf',
-    '&ETH;': '\u00d0',
-    '&Ntilde;': '\u00d1',
-    '&Ograve;': '\u00d2',
-    '&Oacute;': '\u00d3',
-    '&Ocirc;': '\u00d4',
-    '&Otilde;': '\u00d5',
-    '&Ouml;': '\u00d6',
-    '&times;': '\u00d7',
-    '&Oslash;': '\u00d8',
-    '&Ugrave;': '\u00d9',
-    '&Uacute;': '\u00da',
-    '&Ucirc;': '\u00db',
-    '&Uuml;': '\u00dc',
-    '&Yacute;': '\u00dd',
-    '&THORN;': '\u00de',
-    '&szlig;': '\u00df',
-    '&agrave;': '\u00e0',
-    '&aacute;': '\u00e1',
-    '&acirc;': '\u00e2',
-    '&atilde;': '\u00e3',
-    '&auml;': '\u00e4',
-    '&aring;': '\u00e5',
-    '&aelig;': '\u00e6',
-    '&ccedil;': '\u00e7',
-    '&egrave;': '\u00e8',
-    '&eacute;': '\u00e9',
-    '&ecirc;': '\u00ea',
-    '&euml;': '\u00eb',
-    '&igrave;': '\u00ec',
-    '&iacute;': '\u00ed',
-    '&icirc;': '\u00ee',
-    '&iuml;': '\u00ef',
-    '&eth;': '\u00f0',
-    '&ntilde;': '\u00f1',
-    '&ograve;': '\u00f2',
-    '&oacute;': '\u00f3',
-    '&ocirc;': '\u00f4',
-    '&otilde;': '\u00f5',
-    '&ouml;': '\u00f6',
-    '&divide;': '\u00f7',
-    '&oslash;': '\u00f8',
-    '&ugrave;': '\u00f9',
-    '&uacute;': '\u00fa',
-    '&ucirc;': '\u00fb',
-    '&uuml;': '\u00fc',
-    '&yacute;': '\u00fd',
-    '&thorn;': '\u00fe',
-    '&yuml;': '\u00ff',
-    '&quot;': '\u0022',
-    '&lt;': '\u003c',
-    '&gt;': '\u003e',
-    '&apos;': '\u0027',
-    '&minus;': '\u2212',
-    '&circ;': '\u02c6',
-    '&tilde;': '\u02dc',
-    '&Scaron;': '\u0160',
-    '&lsaquo;': '\u2039',
-    '&OElig;': '\u0152',
-    '&lsquo;': '\u2018',
-    '&rsquo;': '\u2019',
-    '&ldquo;': '\u201c',
-    '&rdquo;': '\u201d',
-    '&bull;': '\u2022',
-    '&ndash;': '\u2013',
-    '&mdash;': '\u2014',
-    '&trade;': '\u2122',
-    '&scaron;': '\u0161',
-    '&rsaquo;': '\u203a',
-    '&oelig;': '\u0153',
-    '&Yuml;': '\u0178',
-    '&fnof;': '\u0192',
-    '&Alpha;': '\u0391',
-    '&Beta;': '\u0392',
-    '&Gamma;': '\u0393',
-    '&Delta;': '\u0394',
-    '&Epsilon;': '\u0395',
-    '&Zeta;': '\u0396',
-    '&Eta;': '\u0397',
-    '&Theta;': '\u0398',
-    '&Iota;': '\u0399',
-    '&Kappa;': '\u039a',
-    '&Lambda;': '\u039b',
-    '&Mu;': '\u039c',
-    '&Nu;': '\u039d',
-    '&Xi;': '\u039e',
-    '&Omicron;': '\u039f',
-    '&Pi;': '\u03a0',
-    '&Rho;': '\u03a1',
-    '&Sigma;': '\u03a3',
-    '&Tau;': '\u03a4',
-    '&Upsilon;': '\u03a5',
-    '&Phi;': '\u03a6',
-    '&Chi;': '\u03a7',
-    '&Psi;': '\u03a8',
-    '&Omega;': '\u03a9',
-    '&alpha;': '\u03b1',
-    '&beta;': '\u03b2',
-    '&gamma;': '\u03b3',
-    '&delta;': '\u03b4',
-    '&epsilon;': '\u03b5',
-    '&zeta;': '\u03b6',
-    '&eta;': '\u03b7',
-    '&theta;': '\u03b8',
-    '&iota;': '\u03b9',
-    '&kappa;': '\u03ba',
-    '&lambda;': '\u03bb',
-    '&mu;': '\u03bc',
-    '&nu;': '\u03bd',
-    '&xi;': '\u03be',
-    '&omicron;': '\u03bf',
-    '&pi;': '\u03c0',
-    '&rho;': '\u03c1',
-    '&sigmaf;': '\u03c2',
-    '&sigma;': '\u03c3',
-    '&tau;': '\u03c4',
-    '&upsilon;': '\u03c5',
-    '&phi;': '\u03c6',
-    '&chi;': '\u03c7',
-    '&psi;': '\u03c8',
-    '&omega;': '\u03c9',
-    '&thetasym;': '\u03d1',
-    '&upsih;': '\u03d2',
-    '&piv;': '\u03d6',
-    '&ensp;': '\u2002',
-    '&emsp;': '\u2003',
-    '&thinsp;': '\u2009',
-    '&zwnj;': '\u200c',
-    '&zwj;': '\u200d',
-    '&lrm;': '\u200e',
-    '&rlm;': '\u200f',
-    '&sbquo;': '\u201a',
-    '&bdquo;': '\u201e',
-    '&dagger;': '\u2020',
-    '&Dagger;': '\u2021',
-    '&hellip;': '\u2026',
-    '&permil;': '\u2030',
-    '&prime;': '\u2032',
-    '&Prime;': '\u2033',
-    '&oline;': '\u203e',
-    '&frasl;': '\u2044',
-    '&image;': '\u2111',
-    '&weierp;': '\u2118',
-    '&real;': '\u211c',
-    '&alefsym;': '\u2135',
-    '&larr;': '\u2190',
-    '&uarr;': '\u2191',
-    '&rarr;': '\u2192',
-    '&darr;': '\u2193',
-    '&harr;': '\u2194',
-    '&crarr;': '\u21b5',
-    '&lArr;': '\u21d0',
-    '&uArr;': '\u21d1',
-    '&rArr;': '\u21d2',
-    '&dArr;': '\u21d3',
-    '&hArr;': '\u21d4',
-    '&forall;': '\u2200',
-    '&part;': '\u2202',
-    '&exist;': '\u2203',
-    '&empty;': '\u2205',
-    '&nabla;': '\u2207',
-    '&isin;': '\u2208',
-    '&notin;': '\u2209',
-    '&ni;': '\u220b',
-    '&prod;': '\u220f',
-    '&sum;': '\u2211',
-    '&lowast;': '\u2217',
-    '&radic;': '\u221a',
-    '&prop;': '\u221d',
-    '&infin;': '\u221e',
-    '&ang;': '\u2220',
-    '&and;': '\u2227',
-    '&or;': '\u2228',
-    '&cap;': '\u2229',
-    '&cup;': '\u222a',
-    '&int;': '\u222b',
-    '&there4;': '\u2234',
-    '&sim;': '\u223c',
-    '&cong;': '\u2245',
-    '&asymp;': '\u2248',
-    '&ne;': '\u2260',
-    '&equiv;': '\u2261',
-    '&le;': '\u2264',
-    '&ge;': '\u2265',
-    '&sub;': '\u2282',
-    '&sup;': '\u2283',
-    '&nsub;': '\u2284',
-    '&sube;': '\u2286',
-    '&supe;': '\u2287',
-    '&oplus;': '\u2295',
-    '&otimes;': '\u2297',
-    '&perp;': '\u22a5',
-    '&sdot;': '\u22c5',
-    '&lceil;': '\u2308',
-    '&rceil;': '\u2309',
-    '&lfloor;': '\u230a',
-    '&rfloor;': '\u230b',
-    '&lang;': '\u2329',
-    '&rang;': '\u232a',
-    '&loz;': '\u25ca',
-    '&spades;': '\u2660',
-    '&clubs;': '\u2663',
-    '&hearts;': '\u2665',
-    '&diams;': '\u2666'
-};
-
-exports.decode = function (str) {
-    if (!~str.indexOf('&')) return str;
-
-    //Decode literal entities
-    for (var i in entities) {
-        str = str.replace(new RegExp(i, 'g'), entities[i]);
-    }
-
-    //Decode hex entities
-    str = str.replace(/&#x(0*[0-9a-f]{2,5});?/gi, function (m, code) {
-        return String.fromCharCode(parseInt(+code, 16));
-    });
-
-    //Decode numeric entities
-    str = str.replace(/&#([0-9]{2,4});?/gi, function (m, code) {
-        return String.fromCharCode(+code);
-    });
-
-    str = str.replace(/&amp;/g, '&');
-
-    return str;
-}
-
-exports.encode = function (str) {
-    str = str.replace(/&/g, '&amp;');
-
-    //IE doesn't accept &apos;
-    str = str.replace(/'/g, '&#39;');
-
-    //Encode literal entities
-    for (var i in entities) {
-        str = str.replace(new RegExp(entities[i], 'g'), i);
-    }
-
-    return str;
-}
-
-},{}],17:[function(require,module,exports){
-var entities = require('./entities');
-var xss = require('./xss');
-
-var Filter = exports.Filter = function() {}
-
-var whitespace = '\\r\\n\\t\\s';
-
-Filter.prototype.modify = function(str) {
-    this.str = str;
-}
-
-Filter.prototype.wrap = function (str) {
-    return str;
-}
-
-Filter.prototype.value = function () {
-    return this.str;
-}
-
-Filter.prototype.chain = function () {
-    this.wrap = function () { return this };
-    return this;
-}
-
-//Create some aliases - may help code readability
-Filter.prototype.convert = Filter.prototype.sanitize = function(str) {
-    this.str = str == null ? '' : str + '';
-    return this;
-}
-
-Filter.prototype.xss = function(is_image) {
-    this.modify(xss.clean(this.str, is_image));
-    return this.wrap(this.str);
-}
-
-Filter.prototype.entityDecode = function() {
-    this.modify(entities.decode(this.str));
-    return this.wrap(this.str);
-}
-
-Filter.prototype.entityEncode = function() {
-    this.modify(entities.encode(this.str));
-    return this.wrap(this.str);
-}
-
-Filter.prototype.ltrim = function(chars) {
-    chars = chars || whitespace;
-    this.modify(this.str.replace(new RegExp('^['+chars+']+', 'g'), ''));
-    return this.wrap(this.str);
-}
-
-Filter.prototype.rtrim = function(chars) {
-    chars = chars || whitespace;
-    this.modify(this.str.replace(new RegExp('['+chars+']+$', 'g'), ''));
-    return this.wrap(this.str);
-}
-
-Filter.prototype.trim = function(chars) {
-    chars = chars || whitespace;
-    this.modify(this.str.replace(new RegExp('^['+chars+']+|['+chars+']+$', 'g'), ''));
-    return this.wrap(this.str);
-}
-
-Filter.prototype.escape = function() {
-    this.modify(this.str.replace(/&/g, '&amp;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;'));
-    return this.wrap(this.str);
-};
-
-Filter.prototype.ifNull = function(replace) {
-    if (!this.str || this.str === '') {
-        this.modify(replace);
-    }
-    return this.wrap(this.str);
-}
-
-Filter.prototype.toFloat = function() {
-    this.modify(parseFloat(this.str));
-    return this.wrap(this.str);
-}
-
-Filter.prototype.toInt = function(radix) {
-    this.modify(parseInt(this.str, radix || 10));
-    return this.wrap(this.str);
-}
-
-//Any strings with length > 0 (except for '0' and 'false') are considered true,
-//all other strings are false
-Filter.prototype.toBoolean = function() {
-    if (!this.str || this.str == '0' || this.str == 'false' || this.str == '') {
-        this.modify(false);
+(function (name, definition) {
+    if (typeof module !== 'undefined') {
+        module.exports = definition();
+    } else if (typeof define === 'function' && typeof define.amd === 'object') {
+        define(definition);
     } else {
-        this.modify(true);
+        this[name] = definition();
     }
-    return this.wrap(this.str);
-}
+})('validator', function (validator) {
 
-//String must be equal to '1' or 'true' to be considered true, all other strings
-//are false
-Filter.prototype.toBooleanStrict = function() {
-    if (this.str == '1' || this.str == 'true') {
-        this.modify(true);
-    } else {
-        this.modify(false);
-    }
-    return this.wrap(this.str);
-}
+    'use strict';
 
-},{"./entities":16,"./xss":21}],18:[function(require,module,exports){
-var node_validator = require('./validator');
+    validator = { version: '3.4.0' };
 
-exports.Validator = node_validator.Validator;
-exports.ValidatorError = node_validator.ValidatorError;
-exports.Filter = require('./filter').Filter;
-exports.validators = require('./validators');
-exports.defaultError = require('./defaultError');
+    var email = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i;
 
-exports.entities = require('./entities');
+    var creditCard = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/;
 
-//Quick access methods
-exports.sanitize = exports.convert = function(str) {
-    var filter = new exports.Filter();
-    return filter.sanitize(str);
-}
+    var isbn10Maybe = /^(?:[0-9]{9}X|[0-9]{10})$/
+      , isbn13Maybe = /^(?:[0-9]{13})$/;
 
-exports.check = exports.validate = exports.assert = function(str, fail_msg) {
-    var validator = new exports.Validator();
-    return validator.check(str, fail_msg);
-}
+    var ipv4Maybe = /^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$/
+      , ipv6 = /^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$/;
 
-},{"./defaultError":15,"./entities":16,"./filter":17,"./validator":19,"./validators":20}],19:[function(require,module,exports){
-var util = require('util');
-var validators = require('./validators');
-exports.defaultError = require('./defaultError');
+    var uuid = {
+        '3': /^[0-9A-F]{8}-[0-9A-F]{4}-3[0-9A-F]{3}-[0-9A-F]{4}-[0-9A-F]{12}$/i
+      , '4': /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+      , '5': /^[0-9A-F]{8}-[0-9A-F]{4}-5[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+      , all: /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i
+    };
 
-var ValidatorError = exports.ValidatorError = function(msg) {
-    Error.captureStackTrace(this, this);
-    this.name = 'ValidatorError';
-    this.message = msg;
-};
-util.inherits(ValidatorError, Error);
+    var alpha = /^[a-zA-Z]+$/
+      , alphanumeric = /^[a-zA-Z0-9]+$/
+      , numeric = /^-?[0-9]+$/
+      , int = /^(?:-?(?:0|[1-9][0-9]*))$/
+      , float = /^(?:-?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$/
+      , hexadecimal = /^[0-9a-fA-F]+$/
+      , hexcolor = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
-var Validator = exports.Validator = function() {}
+    validator.extend = function (name, fn) {
+        validator[name] = function () {
+            var args = Array.prototype.slice.call(arguments);
+            args[0] = validator.toString(args[0]);
+            return fn.apply(validator, args);
+        };
+    };
 
-Validator.prototype.error = function (msg) {
-    throw new ValidatorError(msg);
-};
+    validator.noCoerce = ['toString', 'toDate', 'extend', 'init', 'flatten', 'merge'];
 
-Validator.prototype.check = function(str, fail_msg) {
-    if (typeof str === 'object' && str !== null && str.toString) {
-        str = str.toString();
-    }
-    this.str = (str == null || (isNaN(str) && str.length == undefined)) ? '' : str;
-    if (typeof this.str == 'number') {
-        this.str += '';
-    }
-
-    // This is a key, value pair of error messages to use
-    if (typeof fail_msg === 'object') {
-        this.errorDictionary = fail_msg;
-        this.msg = null
-    }
-    else {
-        this.errorDictionary = {};
-        this.msg = fail_msg;
-    }
-
-    this._errors = this._errors || [];
-    return this;
-}
-
-for (var key in validators) {
-    if (validators.hasOwnProperty(key)) {
-        (function (key) {
-            Validator.prototype[key] = function() {
-                var args = Array.prototype.slice.call(arguments);
-                args.unshift(this.str);
-                if(!validators[key].apply(this, args)) {
-                    var msg = this.errorDictionary[key] || this.msg || exports.defaultError[key];
-                    if (typeof msg === 'string') {
-                        args.forEach(function(arg, i) { msg = msg.replace('%'+i, arg); });
-                    }
-                    return this.error(msg);
-                }
-                return this;
-            };
-        })(key);
-    }
-}
-
-//Create some aliases - may help code readability
-Validator.prototype.validate = Validator.prototype.check;
-Validator.prototype.assert = Validator.prototype.check;
-Validator.prototype.isFloat = Validator.prototype.isDecimal;
-Validator.prototype.is = Validator.prototype.regex;
-Validator.prototype.not = Validator.prototype.notRegex;
-
-},{"./defaultError":15,"./validators":20,"util":9}],20:[function(require,module,exports){
-
-// Helper function to avoid duplication of code
-function toDateTime(date) {
-    if (date instanceof Date) {
-        return date;
-    }
-    var intDate = Date.parse(date);
-    if (isNaN(intDate)) {
-        return null;
-    }
-    return new Date(intDate);
-}
-
-// Convert to date without the time component
-function toDate(date) {
-    if (!(date instanceof Date)) {
-        date = toDateTime(date);
-    }
-    if (!date) {
-        return null;
-    }
-    return date;
-}
-
-var validators = module.exports = {
-    isEmail: function(str) {
-        return str.match(/^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/);
-    },
-    isUrl: function(str) {
-        //A modified version of the validator from @diegoperini / https://gist.github.com/729294
-        return str.length < 2083 && str.match(/^(?!mailto:)(?:(?:https?|ftp):\/\/)?(?:\S+(?::\S*)?@)?(?:(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[0-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))|localhost)(?::\d{2,5})?(?:\/[^\s]*)?$/i);
-    },
-    //node-js-core
-    isIP : function(str) {
-        if (validators.isIPv4(str)) {
-            return 4;
-        } else if (validators.isIPv6(str)) {
-            return 6;
-        } else {
-            return 0;
-        }
-    },
-    //node-js-core
-    isIPv4 : function(str) {
-        if (/^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$/.test(str)) {
-            var parts = str.split('.').sort();
-            // no need to check for < 0 as regex won't match in that case
-            if (parts[3] > 255) {
-                return false;
+    //Right before exporting the validator object, pass each of the builtins
+    //through extend() so that their first argument is coerced to a string
+    validator.init = function () {
+        for (var name in validator) {
+            if (typeof validator[name] !== 'function' || validator.noCoerce.indexOf(name) >= 0) {
+                continue;
             }
-            return true;
+            validator.extend(name, validator[name]);
         }
-        return false;
-    },
-    //node-js-core
-    isIPv6 : function(str) {
-        if (/^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$/.test(str)) {
-            return true;
+    };
+
+    validator.toString = function (input) {
+        if (input === null || typeof input === 'undefined' || (isNaN(input) && !input.length)) {
+            input = '';
+        } else if (typeof input === 'object' && input.toString) {
+            input = input.toString();
+        } else if (typeof input !== 'string') {
+            input += '';
         }
-        return false;
-    },
-    isIPNet: function(str) {
-        return validators.isIP(str) !== 0;
-    },
-    isAlpha: function(str) {
-        return str.match(/^[a-zA-Z]+$/);
-    },
-    isAlphanumeric: function(str) {
-        return str.match(/^[a-zA-Z0-9]+$/);
-    },
-    isNumeric: function(str) {
-        return str.match(/^-?[0-9]+$/);
-    },
-    isHexadecimal: function(str) {
-        return str.match(/^[0-9a-fA-F]+$/);
-    },
-    isHexColor: function(str) {
-        return str.match(/^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
-    },
-    isLowercase: function(str) {
-        return str === str.toLowerCase();
-    },
-    isUppercase: function(str) {
-        return str === str.toUpperCase();
-    },
-    isInt: function(str) {
-        return str.match(/^(?:-?(?:0|[1-9][0-9]*))$/);
-    },
-    isDecimal: function(str) {
-        return str !== '' && str.match(/^(?:-?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$/);
-    },
-    isFloat: function(str) {
-        return validators.isDecimal(str);
-    },
-    isDivisibleBy: function(str, n) {
-        return (parseFloat(str) % parseInt(n, 10)) === 0;
-    },
-    notNull: function(str) {
-        return str !== '';
-    },
-    isNull: function(str) {
-        return str === '';
-    },
-    notEmpty: function(str) {
-        return !str.match(/^[\s\t\r\n]*$/);
-    },
-    equals: function(a, b) {
-        return a == b;
-    },
-    contains: function(str, elem) {
-        return str.indexOf(elem) >= 0 && !!elem;
-    },
-    notContains: function(str, elem) {
-        return !validators.contains(str, elem);
-    },
-    regex: function(str, pattern, modifiers) {
-        str += '';
-        if (Object.prototype.toString.call(pattern).slice(8, -1) !== 'RegExp') {
+        return input;
+    };
+
+    validator.toDate = function (date) {
+        if (Object.prototype.toString.call(date) === '[object Date]') {
+            return date;
+        }
+        date = Date.parse(date);
+        return !isNaN(date) ? new Date(date) : null;
+    };
+
+    validator.toFloat = function (str) {
+        return parseFloat(str);
+    };
+
+    validator.toInt = function (str, radix) {
+        return parseInt(str, radix || 10);
+    };
+
+    validator.toBoolean = function (str, strict) {
+        if (strict) {
+            return str === '1' || str === 'true';
+        }
+        return str !== '0' && str !== 'false' && str !== '';
+    };
+
+    validator.flatten = function (array, separator) {
+        if (!array) {
+            return '';
+        }
+        var str = array[0];
+        for (var i = 1; i < array.length; i++) {
+            str += separator + array[i];
+        }
+        return str;
+    };
+
+    validator.merge = function (obj, defaults) {
+        obj = obj || {};
+        for (var key in defaults) {
+            if (typeof obj[key] === 'undefined') {
+                obj[key] = defaults[key];
+            }
+        }
+        return obj;
+    };
+
+    validator.equals = function (str, comparison) {
+        return str === validator.toString(comparison);
+    };
+
+    validator.contains = function (str, elem) {
+        return str.indexOf(validator.toString(elem)) >= 0;
+    };
+
+    validator.matches = function (str, pattern, modifiers) {
+        if (Object.prototype.toString.call(pattern) !== '[object RegExp]') {
             pattern = new RegExp(pattern, modifiers);
         }
-        return str.match(pattern);
-    },
-    is: function(str, pattern, modifiers) {
-        return validators.regex(str, pattern, modifiers);
-    },
-    notRegex: function(str, pattern, modifiers) {
-        return !validators.regex(str, pattern, modifiers);
-    },
-    not: function(str, pattern, modifiers) {
-        return validators.notRegex(str, pattern, modifiers);
-    },
-    len: function(str, min, max) {
-        return str.length >= min && (max === undefined || str.length <= max);
-    },
-    //Thanks to github.com/sreuter for the idea.
-    isUUID: function(str, version) {
-        var pattern;
-        if (version == 3 || version == 'v3') {
-            pattern = /^[0-9A-F]{8}-[0-9A-F]{4}-3[0-9A-F]{3}-[0-9A-F]{4}-[0-9A-F]{12}$/i;
-        } else if (version == 4 || version == 'v4') {
-            pattern = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
-        } else {
-            pattern = /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i;
+        return pattern.test(str);
+    };
+
+    validator.isEmail = function (str) {
+        return email.test(str);
+    };
+
+    var default_url_options = {
+        protocols: [ 'http', 'https', 'ftp' ]
+      , require_tld: true
+      , require_protocol: false
+    };
+
+    validator.isURL = function (str, options) {
+        options = validator.merge(options, default_url_options);
+        var url = new RegExp('^(?!mailto:)(?:(?:' + validator.flatten(options.protocols, '|') + ')://)' + (options.require_protocol ? '' : '?') + '(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))' + (options.require_tld ? '' : '?') + ')|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$', 'i');
+        return str.length < 2083 && url.test(str);
+    };
+
+    validator.isIP = function (str, version) {
+        version = validator.toString(version);
+        if (!version) {
+            return validator.isIP(str, 4) || validator.isIP(str, 6);
+        } else if (version === '4') {
+            if (!ipv4Maybe.test(str)) {
+                return false;
+            }
+            var parts = str.split('.').sort();
+            return parts[3] <= 255;
         }
-        return str.match(pattern);
-    },
-    isUUIDv3: function(str) {
-        validators.isUUID(str, 3);
-    },
-    isUUIDv4: function(str) {
-        validators.isUUID(str, 4);
-    },
-    isDate: function(str) {
-        var intDate = Date.parse(str);
-        return !isNaN(intDate);
-    },
-    isAfter: function(str, date) {
-        date = date || new Date();
-        var origDate = toDate(str);
-        var compDate = toDate(date);
-        return !(origDate && compDate && origDate <= compDate);
-    },
-    isBefore: function(str, date) {
-        date = date || new Date();
-        var origDate = toDate(str);
-        var compDate = toDate(date);
-        return !(origDate && compDate && origDate >= compDate);
-    },
-    isIn: function(str, options) {
+        return version === '6' && ipv6.test(str);
+    };
+
+    validator.isAlpha = function (str) {
+        return alpha.test(str);
+    };
+
+    validator.isAlphanumeric = function (str) {
+        return alphanumeric.test(str);
+    };
+
+    validator.isNumeric = function (str) {
+        return numeric.test(str);
+    };
+
+    validator.isHexadecimal = function (str) {
+        return hexadecimal.test(str);
+    };
+
+    validator.isHexColor = function (str) {
+        return hexcolor.test(str);
+    };
+
+    validator.isLowercase = function (str) {
+        return str === str.toLowerCase();
+    };
+
+    validator.isUppercase = function (str) {
+        return str === str.toUpperCase();
+    };
+
+    validator.isInt = function (str) {
+        return int.test(str);
+    };
+
+    validator.isFloat = function (str) {
+        return str !== '' && float.test(str);
+    };
+
+    validator.isDivisibleBy = function (str, num) {
+        return validator.toFloat(str) % validator.toInt(num) === 0;
+    };
+
+    validator.isNull = function (str) {
+        return str.length === 0;
+    };
+
+    validator.isLength = function (str, min, max) {
+        return str.length >= min && (typeof max === 'undefined' || str.length <= max);
+    };
+
+    validator.isUUID = function (str, version) {
+        var pattern = uuid[version ? version : 'all'];
+        return pattern && pattern.test(str);
+    };
+
+    validator.isDate = function (str) {
+        return !isNaN(Date.parse(str));
+    };
+
+    validator.isAfter = function (str, date) {
+        var comparison = validator.toDate(date || new Date())
+          , original = validator.toDate(str);
+        return original && comparison && original > comparison;
+    };
+
+    validator.isBefore = function (str, date) {
+        var comparison = validator.toDate(date || new Date())
+          , original = validator.toDate(str);
+        return original && comparison && original < comparison;
+    };
+
+    validator.isIn = function (str, options) {
         if (!options || typeof options.indexOf !== 'function') {
             return false;
         }
-        if (Array.isArray(options)) {
-            options = options.map(String);
+        if (Object.prototype.toString.call(options) === '[object Array]') {
+            var array = [];
+            for (var i = 0, len = options.length; i < len; i++) {
+                array[i] = validator.toString(options[i]);
+            }
+            options = array;
         }
         return options.indexOf(str) >= 0;
-    },
-    notIn: function(str, options) {
-        if (!options || typeof options.indexOf !== 'function') {
+    };
+
+    validator.isCreditCard = function (str) {
+        var sanitized = str.replace(/[^0-9]+/g, '');
+        if (!creditCard.test(sanitized)) {
             return false;
         }
-        if (Array.isArray(options)) {
-            options = options.map(String);
-        }
-        return options.indexOf(str) < 0;
-    },
-    min: function(str, val) {
-        var number = parseFloat(str);
-        return isNaN(number) || number >= val;
-    },
-    max: function(str, val) {
-        var number = parseFloat(str);
-        return isNaN(number) || number <= val;
-    },
-    //Will work against Visa, MasterCard, American Express, Discover, Diners Club, and JCB card numbering formats
-    isCreditCard: function(str) {
-        //remove all dashes, spaces, etc.
-        var sanitized = str.replace(/[^0-9]+/g, '');
-        if (sanitized.match(/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/) === null) {
-            return null;
-        }
-        // Doing Luhn check
-        var sum = 0;
-        var digit;
-        var tmpNum;
-        var shouldDouble = false;
+        var sum = 0, digit, tmpNum, shouldDouble;
         for (var i = sanitized.length - 1; i >= 0; i--) {
             digit = sanitized.substring(i, (i + 1));
             tmpNum = parseInt(digit, 10);
@@ -13812,260 +13353,102 @@ var validators = module.exports = {
                 tmpNum *= 2;
                 if (tmpNum >= 10) {
                     sum += ((tmpNum % 10) + 1);
-                }
-                else {
+                } else {
                     sum += tmpNum;
                 }
-            }
-            else {
+            } else {
                 sum += tmpNum;
             }
-            if (shouldDouble) {
-                shouldDouble = false;
+            shouldDouble = !shouldDouble;
+        }
+        return (sum % 10) === 0 ? sanitized : false;
+    };
+
+    validator.isISBN = function (str, version) {
+        version = validator.toString(version);
+        if (!version) {
+            return validator.isISBN(str, 10) || validator.isISBN(str, 13);
+        }
+        var sanitized = str.replace(/[\s-]+/g, '')
+          , checksum = 0, i;
+        if (version === '10') {
+            if (!isbn10Maybe.test(sanitized)) {
+                return false;
             }
-            else {
-                shouldDouble = true;
+            for (i = 0; i < 9; i++) {
+                checksum += (i + 1) * sanitized.charAt(i);
+            }
+            if (sanitized.charAt(9) === 'X') {
+                checksum += 10 * 10;
+            } else {
+                checksum += 10 * sanitized.charAt(9);
+            }
+            if ((checksum % 11) === 0) {
+                return sanitized;
+            }
+        } else  if (version === '13') {
+            if (!isbn13Maybe.test(sanitized)) {
+                return false;
+            }
+            var factor = [ 1, 3 ];
+            for (i = 0; i < 12; i++) {
+                checksum += factor[i % 2] * sanitized.charAt(i);
+            }
+            if (sanitized.charAt(12) - ((10 - (checksum % 10)) % 10) === 0) {
+                return sanitized;
             }
         }
-        if ((sum % 10) === 0) {
-            return sanitized;
-        } else {
-            return null;
-        }
-    }
-};
+        return false;
+    };
 
-},{}],21:[function(require,module,exports){
-//This module is adapted from the CodeIgniter framework
-//The license is available at http://codeigniter.com/
-
-var html_entity_decode = require('./entities').decode;
-
-var never_allowed_str = {
-    'document.cookie':              '[removed]',
-    'document.write':               '[removed]',
-    '.parentNode':                  '[removed]',
-    '.innerHTML':                   '[removed]',
-    'window.location':              '[removed]',
-    '-moz-binding':                 '[removed]',
-    '<!--':                         '&lt;!--',
-    '-->':                          '--&gt;',
-    '(<!\\[CDATA\\[)':              '&lt;![CDATA[',
-    '<comment>':                    '&lt;comment&gt;'
-};
-
-var never_allowed_regex = {
-    'javascript\\s*:':                                       '[removed]',
-    'expression\\s*(\\(|&#40;)':                             '[removed]',
-    'vbscript\\s*:':                                         '[removed]',
-    'Redirect\\s+302':                                       '[removed]',
-    "([\"'])?data\\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?":  '[removed]'
-};
-
-var non_displayables = [
-    /%0[0-8bcef]/g,           // url encoded 00-08, 11, 12, 14, 15
-    /%1[0-9a-f]/g,            // url encoded 16-31
-    /[\x00-\x08]/g,           // 00-08
-    /\x0b/g, /\x0c/g,         // 11,12
-    /[\x0e-\x1f]/g            // 14-31
-];
-
-var compact_words = [
-    'javascript', 'expression', 'vbscript',
-    'script', 'base64', 'applet', 'alert',
-    'document', 'write', 'cookie', 'window'
-];
-
-exports.clean = function(str, is_image) {
-
-    //Remove invisible characters
-    str = remove_invisible_characters(str);
-
-    //Protect query string variables in URLs => 901119URL5918AMP18930PROTECT8198
-    var hash;
-    do {
-      // ensure str does not contain hash before inserting it
-      hash = xss_hash();
-    } while(str.indexOf(hash) >= 0)
-    str = str.replace(/\&([a-z\_0-9\-]+)\=([a-z\_0-9\-]+)/ig, hash + '$1=$2');
-
-    //Validate standard character entities. Add a semicolon if missing.  We do this to enable
-    //the conversion of entities to ASCII later.
-    str = str.replace(/(&#?[0-9a-z]{2,})([\x00-\x20])*;?/ig, '$1;$2');
-
-    //Validate UTF16 two byte encoding (x00) - just as above, adds a semicolon if missing.
-    str = str.replace(/(&#x?)([0-9A-F]+);?/ig, '$1$2;');
-
-    //Un-protect query string variables
-    str = str.replace(new RegExp(hash, 'g'), '&');
-
-    //Decode just in case stuff like this is submitted:
-    //<a href="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">Google</a>
-    try{  
-      str = decodeURIComponent(str);
-    }
-    catch(error){
-      // str was not actually URI-encoded
-    }
-
-    //Convert character entities to ASCII - this permits our tests below to work reliably.
-    //We only convert entities that are within tags since these are the ones that will pose security problems.
-    str = str.replace(/[a-z]+=([\'\"]).*?\1/gi, function(m, match) {
-        return m.replace(match, convert_attribute(match));
-    });
-    str = str.replace(/<\w+.*/gi, function(m) {
-        return m.replace(m, html_entity_decode(m));
-    });
-
-    //Remove invisible characters again
-    str = remove_invisible_characters(str);
-
-    //Convert tabs to spaces
-    str = str.replace('\t', ' ');
-
-    //Captured the converted string for later comparison
-    var converted_string = str;
-
-    //Remove strings that are never allowed
-    for (var i in never_allowed_str) {
-        str = str.replace(new RegExp(i, "gi"), never_allowed_str[i]);
-    }
-
-    //Remove regex patterns that are never allowed
-    for (var i in never_allowed_regex) {
-        str = str.replace(new RegExp(i, 'gi'), never_allowed_regex[i]);
-    }
-
-    //Compact any exploded words like:  j a v a s c r i p t
-    // We only want to do this when it is followed by a non-word character
-    for (var i = 0, l = compact_words.length; i < l; i++) {
-        var spacified = compact_words[i].split('').join('\\s*')+'\\s*';
-
-        str = str.replace(new RegExp('('+spacified+')(\\W)', 'ig'), function(m, compat, after) {
-            return compat.replace(/\s+/g, '') + after;
-        });
-    }
-
-    //Remove disallowed Javascript in links or img tags
-    do {
-        var original = str;
-
-        if (str.match(/<a/i)) {
-            str = str.replace(/<a\s+([^>]*?)(>|$)/gi, function(m, attributes, end_tag) {
-                var filtered_attributes = filter_attributes(attributes.replace('<','').replace('>',''));
-                filtered_attributes = filtered_attributes.replace(/href=.*?(?:alert\(|alert&#40;|javascript:|livescript:|mocha:|charset=|window\.|document\.|\.cookie|<script|<xss|data\s*:)/gi, '');
-                return m.replace(attributes, filtered_attributes);
-            });
-        }
-
-        if (str.match(/<img/i)) {
-            str = str.replace(/<img\s+([^>]*?)(\s?\/?>|$)/gi, function(m, attributes, end_tag) {
-                var filtered_attributes = filter_attributes(attributes.replace('<','').replace('>',''));
-                filtered_attributes = filtered_attributes.replace(/src=.*?(?:alert\(|alert&#40;|javascript:|livescript:|mocha:|charset=|window\.|document\.|\.cookie|<script|<xss|base64\s*,)/gi, '');
-                return m.replace(attributes, filtered_attributes);
-            });
-        }
-
-        if (str.match(/script/i) || str.match(/xss/i)) {
-            str = str.replace(/<(\/*)(script|xss)(.*?)\>/gi, '[removed]');
-        }
-
-    } while(original !== str);
-
-    // Remove Evil HTML Attributes (like event handlers and style)
-    var event_handlers = ['\\bon\\w*', '\\bstyle', '\\bformaction'];
-
-    //Adobe Photoshop puts XML metadata into JFIF images, including namespacing,
-    //so we have to allow this for images
-    if (!is_image) {
-        event_handlers.push('xmlns');
-    }
-
-    do {
-        var attribs = [];
-        var count = 0;
-
-        attribs = attribs.concat(str.match(new RegExp("("+event_handlers.join('|')+")\\s*=\\s*(\\x22|\\x27)([^\\2]*?)(\\2)", 'ig')));
-        attribs = attribs.concat(str.match(new RegExp("("+event_handlers.join('|')+")\\s*=\\s*([^\\s>]*)", 'ig')));
-        attribs = attribs.filter(function(element) { return element !== null; });
-
-        if (attribs.length > 0) {
-            for (var i = 0; i < attribs.length; ++i) {
-                attribs[i] = attribs[i].replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&')
+    validator.isJSON = function (str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                return false;
             }
-
-            str = str.replace(new RegExp("(<?)(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)("+attribs.join('|')+")(.*?)([\\s><]?)([><]*)", 'i'), function(m, a, b, c, d, e, f, g, h) {
-                ++count;
-                return a + b + ' ' + d + f + g + h;
-            });
         }
-    } while (count > 0);
+        return true;
+    };
 
-    //Sanitize naughty HTML elements
-    //If a tag containing any of the words in the list
-    //below is found, the tag gets converted to entities.
-    //So this: <blink>
-    //Becomes: &lt;blink&gt;
-    var naughty = 'alert|applet|audio|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|isindex|layer|link|meta|object|plaintext|style|script|textarea|title|video|xml|xss';
-    str = str.replace(new RegExp('<(/*\\s*)('+naughty+')([^><]*)([><]*)', 'gi'), function(m, a, b, c, d) {
-        return '&lt;' + a + b + c + d.replace('>','&gt;').replace('<','&lt;');
-    });
+    validator.ltrim = function (str, chars) {
+        var pattern = chars ? new RegExp('^[' + chars + ']+', 'g') : /^\s+/g;
+        return str.replace(pattern, '');
+    };
 
-    //Sanitize naughty scripting elements Similar to above, only instead of looking for
-    //tags it looks for PHP and JavaScript commands that are disallowed.  Rather than removing the
-    //code, it simply converts the parenthesis to entities rendering the code un-executable.
-    //For example:    eval('some code')
-    //Becomes:        eval&#40;'some code'&#41;
-    str = str.replace(/(alert|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\s*)\((.*?)\)/gi, '$1$2&#40;$3&#41;');
+    validator.rtrim = function (str, chars) {
+        var pattern = chars ? new RegExp('[' + chars + ']+$', 'g') : /\s+$/g;
+        return str.replace(pattern, '');
+    };
 
-    //This adds a bit of extra precaution in case something got through the above filters
-    for (var i in never_allowed_str) {
-        str = str.replace(new RegExp(i, "gi"), never_allowed_str[i]);
-    }
-    for (var i in never_allowed_regex) {
-        str = str.replace(new RegExp(i, 'gi'), never_allowed_regex[i]);
-    }
+    validator.trim = function (str, chars) {
+        var pattern = chars ? new RegExp('^[' + chars + ']+|[' + chars + ']+$', 'g') : /^\s+|\s+$/g;
+        return str.replace(pattern, '');
+    };
 
-    //Images are handled in a special way
-    if (is_image && str !== converted_string) {
-        throw new Error('Image may contain XSS');
-    }
+    validator.escape = function (str) {
+        return (str.replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;'));
+    };
 
-    return str;
-}
+    validator.whitelist = function (str, chars) {
+        return str.replace(new RegExp('[^' + chars + ']+', 'g'), '');
+    };
 
-function remove_invisible_characters(str) {
-    for (var i = 0, l = non_displayables.length; i < l; i++) {
-        str = str.replace(non_displayables[i], '');
-    }
-    return str;
-}
+    validator.blacklist = function (str, chars) {
+        return str.replace(new RegExp('[' + chars + ']+', 'g'), '');
+    };
 
-function xss_hash() {
-    var str = '', num = 10;
-    while (num--) str += String.fromCharCode(Math.random() * 25 | 97);
-    return str;
-}
+    validator.init();
 
-function convert_attribute(str) {
-    return str.replace('>','&gt;').replace('<','&lt;').replace('\\','\\\\');
-}
+    return validator;
 
-function filter_attributes(str) {
-    var result = "";
+});
 
-    var match = str.match(/\s*[a-z-]+\s*=\s*(\x22|\x27)([^\1]*?)\1/ig);
-    if (match) {
-        for (var i = 0; i < match.length; ++i) {
-            result += match[i].replace(/\*.*?\*/g, '');
-        }
-    }
-
-    return result;
-}
-
-
-},{"./entities":16}],22:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var validator = require('validator');
 
 
