@@ -102,6 +102,16 @@ function postSignup(req, res) {
     });
 }
 
+function getSignupCampus(req, res) {
+  //TODO Code a real signup page.
+  res.render('signupCampus', {
+    tipMessages : require('../lib/forms/signupCampusFormMessages')
+  });
+}
+
+function postSignupCampus(req, res) {
+}
+
 function getLogin(req, res) {
   res.render('login', {
       formSignup : false,
@@ -125,7 +135,6 @@ function getLoginCampus(req, res) {
 }
 
 function postLoginCampus(req, res) {
-  console.log('I made it with campus login')
   var redirect_to = req.session.redirect_to 
     ? req.session.redirect_to
     : '/' + req.body.username + '/' ;
@@ -153,7 +162,10 @@ function emailAvailable(req, res) {
   response.err = null;
   response.msg = null;
   response.username = null;
-  var email = !! req.query.email ? req.query.email.trim() : null;
+  var email = !! req.query.email 
+    ? req.query.email.trim() 
+    : null;
+    
   var username = null;
   var err = validation.getErrorEmail(email);
   var promise = null;
@@ -240,6 +252,8 @@ module.exports = {
   getHomePage       : getHomePage,
   getSignup         : getSignup,
   postSignup        : postSignup,
+  getSignupCampus   : getSignupCampus,
+  postSignupCampus  : postSignupCampus,
   getLogin          : getLogin,
   postLogin         : postLogin,
   getLoginCampus  : getLoginCampus,
