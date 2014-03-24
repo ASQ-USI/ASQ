@@ -31,6 +31,7 @@
     "ejs": "~0.8.4",
     "ejs-locals": "~1.0.2",
     "express": "~3.3.5",
+    "ldapauth-fork": "^2.2.12",
     "ldapjs": "^0.7.0",
     "lodash": "~2.3.0",
     "mkdirp": "~0.3.5",

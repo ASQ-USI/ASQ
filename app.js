@@ -5,51 +5,44 @@
 //enhanced errors, useful for status codes, type etc
 require('simple-errors');
 
-var config = require('./config')
-// Globals: mongoose, db, and schemas
-mongoose = require('mongoose');
-db = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
-schemas = require('./models');
+var config = require('./config');
+// Globals : mongoose, db, and schemas
+mongoose   = require('mongoose');
+db         = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
+schemas    = require('./models');
 
-var express     = require('express')
-  , http          = require('http')
-  , path        = require('path')
-  , fs          = require('fs')
-  , redisStore  = require('connect-redis')(express)
-  , http        = require('http')
-  , credentials = config.enableHTTPS ? {
-      key         : fs.readFileSync(config.keyPath),
-      cert        : fs.readFileSync(config.certPath),
-      ca          : fs.readFileSync(config.caPath),
-      requestCert : config.requestCert,
-      rejectUnauthorized : config.rejectUnauthorized,
-    } : {}
-  , appLogger     = require('./lib/logger').appLogger
-  , cons            = require('consolidate')
-  , dust            = require('dustjs-linkedin')
-  , slashes         = require("connect-slashes")
-  , flash           = require('connect-flash')
-  , lib             = require('./lib')
-  , routes          = require('./routes')
-  , registration    = require('./routes/registration')
-  , editFunctions   = require('./routes/edit')
-  , statistics      = require('./routes/statistics')
-  , appLogger       = lib.logger.appLogger
-  , authentication  = lib.authentication
-  , passport        = require('passport')
-  , formUtils       = lib.utils.form
-  , errorMessages   = lib.errorMessages
-  , middleware      = require('./routes/middleware')
-  , errorMiddleware      = require('./routes/errorMiddleware');
+var cons          = require('consolidate')
+, dust            = require('dustjs-linkedin')
+, express         = require('express')
+, flash           = require('connect-flash')
+, fs              = require('fs')
+, http            = require('http')
+, path            = require('path')
+, redisStore      = require('connect-redis')(express)
+, slashes         = require('connect-slashes')
+, microformat     = require('asq-microformat')
+, credentials     = config.enableHTTPS ? {
+    key                : fs.readFileSync(config.keyPath),
+    cert               : fs.readFileSync(config.certPath),
+    ca                 : fs.readFileSync(config.caPath),
+    requestCert        : config.requestCert,
+    rejectUnauthorized : config.rejectUnauthorized,
+  } : {}
+, lib             = require('./lib')
+, appLogger       = lib.logger.appLogger
+, authentication  = lib.authentication
+, passport        = require('passport')
+, editFunctions   = require('./routes/edit')
+, errorMessages   = lib.errorMessages
+, errorMiddleware = require('./routes/errorMiddleware')
+, middleware      = require('./routes/middleware')
+, registration    = require('./routes/registration')
+, routes          = require('./routes')
+, statistics      = require('./routes/statistics')
+, validation      = require('./shared/validation');
 
-
-//Setup Dust.js helpers and options
-require('dustjs-helpers');
-require('lib/dust-helpers')(dust)
-
-//don't remove whitespace
+//don't remove whitespace <- WUT?
 dust.optimizers.format = function(ctx, node) { return node };
-
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
@@ -61,9 +54,9 @@ function ensureAuthenticated(req, res, next) {
     }
     if (req.url=="/") {
         res.render('index', {
-     		'message': req.flash('error'),
-   			'fromsignup': false
-  		});
+        'message': req.flash('error'),
+        'fromsignup': false
+      });
     } else {
         res.redirect("/");
     }
@@ -76,7 +69,7 @@ process.env.PORT = process.env.PORT || (config.enableHTTPS ? config.HTTPSPort : 
 appLogger.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
 
 app = express();
-app.engine('dust', cons.dust);
+
 
 
 // Global namespace
@@ -87,14 +80,26 @@ ASQ.appHost = process.env.HOST;
 clientsLimit = config.clientsLimit || 50;
 appLogger.log('Clients limit: ' + clientsLimit);
 
-//configure passport
-require('./lib/passport')(passport);
+
+
+//Reidrection to secure url when HTTPS is used.
+
 
 /** Configure express */
 app.configure(function() {
+
+  //configure passport
+  require('./lib/passport')(passport);
+
   app.set('port', process.env.PORT);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'dust');
+  app.enable('view cache');
+  app.engine('dust', cons.dust);
+  //Setup Dust.js helpers and options
+  require('dustjs-helpers');
+  lib.dustHelpers(dust);
+  microformat.templates(dust);
   if (config.enableHTTPS) {
     app.use(middleware.forceSSL);
   }
@@ -105,7 +110,6 @@ app.configure(function() {
   app.use(express.logger('dev'));
   app.use(express.methodOverride()); //Enable DELETE & PUT
   app.use(express.cookieParser());
-
   //redis store for session cookies
   var redisSessionStore = new redisStore({
     host: '127.0.0.1',
@@ -123,8 +127,8 @@ app.configure(function() {
   app.set('sessionStore', redisSessionStore);
   //necessary initialization for passport plugin
   app.use(passport.initialize());
-  app.use(passport.session());
   app.use(flash());
+  app.use(passport.session());
   app.use(app.router);
 
   app.use(errorMiddleware.logErrors);
@@ -142,20 +146,12 @@ app.configure('development', function(){
             .toString().trim();
 
     }
-    formUtils.prodValidUserForm = formUtils.isValidUserForm;
-    formUtils.isValidUserForm = function(firstname, lastname, email, username, password, passwordConfirm, strict) {
-      var errors = formUtils.prodValidUserForm(firstname, lastname, email, username, password, passwordConfirm, strict);
-      if (errors === null || !errors.hasOwnProperty('password')) {
-        return errors;
-      } else if (Object.keys(errors).length === 1
-                  && errors.password === errorMessages.password.regex) {
-        appLogger.debug('[devel mode] No password constraint');
-        return null;
-      } else if (errors.password === errorMessages.password.regex) {
-        appLogger.debug('[devel mode] No password constraint');
-        delete errors.password;
+    validation.getErrorPassword = function devGetErrorPassword(candidate) {
+      if (validator.isNull(candidate)) {
+        return 'blank';
       }
-      return errors;
+      appLogger.debug('[devel mode] No password constraint');
+      return null;
     }
 });
 
@@ -199,7 +195,7 @@ app.post('/user/savedetails/:id', ensureAuthenticated, editFunctions.saveDetails
 
 //Render presentations in iframe for thumbnails
 app.get('/slidesInFrame/:id/', function(req,res){
-	res.render('slidesIFrame', {user: req.user.name, id: req.params.id, url: req.query.url});
+  res.render('slidesIFrame', {user: req.user.name, id: req.params.id, url: req.query.url});
 });
 
 //Test call to create sample stats data

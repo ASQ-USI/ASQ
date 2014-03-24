@@ -17,7 +17,8 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/signup-campus/', middleware.isNotAuthenticated, handlers.getSignupCampus);
 
   //Register as a new user
-  app.post('/signup-campus', middleware.isNotAuthenticated, handlers.postSignupCampus);
+  app.post('/signup-campus', middleware.isNotAuthenticated
+    , middleware.validateLdapUser, handlers.postSignupCampus);
 
   //Get the login page
   app.get('/login/', middleware.isNotAuthenticated, handlers.getLogin);

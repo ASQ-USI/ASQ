@@ -73,5 +73,6 @@ module.exports = {
   isRouteOwner       : [ isAuthenticated, isRouteOwner ],
   ldapAuthenticate   : ldapAuthenticate,
   localAuthenticate  : localAuthenticate,
-  setLiveSession     : setLiveSession
+  setLiveSession     : setLiveSession,
+  validateLdapUser   : require('../lib/ldap').validateLdapUser
 }

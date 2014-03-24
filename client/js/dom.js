@@ -16,6 +16,7 @@ var binders = {
   'menu'   : menuDOMBinder,
   'user'   : userDOMBinder,
   'signup' : signupDOMBinder,
+  'signupCampus' : signupCampusDOMBinder,
   'presentations'    : psesentationsDOMBinder,
   'presenterControl' : presenterControlDOMBinder,
   'userLive' : userLiveDOMBinder
@@ -44,7 +45,7 @@ function menuDOMBinder(){
 }
 
 
-// signIn.dust
+// signup.dust
 function signupDOMBinder(){
   form.setup('signup');
 
@@ -53,6 +54,11 @@ function signupDOMBinder(){
     fromsignup = typeof fromsignup == 'undefined' ? false : Boolean(fromsignup);
     if(fromsignup)$('#signup-modal').modal('show');
   });
+}
+
+// signupCampus.dust
+function signupCampusDOMBinder(){
+  form.setup('signupCampus');
 }
 
 // presentations.dust
