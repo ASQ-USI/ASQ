@@ -113,9 +113,9 @@ function postSignupCampus(req, res) {
     username : req.body.signupusername
   }
 
-  // var errs = validation.getErrorsSignupCampus(data);
+  var errs = validation.getErrorsSignupCampus(data);
 
-  var errs = { username: null}
+  // var errs = { username: null}
 
   errUsername = (!!errs.username) 
     ? when.resolve(true) 
@@ -202,9 +202,16 @@ function postLogin(req, res) {
 }
 
 function getLoginCampus(req, res) {
+  var alert ={}
+    , error = req.flash('error')
+
+  if("undefined" != typeof error){
+    alert.error = error
+  }
+  
   res.render('loginCampus', {
       formSignup : false,
-      alert: req.flash()
+      alert: alert
     });
 }
 

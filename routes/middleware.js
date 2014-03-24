@@ -49,14 +49,14 @@ function ldapAuthenticate(req, res, next) {
   passport.authenticate('ldapauth', function(err, user, info) {
     if (err) { return next(err); }
     if (!user) {
-      if(info.message == "User has not registered") {
+      if(info.message == 'User has not registered') {
          req.flash('info', 'You need to register an ASQ username')
          res.redirect('/signup-campus/')
          return;
       }
+      req.flash('error', info)
       return res.redirect('/login-campus/');
     }
-
     //everything is alright log the user in
     req.logIn(user, function(err) {
       if (err) { return next(err); }
