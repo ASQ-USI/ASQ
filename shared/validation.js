@@ -88,11 +88,11 @@ function getErrorPasswordRepeat(candidate, password) {
 }
 
 /**
- *  Validaton of the form data from the signup form.
- *  @param {object} data - the form data. Expects to have the follwing {string}
- *  attributes: firstname, lastname, emailm username, password, passwordRepeat.
+ *  Validation of the form data from the signup form.
+ *  @param {object} data - the form data. Expects to have the following {string}
+ *  attributes: firstname, lastname, email, username, password, passwordRepeat.
  */
-function getErrorsSignUp(data) {
+function getErrorsSignup(data) {
   var err = {};
   err.fistname       = getErrorFirstname(data.firstname);
   err.lastname       = getErrorLastname(data.lastname);
@@ -103,6 +103,17 @@ function getErrorsSignUp(data) {
   return err;
 }
 
+/**
+ *  Validation of the form data from the campus signup form.
+ *  @param {object} data - the form data. Expects to have the following {string}
+ *  attributes: firstname, lastname, email, username, password, passwordRepeat.
+ */
+function getErrorsSignupCampus(data) {
+  var err = {};
+  err.username = getErrorUsername(data.username);
+  return err;
+}
+
 module.exports = {
   getErrorFirstname      : getErrorFirstname,
   getErrorLastname       : getErrorLastname,
@@ -110,5 +121,6 @@ module.exports = {
   getErrorUsername       : getErrorUsername,
   getErrorPassword       : getErrorPassword,
   getErrorPasswordRepeat : getErrorPasswordRepeat,
-  getErrorsSignUp        : getErrorsSignUp,
+  getErrorsSignup        : getErrorsSignup,
+  getErrorsSignupCampus : getErrorsSignupCampus
 }

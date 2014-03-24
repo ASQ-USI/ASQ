@@ -1,4 +1,6 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"RguaJg":[function(require,module,exports){
+module.exports=require('USjOfz');
+},{}],"USjOfz":[function(require,module,exports){
 'use strict';
 
 var $ = require('jQuery')
@@ -12772,11 +12774,11 @@ function getErrorPasswordRepeat(candidate, password) {
 }
 
 /**
- *  Validaton of the form data from the signup form.
- *  @param {object} data - the form data. Expects to have the follwing {string}
- *  attributes: firstname, lastname, emailm username, password, passwordRepeat.
+ *  Validation of the form data from the signup form.
+ *  @param {object} data - the form data. Expects to have the following {string}
+ *  attributes: firstname, lastname, email, username, password, passwordRepeat.
  */
-function getErrorsSignUp(data) {
+function getErrorsSignup(data) {
   var err = {};
   err.fistname       = getErrorFirstname(data.firstname);
   err.lastname       = getErrorLastname(data.lastname);
@@ -12787,6 +12789,17 @@ function getErrorsSignUp(data) {
   return err;
 }
 
+/**
+ *  Validation of the form data from the campus signup form.
+ *  @param {object} data - the form data. Expects to have the following {string}
+ *  attributes: firstname, lastname, email, username, password, passwordRepeat.
+ */
+function getErrorsSignupCampus(data) {
+  var err = {};
+  err.username       = getErrorUsername(data.username);
+  return err;
+}
+
 module.exports = {
   getErrorFirstname      : getErrorFirstname,
   getErrorLastname       : getErrorLastname,
@@ -12794,7 +12807,8 @@ module.exports = {
   getErrorUsername       : getErrorUsername,
   getErrorPassword       : getErrorPassword,
   getErrorPasswordRepeat : getErrorPasswordRepeat,
-  getErrorsSignUp        : getErrorsSignUp,
+  getErrorsSignup        : getErrorsSignup,
+  getErrorsSignupCampus : getErrorsSignupCampus
 }
 
 },{"validator":13}]},{},["NqwWG2"])

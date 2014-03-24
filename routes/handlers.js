@@ -3,8 +3,7 @@ var _                = require('lodash')
 , lib                = require('../lib')
 , signupFormMessages = require('../lib/forms/signupFormMessages')
 , validation         = require('../shared/validation')
-, utils              = lib.utils.form
-, appLogger          = lib.logger.appLogger
+, appLogger          = require('../lib/logger').appLogger
 , User               = db.model('User');
 
 function getHomePage(req, res) {
@@ -36,11 +35,13 @@ function postSignup(req, res, next) {
 
   var errs = validation.getErrorsSignUp(data);
 
-  errEmail = (!!errs.email) ? true :
-  User.count({ email: data.email, _type: 'User' }).exec();
+  errEmail = (!!errs.email) 
+    ? true 
+    : User.count({ email: data.email, _type: 'User' }).exec();
 
-  errUsername = (!!errs.username) ? true :
-  User.count({ username: data.username, _type: 'User' }).exec();
+  errUsername = (!!errs.username) 
+    ? true 
+    : User.count({ username: data.username, _type: 'User' }).exec();
 
   when.join(errEmail, errUsername)
   .then(
@@ -81,15 +82,14 @@ function postSignup(req, res, next) {
   }).then(null,
     function onError(err) {
       if (err instanceof Error) {
-        appLogger.error('During sign up: ' + err.toString(), { err: err.stack });
-        next(err);
+        appLogger.error('On signup: ' + err.toString(), { err: err.stack });
+        throw err;
       } else {
         for (var key in err) {
           if (err[key] == null) {
             err[key] = 'ok';
           }
         }
-        console.dir(err);
         res.render('signup', {
         tipMessages : signupFormMessages,
         activate : err,
@@ -103,6 +103,7 @@ function getSignupCampus(req, res) {
   //TODO Code a real signup page.
   res.render('signupCampus', {
     tipMessages : require('../lib/forms/signupCampusFormMessages')
+    info : req.flash("info")
   });
 }
 

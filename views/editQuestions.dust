@@ -14,7 +14,7 @@
 
       <!-- Show notification fo user feedback based on query alert and type-->
       {?alert}
-      <div class="alert {type}">
+      <div class="alert alert-{type}">
         {alert}
       </div>
       {/alert}

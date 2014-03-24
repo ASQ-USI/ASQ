@@ -20,7 +20,6 @@ var AdmZip          = require('adm-zip')
   , slideshowModel  = model.slideshowModel
   , questionModel   = model.questionModel
   , thumbUtils      = require('./utils')
-  , errFormatter    = require('../../../lib/utils/responseHelper').restErrorFormatter
   , errorTypes      = require('../../errorTypes')
   , utils           = require('../../../lib/utils/routes')
 
@@ -142,9 +141,6 @@ function listPresentations(req, res, next) {
     }
 
       var type = utils.getAlertTypeClass(req);
-
-
-
 
     res.render('presentations', {
       username        : req.user.username,
