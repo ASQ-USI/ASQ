@@ -105,7 +105,7 @@ describe('routes/handlers.postSignupCampus', function() {
     });
   });
 
-  it("should reject an existing username ", function(done){
+  it.skip("should reject an existing username ", function(done){
     request(app)
     .post('/signup-campus') 
     .type('form')

@@ -58,7 +58,7 @@ function ldapAuthenticate(req, res, next) {
       return res.redirect('/login-campus/');
     }
     //everything is alright log the user in
-    req.logIn(user, function(err) {
+    req.login(user, function onLoggedIn(err) {
       if (err) { return next(err); }
       return next();
     });
