@@ -124,7 +124,6 @@ function postSignupCampus(req, res) {
   errUsername.then(
     function onDbCheck(err) {
       if (!errs.username) {
-        console.log("USERNAME ERR " + err)
         errs.username = err === 0 ? null : 'taken';
       }
       for (var err in errs) {
@@ -203,9 +202,16 @@ function postLogin(req, res) {
 }
 
 function getLoginCampus(req, res) {
+  var alert ={}
+    , error = req.flash('error')
+
+  if("undefined" != typeof error){
+    alert.error = error
+  }
+  
   res.render('loginCampus', {
       formSignup : false,
-      alert: req.flash()
+      alert: alert
     });
 }
 
