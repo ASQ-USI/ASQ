@@ -113,9 +113,9 @@ function postSignupCampus(req, res) {
     username : req.body.signupusername
   }
 
-  // var errs = validation.getErrorsSignupCampus(data);
+  var errs = validation.getErrorsSignupCampus(data);
 
-  var errs = { username: null}
+//  var errs = { username: null}
 
   errUsername = (!!errs.username) 
     ? when.resolve(true) 
@@ -124,6 +124,7 @@ function postSignupCampus(req, res) {
   errUsername.then(
     function onDbCheck(err) {
       if (!errs.username) {
+        console.log("USERNAME ERR " + err)
         errs.username = err === 0 ? null : 'taken';
       }
       for (var err in errs) {
@@ -143,7 +144,7 @@ function postSignupCampus(req, res) {
       newUser.lastname = name[1] || data.username;
 
       var deferred = when.defer();
-      newUser.save(function(err, savedUser) {
+      newUser.save(function onSaveUser(err, savedUser) {
         if (err) {
           deferred.reject(err)
         } else {
@@ -154,12 +155,12 @@ function postSignupCampus(req, res) {
       return deferred.promise;
   }).then(
     function onNewUser(user) {
-      appLogger.info('New user registered: %s (%s)', user.username, user.email);
-      req.login(user, function onLogin(err) {
+      appLogger.info('New ldap user registered: %s (%s)', user.username, user.ldap.id);
+      req.login(user, function onLoggedIn(err) {
         if (err) {
           var error = new Error('User created but login faild with: ' +
             err.toString());
-          throw error;
+          when.reject(error);
         }
         res.redirect('/' + user.username +
           '/?alert=Registration%20Succesful&type=success');
@@ -167,7 +168,7 @@ function postSignupCampus(req, res) {
   }).then(null,
     function onError(err) {
       if (err instanceof Error) {
-        appLogger.error('On signup: ' + err.toString(), { err: err.stack });
+        appLogger.error('On campus signup: ' + err.toString(), { err: err.stack });
         next(err);
       } else {
 
