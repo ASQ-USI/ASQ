@@ -18,14 +18,14 @@ var baseUserSchema = new Schema({
 
 var registeredUserSchema = baseUserSchema.extend({
   username: { type: String, unique: true, sparse: true, required: true, lowercase: true },
-  password: { type: String, required: true },
+  password: { type: String, required: false },
   firstname: { type: String, required: true},
   lastname: { type: String, required: true},
-  email: { type: String, required: true, sparse: true, unique: true }, // Exactly only one email per account
+  email: { type: String, required: false, sparse: true, unique: true }, // Exactly only one email per account
   slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
   ldap:{
-    id: { type: String , unique: true, sparse: true, required: true },
-    username: { type: String, unique: true, sparse: true, required: true }
+    id: { type: String , unique: true, sparse: true, required: false },
+    username: { type: String, unique: true, sparse: true, required: false }
   }
 });
 

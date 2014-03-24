@@ -1,15 +1,16 @@
+require('when/monitor/console');
 var _                = require('lodash')
 , when               = require('when')
-, lib                = require('../lib')
+// , lib                = require('../lib')
 , signupFormMessages = require('../lib/forms/signupFormMessages')
+, signupCampusFormMessages = require('../lib/forms/signupCampusFormMessages')
 , validation         = require('../shared/validation')
-, utils              = lib.utils.form
-, appLogger          = lib.logger.appLogger
+, appLogger          = require('../lib/logger').appLogger
 , User               = db.model('User');
 
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
-    //redirect to user homepage
+    //redirect to user homepageZ
     res.redirect('/' + req.user.username);
   } else{
     //render asq homepage
@@ -18,14 +19,12 @@ function getHomePage(req, res) {
 }
 
 function getSignup(req, res) {
-  //TODO Code a real signup page.
   res.render('signup', {
     tipMessages : require('../lib/forms/signupFormMessages')
   });
 }
 
 function postSignup(req, res) {
-  //TODO change those horrible signup...
   var data = {};
   data.firstname      = req.body.signupfirstname;
   data.lastname       = req.body.signuplastname;
@@ -35,13 +34,15 @@ function postSignup(req, res) {
   data.password       = req.body.signuppassword;
   data.passwordRepeat = req.body.signuppasswordconfirm;
 
-  var errs = validation.getErrorsSignUp(data);
+  var errs = validation.getErrorsSignup(data);
 
-  errEmail = (!!errs.email) ? true :
-  User.count({ email: data.email, _type: 'User' }).exec();
+  errEmail = (!!errs.email) 
+    ? true 
+    : User.count({ email: data.email, _type: 'User' }).exec();
 
-  errUsername = (!!errs.username) ? true :
-  User.count({ username: data.username, _type: 'User' }).exec();
+  errUsername = (!!errs.username) 
+    ? true 
+    : User.count({ username: data.username, _type: 'User' }).exec();
 
   when.join(errEmail, errUsername)
   .then(
@@ -63,8 +64,6 @@ function postSignup(req, res) {
         if (err) {
           throw err;
         } else {
-          console.log('NEW USER WITH');
-          console.dir(data);
           deferred.resolve(savedUser);
         }
       });
@@ -92,7 +91,6 @@ function postSignup(req, res) {
             err[key] = 'ok';
           }
         }
-        console.dir(err);
         res.render('signup', {
         tipMessages : signupFormMessages,
         activate : err,
@@ -105,11 +103,87 @@ function postSignup(req, res) {
 function getSignupCampus(req, res) {
   //TODO Code a real signup page.
   res.render('signupCampus', {
-    tipMessages : require('../lib/forms/signupCampusFormMessages')
+    tipMessages : require('../lib/forms/signupCampusFormMessages'),
+    info : req.flash("info")
   });
 }
 
 function postSignupCampus(req, res) {
+  var data ={
+    username : req.body.signupusername
+  }
+
+  // var errs = validation.getErrorsSignupCampus(data);
+
+  var errs = { username: null}
+
+  errUsername = (!!errs.username) 
+    ? when.resolve(true) 
+    : User.count({ username: data.username, _type: 'User' }).exec();
+
+  errUsername.then(
+    function onDbCheck(err) {
+      if (!errs.username) {
+        errs.username = err === 0 ? null : 'taken';
+      }
+      for (var err in errs) {
+        if (!! errs[err]) {
+          return when.reject(errs);
+        }
+      }
+
+      //register new user
+      var newUser = new User();
+      newUser.username = data.username;
+      newUser.ldap.id = req.ldapUser.uidNumber;
+      newUser.ldap.username = req.ldapUser.uid;
+      newUser.screenName = req.ldapUser.gecos;
+      var name = req.ldapUser.gecos.split(' ');
+      newUser.firstname = name[0] || data.username;
+      newUser.lastname = name[1] || data.username;
+
+      var deferred = when.defer();
+      newUser.save(function(err, savedUser) {
+        if (err) {
+          deferred.reject(err)
+        } else {
+          deferred.resolve(savedUser);
+        }
+      });
+
+      return deferred.promise;
+  }).then(
+    function onNewUser(user) {
+      appLogger.info('New user registered: %s (%s)', user.username, user.email);
+      req.login(user, function onLogin(err) {
+        if (err) {
+          var error = new Error('User created but login faild with: ' +
+            err.toString());
+          throw error;
+        }
+        res.redirect('/' + user.username +
+          '/?alert=Registration%20Succesful&type=success');
+      });
+  }).then(null,
+    function onError(err) {
+      if (err instanceof Error) {
+        appLogger.error('On signup: ' + err.toString(), { err: err.stack });
+        next(err);
+      } else {
+
+        var keys = Object.keys(err)
+        for (var i=0; i<keys.length; i++) {
+          if (err[keys[i]] == null) {
+            err[keys[i]] = 'ok';
+          }
+        }
+        res.render('signupCampus', {
+          tipMessages : signupCampusFormMessages,
+          activate : err,
+          data : data
+        });
+      }
+    });
 }
 
 function getLogin(req, res) {

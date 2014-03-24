@@ -16,14 +16,19 @@
 	  	<div class="signup-wrapper">
 	  		
 				<h1>Sign up for ASQ with your campus account</h1>
-<!-- 					{?message}
-						<div class="alert alert-block">
-							<h4>{message}</h4>
-						</div>	
-						
-						<br/>
-					{/message}					
-					 -->
+
+					{?alert}
+			      <div class="alert alert-{type}">
+			        {alert}
+			      </div>
+		      {/alert}
+
+		      {?info}
+			      <div class="alert alert-info">
+			        {info}
+			      </div>
+		      {/info}
+
 					<form id="signup-form" action="/signup-campus" method="post">
 
 						<fieldset>
@@ -52,7 +57,7 @@
 								</div>
 								
 							</div>
-							<input class="btn btn-primary disabled" id="createAccount" type="submit" value="Create Account"/>
+							<input class="btn btn-primary" id="createAccount" type="submit" value="Create Account"/>
 						</fieldset>
 					</form>
 
