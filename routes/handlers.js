@@ -82,8 +82,8 @@ function postSignup(req, res, next) {
   }).then(null,
     function onError(err) {
       if (err instanceof Error) {
-        appLogger.error('On signup: ' + err.toString(), { err: err.stack });
-        throw err;
+        appLogger.error('During sign up: ' + err.toString(), { err: err.stack });
+        next(err);
       } else {
         for (var key in err) {
           if (err[key] == null) {
@@ -102,7 +102,7 @@ function postSignup(req, res, next) {
 function getSignupCampus(req, res) {
   //TODO Code a real signup page.
   res.render('signupCampus', {
-    tipMessages : require('../lib/forms/signupCampusFormMessages')
+    tipMessages : require('../lib/forms/signupCampusFormMessages'),
     info : req.flash("info")
   });
 }
@@ -126,9 +126,16 @@ function postLogin(req, res) {
 }
 
 function getLoginCampus(req, res) {
+  var alert ={}
+    , error = req.flash('error')
+
+  if("undefined" != typeof error){
+    alert.error = error
+  }
+  
   res.render('loginCampus', {
       formSignup : false,
-      alert: req.flash()
+      alert: alert
     });
 }
 
