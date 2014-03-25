@@ -17,10 +17,11 @@ var baseUserSchema = new Schema({
   { collection: 'users', discriminatorKey: '_type' });
 
 var registeredUserSchema = baseUserSchema.extend({
-  username: { type: String, unique: true, sparse: true, required: true, lowercase: true },
+  username: { type: String, unique: true, sparse: true, required: false, lowercase: true },
   password: { type: String, required: false },
-  firstname: { type: String, required: true},
-  lastname: { type: String, required: true},
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
+  regComplete: {type:Boolean, required:true, default: false },
   email: { type: String, required: false, sparse: true, unique: true }, // Exactly only one email per account
   slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
   ldap:{

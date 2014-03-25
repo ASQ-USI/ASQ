@@ -1,5 +1,6 @@
 var passport       = require('passport')
-  , authentication = require('../lib/authentication');
+  , authentication = require('../lib/authentication')
+  , utils          = require('../lib/utils/routes');
 
 var authorizeSession = authentication.authorizeSession;
 
@@ -26,6 +27,34 @@ function isNotAuthenticated(req, res, next) {
   !req.isAuthenticated() ? next(null) : next(new Error('Already authenticated'));
 }
 
+/*  Most of ASQ Features need the user to have completed registration
+ *  in order to have a valid ASQ username.
+ */
+function isRegistrationComplete(req, res, next) {
+  if (!req.user) {
+    next(new Error('There is no authenticated user to check'));
+  } else if (req.user.regComplete != true) {
+    req.flash('username', req.user.ldap.username)
+    req.session.redirect_to = req.originalUrl;
+    res.redirect('/complete-registration')
+  } else {
+    next(null);
+  }
+}
+
+/*  Most of ASQ Features need the user to have completed registration
+ *  in order to have a valid ASQ username.
+ */
+function isNotRegistrationComplete(req, res, next) {
+  if (!req.user) {
+    next(new Error('There is no authenticated user to check'));
+  } else if (req.user.regComplete == true) {
+    res.redirect(utils.redirectToOrGoHome(req))
+  } else {
+    next(null);
+  }
+}
+
 /*  For a route with the user parameter, check if the request comes from the
  *  authenticated user whose name matches the user parameter.
  */
@@ -45,25 +74,10 @@ var localAuthenticate = passport.authenticate('local', {
   failureFlash    : true
 });
 
-function ldapAuthenticate(req, res, next) {
-  passport.authenticate('ldapauth', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) {
-      if(info.message == 'User has not registered') {
-         req.flash('info', 'You need to register an ASQ username')
-         res.redirect('/signup-campus/')
-         return;
-      }
-      req.flash('error', info)
-      return res.redirect('/login-campus/');
-    }
-    //everything is alright log the user in
-    req.login(user, function onLoggedIn(err) {
-      if (err) { return next(err); }
-      return next();
-    });
-  })(req, res, next);
-};
+var ldapAuthenticate = passport.authenticate('ldapauth', {
+  failureRedirect : '/login-campus/',
+  failureFlash    : true
+});
 
 function setLiveSession(req, res, next, liveId) {
   var Session = db.model('Session', schemas.sessionSchema);
@@ -85,7 +99,15 @@ module.exports = {
   forceSSL           : forceSSL,
   isAuthenticated    : isAuthenticated,
   isNotAuthenticated : isNotAuthenticated,
-  isRouteOwner       : [ isAuthenticated, isRouteOwner ],
+  isRouteOwner       : [ 
+    isAuthenticated, 
+    isRegistrationComplete,
+    isRouteOwner 
+  ],
+  isNotRegistrationComplete : [ 
+    isAuthenticated, 
+    isNotRegistrationComplete,
+  ],
   ldapAuthenticate   : ldapAuthenticate,
   localAuthenticate  : localAuthenticate,
   setLiveSession     : setLiveSession,

@@ -1,4 +1,4 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"RguaJg":[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"USjOfz":[function(require,module,exports){
 module.exports=require('USjOfz');
 },{}],"USjOfz":[function(require,module,exports){
 'use strict';
@@ -40,8 +40,8 @@ module.exports={
 
 
 },{"socket.io-browserify":9}],"clientSocket":[function(require,module,exports){
-module.exports=require('RguaJg');
-},{}],"NqwWG2":[function(require,module,exports){
+module.exports=require('USjOfz');
+},{}],"0hbaOZ":[function(require,module,exports){
 /*
 * Require this in your views to setup the dom bindings by calling
 * <pre>dom.bindingsFor(viewName)</pre>. The function <pre>bindingsFor</pre> will search for
@@ -57,10 +57,10 @@ var $ = require("jQuery")
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
 
 var binders = {
+  'completeRegistration' :completeRegistrationDOMBinder,
   'menu'   : menuDOMBinder,
   'user'   : userDOMBinder,
   'signup' : signupDOMBinder,
-  'signupCampus' : signupCampusDOMBinder,
   'presentations'    : psesentationsDOMBinder,
   'presenterControl' : presenterControlDOMBinder,
   'userLive' : userLiveDOMBinder
@@ -78,7 +78,12 @@ var dom = module.exports={
   bindingsFor : bindingsFor
 }  
 
-//All uses of ASQ[property] supppose that ASQ is global
+//All uses of ASQ[property] assume that ASQ is global
+
+// completeRegistration.dust
+function completeRegistrationDOMBinder(){
+  form.setup('completeRegistration');
+}
 
 function menuDOMBinder(){
   $(function(){
@@ -100,10 +105,6 @@ function signupDOMBinder(){
   });
 }
 
-// signupCampus.dust
-function signupCampusDOMBinder(){
-  form.setup('signupCampus');
-}
 
 // presentations.dust
 function psesentationsDOMBinder(){
@@ -363,8 +364,8 @@ var $        = require('jQuery')
 
 
 var binders = {
-  'signup' : signupFormBinder,
-  'signupCampus' : signupCampusFormBinder
+  'completeRegistration' : completeRegistrationFormBinder,
+  'signup' : signupFormBinder
 }
 
 function setup(viewName){
@@ -581,8 +582,8 @@ function signupFormBinder(){
 } // end of signupFormBinder
 
 
-//campus signup form
-function signupCampusFormBinder(){
+//complete registration form
+function completeRegistrationFormBinder(){
 
   $(function(){
     var inputSelectors = 'input[type=text]';
@@ -612,13 +613,8 @@ function signupCampusFormBinder(){
       }
     };
 
-    var isValid = {
-      'inputUsername'       : false
-    };
-
-    var timer = {
-      'inputUsername'       : null
-    };
+    var isValid = {'inputUsername' : false }
+      , timer = {'inputUsername' : null };
 
     //show tip for first input that has the autofocus attribute
     // and is currently in focus
@@ -628,6 +624,15 @@ function signupCampusFormBinder(){
         $(this).siblings('div.sidetip')
           .find('p.tip').addClass('active')
           .siblings().removeClass('active');
+      }
+    });
+
+    //validate pre-filled fields
+    $(inputSelectors).each(function(){
+      if ($(this).val()){
+        if (_.isFunction(validateFn[this.id])) {
+          validateFn[this.id]();
+        }
       }
     });
 
@@ -655,13 +660,13 @@ function signupCampusFormBinder(){
     $(document).keydown(function checkBeforeSubmit(evt) {
       if(evt.keyCode == 13 && !validationFunction()) {
         evt.preventDefault();
-        effects.bounce($('#createAccount'));
+        effects.bounce($('#completeRegistrationSbmt'));
         return false;
       }
     });
 
     // Prevent submission on click if inputs are not all valid.
-    $(document).on('click', '#createAccount', function checkBeforeSubmit (evt) {
+    $(document).on('click', '#completeRegistrationSbmt', function checkBeforeSubmit (evt) {
       if(! validationFunction()) {
         evt.preventDefault();
         effects.bounce($(this));
@@ -700,7 +705,7 @@ function signupCampusFormBinder(){
       return true;
     }
   });
-} // end of signupCampusFormBinder
+} // end of completeRegistrationBinder
 },{"../../shared/validation":14,"./effects":5,"lodash":8}],7:[function(require,module,exports){
 'use strict';
 var $ = require('jQuery');

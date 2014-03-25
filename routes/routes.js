@@ -7,18 +7,19 @@ module.exports.setUp = function setUp(app, middleware) {
   // Get the home page
   app.get('/', handlers.getHomePage);
 
+  //Get the complete registration page
+  app.get('/complete-registration/',
+    middleware.isNotRegistrationComplete, handlers.getCompleteRegistration);
+
+  //complete registration
+  app.post('/complete-registration',
+    middleware.isNotRegistrationComplete, handlers.postCompleteRegistration);
+
   //Get the register page
   app.get('/signup/', middleware.isNotAuthenticated, handlers.getSignup);
 
   //Register as a new user
   app.post('/signup', middleware.isNotAuthenticated, handlers.postSignup);
-
-    //Get the register page
-  app.get('/signup-campus/', middleware.isNotAuthenticated, handlers.getSignupCampus);
-
-  //Register as a new user
-  app.post('/signup-campus', middleware.isNotAuthenticated
-    , middleware.validateLdapUser, handlers.postSignupCampus);
 
   //Get the login page
   app.get('/login/', middleware.isNotAuthenticated, handlers.getLogin);
