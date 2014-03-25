@@ -13,10 +13,10 @@ var $ = require("jQuery")
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
 
 var binders = {
+  'completeRegistration' :completeRegistrationDOMBinder,
   'menu'   : menuDOMBinder,
   'user'   : userDOMBinder,
   'signup' : signupDOMBinder,
-  'signupCampus' : signupCampusDOMBinder,
   'presentations'    : psesentationsDOMBinder,
   'presenterControl' : presenterControlDOMBinder,
   'userLive' : userLiveDOMBinder
@@ -34,7 +34,12 @@ var dom = module.exports={
   bindingsFor : bindingsFor
 }  
 
-//All uses of ASQ[property] supppose that ASQ is global
+//All uses of ASQ[property] assume that ASQ is global
+
+// completeRegistration.dust
+function completeRegistrationDOMBinder(){
+  form.setup('completeRegistration');
+}
 
 function menuDOMBinder(){
   $(function(){
@@ -56,10 +61,6 @@ function signupDOMBinder(){
   });
 }
 
-// signupCampus.dust
-function signupCampusDOMBinder(){
-  form.setup('signupCampus');
-}
 
 // presentations.dust
 function psesentationsDOMBinder(){

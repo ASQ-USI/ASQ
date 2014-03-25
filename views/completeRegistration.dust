@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	{>htmlHead/}
+    <title>ASQ - Sign up for ASQ</title>
+
+  </head>
+  
+  <body>
+	  <!-- Tips and error for forms based on Twitter https://twitter.com/signup -->
+	  {>signupMenu/}
+
+	  <div class="container" id="mainContainer">
+
+		  <div class="page-canvas">
+		  	<div class="signup-wrapper">
+		  		
+					<h1>Complete Registration</h1>
+
+					{?alert}
+				      <div class="alert alert-{type}">
+				        {alert}
+				      </div>
+			      {/alert}
+
+			      {?error}
+				      <div class="alert alert-danger">
+				        {error}
+				      </div>
+			      {/error}
+
+			      {?info}
+				      <div class="alert alert-info">
+				        {info}
+				      </div>
+			      {/info}
+
+						<form id="complete-registration-form" action="/complete-registration" method="post">
+
+							<fieldset>
+
+								<div class="form-group" id="groupUsername">
+										<label class="control-label" for="inputUsername"> Select your ASQ username</label>
+							    	<div class="controls">
+							    		{?tipMessages.username}
+											{>sidetip:tipMessages.username field="username" activate=activate.username/}
+										{/tipMessages.username}
+							     		<input type="text" class="form-control" id="inputUsername" placeholder="rodney" name="signupusername" {?asqUsername} value="{asqUsername}"{:else}autofocus{/asqUsername}>
+							    	</div>
+							  	</div>
+								<input class="btn btn-primary" id="completeRegistrationSbmt" type="submit" value="Complete Registration"/>
+							</fieldset>
+						</form>
+		  	</div> <!-- end div#row -->
+		  </div> <!-- end div#signup-wrapper -->
+
+ 		</div> <!-- end div#page-canvas -->
+
+		<script>
+			/* dom bindings for the page */
+			require('dom').bindingsFor('completeRegistration');
+		</script>
+	</body>
+</html>

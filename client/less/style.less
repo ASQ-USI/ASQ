@@ -697,63 +697,67 @@ margin: 0 auto 10px;
 display: block;
 width: 585px;
 clear: both;
+
+  h1{
+    margin:0;
+    padding: 40px 0 20px 0;
+  }
+
+  > form{
+    padding: 10px 0;
+
+    fieldset {
+      margin-bottom: 15px;
+    }
+
+    .controls{
+      position:relative;
+    }
+
+    .form-control {
+      display:inline-block;
+      width: 382px;
+    }
+
+    div.sidetip {
+      margin-top: 8px;
+      position: absolute;
+      left: 402px;
+      width: 250px;
+
+      p {
+        font-size: 13px;
+        line-height: 16px;
+        color: gray;
+        display: none;
+
+        &.active {
+          display: block
+        }
+        &.checking {
+          background-repeat: no-repeat;
+          background-position: center left;
+          background-image: url(/img/spinner-small.gif);
+          padding-left: 18px;
+        }
+        &.checking {
+          background-repeat: no-repeat;
+          background-position: center left;
+          background-image: url(/img/spinner-small.gif);
+          padding-left: 18px;
+        }
+        &.error {
+            color: #c33
+        }
+        &.isaok {
+            color: #390
+        }
+      }
+    }
+
+  }
 }
 
-.signup-wrapper h1{
-  margin:0;
-  padding: 40px 0 20px 0;
-}
-
-#signup-form{
-  padding: 10px 0;
-}
-
-#signup-form fieldset {
-  margin-bottom: 15px;
-}
-
-#signup-form .controls{
-  position:relative;
-}
-
-#signup-form .form-control {
-  display:inline-block;
-  width: 382px;
-}
-
-#signup-form div.sidetip {
-margin-top: 8px;
-position: absolute;
-left: 402px;
-width: 250px;
-}
-
-#signup-form div.sidetip p {
-  font-size: 13px;
-  line-height: 16px;
-  color: gray;
-  display: none;
-}
-
-#signup-form div.sidetip p.active {
-    display: block
-}
-
-#signup-form div.sidetip p.checking {
-  background-repeat: no-repeat;
-  background-position: center left;
-  background-image: url(/img/spinner-small.gif);
-  padding-left: 18px;
-}
-
-#signup-form div.sidetip p.error {
-    color: #c33
-}
-
-#signup-form div.sidetip p.isaok {
-    color: #390
-}
-
-#createAccount {
+#createAccount, #completeRegistrationSbmt {
   position: relative;
 }

@@ -10,10 +10,7 @@
   <body data-from-signup="{formSignup}">
 
 	<div id="login-wrapper" class="container">
-
-
 		<div class="login-box">
-
 			<img src="/img/logo-big.png" alt="ASQ logo"/>
 			{?message}
 				{^formSignup}
@@ -38,141 +35,20 @@
 					<div class="alert alert-danger">{alert.error}</div>
 				{/alert.error}
 			{/alert}
-					
-					<form class="form-signin" action="/login" method="post">
-						<!-- <h2 class="form-signin-heading">Please sign in</h2> -->
-						<input type="text" name="username" class="form-control" placeholder="username or email" autofocus>
-						<input type="password" name="password" class="form-control" placeholder="Password">
-						<label class="checkbox">
-							<input type="checkbox" value="remember-me"> Remember me
-						</label>
-						<input type="submit" class="btn btn-lg btn-primary btn-block" value="Sign in">
-					</form>
-<!-- 
-					<form name="login" class="form-horizontal" action="/sign_in" method="post">
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon">Username</span>
-								<input class="span2" id="prependedInput" type="text" name="username" placeholder="" autofocus="autofocus"/>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon"> Password </span>
-								<input type="password" name="password" class="span2" id="prependedInput" type="password" placeholder=""/>
-
-							</div>
-						</div>
-
-						<button type="submit" class="btn btn-primary">Log in</button>
-						<button type="button" class="btn" data-toggle="modal" data-target="#signup-modal">signup</button>
-					</form> -->
-						<div class="signup-field">
-
-							<a href="/login-campus" style="color:#f0ad4e;" data-toggle="modal">Sign in with Campus Login</a> |
-
-							<a href="/#signup-modal" data-toggle="modal">Sign up for ASQ</a>
-						</div>
-
-				</div>
-
-
-				<div class="signup">
-
-				</div>
-
-			</div>
-
-			<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="signup-modal-label" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-								×
-							</button>
-							<h3 id="signup-modal-label">Register on ASQ</h3>
-						</div>
-						<div class="modal-body">
-							{?message}
-								<div class="alert alert-block">
-									<h4>{message}</h4>
-								</div>	
-								
-								<br/>
-							{/message}					
-							
-							<form id="signup" class="form-horizontal" action="/signup" method="post">
-							  	<div class="form-group" id="groupFirstname">
-									<label class="control-label" for="inputFirstname" >Firstname</label>
-							    	<div class="controls">
-							     		<input type="text" class="form-control" id="inputFirstname" placeholder="MyFirstname" name="signupfirstname" >
-							     		<span class="help-inline" id="checkfirst"> </span>
-							    	</div>
-							  	</div>
-
-								<div class="form-group" id="groupLastname">
-									<label class="control-label" for="inputLastname" >Lastname</label>
-							    	<div class="controls">
-							     		<input type="text" class="form-control" id="inputLastname" placeholder="MyLastname" name="signuplastname" >
-							     		<span class="help-inline" id="checklast"> </span>
-							    	</div>
-							  	</div>
-
-								<div class="form-group" id="groupEmail">
-									<label class="control-label" for="inputEmail">Email</label>
-									<div class="controls">
-										<input type="email" class="form-control" id="inputEmail" placeholder="my.name@usi.ch" name="signupemail">
-										<span class="help-inline" id="checkmail"> </span>
-							  		</div>
-								</div>
-
-								<div class="form-group" id="groupUsername">
-									<label class="control-label" for="inputUsername" >Username</label>
-							    	<div class="controls">
-							     		<input type="text" class="form-control" id="inputUsername" placeholder="MyUsername" name="signupusername" >
-							     		<span class="help-inline" id="checkuser"> </span>
-							    	</div>
-							  	</div>
-								
-								<div class="form-group" id="groupPassword1">
-									<label class="control-label" for="inputPassword">Password</label>
-									<div class="controls">
-										<input type="password" class="form-control" id="inputPassword" placeholder="Password" name="signuppassword">
-										<span id ="checkpwd" class="help-inline"></span>
-									</div>
-								</div>
-								
-								<div class="form-group" id="groupPassword2">
-									<label class="control-label" for="inputRepeatPassword">Repeat password</label>
-									<div class="controls">
-										<input type="password" class="form-control" id="inputRepeatPassword" placeholder="Password" name="signuppasswordconfirm">
-										<span id ="checkpwd2" class="help-inline"></span>
-									</div>
-									
-								</div>
-							</form>
-						</div>
-						<div class="modal-footer">
-							<button class="btn" data-dismiss="modal" aria-hidden="true">
-								Close
-							</button>
-							<button class="btn btn-primary disabled" id="createAccount" >
-								Create Account
-							</button>
-						</div>						
-					</div>
-				</div>
-
+			
 			<form class="form-signin" action="/login" method="post">
-				<input type="text" name="username" class="form-control" placeholder="Username" autofocus>
+				<!-- <h2 class="form-signin-heading">Please sign in</h2> -->
+				<input type="text" name="username" class="form-control" placeholder="username or email" autofocus>
 				<input type="password" name="password" class="form-control" placeholder="Password">
 				<label class="checkbox">
 					<input type="checkbox" value="remember-me"> Remember me
 				</label>
-				<button type="submit" class="btn btn-lg btn-primary btn-block">Log In</button>
+				<input type="submit" class="btn btn-lg btn-primary btn-block" value="Sign in">
 			</form>
+
 			<div class="signup-field">
-				<a href="/signup">signup</a>
+				<a href="/login-campus" style="color:#f0ad4e;" data-toggle="modal">Sign in with Campus Login</a> |
+				<a href="/signup">Sign up for ASQ</a>
 			</div>
 		</div>
 	</div>

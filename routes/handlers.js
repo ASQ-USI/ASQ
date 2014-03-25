@@ -2,15 +2,23 @@ require('when/monitor/console');
 var _                = require('lodash')
 , when               = require('when')
 // , lib                = require('../lib')
-, signupFormMessages = require('../lib/forms/signupFormMessages')
-, signupCampusFormMessages = require('../lib/forms/signupCampusFormMessages')
+, signupMessages = require('../lib/forms/signup/messages')
+, completeRegistrationMessages = require('../lib/forms/completeRegistration/messages')
 , validation         = require('../shared/validation')
 , appLogger          = require('../lib/logger').appLogger
-, User               = db.model('User');
+, User               = db.model('User')
+, utils              = require('../lib/utils/routes');
 
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
-    //redirect to user homepageZ
+    console.dir(req.user)
+    if(! req.user.regComplete){
+      if(req.user.ldap.username){
+        req.flash('username', req.user.ldap.username)
+      }
+      return res.redirect('/complete-registration');
+    }
+    //redirect to user homepage
     res.redirect('/' + req.user.username);
   } else{
     //render asq homepage
@@ -18,9 +26,103 @@ function getHomePage(req, res) {
   }
 }
 
+function getCompleteRegistration(req, res, next) {
+  var username = req.flash('username') || req.user.ldap.username;
+  console.log(username)
+  if("undefined" == typeof username || username.length ==0){
+    res.render('completeRegistration', {
+      tipMessages : completeRegistrationMessages,
+      info : req.flash("info"),
+      error : req.flash("error"),
+    });
+  }else{
+    User.count({ username: username, _type: 'User' }).exec()
+    .then(
+      function onCount(count) {
+        var activate = {};
+        var asqUsername = null;
+        if (count === 0 && username) {
+          asqUsername = username;
+          activate.username = 'ok';        
+        }
+        res.render('completeRegistration', {
+          tipMessages : completeRegistrationMessages,
+          info : req.flash("info"),
+          error : req.flash("error"),
+          asqUsername : asqUsername,
+          activate : activate
+        });
+    });
+  }
+ 
+}
+
+function postCompleteRegistration(req, res) {
+  var data ={
+    username : req.body.signupusername
+  }
+
+  var errs = validation.getErrorsSignupCampus(data);
+
+  errUsername = (!!errs.username) 
+    ? when.resolve(true) 
+    : User.count({ username: data.username, _type: 'User' }).exec();
+
+  errUsername.then(
+    function onDbCheck(err) {
+      if (!errs.username) {
+        errs.username = err === 0 ? null : 'taken';
+      }
+      for (var err in errs) {
+        if (!! errs[err]) {
+          return when.reject(errs);
+        }
+      }
+
+      //register new user
+      req.user.username = data.username;
+      req.user.regComplete = true;
+
+      var deferred = when.defer();
+      req.user.save(function onSaveUser(err, savedUser) {
+        if (err) {
+          deferred.reject(err)
+        } else {
+          deferred.resolve(savedUser);
+        }
+      });
+
+      return deferred.promise;
+  }).then(
+    function onNewUser(user) {
+      appLogger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.id);
+      res.redirect(utils.redirectToOrGoHome(req));
+
+  }).then(null,
+    function onError(err) {
+      if (err instanceof Error) {
+        appLogger.error('On complete registration: ' + err.toString(), { err: err.stack });
+        next(err);
+      } else {
+
+        var keys = Object.keys(err)
+        for (var i=0; i<keys.length; i++) {
+          if (err[keys[i]] == null) {
+            err[keys[i]] = 'ok';
+          }
+        }
+        res.render('completeRegistration', {
+          tipMessages : completeRegistrationMessages,
+          activate : err,
+          data : data
+        });
+      }
+    });
+}
+
 function getSignup(req, res) {
   res.render('signup', {
-    tipMessages : require('../lib/forms/signupFormMessages')
+    tipMessages : signupMessages
   });
 }
 
@@ -58,7 +160,11 @@ function postSignup(req, res) {
           return when.reject(errs);
         }
       }
+
       var newUser = new User(data);
+      //users from main form give all the information we need
+      newUser.regComplete = true;
+
       var deferred = when.defer();
       newUser.save(function(err, savedUser) {
         if (err) {
@@ -92,108 +198,10 @@ function postSignup(req, res) {
           }
         }
         res.render('signup', {
-        tipMessages : signupFormMessages,
+        tipMessages : signupMessages,
         activate : err,
         data : data
       });
-      }
-    });
-}
-
-function getSignupCampus(req, res, next) {
-  var username = req.flash('username');
-  User.count({ username: username, _type: 'User' }).exec()
-  .then(
-    function onCount(count) {
-      var activate = {};
-      var asqUsername = null;
-      if (count === 0) {
-        asqUsername = username;
-        activate.username = 'ok';        
-      }
-      res.render('signupCampus', {
-        tipMessages : require('../lib/forms/signupCampusFormMessages'),
-        info : req.flash("info"),
-        error : req.flash("error"),
-        campusUsername : username,
-        asqUsername : asqUsername,
-        activate : activate
-      });
-  });
-}
-
-function postSignupCampus(req, res) {
-  var data ={
-    username : req.body.signupusername
-  }
-
-  var errs = validation.getErrorsSignupCampus(data);
-
-  errUsername = (!!errs.username) 
-    ? when.resolve(true) 
-    : User.count({ username: data.username, _type: 'User' }).exec();
-
-  errUsername.then(
-    function onDbCheck(err) {
-      if (!errs.username) {
-        errs.username = err === 0 ? null : 'taken';
-      }
-      for (var err in errs) {
-        if (!! errs[err]) {
-          return when.reject(errs);
-        }
-      }
-
-      //register new user
-      var newUser = new User();
-      newUser.username = data.username;
-      newUser.ldap.id = req.ldapUser.uidNumber;
-      newUser.ldap.username = req.ldapUser.uid;
-      newUser.screenName = req.ldapUser.gecos;
-      var name = req.ldapUser.gecos.split(' ');
-      newUser.firstname = name[0] || data.username;
-      newUser.lastname = name[1] || data.username;
-
-      var deferred = when.defer();
-      newUser.save(function onSaveUser(err, savedUser) {
-        if (err) {
-          deferred.reject(err)
-        } else {
-          deferred.resolve(savedUser);
-        }
-      });
-
-      return deferred.promise;
-  }).then(
-    function onNewUser(user) {
-      appLogger.info('New ldap user registered: %s (%s)', user.username, user.ldap.id);
-      req.login(user, function onLoggedIn(err) {
-        if (err) {
-          var error = new Error('User created but login faild with: ' +
-            err.toString());
-          when.reject(error);
-        }
-        res.redirect('/' + user.username +
-          '/?alert=Registration%20Succesful&type=success');
-      });
-  }).then(null,
-    function onError(err) {
-      if (err instanceof Error) {
-        appLogger.error('On campus signup: ' + err.toString(), { err: err.stack });
-        next(err);
-      } else {
-
-        var keys = Object.keys(err)
-        for (var i=0; i<keys.length; i++) {
-          if (err[keys[i]] == null) {
-            err[keys[i]] = 'ok';
-          }
-        }
-        res.render('signupCampus', {
-          tipMessages : signupCampusFormMessages,
-          activate : err,
-          data : data
-        });
       }
     });
 }
@@ -207,10 +215,7 @@ function getLogin(req, res) {
 
 function postLogin(req, res) {
   console.log('I made it')
-  var redirect_to = req.session.redirect_to 
-    ? req.session.redirect_to
-    : '/' + req.user.username + '/' ;
-  res.redirect(redirect_to);
+  res.redirect(utils.redirectToOrGoHome(req));
 }
 
 function getLoginCampus(req, res) {
@@ -228,10 +233,7 @@ function getLoginCampus(req, res) {
 }
 
 function postLoginCampus(req, res) {
-  var redirect_to = req.session.redirect_to 
-    ? req.session.redirect_to
-    : '/' + req.user.username + '/' ;
-  res.redirect(redirect_to);
+  res.redirect(utils.redirectToOrGoHome(req));
 }
 
 function logout(req, res) {
@@ -263,7 +265,7 @@ function emailAvailable(req, res, next) {
   var promise = null;
   if (!! err) {
     response.err = err;
-    response.msg = signupFormMessages.email.error[err];
+    response.msg = signupMessages.email.error[err];
     res.json(response); // Invalid email
     return;
   }
@@ -272,11 +274,11 @@ function emailAvailable(req, res, next) {
     function onEmail(count) {
       if (count !== 0) {
         response.err = 'taken';
-        response.msg = signupFormMessages.email.error.taken;
+        response.msg = signupMessages.email.error.taken;
         res.json(response); // Taken email
         return null;
       }
-      response.msg = signupFormMessages.email.isaok.ok;
+      response.msg = signupMessages.email.isaok.ok;
       username = email.match(/^([^@]*)@/)[1];
       var userErr = validation.getErrorUsername(username);
       if (!! err) {
@@ -315,7 +317,7 @@ function usernameAvailable(req, res) {
   console.log('%s -> %s', username, err);
   if (!! err) {
     response.err = err;
-    response.msg = signupFormMessages.username.error[err];
+    response.msg = signupMessages.username.error[err];
     res.json(response); // Blank or Invalid username (or taken for reserved routes)
     return;
   }
@@ -324,10 +326,10 @@ function usernameAvailable(req, res) {
     function onUser(count) {
       if (count !== 0) {
         response.err = 'taken';
-        response.msg = signupFormMessages.username.taken;
+        response.msg = signupMessages.username.taken;
         res.json(response); // Taken username
       } else {
-        response.msg = signupFormMessages.username.isaok.ok;
+        response.msg = signupMessages.username.isaok.ok;
         res.json(response);
       }
   }).then(null,
@@ -341,10 +343,10 @@ function usernameAvailable(req, res) {
 
 module.exports = {
   getHomePage       : getHomePage,
+  getCompleteRegistration  : getCompleteRegistration,
+  postCompleteRegistration : postCompleteRegistration,
   getSignup         : getSignup,
   postSignup        : postSignup,
-  getSignupCampus   : getSignupCampus,
-  postSignupCampus  : postSignupCampus,
   getLogin          : getLogin,
   postLogin         : postLogin,
   getLoginCampus  : getLoginCampus,

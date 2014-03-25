@@ -13,8 +13,8 @@ var $        = require('jQuery')
 
 
 var binders = {
-  'signup' : signupFormBinder,
-  'signupCampus' : signupCampusFormBinder
+  'completeRegistration' : completeRegistrationFormBinder,
+  'signup' : signupFormBinder
 }
 
 function setup(viewName){
@@ -231,8 +231,8 @@ function signupFormBinder(){
 } // end of signupFormBinder
 
 
-//campus signup form
-function signupCampusFormBinder(){
+//complete registration form
+function completeRegistrationFormBinder(){
 
   $(function(){
     var inputSelectors = 'input[type=text]';
@@ -262,13 +262,8 @@ function signupCampusFormBinder(){
       }
     };
 
-    var isValid = {
-      'inputUsername'       : false
-    };
-
-    var timer = {
-      'inputUsername'       : null
-    };
+    var isValid = {'inputUsername' : false }
+      , timer = {'inputUsername' : null };
 
     //show tip for first input that has the autofocus attribute
     // and is currently in focus
@@ -278,6 +273,15 @@ function signupCampusFormBinder(){
         $(this).siblings('div.sidetip')
           .find('p.tip').addClass('active')
           .siblings().removeClass('active');
+      }
+    });
+
+    //validate pre-filled fields
+    $(inputSelectors).each(function(){
+      if ($(this).val()){
+        if (_.isFunction(validateFn[this.id])) {
+          validateFn[this.id]();
+        }
       }
     });
 
@@ -305,13 +309,13 @@ function signupCampusFormBinder(){
     $(document).keydown(function checkBeforeSubmit(evt) {
       if(evt.keyCode == 13 && !validationFunction()) {
         evt.preventDefault();
-        effects.bounce($('#createAccount'));
+        effects.bounce($('#completeRegistrationSbmt'));
         return false;
       }
     });
 
     // Prevent submission on click if inputs are not all valid.
-    $(document).on('click', '#createAccount', function checkBeforeSubmit (evt) {
+    $(document).on('click', '#completeRegistrationSbmt', function checkBeforeSubmit (evt) {
       if(! validationFunction()) {
         evt.preventDefault();
         effects.bounce($(this));
@@ -350,4 +354,4 @@ function signupCampusFormBinder(){
       return true;
     }
   });
-} // end of signupCampusFormBinder
+} // end of completeRegistrationBinder
