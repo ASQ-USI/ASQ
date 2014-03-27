@@ -25,8 +25,8 @@ var registeredUserSchema = baseUserSchema.extend({
   email: { type: String, required: false, sparse: true, unique: true }, // Exactly only one email per account
   slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
   ldap:{
-    id: { type: String , unique: true, sparse: true, required: false },
-    username: { type: String, unique: true, sparse: true, required: false }
+    dn: { type: String , unique: true, sparse: true, required: false },
+    sAMAccountName: { type: String, unique: true, sparse: true, required: false }
   }
 });
 
@@ -43,16 +43,47 @@ registeredUserSchema.methods.isValidPassword = function isValidPassword(candidat
 };
 
 registeredUserSchema.statics.isValidUser = function(username, password, done) {
-  var criteria = (username.indexOf('@') === -1) ? {username: username} : {email: username};
+  var errMsg = 'Incorrect username/email and password combination.'
+    , criteria = (username.indexOf('@') === -1) 
+      ? {username: username , password: { $exists: true}} 
+      : {email: username , password: { $exists: true}};
+
     this.findOne(criteria, function(err, user){
     if(err) {return done(err)};
-    if(!user) {return done(null, false, { message : 'Incorrect username or email.' })};
+    if(!user) {return done(null, false, { message : errMsg })};
    
     user.isValidPassword(password, function(err, isMatch) {
       if (err) { return done(err); }
-      if (!isMatch) { return done(null, false, { message: 'Invalid password' }); }
+      if (!isMatch) { return done(null, false, { message: errMsg }); }
       return done(null, user);
     });;
+  });
+};
+
+registeredUserSchema.statics.createOrAuthenticateLdapUser = function(ldapUser, done) {
+  this.findOne({"ldap.dn" : ldapUser.dn}, function(err, dbuser){
+    if (err) { return done(err); }
+
+    //user was found just log him in
+    if (dbuser) {
+      return done(null, dbuser); 
+    } else {
+      // will create user but registration is 
+      // incomplete without an ASQ username
+      var User = db.model('User', schemas.registeredUserSchema)
+        , newUser = new User();
+
+      newUser.ldap.dn = ldapUser.dn;
+      newUser.ldap.sAMAccountName = ldapUser.sAMAccountName;
+      newUser.screenName = ldapUser.cn;
+      newUser.firstname = ldapUser.givenName || newUser.ldap.username;
+      newUser.lastname = ldapUser.sn || newUser.ldap.username;
+
+      newUser.save(function(err, savedUser){
+         if (err) { return done(err, null); }
+         return done(null, savedUser); 
+      })
+    }
   });
 };
 

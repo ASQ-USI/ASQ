@@ -11,11 +11,7 @@ var _                = require('lodash')
 
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
-    console.dir(req.user)
     if(! req.user.regComplete){
-      if(req.user.ldap.username){
-        req.flash('username', req.user.ldap.username)
-      }
       return res.redirect('/complete-registration');
     }
     //redirect to user homepage
@@ -27,7 +23,7 @@ function getHomePage(req, res) {
 }
 
 function getCompleteRegistration(req, res, next) {
-  var username = req.flash('username') || req.user.ldap.username;
+  var username = req.user.ldap.sAMAccountName ||  req.flash('username') ;
   console.log(username)
   if("undefined" == typeof username || username.length ==0){
     res.render('completeRegistration', {

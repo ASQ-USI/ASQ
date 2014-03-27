@@ -34,7 +34,6 @@ function isRegistrationComplete(req, res, next) {
   if (!req.user) {
     next(new Error('There is no authenticated user to check'));
   } else if (req.user.regComplete != true) {
-    req.flash('username', req.user.ldap.username)
     req.session.redirect_to = req.originalUrl;
     res.redirect('/complete-registration')
   } else {
@@ -69,12 +68,22 @@ function isRouteOwner(req, res, next) {
   }
 }
 
-var localAuthenticate = passport.authenticate('local', {
+// var localAuthenticate = passport.authenticate('local', {
+//   failureRedirect : '/login/',
+//   failureFlash    : true
+// });
+
+var localAuthenticate = passport.authenticate('local-mongo', {
   failureRedirect : '/login/',
   failureFlash    : true
 });
 
-var ldapAuthenticate = passport.authenticate('ldapauth', {
+// var ldapAuthenticate = passport.authenticate('ldapauth', {
+//   failureRedirect : '/login-campus/',
+//   failureFlash    : true
+// });
+
+var ldapAuthenticate = passport.authenticate('local-ldap', {
   failureRedirect : '/login-campus/',
   failureFlash    : true
 });
