@@ -41,7 +41,7 @@
 					
 					<form class="form-signin" action="/login-campus" method="post">
 						<input type="text" name="username" class="form-control" placeholder="username (Campus)" autofocus>
-						<input type="password" name="password" class="form-control" placeholder="Password (netID)">
+						<input type="password" name="password" class="form-control" placeholder="Password (Campus)">
 						<label class="checkbox">
 							<input type="checkbox" value="remember-me"> Remember me
 						</label>
