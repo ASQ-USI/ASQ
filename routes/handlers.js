@@ -90,7 +90,7 @@ function postCompleteRegistration(req, res) {
       return deferred.promise;
   }).then(
     function onNewUser(user) {
-      appLogger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.id);
+      appLogger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.sAMAccountName);
       res.redirect(utils.redirectToOrGoHome(req));
 
   }).then(null,

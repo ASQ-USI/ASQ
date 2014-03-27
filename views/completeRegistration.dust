@@ -8,7 +8,7 @@
   
   <body>
 	  <!-- Tips and error for forms based on Twitter https://twitter.com/signup -->
-	  {>signupMenu/}
+	  {>completeRegistrationMenu/}
 
 	  <div class="container" id="mainContainer">
 
