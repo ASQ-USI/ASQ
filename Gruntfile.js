@@ -144,7 +144,7 @@ module.exports = function(grunt) {
 
     //parallel tasks
     concurrent: {
-      compile: ['less', 'browserify:client', 'browserify:presenter', 'browserify:viewer'],
+      compile: ['less', 'browserify:vendor', 'browserify:client', 'browserify:presenter', 'browserify:viewer'],
       uglify: ['uglify'],
     },
 
