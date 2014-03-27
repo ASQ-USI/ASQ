@@ -1,6 +1,6 @@
 var _                = require('lodash')
 , when               = require('when')
-, lib                = require('../lib')
+// , lib                = require('../lib')
 , signupMessages = require('../lib/forms/signup/messages')
 , completeRegistrationMessages = require('../lib/forms/completeRegistration/messages')
 , validation         = require('../shared/validation')
@@ -116,7 +116,6 @@ function postCompleteRegistration(req, res) {
 }
 
 function getSignup(req, res) {
-  //TODO Code a real signup page.
   res.render('signup', {
     tipMessages : signupMessages
   });
@@ -132,7 +131,7 @@ function postSignup(req, res, next) {
   data.password       = req.body.signuppassword;
   data.passwordRepeat = req.body.signuppasswordconfirm;
 
-  var errs = validation.getErrorsSignUp(data);
+  var errs = validation.getErrorsSignup(data);
 
   errEmail = (!!errs.email) 
     ? true 
