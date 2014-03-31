@@ -5,7 +5,7 @@
 /** Connect back to the server with a websocket */
 var impress = require('impressViewer')
 , io = require('socket.io-browserify')
-, $ = window.jQuery || require('jQuery')
+, $ = require('jQuery')
 , assessment = require('asq-microformat').assessment;
 
 // Save current question id;

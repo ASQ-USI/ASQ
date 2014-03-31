@@ -6,4 +6,4 @@
 
 require('bootstrap');
 require('isotope');
-require('jqueryHammer')
+require('jqueryHammer');

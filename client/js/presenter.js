@@ -5,20 +5,20 @@
 
 'use strict'
 
-var impress = require('impressPresenter')
-, io = require('socket.io-browserify')
-, $ = window.jQuery || require('jQuery')
-, assessment = require('asq-microformat').assessment;
+var impress  = require('impressPresenter')
+, io         = require('socket.io-browserify')
+, $          = require('jquery')
+// , assessment = require('asq-microformat').assessment;
 
 $(function(){
-  var $body = $('body')
-    , host      =  $body.attr('asq-host')
-    , port      = parseInt($body.attr('asq-port'))
-    , sessionId = $body.attr('asq-session-id')
-    , mode      = $body.attr('asq-socket-mode')
-    , token     = $body.attr('asq-token');
+  var $body   = $('body')
+  , host      =  $body.attr('asq-host')
+  , port      = parseInt($body.attr('asq-port'))
+  , sessionId = $body.attr('asq-session-id')
+  , mode      = $body.attr('asq-socket-mode')
+  , token     = $body.attr('asq-token');
 
-  assessment.initCodeEditors();
+  //assessment.initCodeEditors();
 
   impress().init();
   connect(host, port, sessionId, mode, token);
@@ -27,7 +27,8 @@ $(function(){
 
 /** Connect back to the server with a websocket */
 
-var connect = function(host, port, session, mode, token) {
+function connect(host, port, session, mode, token) {
+  console.log('Connecting to socket server');
   var started = false;
   var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session)
   //+ '&token=' + token ); TODO use token for socket auth.
