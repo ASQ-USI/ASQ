@@ -361,6 +361,7 @@ function drawChart() {
     console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+      statsTypes.correctness.chart[questionId]  
     }
     if($(this).find(".distinctOptions").length){
       statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
