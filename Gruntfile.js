@@ -30,17 +30,17 @@ module.exports = function(grunt) {
             jqueryScrollTo:{
               path: 'client/js/vendor/jquery.scrollTo.js',
               exports: null,
-              depends: {jQuery:'jQuery', $:'$'}
+              depends: {jquery:'jQuery', $:'$'}
             },
             isotope:{
               path: 'client/js/vendor/jquery.isotope.js',
               exports: null,
-              depends: {jQuery:'jQuery', $:'$'}
+              depends: {jquery:'jQuery', $:'$'}
             },
             jqueryHammer:{
               path: 'client/js/vendor/jquery.hammer.js',
               exports: 'Hammer',
-              depends: {jQuery:'jQuery', $:'$'}
+              depends: {jquery:'jQuery', $:'$'}
             }    
           }
        }

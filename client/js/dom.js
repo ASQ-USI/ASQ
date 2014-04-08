@@ -6,9 +6,7 @@
 * a good place to setup the form bindings as well.
 */
 'use strict';
-
-var $ = require('jquery');
-  , request = require('superagent')
+var request = require('superagent')
   , form = require('./form.js')
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
 
@@ -90,6 +88,7 @@ function psesentationsDOMBinder(){
 
     //isotope
     var $container = $('.accordion-inner');
+    console.log($container.isotope);
     
     $container.isotope({
       itemSelector: '.thumb-container',
