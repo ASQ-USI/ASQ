@@ -43,7 +43,22 @@ module.exports = function(grunt) {
               depends: {jquery:'jQuery', $:'$'}
             }    
           }
-       }
+        }
+      },
+      vendorPresentation:{
+        src: ['client/js/vendor/vendorPresentation-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
+        dest: 'public/js/asq-vendor-presentation.js',
+        options:{
+          debug: true,
+          alias: 'jQuery:$',
+          shim:{
+            bootstrap:{
+              path: 'client/js/vendor/bootstrap.js',
+              exports: null,  
+              depends: {jQuery:'jQuery', $:'$'}
+            }
+          }
+        }
       },
       client:{
         src: ['client/js/dom.js'],
@@ -111,6 +126,7 @@ module.exports = function(grunt) {
       build: {
         files: {
           'public/js/vendor.min.js' : ['public/js/vendor.js'],
+          'public/js/asq-vendor-presentation.min.js' : ['public/js/asq-vendor-presentation.js'],
           'public/js/asq-presenter.min.js' : ['public/js/asq-presenter.js'],
           'public/js/asq-viewer.min.js' : ['public/js/asq-viewer.js']
         }
@@ -145,7 +161,14 @@ module.exports = function(grunt) {
 
     //parallel tasks
     concurrent: {
-      compile: ['less', 'browserify:vendor', 'browserify:client', 'browserify:presenter', 'browserify:viewer'],
+      compile: [
+        'less', 
+        'browserify:vendor', 
+        'browserify:vendorPresentation', 
+        'browserify:client', 
+        'browserify:presenter', 
+        'browserify:viewer'
+      ],
       uglify: ['uglify'],
     },
 
