@@ -19,27 +19,26 @@ module.exports = function(grunt) {
         dest: 'public/js/vendor.js',
         options:{
           debug: true,
-          alias: 'client/js/vendor/jquery-1.10.2.js:jQuery',
           shim:{
             bootstrap:{
               path: 'client/js/vendor/bootstrap.js',
               exports: null,
-              depends: {jQuery:'jQuery'}
+              depends: {jquery:'jQuery'}
             },
             jQueryScrollTo:{
               path: 'client/js/vendor/jquery.scrollTo.js',
               exports: null,
-              depends: {jQuery:'jQuery'}
+              depends: {jquery:'jQuery'}
             },
             isotope:{
               path: 'client/js/vendor/jquery.isotope.js',
               exports: null,
-              depends: {jQuery:'jQuery'}
+              depends: {jquery:'jQuery'}
             },
             jqueryHammer:{
               path: 'client/js/vendor/jquery.hammer.js',
               exports: 'Hammer',
-              depends: {jQuery:'jQuery'}
+              depends: {jquery:'jQuery'}
             }    
           }
        }
@@ -50,7 +49,7 @@ module.exports = function(grunt) {
         options:{
           debug: true,
           alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom',
-          external: ["jQuery"]
+          external: ["jquery"]
        }
       },
       presenter: {
@@ -61,7 +60,7 @@ module.exports = function(grunt) {
           shim: {
             impressPresenter: {path: 'client/js/impress-presenter.js', exports: 'impress'}
           },
-          external: ["jQuery"]
+          external: ["jquery"]
         }
       },
       viewer: {
@@ -72,7 +71,7 @@ module.exports = function(grunt) {
           shim: {
             impressViewer: {path: 'client/js/impress-viewer.js', exports: 'impress'}
           },
-          external: ["jQuery"]
+          external: ["jquery"]
         }
       }
     },

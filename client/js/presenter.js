@@ -7,7 +7,7 @@
 
 var impress = require('impressPresenter')
 , io = require('socket.io-browserify')
-, $ = window.jQuery || require('jQuery')
+, $ = require('jquery')
 , assessment = require('asq-microformat').assessment;
 
 $(function(){
