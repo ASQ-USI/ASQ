@@ -1,6 +1,7 @@
 require('when/monitor/console');
 var AdmZip          = require('adm-zip')
   , cheerio         = require('cheerio')
+  , dust            = require('dustjs-linkedin')
   , moment          = require('moment')
   , path            = require('path')
   , pfs             = require('promised-io/fs')
@@ -235,10 +236,10 @@ function uploadPresentation(req, res, next) {
         slideShowQuestions = dbQuestions;
 
         return when.all([
-          (new MarkupGenerator()).render(slideShowFileHtml,
+          (new MarkupGenerator(dust)).render(slideShowFileHtml,
                                          parsedQuestions,
                                         {userType:'presenter'})
-          , (new MarkupGenerator()).render(slideShowFileHtml,
+          , (new MarkupGenerator(dust)).render(slideShowFileHtml,
                                          parsedQuestions,
                                         {userType:'viewer'})
           ]);
