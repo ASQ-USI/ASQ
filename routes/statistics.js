@@ -1,5 +1,6 @@
 /** Statistics */
 var schemas = require("../models");
+var statsHandlers = require('../lib/stats')
 var Question = db.model('Question', schemas.questionSchema);
 var Session = db.model('Session', schemas.sessionSchema);
 var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
@@ -97,8 +98,9 @@ exports.getStats = function(req, res) {
   console.log(req.query);
 
   // Correctness with confidence levels
-  if (req.query.metric == 'correctness') {
-    processCorrectness(req, res);
+  if (req.query.metric == 'correctness'
+    && req.query.session && req.query.question) {
+    statsHandlers.correctness(req, res);
     return;
   }
 
@@ -249,40 +251,6 @@ function calcRightVsWrong(answers) {
 
   //returns object
   return result;
-}
-
-function processCorrectness(req, res) {
-  var dataset = [
-    { 'key' : 'right',
-      '5star': 0, '4star': 0, '3star': 0, '2star': 0, '1star': 0 },
-    { 'key' : 'wrong',
-      '5star': 0, '4star': 0, '3star': 0, '2star': 0, '1star': 0 }
-  ];
-
-  var o = {
-    query : {
-      question: ObjectId(req.query.question),
-      session: ObjectId(req.query.session)
-    },
-    map : function mapFn() { 
-      emit({ correctness: this.correctness, confidence: this.confidence }, 1);
-    },
-    reduce : function reducFn(k, vals) { return vals.length; },
-    out : { inline: 1 }
-  }
-
-  Answer.mapReduce(o)
-  .then(function onMapRed(data) {
-      for (var i=0; i<data.length; i++) {
-        var d = data[i];
-        dataset[+(d._id.correctness === 0)][d._id.confidence + 'star'] += d.value;
-      }
-      res.json(200, dataset);
-  }, function onError(err) {
-    console.log('Something went wrong: ' + err);
-    console.dir(err.stack);
-    res.json(500, { err: 'Something went wrong.' });
-  });
 }
 
 //Given an array of answers and the solution to the question, returns array of distinct options

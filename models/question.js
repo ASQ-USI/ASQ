@@ -2,9 +2,10 @@
     @description the Questions Model
 */
 
-var mongoose  = require('mongoose')
-, Schema      = mongoose.Schema
-, when        = require('when');
+var mongoose = require('mongoose')
+, Schema     = mongoose.Schema
+, when       = require('when')
+, stats      = require('../lib/stats');
 
 // allowed form button types
 var formButtonTypes = 'checkbox radio'.split(' ');
@@ -18,7 +19,12 @@ var questionSchema = new Schema({
   questionType: {type:String, enum:questionTypes},
   formButtonType: {type:String, enum:formButtonTypes},
   correctAnswer: {type:String},
-  questionOptions: [questionOptionSchema]
+  questionOptions: [questionOptionSchema],
+  statTypes: { 
+    type: [String],
+    default: [],
+    validator: [statTypesValidator, 'Invalid stat type {PATH}.']
+  }
 });
 
 var questionOptionSchema = new Schema({
@@ -58,6 +64,14 @@ questionSchema.methods.getSolution = function(){
 
 }
 
+questionSchema.methods.getStats = function getStats(sessionId) {
+  var o = {};
+  for(var i = this.statTypes.length; i--;) {
+    o[this.statTypes[i]] = stats[this.statTypes[i]](this._id, sessinId);
+  }
+  return keys.all(o);
+}
+
 mongoose.model("Question",questionSchema);
 mongoose.model("QuestionOption",questionOptionSchema);
 
@@ -86,6 +100,16 @@ var create =  function(docs){
   });
 
   return deferred.promise;
+}
+
+// Remove all stat types we don't know about
+function statTypesValidator(types) {
+  for (var i = types.length; i--;) {
+    if (! stats.hasOwnProperty(types[i])) {
+      types.splice(i, 1);
+    }
+  }
+  return true;
 }
 
 module.exports =  {

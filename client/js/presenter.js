@@ -8,9 +8,15 @@
 var impress  = require('impressPresenter')
 , io         = require('socket.io-browserify')
 , $          = require('jquery')
+, manager    = require('asq-visualization').Manager();
 // , assessment = require('asq-microformat').assessment;
 
 $(function(){
+  console.log('jQuery')
+  console.log($)
+  console.log($.fn.jquery)
+  console.log(jQuery)
+  console.log(jQuery.fn.jquery)
   var $body   = $('body')
   , host      =  $body.attr('asq-host')
   , port      = parseInt($body.attr('asq-port'))
@@ -264,7 +270,7 @@ var showQuestion = function(question) {
 //      }
 //    };
 
-//    var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));
+//    var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));  // <- won't work cuz that id has been changed to something UNIQUE! (rvswChart-{statId})
 //    chart3.draw(rvswData, rvswOpt);
 
 //    if (question.questionType === "Multiple choice") {
@@ -361,7 +367,7 @@ function drawChart() {
     console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-      statsTypes.correctness.chart[questionId]  
+      //statsTypes.correctness.chart[questionId]  
     }
     if($(this).find(".distinctOptions").length){
       statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
@@ -372,29 +378,37 @@ function drawChart() {
   })
 }
 
+$(function() {
+  console.log($._data($(document)[0], 'events'));
+  console.log($(document)[0])
+  console.log($.fn.jquery);
+  $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+    console.log('tab info BS3');
+    console.log(this);
+    console.log(e);
 
-$('a[data-toggle="tab"]').on('shown', function(e) {
+    var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
+    var $question = $('.assessment[question-id='+questionId+']');
 
-  var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
-  var $question = $('.assessment[question-id='+questionId+']');
-
-  if($question.hasClass('multi-choice')){
-    for (var key in statsTypes) {
-      //if chart exists
-      if(statsTypes[key].chart[questionId]){
-        requestStats(questionId, statsTypes[key])
+    if($question.hasClass('multi-choice')){
+      for (var key in statsTypes) {
+        //if chart exists
+        if(statsTypes[key].chart[questionId]){
+          requestStats(questionId, statsTypes[key])
+        }
       }
     }
-  }
-  else if($question.hasClass('text-input')){
-    requestDistinct(questionId)
-  }
-  else if($question.hasClass('code-input')){
-    requestDistinctCode(questionId);
-  } 
-  
-});
-
+    else if($question.hasClass('text-input')){
+      requestDistinct(questionId)
+    }
+    else if($question.hasClass('code-input')){
+      requestDistinctCode(questionId);
+    } 
+    
+  });
+  console.log($(document)[0]);
+  console.log($._data($(document)[0], 'events'));
+})
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
     console.log(data);
