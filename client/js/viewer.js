@@ -5,7 +5,7 @@
 /** Connect back to the server with a websocket */
 var impress = require('impressViewer')
 , io = require('socket.io-browserify')
-, $ = require('jQuery')
+, $ = require('jquery')
 , assessment = require('asq-microformat').assessment;
 
 // Save current question id;
@@ -140,6 +140,52 @@ var connect = function(host, port, session, mode, token) {
     console.error('Unable to connect Socket.IO', reason);
   });;
 
+   // form submission events
+  $(document).on('submit', '.assessment form', function(event) {
+    event.preventDefault();
+    var $this = $(this);
+
+    var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
+    console.log("QuestionID= " + questionId);
+
+    $this.children().css('opacity', '0.5').end().find('input').attr('disabled', 'true').end().find('button:not(.changeanswer .btn)').attr('disabled', 'true').fadeOut(function() {
+      $this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
+      $this.find('.changeAnswer').fadeIn();
+    });
+
+    //get question id
+    var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
+
+    //aggregate answers
+    var answers = [];
+    $(this).find('input[type=checkbox], input[type=radio]:not(.asq-rating-input)').each(function() {
+      answers.push($(this).is(":checked"));
+    })
+
+    $(this).find('input[type=text]').each(function() {
+      answers.push($(this).val());
+    })
+
+    $(this).find('.asq-code-editor').each(function() {
+      console.log(ace.edit(this.id).getSession().getValue())
+      answers.push(ace.edit(this.id).getSession().getValue());
+    })
+
+    // Get confidence
+    var confidence = $('input.asq-rating-input:checked').val() || -1;
+
+    socket.emit('asq:submit', {
+      session : session,
+      answers : answers,
+      confidence : confidence,
+      questionId : questionId
+    });
+    console.log('submitted answer for question with id:' + questionId);
+    console.log('Answer');
+    console.dir(answers);
+    console.dir(confidence);
+  });
+
   document.addEventListener('local:resubmit', function(event) {
     socket.emit('asq:resubmit', {
       questionId : questionId
@@ -214,52 +260,6 @@ $(function() {
       $this.find('button').removeAttr('disabled').fadeIn()
     });
   });
-
-  // form submission events
-  $(document).on('submit', '.assessment form', function(event) {
-    event.preventDefault();
-    var $this = $(this);
-
-    var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
-    console.log("QuestionID= " + questionId);
-
-    $this.children().css('opacity', '0.5').end().find('input').attr('disabled', 'true').end().find('button:not(.changeanswer .btn)').attr('disabled', 'true').fadeOut(function() {
-      $this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
-      $this.find('.changeAnswer').fadeIn();
-    });
-
-    //get question id
-    var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
-
-    //aggregate answers
-    var answers = [];
-    $(this).find('input[type=checkbox], input[type=radio]:not(.asq-rating-input)').each(function() {
-      answers.push($(this).is(":checked"));
-    })
-
-    $(this).find('input[type=text]').each(function() {
-      answers.push($(this).val());
-    })
-
-    $(this).find('.asq-code-editor').each(function() {
-      console.log(ace.edit(this.id).getSession().getValue())
-      answers.push(ace.edit(this.id).getSession().getValue());
-    })
-
-    // Get confidence
-    var confidence = $('input.asq-rating-input:checked').val() || -1;
-
-    socket.emit('asq:submit', {
-      session : session,
-      answers : answers,
-      confidence : confidence,
-      questionId : questionId
-    });
-    console.log('submitted answer for question with id:' + questionId);
-    console.log('Answer');
-    console.dir(answers);
-    console.dir(confidence);
-  })
 })
 
 google.load("visualization", "1", {

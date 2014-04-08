@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = require('jQuery')
+var $ = require('jquery')
 	, io = require('socket.io-browserify');
 
 var connect = function (host, port, session) {

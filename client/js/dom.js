@@ -7,7 +7,7 @@
 */
 'use strict';
 
-var $ = require("jQuery")
+var $ = require('jquery');
   , request = require('superagent')
   , form = require('./form.js')
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
@@ -112,6 +112,7 @@ function psesentationsDOMBinder(){
     $documentHammered
       // flip to show slideshow actions
       .on('tap', '.flipbox' ,function (event) {
+        console.log('Click!')
           event.stopPropagation();
           $('.flipbox')
             .not($(this).addClass('flipped'))

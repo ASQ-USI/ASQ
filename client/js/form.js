@@ -6,7 +6,7 @@
 */
 
 'use strict'
-var $        = require('jQuery')
+var $        = require('jquery')
 , _          = require ('lodash')
 , effects    = require('./effects')
 , validation = require('../../shared/validation');

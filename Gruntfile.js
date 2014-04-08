@@ -19,27 +19,28 @@ module.exports = function(grunt) {
         dest: 'public/js/vendor.js',
         options:{
           debug: true,
-          // alias: 'client/js/vendor/jquery-1.10.2.js:jQuery',
+          // alias: 'client/js/vendor/jquery-1.10.2.js:jquery',
+          alias: 'jQuery:$',
           shim:{
             bootstrap:{
               path: 'client/js/vendor/bootstrap.js',
               exports: null,  
-              depends: {jquery:'jQuery'}
+              depends: {jQuery:'jQuery', $:'$'}
             },
-            jQueryScrollTo:{
+            jqueryScrollTo:{
               path: 'client/js/vendor/jquery.scrollTo.js',
               exports: null,
-              depends: {jquery:'jQuery'}
+              depends: {jQuery:'jQuery', $:'$'}
             },
             isotope:{
               path: 'client/js/vendor/jquery.isotope.js',
               exports: null,
-              depends: {jquery:'jQuery'}
+              depends: {jQuery:'jQuery', $:'$'}
             },
             jqueryHammer:{
               path: 'client/js/vendor/jquery.hammer.js',
               exports: 'Hammer',
-              depends: {jquery:'jQuery'}
+              depends: {jQuery:'jQuery', $:'$'}
             }    
           }
        }
@@ -50,7 +51,7 @@ module.exports = function(grunt) {
         options:{
           debug: true,
           alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom',
-          external: ['jQuery']
+          //external: ['jQuery']
        }
       },
       presenter: {
@@ -61,7 +62,7 @@ module.exports = function(grunt) {
           shim: {
             impressPresenter: {path: 'client/js/impress-presenter.js', exports: 'impress'}
           },
-          external: ['jQuery']
+          //external: ['jQuery']
         }
       },
       viewer: {
@@ -72,7 +73,7 @@ module.exports = function(grunt) {
           shim: {
             impressViewer: {path: 'client/js/impress-viewer.js', exports: 'impress'}
           },
-          external: ['jQuery']
+          //external: ['jQuery']
         }
       }
     },

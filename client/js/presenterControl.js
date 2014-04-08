@@ -1,5 +1,5 @@
 'use strict';
-var $ = require('jQuery');
+var $ = require('jquery');
 
 function presenterControlDOMBinder(){
 	//check if we have last session stored
