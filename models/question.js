@@ -5,7 +5,9 @@
 var mongoose = require('mongoose')
 , Schema     = mongoose.Schema
 , when       = require('when')
-, stats      = require('../lib/stats');
+, wkeys      = require('when/keys')
+, stats      = require('../lib/stats')
+, appLogger  = require('../lib/logger').appLogger;
 
 // allowed form button types
 var formButtonTypes = 'checkbox radio'.split(' ');
@@ -67,12 +69,14 @@ questionSchema.methods.getSolution = function(){
 questionSchema.methods.getStats = function getStats(sessionId) {
   var o = {};
   for(var i = this.statTypes.length; i--;) {
-    o[this.statTypes[i]] = stats[this.statTypes[i]](this._id, sessinId);
+    o[this.statTypes[i]] = stats[this.statTypes[i]](this._id, sessionId);
   }
-  return keys.all(o);
+  return wkeys.all(o);
 }
 
+appLogger.debug('Loading Question model');
 mongoose.model("Question",questionSchema);
+appLogger.debug('Loading QuestionOption model');
 mongoose.model("QuestionOption",questionOptionSchema);
 
 var create =  function(docs){

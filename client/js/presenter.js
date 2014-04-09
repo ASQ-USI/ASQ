@@ -12,11 +12,6 @@ var impress  = require('impressPresenter')
 // , assessment = require('asq-microformat').assessment;
 
 $(function(){
-  console.log('jQuery')
-  console.log($)
-  console.log($.fn.jquery)
-  console.log(jQuery)
-  console.log(jQuery.fn.jquery)
   var $body   = $('body')
   , host      =  $body.attr('asq-host')
   , port      = parseInt($body.attr('asq-port'))
@@ -93,19 +88,29 @@ function connect(host, port, session, mode, token) {
       }
     });
 
-    socket.on('asq:goto', function(event) {
+    socket.on('asq:goto', function(evt) {
       console.log('GOTO received');
       if (mode == 'control') {
         $('.controlThumbs .thumbsWrapper .active').removeClass('active');
-        $('.controlThumbs').scrollTo('.' + event.slide, 500, {
+        $('.controlThumbs').scrollTo('.' + evt.slide, 500, {
           offset : -150
         });
-        $('.controlThumbs .thumbsWrapper .' + event.slide).addClass("active");
+        $('.controlThumbs .thumbsWrapper .' + evt.slide).addClass("active");
 
-        var next = $('#' + event.slide).next().attr('id');
+        var next = $('#' + evt.slide).next().attr('id');
         $('#nextSlideFrame').attr('src', '/slidesRender/' + slidesId + '/#/' + next);
       }
-      impress().goto(event.slide);
+
+      // Handle stats
+      if (!! evt.stats) {
+        console.log('Ze stats have arrived on ze client!')
+        console.log(evt.stats);
+        $.each(evt.stats, function statTarget(id, data) {
+          console.log($('article[data-target-assessment-id=' + id + ']'));
+        });
+        
+      }
+      impress().goto(evt.slide);
     });
 
     socket.on('asq:gotosub', function(event) {
