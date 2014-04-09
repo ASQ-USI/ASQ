@@ -3,11 +3,13 @@
 */
 
 var mongoose      = require('mongoose')
-  , questionModel = require('./question')
+ // , questionModel = require('./question') // Can't call question from answer because answer calls question...
   , Schema        = mongoose.Schema
   , ObjectId      = Schema.ObjectId
   , when          = require('when')
-  , arrayEqual    = require('../lib/utils/stats').arrayEqual;
+  , arrayEqual    = require('../lib/utils/stats').arrayEqual
+  , appLogger     = require('../lib/logger').appLogger;
+
 
 
 var answerSchema = new Schema({
@@ -20,41 +22,42 @@ var answerSchema = new Schema({
   logData     : [answerLogSchema]
 });
 
-// saves object and returns a promise
-answerSchema.methods.saveWithPromise = function(){
-  //we cant use mongoose promises because the
-  // save operation returns undefined
-  // see here: https://github.com/LearnBoost/mongoose/issues/1431
-  // so we construct our own promise
-  // to maintain code readability
+// // saves object and returns a promise
+// answerSchema.methods.saveWithPromise = function(){
+//   //we cant use mongoose promises because the
+//   // save operation returns undefined
+//   // see here: https://github.com/LearnBoost/mongoose/issues/1431
+//   // so we construct our own promise
+//   // to maintain code readability
 
-  var that = this;
-  var deferred = when.defer(),
+//   var that = this;
+//   var deferred = when.defer(),
 
-  Question = db.model('Question', questionModel.questionSchema);
-  Question.findById(that.question, function(err, question){
-    if(err){
-      deffered.reject(err);
-    }
+//   Question = db.model('Question', questionModel.questionSchema);
+//   Question.findById(that.question, function(err, question){
+//     if(err){
+//       deffered.reject(err);
+//     }
 
-    if(arrayEqual(that.submission, question.getSolution(question))){
-      that.correctness = 100;
-    }else{
-      that.correctness = 0;
-    }
+//     if(arrayEqual(that.submission, question.getSolution(question))){
+//       that.correctness = 100;
+//     }else{
+//       that.correctness = 0;
+//     }
 
-    that.save(function(err, doc){
-      if (err) {
-        deferred.reject(err);
-        return;
-      } deferred.resolve(doc);
-    });
+//     that.save(function(err, doc){
+//       if (err) {
+//         deferred.reject(err);
+//         return;
+//       } deferred.resolve(doc);
+//     });
 
-  });
-    return deferred.promise;
-};
+//   });
+//     return deferred.promise;
+// };
 
-mongoose.model("Answer", answerSchema);
+appLogger.debug('Loading Answer model');
+mongoose.model('Answer', answerSchema);
 
 var answerLogSchema = new Schema({
   startTime:{},
@@ -64,6 +67,7 @@ var answerLogSchema = new Schema({
   pageactive:{}
 });
 
+appLogger.debug('Loading AnswerLog model');
 mongoose.model("AnswerLog", answerLogSchema);
 
 module.exports =  {

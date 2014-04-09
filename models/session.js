@@ -2,10 +2,11 @@
     @description the Session Model
 */
 
-var mongoose  = require('mongoose')
-, Schema      = mongoose.Schema
-, ObjectId    = Schema.ObjectId
-, when        = require('when');
+var mongoose = require('mongoose')
+, Schema     = mongoose.Schema
+, ObjectId   = Schema.ObjectId
+, when       = require('when')
+, appLogger  = require('../lib/logger').appLogger;
 
 
 var sessionSchema = new Schema({
@@ -182,6 +183,7 @@ sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
 sessionSchema.set('toObject', { virtuals: true });
 sessionSchema.set('toJSON', { virtuals: true });
 
+appLogger.debug('Loading Session model');
 mongoose.model("Session", sessionSchema);
 
 module.exports = {

@@ -1,6 +1,7 @@
 var mongoose  = require('mongoose')
-  , Schema    = mongoose.Schema
-  , ObjectId  = Schema.ObjectId;
+, Schema    = mongoose.Schema
+, ObjectId  = Schema.ObjectId
+, appLogger     = require('../lib/logger').appLogger;
 
 var assessmentSchema = new Schema({
   session  : { type: ObjectId, ref: 'Answer', required: true },
@@ -18,6 +19,7 @@ assessmentSchema.index({
   assessor : 1
 }, { unique : true });
 
+appLogger.debug('Loading Assessment model');
 mongoose.model('Assessment', assessmentSchema);
 
 module.exports = {

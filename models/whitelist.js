@@ -1,7 +1,8 @@
-var check    = require('validator').check
-  , mongoose = require('mongoose')
-  , Schema   = mongoose.Schema
-  , ObjectId = Schema.ObjectId;
+var check   = require('validator').check
+, mongoose  = require('mongoose')
+, Schema    = mongoose.Schema
+, ObjectId  = Schema.ObjectId
+, appLogger = require('../lib/logger').appLogger;
 
 var roles = {}
 roles['banned']    = 0;
@@ -25,15 +26,16 @@ whitelistEntrySchema.index({ session: 1, uid: 1 });
  * @param role the role the user wants to use.
  */
 whitelistEntrySchema.methods.validateRole = function validateRole(role) {
-  console.log('Check role');
+  appLogger.debug('Check role');
   if (!roles.hasOwnProperty(role)) {
     return 'viewer';
   } else {
-    console.log('Comparing roles: ' + roles[role] + ' ' + roles[this.role]);
+    appLogger.debug('Comparing roles: ' + roles[role] + ' ' + roles[this.role]);
     return roles[role] > roles[this.role] ? this.role : role;
   }
 };
 
+appLogger.debug('Loading WhitelistEntry');
 mongoose.model('WhitelistEntry', whitelistEntrySchema);
 
 module.exports = {

@@ -2,14 +2,15 @@
     @description the Slideshow Model
 */
 
-var mongoose= require('mongoose')
-, Schema = mongoose.Schema
-, ObjectId = Schema.ObjectId
-, when     = require('when');
+var mongoose = require('mongoose')
+, Schema     = mongoose.Schema
+, ObjectId   = Schema.ObjectId
+, when       = require('when')
+, appLogger  = require('../lib/logger').appLogger;
 
 var slideshowSchema = new Schema({
   title: { type: String },
-  course: { type: String, default: "General" },
+  course: { type: String, default: 'General' },
   originalFile:{type:String},
   presenterFile:{type:String},
   viewerFile:{type:String},
@@ -276,7 +277,7 @@ var questionsPerSlideSchema = new Schema({
 
 var createQuestionsPerSlide =  function(questions){
 
-  var QuestionsPerSlide = db.model("QuestionsPerSlide");
+  var QuestionsPerSlide = db.model('QuestionsPerSlide');
 
   var qPerSlidesObj = {};
   for ( var i=0; i < questions.length; i++){
@@ -302,7 +303,7 @@ var statsPerSlideSchema = new Schema({
 
 var createStatsPerSlide =  function(statsForQuestions){
 
-  var StatsPerSlide = db.model("StatsPerSlide");
+  var StatsPerSlide = db.model('StatsPerSlide');
 
   var sPerSlidesObj = {};
   for ( var i=0; i < statsForQuestions.length; i++){
@@ -321,9 +322,12 @@ var createStatsPerSlide =  function(statsForQuestions){
   return sPerSlidesArray;
 }
 
-mongoose.model("Slideshow", slideshowSchema);
-mongoose.model("QuestionsPerSlide", questionsPerSlideSchema);
-mongoose.model("StatsPerSlide", statsPerSlideSchema);
+appLogger.debug('Loading Slideshow model');
+mongoose.model('Slideshow', slideshowSchema);
+appLogger.debug('Loading QuestionsPerSlide model');
+mongoose.model('QuestionsPerSlide', questionsPerSlideSchema);
+appLogger.debug('Loading StatsPerSlide model');
+mongoose.model('StatsPerSlide', statsPerSlideSchema);
 
 module.exports =  {
   slideshowSchema             : slideshowSchema,
