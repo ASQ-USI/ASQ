@@ -19,17 +19,6 @@ var ids = {
   session : ObjectId('5339f210069de6f55243d7e5')
 }
 
-var req = {
-  query : {
-    metric : 'correctness',
-    question : ids.question.toString(),
-    session : ids.session.toString()
-  }
-}
-
-var res = {}
-res.json = function(status, data) {};
-
 var fixtures = {};
 
 fixtures.Answer = Array.apply(null, new Array(25)).map( function() {
@@ -45,6 +34,4 @@ fixtures.Answer = Array.apply(null, new Array(25)).map( function() {
 module.exports = {
   fixtures : fixtures,
   ids      : ids,
-  req      : req,
-  res      : res
 }
