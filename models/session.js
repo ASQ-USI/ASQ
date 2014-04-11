@@ -133,7 +133,7 @@ sessionSchema.methods.statQuestionsForSlide = function(slideHtmlId) {
       deferred.resolve(slideshow.getStatQuestionsForSlide(slideHtmlId));
     }
    ,function(err, slideshow) {
-      throw err;  
+      deferred.reject(err);  
   });
 
   return deferred.promise;
