@@ -20,27 +20,28 @@ module.exports = function(grunt) {
         options:{
           debug: true,
           // alias: 'client/js/vendor/jquery-1.10.2.js:jquery',
-          alias: 'jQuery:$',
+          // alias: 'jquery:$',
           shim:{
+            jquery: { path: "node_modules/jquery/dist/jquery.js", exports: "$" },
             bootstrap:{
               path: 'client/js/vendor/bootstrap.js',
               exports: null,  
-              depends: {jQuery:'jQuery', $:'$'}
+              depends: {jquery:'jquery'}
             },
             jqueryScrollTo:{
               path: 'client/js/vendor/jquery.scrollTo.js',
               exports: null,
-              depends: {jquery:'jQuery', $:'$'}
+              depends: {jquery:'jquery'}
             },
             isotope:{
               path: 'client/js/vendor/jquery.isotope.js',
               exports: null,
-              depends: {jquery:'jQuery', $:'$'}
+              depends: {jquery:'jquery'}
             },
             jqueryHammer:{
               path: 'client/js/vendor/jquery.hammer.js',
               exports: 'Hammer',
-              depends: {jquery:'jQuery', $:'$'}
+              depends: {jquery:'jquery'}
             }    
           }
         }
@@ -50,12 +51,13 @@ module.exports = function(grunt) {
         dest: 'public/js/asq-vendor-presentation.js',
         options:{
           debug: true,
-          alias: 'jQuery:$',
+          //alias: 'jQuery:$',
           shim:{
+            jquery: { path: "node_modules/jquery/dist/jquery.js", exports: "$" },
             bootstrap:{
               path: 'client/js/vendor/bootstrap.js',
               exports: null,  
-              depends: {jQuery:'jQuery', $:'$'}
+              depends: {jquery:'jquery'}
             }
           }
         }
@@ -66,7 +68,7 @@ module.exports = function(grunt) {
         options:{
           debug: true,
           alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom',
-          //external: ['jQuery']
+          external: ['jquery']
        }
       },
       presenter: {
@@ -77,7 +79,7 @@ module.exports = function(grunt) {
           shim: {
             impressPresenter: {path: 'client/js/impress-presenter.js', exports: 'impress'}
           },
-          //external: ['jQuery']
+          external: ['jquery']
         }
       },
       viewer: {
@@ -88,7 +90,7 @@ module.exports = function(grunt) {
           shim: {
             impressViewer: {path: 'client/js/impress-viewer.js', exports: 'impress'}
           },
-          //external: ['jQuery']
+          external: ['jquery']
         }
       }
     },

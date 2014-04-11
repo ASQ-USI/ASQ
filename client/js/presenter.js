@@ -1,15 +1,15 @@
 /**
  @fileoverview Socket code for the presenter client.
- * 
+ *
  */
 
-'use strict'
+'use strict';
 
 var impress  = require('impressPresenter')
 , io         = require('socket.io-browserify')
 , $          = require('jquery')
-, manager    = require('asq-visualization').Manager();
-// , assessment = require('asq-microformat').assessment;
+, manager    = require('asq-visualization').Manager()
+, assessment = require('asq-microformat').assessment;
 
 $(function(){
   var $body   = $('body')
@@ -19,7 +19,7 @@ $(function(){
   , mode      = $body.attr('asq-socket-mode')
   , token     = $body.attr('asq-token');
 
-  //assessment.initCodeEditors();
+  assessment.initCodeEditors();
 
   impress().init();
   connect(host, port, sessionId, mode, token);
@@ -103,12 +103,14 @@ function connect(host, port, session, mode, token) {
 
       // Handle stats
       if (!! evt.stats) {
-        console.log('Ze stats have arrived on ze client!')
-        console.log(evt.stats);
-        $.each(evt.stats, function statTarget(id, data) {
-          console.log($('article[data-target-assessment-id=' + id + ']'));
+        $.each(evt.stats, function forGraphs(id, graphs) {
+          var selector = '#' + evt.slide + ' [data-target-assessment-id="' + id
+            + '"] .asq-viz-graph';
+          $.each(graphs, function forData(graphName, data) {
+            manager.update(selector, graphName, data);
+          });
         });
-        
+
       }
       impress().goto(evt.slide);
     });
@@ -227,96 +229,6 @@ var showQuestion = function(question) {
   $('#answeroptions').html(optionsstring);
 
 }
-// var showAnswer = function(question, stats) {
-//  var correct = stats.correct || null;
-//  var countedMcOptions = stats.countedMcOptions || null;
-//  var equalAnswers = stats.equalAnswers || null;
-//  google.load("visualization", "1", {
-//    packages : ["corechart"],
-//    callback : drawChart
-//  });
-
-//  //Google chart drawing for stats
-//  function drawChart() {
-//    console.log('GOOGLE CHART');
-//    if (question.questionType === "Multiple choice") {
-//      var mscstatData = google.visualization.arrayToDataTable(countedMcOptions);
-//    }
-//    var rvswData = google.visualization.arrayToDataTable(correct);
-//    var diffAnsData = google.visualization.arrayToDataTable(equalAnswers);
-
-//    var rvswOpt = {
-//      title : 'Correct vs. Wrong',
-//      'width' : 760,
-//      'height' : 400,
-//      chartArea : {
-//        left : 0,
-//        top : 0,
-//        width : "600px",
-//        height : "350px"
-//      }
-//    };
-
-//    var mscstatOpt = {
-//      animation : {
-//        duration : 1000
-//      },
-//      hAxis : {
-//        allowContainerBoundaryTextCufoff : true,
-//        slantedTextAngle : 50
-//      },
-//      'width' : 760,
-
-//      'legend' : {
-//        position : 'top',
-//        textStyle : {
-//          fontSize : 16
-//        }
-//      }
-//    };
-
-//    var chart3 = new google.visualization.PieChart(document.getElementById('rvswChart'));  // <- won't work cuz that id has been changed to something UNIQUE! (rvswChart-{statId})
-//    chart3.draw(rvswData, rvswOpt);
-
-//    if (question.questionType === "Multiple choice") {
-//      var chart = new google.visualization.ColumnChart(document.getElementById('mscstatChart'));
-//      chart.draw(mscstatData, mscstatOpt);
-//    } else {
-//      $('#mscstats').css("display", 'none');
-//      $('#mscstats').removeAttr('style');
-//      $('#mscstatsBtn').remove();
-//    }
-
-//    var chart = new google.visualization.ColumnChart(document.getElementById('diffAnsChart'));
-//    chart.draw(diffAnsData, mscstatOpt);
-//  }
-
-
-//  $('#answerText').html('<h3>Statistics for "' + question.questionText + '"</h3>');
-//  var optionsstring = '<h5>Correct answer:</h5>';
-//  if (question.questionType == "Multiple choice") {
-//    for (var i = 0; i < question.answeroptions.length; i++) {
-//      optionsstring += '<label class="checkbox" >';
-//      if (question.answeroptions[i].correct == true) {
-//        optionsstring += '<i class="icon-ok"> </i> ';
-//      } else {
-//        optionsstring += '<i class="icon-remove"> </i> ';
-//      }
-//      optionsstring += question.answeroptions[i].optionText + '</label>';
-//    }
-//  } else {
-//    optionsstring = '<span class="help-block">Correct answer.</span>';
-//    optionsstring += '<p>' + +'</p>';
-//    optionsstring += '<span class="help-block">Your answer.</span>';
-//    optionsstring += '<input type="text" value="Norway" readonly>';
-//  }
-//  //google.setOnLoadCallback(drawChart);
-//  //drawChart();
-//  //update modal content
-//  $('#answersolutions').html(optionsstring);
-//  $('#question').modal('hide');
-//  $('#answer').modal('show');
-// };
 
 google.load("visualization", "1", {
   packages : ["corechart"]
@@ -368,11 +280,11 @@ var statsTypes = {
 
 function drawChart() {
   $('.stats').each(function(el) {
-    var questionId = $(this).attr('target-assessment-id');
+    var questionId = $(this).attr('data-target-assessment-id');
     console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-      //statsTypes.correctness.chart[questionId]  
+      //statsTypes.correctness.chart[questionId]
     }
     if($(this).find(".distinctOptions").length){
       statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
@@ -384,15 +296,21 @@ function drawChart() {
 }
 
 $(function() {
-  console.log($._data($(document)[0], 'events'));
-  console.log($(document)[0])
-  console.log($.fn.jquery);
   $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
-    console.log('tab info BS3');
-    console.log(this);
-    console.log(e);
+    var questionId = $(this).parents("[data-target-assessment-id]")
+      .attr('data-target-assessment-id');
 
-    var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
+    if ($(this).html() == 'Correctness') {
+      var slide = $(this).parents('.step.active').attr('id');
+      if (! slide) { return; } //Trying to render stats on a different slide
+
+      var selector = '#' + slide + ' [data-target-assessment-id="' + questionId
+        + '"] .asq-viz-graph';
+      manager.render(selector, 'correctness');
+      return;
+    }
+
+    // TODO Burn the code below which is buggy and and ugly.
     var $question = $('.assessment[question-id='+questionId+']');
 
     if($question.hasClass('multi-choice')){
@@ -408,11 +326,9 @@ $(function() {
     }
     else if($question.hasClass('code-input')){
       requestDistinctCode(questionId);
-    } 
-    
+    }
+
   });
-  console.log($(document)[0]);
-  console.log($._data($(document)[0], 'events'));
 })
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
@@ -423,7 +339,7 @@ function requestDistinct(questionId, obj) {
       list += '<li>' + data[i][0]  + times + '</li>'
     }
     list+='</ul>'
-    $('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.stats[data-target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
   });
 }
 
@@ -451,7 +367,7 @@ function requestDistinctCode(questionId, obj) {
     }
 
     list+='</div>'
-    $('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.stats[data-target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
     //this sucks
     $('.correct-btn').click(function(){
       $(this).parent().toggleClass('correct-answer')

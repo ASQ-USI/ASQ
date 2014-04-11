@@ -6,6 +6,7 @@
 var impress = require('impressViewer')
 , io = require('socket.io-browserify')
 , $ = require('jquery')
+, manager    = require('asq-visualization').Manager()
 , assessment = require('asq-microformat').assessment;
 
 // Save current question id;
@@ -28,10 +29,9 @@ $(function(){
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session, mode, token) {
   var started = false;
-  var session = session;
   var socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session)
     //+ '&token=' + token ); TODO use token for socket auth.
-  
+
   socket.on('connect', function(event) {
     // console.log("connected")
     socket.emit('asq:viewer', {
@@ -70,9 +70,18 @@ var connect = function(host, port, session, mode, token) {
      Handle socket event 'goto'
      Uses impress.js API to go to the specified slide in the event.
      */
-    socket.on('asq:goto', function(event) {
-      impress().goto(event.slide);
-      //$('#answer').modal('hide');
+    socket.on('asq:goto', function(evt) {
+      // Handle stats
+      if (!! evt.stats) {
+        $.each(evt.stats, function forGraphs(id, graphs) {
+          var selector = '#' + evt.slide + ' [data-target-assessment-id="' +
+          id + '"] .asq-viz-graph';
+          $.each(graphs, function forData(graphName, data) {
+            manager.update(selector, graphName, data);
+          });
+        });
+      }
+      impress().goto(evt.slide);
     });
 
     /**
@@ -87,7 +96,7 @@ var connect = function(host, port, session, mode, token) {
       //console.log(event)
       for (var i = 0; i < event.questions.length; i++) {
         var question = event.questions[i];
-        $this = $("[target-assessment-id='" + question._id + "'] .answersolutions");
+        var $this = $("[target-assessment-id='" + question._id + "'] .answersolutions");
         $this.find(".feedback").remove();
 
         //Search for answers for this question
@@ -95,8 +104,8 @@ var connect = function(host, port, session, mode, token) {
           return e.question == question._id;
         });
 
-        if (answerArray.length == 1) {
-          if (answerArray[0].correctness == 100) {
+        if (answerArray.length === 1) {
+          if (answerArray[0].correctness === 100) {
             $this.append('<p class="feedback"><strong>&#x2713;&nbsp; Your submission is correct!</strong></p>');
           } else {
             $this.append('<p class="feedback"><strong>&#10007;&nbsp; Your submission is wrong.</strong></p>');
@@ -121,7 +130,7 @@ var connect = function(host, port, session, mode, token) {
         } else {
           $this.append('<p class="feedback">No Answer recived!</p>');
         }
-      };
+      }
 
     });
 
@@ -138,7 +147,7 @@ var connect = function(host, port, session, mode, token) {
 
   .on('error', function (reason){
     console.error('Unable to connect Socket.IO', reason);
-  });;
+  });
 
    // form submission events
   $(document).on('submit', '.assessment form', function(event) {
@@ -326,10 +335,19 @@ function drawChart() {
   })
 }
 
+$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+  var questionId = $(this).parents("[data-target-assessment-id]")
+    .attr('data-target-assessment-id');
 
-$('a[data-toggle="tab"]').on('shown', function(e) {
+  if ($(this).html() == 'Correctness') {
+    var slide = $(this).parents('.step.active').attr('id');
+    if (! slide) { return; } //Trying to render stats on a different slide
 
-  var questionId = $(this).parents().find(".stats").attr('target-assessment-id');
+    var selector = '#' + slide + ' [data-target-assessment-id="' + questionId
+      + '"] .asq-viz-graph';
+    manager.render(selector, 'correctness');
+    return;
+  }
   var $question = $('.assessment[question-id='+questionId+']');
 
   if($question.hasClass('multi-choice')){
@@ -345,8 +363,8 @@ $('a[data-toggle="tab"]').on('shown', function(e) {
   }
   else if($question.hasClass('code-input')){
     requestDistinctCode(questionId);
-  } 
-  
+  }
+
 });
 
 function requestDistinct(questionId, obj) {
