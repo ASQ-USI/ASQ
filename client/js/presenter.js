@@ -202,7 +202,7 @@ function updateParticipation(submittedViewers, totalViewers, questionId) {
     $('[question-id="' + questionId + '"] .progressNum').text(submittedViewers + '/' + maxViewers + ' answers received.');
   }
   var width = (submittedViewers / maxViewers) * 100;
-  $('[question-id="' + questionId + '"] .progress .bar').css('width', width + "%");
+  $('[question-id="' + questionId + '"] .progress-bar').css('width', width + "%");
 }
 
 var showStats = function() {
