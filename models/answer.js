@@ -14,11 +14,11 @@ var mongoose      = require('mongoose')
 
 var answerSchema = new Schema({
   question    : {type: ObjectId, ref:'Question'},
-  answeree    : {type:String}, // student that answered the question
+  answeree    : {type:String}, // (wle token) student that answered the question
   session     : {type: ObjectId, ref:'Session'},
   submission  : [],
   correctness : { type: Number, min: 0, max: 100 },
-  confidence  : { type: Number, min: 1, max: 5, default: 0 }, // 0 = not set
+  confidence  : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
   logData     : [answerLogSchema]
 });
 
