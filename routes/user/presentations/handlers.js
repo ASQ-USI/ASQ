@@ -58,7 +58,7 @@ function deletePresentation(req, res, next) {
 
   //err response
   function(err){
-    if(err) return next(err) 
+    if(err) return next(err)
   });
 }
 
@@ -69,7 +69,7 @@ function getPresentation(req, res, next) {
   Slideshow.findById(id, function(err, slideshow) {
     if(slideshow){
       res.sendfile(slideshow.path + path.basename(slideshow.originalFile));
-    
+
     }else{
       res.send(404, 'Slideshow not found');
     }
@@ -91,11 +91,6 @@ function getPresentationFiles(req, res, next) {
 
 function listPresentations(req, res, next) {
   appLogger.debug('list presentations');
-  // var userPromise = User.findOne({
-  //   _id: req.user._id,
-  // }, 'liveSessions')
-  // .populate('liveSessions')
-  // .exec();
 
   var sessionPromise = Session.getLiveSessions(req.user._id);
 
@@ -113,7 +108,7 @@ function listPresentations(req, res, next) {
   function processPresentations(sessions, slides) {
     var live={};
     sessions.forEach(function(session){
-      live[session.slides.toString()]=true;
+      live[session.slides.toString()]=session._id;
     });
 
     var slidesByCourse = null; //to evaluate as false in dustjs
@@ -125,9 +120,9 @@ function listPresentations(req, res, next) {
       for (var i = 0; i < slides.length; i++) {
         var slideshow = slides[i].toJSON();
         if (!live.hasOwnProperty(slideshow._id)) {
-          slideshow.isLive = false;
+          slideshow.live = null;
         }else{
-          slideshow.isLive = live[slideshow._id]
+          slideshow.live = live[slideshow._id]
         }
 
         if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
@@ -141,7 +136,9 @@ function listPresentations(req, res, next) {
       }
     }
 
-      var type = utils.getAlertTypeClass(req);
+    var type = utils.getAlertTypeClass(req);
+
+    console.log(slidesByCourse);
 
     res.render('presentations', {
       username        : req.user.username,
@@ -253,7 +250,7 @@ function uploadPresentation(req, res, next) {
             + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.presenterFile =  fileNoExt + '.asq-presenter.dust';
         newSlideshow.viewerFile =  fileNoExt + '.asq-viewer.dust';
-        
+
         var filePromises = [
           pfs.writeFile(newSlideshow.presenterFile, newHtml[0]),
           pfs.writeFile(newSlideshow.viewerFile, newHtml[1])
@@ -280,7 +277,7 @@ function uploadPresentation(req, res, next) {
         //create thumbs
         appLogger.debug('creating thumbnails')
        // thumbUtils.createThumbs(newSlideshow);
-        return pfs.unlink(req.files.upload.path);         
+        return pfs.unlink(req.files.upload.path);
     })
     //10) update slideshows for user
     .then(function(){

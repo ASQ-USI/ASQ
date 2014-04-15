@@ -10,7 +10,7 @@ body{
 
 
 #mainContainer{
-  
+
 }
 ::-webkit-scrollbar {
   height: 12px;
@@ -163,7 +163,7 @@ a.accordion-toggle:hover {
 
 .flipbox {
   // box-shadow: 0 3px 6px #000;
-  
+
   color: #000;
   position: relative;
   display: block;
@@ -213,12 +213,12 @@ a.accordion-toggle:hover {
 .thumb-bg{
   .100WidthHeight;
   background-size: cover;
-  background-position: center; 
+  background-position: center;
   background-repeat:  no-repeat;
   position: absolute;
   z-index: 1;
   .transition(opacity 0.3s);
-  box-shadow: inset 3px 3px 0px #ccc, 
+  box-shadow: inset 3px 3px 0px #ccc,
   inset -3px -3px 0px #ccc,
   inset 0px 0px 8px #000;
 }
@@ -236,7 +236,7 @@ h4{
 
 .thumb-info{
   display: table;
-  box-shadow: inset 3px 3px 0px #ccc, 
+  box-shadow: inset 3px 3px 0px #ccc,
       inset -3px -3px 0px #ccc,
       inset 0px 0px 8px #000;
   background-color: #000;
@@ -258,7 +258,7 @@ h4{
   text-transform: uppercase;
   font-size: 12px;
   font-weight: bold;
-  line-height: 10px;  
+  line-height: 10px;
   letter-spacing: 0.1pt;
   color: #d9534f;
   border: 2px solid #d9534f;
@@ -298,7 +298,7 @@ body.no-touch .thumb-info:hover , .thumb-info.title{
   display: table;
   background-color: #efefef;
   box-shadow: 0px 50px 100px black;
-  text-align: center; 
+  text-align: center;
   height: 151px;
   width: 100%;
 }
@@ -311,7 +311,7 @@ body.no-touch .thumb-info:hover , .thumb-info.title{
 }
 .thumb-buttons{
   position:relative;
-  display:inline-block;  
+  display:inline-block;
   height:auto;
   vertical-align: middle;
   .btn-group{
@@ -328,7 +328,7 @@ body.no-touch .thumb-info:hover , .thumb-info.title{
     .dropdown-toggle{
       width:auto;
     }
-    .btn:first-child {
+    .btn:first-child.start {
       width: 130px;
     }
 
@@ -340,10 +340,22 @@ body.no-touch .thumb-info:hover , .thumb-info.title{
     top:1px;
     line-height:12px;
   }
-  > .btn{
+  > .btn, > .btn-group {
     width: 156px;
     margin: 3px 0
   }
+}
+
+.live-join.btn {
+  width: 70px;
+}
+
+.live-join.btn-group > .btn {
+  width: 60px;
+}
+
+.live-join.btn-group > .btn.dropdown-toggle {
+  width: 26px;
 }
 
 .100WidthHeight{
@@ -359,7 +371,7 @@ body.no-touch .thumb-info:hover , .thumb-info.title{
 .landhead {
   text-align:center;
   padding: 30px 15px;
-  
+
   h1 {
     font-size: 50px;
     line-height: 1;
@@ -380,14 +392,14 @@ body.no-touch .thumb-info:hover , .thumb-info.title{
     .lead{
       font-size: 30px;
     }
-  } 
+  }
 }
 
 
 
 /* -----  Style for Stats ----- */
 .chart{
-width: 100%; 
+width: 100%;
 height: 500px;
 }
 .stats{
@@ -406,7 +418,7 @@ height: 500px;
   li{
     line-height: 20px;
     margin-bottom: 5px;
-    
+
    }
 }
 .nav-tabs{
@@ -425,7 +437,7 @@ h2{
   box-shadow: inset 0 0px 6px #000;
   background-color: rgba(0,0,0,0.2);
   padding: 20px 0 20px 0;
-  
+
   div{
     display:table-cell;
     height: 250px;
@@ -487,11 +499,11 @@ h2{
       button{
         margin: 0 10px 0 10px;
       }
-    } 
+    }
     .controllButton{
         margin: 20px auto 0 auto;
         display: block;
-    }   
+    }
   .connected-viewers-number{
     text-align: right;
     color: #CCC;
@@ -500,7 +512,7 @@ h2{
     margin-top: 30px;
   }
 }
-  
+
 .controlBottom{
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
@@ -513,7 +525,7 @@ h2{
   background: -o-linear-gradient(top, #111 0%,#222 71%,#333 100%); /* Opera 11.10+ */
   background: -ms-linear-gradient(top, #111 0%,#222 71%,#333 100%); /* IE10+ */
   background: linear-gradient(to bottom, #111 0%,#222 71%,#333 100%); /* W3C */
-  
+
   position: absolute;
   bottom:0;
   left: 0;
@@ -536,18 +548,18 @@ h2{
       margin: 0 auto 0 auto;
     }
   }
-  
+
   .controlThumbs{
     overflow-x: scroll;
     overflow-y: hidden;
-    
+
   .thumb{
     .transition( all .2s ease-in-out );
     height: 150px;
     width: 200px;
     margin: 40px 10px 40px 10px;
     opacity: 0.5;
-    .slideInclude; 
+    .slideInclude;
      .label{
       max-width: 170px;
     }
@@ -563,7 +575,7 @@ h2{
 }
 
 /* --- Editor Style ---*/
-#editor { 
+#editor {
         position: relative;
         height: 550px;
 }
@@ -588,7 +600,7 @@ h2{
   width: 275px;
   height: 206px;
 
-  margin: 10px 0px 40px 0px; 
+  margin: 10px 0px 40px 0px;
   .slideInclude;
   .labels{
     max-width: 255px;
@@ -598,12 +610,12 @@ h2{
 /* --- Slides thumbnail prototype for admincontroll and edit ---*/
 .slideInclude{
   float: left;
-  background-size: contain;  
+  background-size: contain;
   background-color: #ccc;
   background-repeat: no-repeat;
   box-shadow: 0 3px 6px #000, inset 3px 3px 0px #ccc, inset -3px -3px 0px #ccc;
   position: relative;
-  
+
   .labelsContainer{
     position: absolute;
     display: table;

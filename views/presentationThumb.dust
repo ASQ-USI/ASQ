@@ -5,19 +5,38 @@
       <div class="thumb-bg" style="background-image: url('http://placehold.it/240x175')">
       </div>
       <h4>{title}</h4>
-      {?isLive}
+      {?live}
       <div class='thumb-live-container'>
         <div class='thumb-live'>live</div>
       </div>
-      {/isLive}
-      
+      {/live}
+
     </div>
     <div class="thumb-actions">
       <a href="#remove" class="remove">&times;</a>
       <div class="thumb-buttons-container">
       <div class="thumb-buttons">
-        {?isLive}
-        <a href="/user/statistics/{_id}" class="btn btn-danger"><span class="glyphicon glyphicon-stop icon-white"> </span> Stop</a>
+        {?live}
+        <div class="btn-group">
+          <a href="/user/statistics/{_id}" class="btn btn-danger live-join"><span class="glyphicon glyphicon-stop icon-white"> </span> Stop</a>
+          <div class="btn-group live-join">
+            <a href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation" class="btn btn-primary"><span class="glyphicon glyphicon-picture"> </span> Join</a>
+            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu pull-right">
+              <li>
+                <a href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation">Join (presenter)</a>
+              </li>
+              <li>
+                <a href="/{params.username}/presentations/{_id}/live/{live}/?role=viewer&view=presentation">Join (viewer)</a>
+              </li>
+              <li>
+                <a href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=ctrl">Control panel</a>
+              </li>
+            </ul>
+          </div>
+        </div>
         {:else}
         <div class="btn-group">
           <!-- boiler jQuery -->
@@ -26,7 +45,7 @@
           <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu pull-right">
             <li>
               <!-- boiler jQuery -->
               <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public">Public Presentation</a>
@@ -41,7 +60,7 @@
             </li>
           </ul>
         </div>
-        {/isLive}
+        {/live}
         <a href="/user/statistics/{_id}" class="btn btn-info"><span class="glyphicon glyphicon-signal icon-white"> </span> Show Statistics</a>
         <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><span class="glyphicon glyphicon-pencil icon-white"> </span> Edit Presentation</a>
       </div>
