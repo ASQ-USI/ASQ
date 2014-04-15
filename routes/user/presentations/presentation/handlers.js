@@ -84,42 +84,44 @@ function livePresentation(req, res) {
   var renderOpts = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
 
-        presentationViewUrl = ASQ.rootUrl + '/' + req.user.username + '/presentations/' 
-                            + presentation._id + '/live/' + req.liveSession.id 
+        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                            + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.username + '/live/';
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
           template: 'presenterControl',
-          mode: 'controll',
+          mode: 'ctrl', //change to role
         };
       } else if (role === 'presenter' || role === 'assistant') {
-        presentationViewUrl = ASQ.rootUrl + '/' + req.user.username + '/presentations/' 
-                            + presentation._id + '/live/' + req.liveSession.id 
+        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                            + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = ASQ.rootUrl + '/' + req.user.username + '/live/';
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
           template: presentation.presenterFile,
-          mode: 'presenter',
+          mode: 'ctrl',
         };
       }
       return {
           template: presentation.viewerFile,
-          mode: 'viewer',
+          mode: 'folo',
         };
   })(role, view, presentation);
 
   appLogger.debug('Selected template: ' + renderOpts.template);
   res.render(renderOpts.template, {
-    title : presentation.title,
-    host  : process.env.HOST,
-    port  : process.env.PORT,
-    mode  : renderOpts.mode,
-    id    : req.liveSession.id,
-    date  : req.liveSession.startDate,
-    presentationViewUrl: presentationViewUrl,
-    presenterLiveUrl : presenterLiveUrl
+    //username            : req.user.username, //needed for ctrl but not necessary present as this might be public (guest users)
+    title               : presentation.title,
+    host                : process.env.HOST,
+    port                : process.env.PORT,
+    mode                : renderOpts.mode,
+    presentation        : presentation._id,
+    id                  : req.liveSession.id,
+    date                : req.liveSession.startDate,
+    presentationViewUrl : presentationViewUrl,
+    presenterLiveUrl    : presenterLiveUrl
   });
 }
 
@@ -138,60 +140,6 @@ function livePresentationFiles(req, res) {
 }
 
 
-// function startPresentation(req, res) {
-//   appLogger.debug('New session from ' + req.user.username);
-//   var slidesId = req.params.presentationId;
-
-//   asyncblock(function(flow) {
-
-//     //Error Handling
-//     flow.errorCallback = function errorCallback(err) {
-//       appLogger.error('Presentation Start\n' + err);
-//       return res.redirect(500, ['/', req.user.username,
-//           '/?alert=Something went wrong. The Great ASQ Server said: ',
-//           err.toString(), '&type=error'].join(''));
-//     }
-
-//     //Find slideshow
-//     var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-//     Slideshow.findOne({ 
-//       _id   : slidesId,
-//       owner : req.user._id }, flow.set('slideshow'));
-
-//     //Instantiate a new session
-//     var Session = db.model('Session', schemas.sessionSchema);
-//     var newSession = new Session();
-//     newSession.presenter = req.user._id;
-//     newSession.slides = flow.get('slideshow')._id;
-//     newSession.authLevel = ( Session.schema.path('authLevel').enumValues
-//       .indexOf(req.query.al) > -1 ) ? req.query.al : 'public';
-    
-//     //Save the new session
-//     newSession.save(flow.add());
-
-//     //Generate the white list for the level
-//     presUtils.generateWhitelist[newSession.authLevel]
-//       (newSession._id, newSession.presenter, flow.add());
-
-//     //Update the suer's current session
-//     var User = db.model('User', schemas.userSchema);
-//     User.findByIdAndUpdate(req.user._id, {
-//       current : newSession._id }, flow.add());
-
-//     //Update slideshow's last presentation to now
-//     flow.get('slideshow').lastSession = new Date();
-//     flow.get('slideshow').save(flow.add());
-
-//     //Wait to finish and redirect
-//     flow.wait();
-//     appLogger.info('Starting new ' + newSession.authLevel + ' session');
-//     res.location(['/', req.user.username, '/presentations/', newSession.slides,
-//       '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
-//     res.send(201);
-//   });
-// }
-
-
 function startPresentation(req, res, next) {
   appLogger.debug('New session from ' + req.user.username);
 
@@ -202,7 +150,7 @@ function startPresentation(req, res, next) {
     , newSession;
 
   //Find slideshow
-  Slideshow.findOne({ 
+  Slideshow.findOne({
     _id   : slidesId,
     owner : req.user._id })
   .exec()

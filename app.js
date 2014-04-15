@@ -132,7 +132,7 @@ app.configure(function() {
   app.use(app.router);
 
   app.use(errorMiddleware.logErrors);
-
+  app.param('user', middleware.isExistingUser);
   app.param('liveId', middleware.setLiveSession);
   app.use(slashes()); //Append slashes at the end of urls. (MUST BE at the end!)
 });

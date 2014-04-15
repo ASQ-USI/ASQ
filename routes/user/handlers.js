@@ -14,11 +14,11 @@ var when        = require('when')
 // GET /:user
 function getUserPage(req, res) {
   if (!req.isAuthenticated()) {
-    res.send(200, 'Public user page of ' + req.params.user + '.');
-  } 
-  else if (req.user.username === req.params.user) {
+    res.send(200, 'Public user page of ' + req.routeOwner.username + '.');
+  }
+  else if (req.user.username === req.routeOwner.username) {
 
-    // TODO: this is the same as 
+    // TODO: this is the same as
     // routes/user/presentations/handlers.js:listPresentations
     // refactor into a common function
     Slideshow.find({
@@ -63,8 +63,8 @@ function getUserPage(req, res) {
       });
     });
   } else {
-    res.send(200, 'Hello ' + req.user.username 
-        + '! You are viewing the user page of ' + req.params.user + '.');
+    res.send(200, 'Hello ' + req.user.username
+        + '! You are viewing the user page of ' + req.routeOwner.username + '.');
   }
 }
 
@@ -103,7 +103,7 @@ function updateUserSettings(req, res) {
       });
     }
   });
-  
+
   // Select fields to update
   var newValues = {};
   if(username.length > 0){
@@ -137,50 +137,39 @@ function updateUserSettings(req, res) {
 
 function getLivePresentations(req, res) {
   var slideshowSessionMap = {};
-  console.log("I am here")
-  User.findOne({username: req.params.user}, {_id:1}).exec()
-    .then(
-      function(user){
-        if (!user) {
-          return when.reject(new Error('User not found.'));
-        }
-        return Session.getLiveSessions(user._id);
+  Session.getLiveSessions(req.routeOwner._id)
+  .then(
+    function(sessions){
+      var sessionIds = sessions.map(function getSessionIds(session){
+        slideshowSessionMap[session.slides] = session._id
+        return session.slides
       })
-    .then(
-      function(sessions){
-        console.log("I am here2")
-        var sessionIds = sessions.map(function getSessionIds(session){
-          slideshowSessionMap[session.slides] = session._id
-          return session.slides
-        })
-          return Slideshow.find({_id : {$in : sessionIds}}).exec();
+        return Slideshow.find({_id : {$in : sessionIds}}).exec();
+    })
+  .then(
+    function(slideshows){
+      slideshows.forEach(function(slideshow){
+        slideshow.liveUrl = ASQ.rootUrl + '/' + req.routeOwner.username
+                      + '/presentations/' + slideshow._id + '/live/'
+                      + slideshowSessionMap[slideshow._id]
+                      + '/?role=viewer&view=presentation';
+             console.log(slideshow)
       })
-    .then(
-      function(slideshows){
-        console.log("I am here3")
-        slideshows.forEach(function(slideshow){
-          slideshow.liveUrl = ASQ.rootUrl + '/' + req.params.user
-                        + '/presentations/' + slideshow._id + '/live/'
-                        + slideshowSessionMap[slideshow._id]
-                        + '/?role=viewer&view=presentation';
-               console.log(slideshow)
-        })
-          console.log("I am here4")
 
-        res.render('userLive', {
-        livePresentations: slideshows,
-        username: req.params.user,
-        owner : {name: req.params.user },
-        user : { name : req.params.name, email : req.params.name }
-        });
-      })
-    .then(null,
-      function(err){
-        var where = "@ getLivePresentations";
-        err = err instanceof Error ? err : new Error(err);
-        appLogger.error(where + ': ', { error: err.stack });
-        res.render('500', { where: where , error: err, stack: err.stack });
+      res.render('userLive', {
+      livePresentations: slideshows,
+      username: req.routeOwner.username,
+      owner : {name: req.routeOwner.username },
+      user : { name : req.params.name, email : req.params.name }
       });
+    })
+  .then(null,
+    function(err){
+      var where = "@ getLivePresentations";
+      err = err instanceof Error ? err : new Error(err);
+      appLogger.error(where + ': ', { error: err.stack });
+      res.render('500', { where: where , error: err, stack: err.stack });
+    });
 }
 
 module.exports = {

@@ -1,6 +1,8 @@
-var passport       = require('passport')
-  , authentication = require('../lib/authentication')
-  , utils          = require('../lib/utils/routes');
+var passport     = require('passport')
+, appLogger      = require('../lib/logger').appLogger
+, authentication = require('../lib/authentication')
+, errorTypes     = require('./errorTypes')
+, utils          = require('../lib/utils/routes');
 
 var authorizeSession = authentication.authorizeSession;
 
@@ -12,6 +14,23 @@ function forceSSL(req, res, next) {
         req.url].join(''));
   }
   next(null);
+}
+
+function isExistingUser(req, res, next, username) {
+  var User = db.model('User');
+  User.findOne({ username : username }).exec()
+  .then(
+    function onUser(user) {
+      if (! user) {
+        errorTypes.add('invalid_request_error');
+        return next(Error.http(404, 'User ' + username + ' does not exist!', {type:'invalid_request_error'}));
+      } else {
+        req.routeOwner = user;
+        next(null);
+      }
+    }, function onError(err) {
+      next(err);
+  });
 }
 
 // Simple route middleware to ensure user is authenticated.
@@ -90,7 +109,12 @@ var ldapAuthenticate = passport.authenticate('local-ldap', {
 
 function setLiveSession(req, res, next, liveId) {
   var Session = db.model('Session', schemas.sessionSchema);
-  Session.findOne({ _id: liveId, endDate: null }).populate('slides')
+  Session.findOne({
+    _id: liveId,
+    slides:req.params.presentationId,
+    presenter: req.routeOwner._id,
+    endDate: null
+  }).populate('slides')
     .exec().then(function onSession(session) {
       if (session) {
         req.liveSession = session;
@@ -107,14 +131,15 @@ module.exports = {
   authorizeSession   : authorizeSession,
   forceSSL           : forceSSL,
   isAuthenticated    : isAuthenticated,
+  isExistingUser     : isExistingUser,
   isNotAuthenticated : isNotAuthenticated,
-  isRouteOwner       : [ 
-    isAuthenticated, 
+  isRouteOwner       : [
+    isAuthenticated,
     isRegistrationComplete,
-    isRouteOwner 
+    isRouteOwner
   ],
-  isNotRegistrationComplete : [ 
-    isAuthenticated, 
+  isNotRegistrationComplete : [
+    isAuthenticated,
     isNotRegistrationComplete,
   ],
   ldapAuthenticate   : ldapAuthenticate,
