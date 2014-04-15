@@ -47,7 +47,7 @@ function connect(host, port, session, mode, token) {
       } else if (i % 5 === 0) {
         $('.connected-viewers-icons').append('<span>&nbsp;&nbsp;</span>');
       }
-      $('.connected-viewers-icons').append('<i class="icon-user"> </i> ');
+      $('.connected-viewers-icons').append('<i class="glyphicon glyphicon-user"> </i> ');
     }
 
     //update viewers count
@@ -354,7 +354,7 @@ function requestDistinctCode(questionId, obj) {
       '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'+ questionId+'" href="#collapse-'+ questionId + '-' + i +'">',
       data[i][0],
       '</a>',
-      '<a href="#" class="correct-btn" ><i class="icon-ok"></i></a>',
+      '<a href="#" class="correct-btn" ><i class="glyphicon glyphicon-ok"></i></a>',
       '</div>',
       '<div id="collapse-'+ questionId + '-' + i +'" class="accordion-body collapse">',
       '<div class="accordion-inner">',
