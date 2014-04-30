@@ -21,9 +21,7 @@ var rubricSchema = abstractQuestionSchema.extend({
   maxScore: { type: Number, required: true } // Max score the rubric can have.
 });
 
-rubricSchema.
-
 appLogger.debug('Loading Rubric model');
-mongoose.model('Rubric', questionSchema, 'rubrics');
+mongoose.model('Rubric', rubricSchema, 'rubrics');
 
 module.exports = rubricSchema;
