@@ -18,16 +18,19 @@ var baseUserSchema = new Schema({
   { collection: 'users', discriminatorKey: '_type' });
 
 var registeredUserSchema = baseUserSchema.extend({
-  username: { type: String, unique: true, sparse: true, required: false, lowercase: true },
-  password: { type: String, required: false },
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
-  regComplete: {type:Boolean, required:true, default: false },
-  email: { type: String, required: false, sparse: true, unique: true }, // Exactly only one email per account
-  slides: { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
-  ldap:{
-    dn: { type: String , unique: true, sparse: true, required: false },
-    sAMAccountName: { type: String, unique: true, sparse: true, required: false }
+  username    : { type: String, unique: true, sparse: true, required: false
+                , lowercase: true },
+  password    : { type: String, required: false },
+  firstname   : { type: String, required: true },
+  lastname    : { type: String, required: true },
+  regComplete : {type:Boolean, required:true, default: false },
+  email       : { type: String, required: false, sparse: true, unique: true }, // Email is unique
+  slides      : { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
+  ldap        : {
+    dn             : { type: String , unique: true, sparse: true
+                     , required: false },
+    sAMAccountName : { type: String, unique: true, sparse: true
+                     , required: false }
   }
 });
 
@@ -37,27 +40,28 @@ registeredUserSchema.virtual('fullname').get(function getFullname() {
 
 registeredUserSchema.methods.isValidPassword = function isValidPassword(candidate, callback) {
   bcrypt.compare(candidate, this.password, function onPwdCompare(err, isMatch) {
-    if (err) return callback(err);
-
+    if (err) {
+      return callback(err);
+    }
     callback(null, isMatch);
   });
 };
 
 registeredUserSchema.statics.isValidUser = function(username, password, done) {
   var errMsg = 'Incorrect username/email and password combination.'
-    , criteria = (username.indexOf('@') === -1) 
-      ? {username: username , password: { $exists: true}} 
+    , criteria = (username.indexOf('@') === -1)
+      ? {username: username , password: { $exists: true}}
       : {email: username , password: { $exists: true}};
 
     this.findOne(criteria, function(err, user){
-    if(err) {return done(err)};
-    if(!user) {return done(null, false, { message : errMsg })};
-   
+    if(err) { return done(err) }
+    if(!user) { return done(null, false, { message : errMsg }) }
+
     user.isValidPassword(password, function(err, isMatch) {
       if (err) { return done(err); }
       if (!isMatch) { return done(null, false, { message: errMsg }); }
       return done(null, user);
-    });;
+    });
   });
 };
 
@@ -67,22 +71,22 @@ registeredUserSchema.statics.createOrAuthenticateLdapUser = function(ldapUser, d
 
     //user was found just log him in
     if (dbuser) {
-      return done(null, dbuser); 
+      return done(null, dbuser);
     } else {
-      // will create user but registration is 
+      // will create user but registration is
       // incomplete without an ASQ username
-      var User = db.model('User', schemas.registeredUserSchema)
+      var User    = db.model('User', schemas.registeredUserSchema)
         , newUser = new User();
 
-      newUser.ldap.dn = ldapUser.dn;
+      newUser.ldap.dn             = ldapUser.dn;
       newUser.ldap.sAMAccountName = ldapUser.sAMAccountName;
-      newUser.screenName = ldapUser.cn;
-      newUser.firstname = ldapUser.givenName || newUser.ldap.username;
-      newUser.lastname = ldapUser.sn || newUser.ldap.username;
+      newUser.screenName          = ldapUser.cn;
+      newUser.firstname           = ldapUser.givenName || newUser.ldap.username;
+      newUser.lastname            = ldapUser.sn || newUser.ldap.username;
 
       newUser.save(function(err, savedUser){
          if (err) { return done(err, null); }
-         return done(null, savedUser); 
+         return done(null, savedUser);
       })
     }
   });
@@ -92,13 +96,13 @@ registeredUserSchema.pre('save', function(next) {
   var user = this;
 
   // return if the password was not modified.
-  if (!user.isModified('password')) return next();
+  if (!user.isModified('password')) { return next(); }
 
   bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-      if (err) return next(err);
+      if (err) { return next(err); }
 
       bcrypt.hash(user.password, salt, function(err, hash) {
-          if (err) return next(err);
+          if (err) { return next(err); }
 
           user.password = hash;
           next();
