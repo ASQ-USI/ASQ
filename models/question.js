@@ -16,17 +16,17 @@ var questionTypes = 'multi-choice text-input code-input'.split(' ');
 
 var questionSchema = new Schema({
   // htmlId: {type:String},
-  stem: {type: String},
-  stemText: {type: String},
-  questionType: {type:String, enum:questionTypes},
-  formButtonType: {type:String, enum:formButtonTypes},
-  correctAnswer: {type:String},
-  questionOptions: [questionOptionSchema],
-  statTypes: { 
-    type: [String],
-    default: [],
-    validator: [statTypesValidator, 'Invalid stat type {PATH}.']
-  }
+    stem            : { type:  String },
+    stemText        : { type:  String },
+    questionType    : { type: String, enum:questionTypes },
+    formButtonType  : { type: String, enum:formButtonTypes },
+    correctAnswer   : { type: String },
+    questionOptions : [questionOptionSchema],
+    statTypes       : {  // TODO: fix this with subdocument without id
+      type      : [String],
+      default   : [],
+      validator : [statTypesValidator, 'Invalid stat type {PATH}.']
+    }
 });
 
 var questionOptionSchema = new Schema({
@@ -49,7 +49,7 @@ questionSchema.pre('remove', true, function(next,done){
 
 //Returns array with solution
 questionSchema.methods.getSolution = function(){
-	
+
 			var result = new Array;
 			if(this.questionType == "multi-choice"){
 				for (var i=0; i < this.questionOptions.length; i++) {
