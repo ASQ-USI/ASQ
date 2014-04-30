@@ -1,69 +1,52 @@
-/** @module models/question
-    @description the Questions Model
-*/
+/**
+ * @module models/question
+ * @description the Questions Model
+ **/
 
-var mongoose = require('mongoose')
-, Schema     = mongoose.Schema
-, when       = require('when')
-, wkeys      = require('when/keys')
-, stats      = require('../lib/stats')
-, appLogger  = require('../lib/logger').appLogger;
+var mongoose             = require('mongoose')
+, Schema                 = mongoose.Schema
+, when                   = require('when')
+, wkeys                  = require('when/keys')
+, Answer                 = db.model('Answer')
+, abstractQuestionSchema = require('./abstractQuestion')
+, questionOptionSchema   = require('./questionOption')
+, stats                  = require('../lib/stats')
+, appLogger              = require('../lib/logger').appLogger;
 
-// allowed form button types
-var formButtonTypes = 'checkbox radio'.split(' ');
-// allowed question types
-var questionTypes = 'multi-choice text-input code-input'.split(' ');
-
-var questionSchema = new Schema({
-  // htmlId: {type:String},
-    stem            : { type:  String },
-    stemText        : { type:  String },
-    questionType    : { type: String, enum:questionTypes },
-    formButtonType  : { type: String, enum:formButtonTypes },
-    correctAnswer   : { type: String },
-    questionOptions : [questionOptionSchema],
-    statTypes       : {  // TODO: fix this with subdocument without id
-      type      : [String],
-      default   : [],
-      validator : [statTypesValidator, 'Invalid stat type {PATH}.']
-    }
+var questionSchema = abstractQuestionSchema.extend({
+  questionOptions : { type: [questionOptionSchema] },
+  correctAnswer   : { type: String },
 });
 
-var questionOptionSchema = new Schema({
-  text:{type:String},
-  classList: {type:String},
-  correct:{type: Boolean}
-})
-
 //remove answers before removing a question
-questionSchema.pre('remove', true, function(next,done){
+// Do we really want to do this?
+questionSchema.pre('remove', true, function preRemoveHook(next,done) {
   next();
-   var Answer = db.model('Answer');
 
   //delete sessions
-  Answer.remove({question : this.id}, function(err){
-    if (err) { done(err)}
+  Answer.remove({question : this.id}, function onAnswerRemoval(err) {
+    if (err) { done(err); }
     done();
-  })
+  });
 });
 
 //Returns array with solution
 questionSchema.methods.getSolution = function(){
-
-			var result = new Array;
-			if(this.questionType == "multi-choice"){
-				for (var i=0; i < this.questionOptions.length; i++) {
+			var result = [];
+			if (this.questionType === 'multi-choice') {
+        var i, max;
+				for (i = 0, max =this.questionOptions.length; i <  max; i++) {
 			  		result.push(this.questionOptions[i].correct);
-				};
-			}else if(this.correctAnswer){
+				}
+			} else if (this.correctAnswer) {
 				result.push(this.correctAnswer);
-			}else{
+			} else {
         //FIXME: is this ok?
-        result=null;
+        result = null;
       }
-			console.log(result);
+      appLogger.debug('Solution for question ' + this.stem);
+      appLogger.debug(result);
 			return result;
-
 }
 
 questionSchema.methods.getStats = function getStats(sessionId) {
@@ -75,9 +58,7 @@ questionSchema.methods.getStats = function getStats(sessionId) {
 }
 
 appLogger.debug('Loading Question model');
-mongoose.model("Question",questionSchema);
-appLogger.debug('Loading QuestionOption model');
-mongoose.model("QuestionOption",questionOptionSchema);
+mongoose.model('Question', questionSchema, 'questions');
 
 var create =  function(docs){
   //we cant use mongoose promises because the
@@ -87,7 +68,7 @@ var create =  function(docs){
   // to maintain code readability
 
   var deferred = when.defer()
-  , Question = db.model("Question");
+  , Question = db.model('Question');
 
   Question.create(docs, function(err){
     if (err) {
@@ -104,16 +85,6 @@ var create =  function(docs){
   });
 
   return deferred.promise;
-}
-
-// Remove all stat types we don't know about
-function statTypesValidator(types) {
-  for (var i = types.length; i--;) {
-    if (! stats.hasOwnProperty(types[i])) {
-      types.splice(i, 1);
-    }
-  }
-  return true;
 }
 
 module.exports =  {
