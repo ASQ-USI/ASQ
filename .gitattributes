@@ -1,0 +1,3 @@
+**/*.min.css merge=ours
+**/*.min.js merge=ours
+public/js/* merge=ours

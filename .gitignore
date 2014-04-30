@@ -24,6 +24,7 @@
 ############################
 .*
 !/.gitignore
+!/.gitattributes
 
 # Node.js & ASQ #
 #################
@@ -35,6 +36,7 @@ config/config.*
 log/
 *.orig
 **/dump.rdb
+public/js
 public/js/* #built js files
 public/css/login.css #built css
 public/css/logoAnim.css #built css
