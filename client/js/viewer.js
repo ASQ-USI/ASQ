@@ -321,7 +321,7 @@ var statsTypes = {
 
 function drawChart() {
   $('.stats').each(function(el) {
-    var questionId = $(this).attr('target-assessment-id');
+    var questionId = $(this).attr('data-target-assessment-id');
     console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
@@ -339,7 +339,7 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
   var questionId = $(this).parents("[data-target-assessment-id]")
     .attr('data-target-assessment-id');
 
-  if ($(this).html() == 'Correctness') {
+  if ($(this).html() === 'Correctness') {
     var slide = $(this).parents('.step.active').attr('id');
     if (! slide) { return; } //Trying to render stats on a different slide
 

@@ -295,41 +295,40 @@ function drawChart() {
   })
 }
 
-$(function() {
-  $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
-    var questionId = $(this).parents("[data-target-assessment-id]")
-      .attr('data-target-assessment-id');
+$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+  var questionId = $(this).parents("[data-target-assessment-id]")
+    .attr('data-target-assessment-id');
 
-    if ($(this).html() == 'Correctness') {
-      var slide = $(this).parents('.step.active').attr('id');
-      if (! slide) { return; } //Trying to render stats on a different slide
+  if ($(this).html() === 'Correctness') {
+    var slide = $(this).parents('.step.active').attr('id');
+    if (! slide) { return; } //Trying to render stats on a different slide
 
-      var selector = '#' + slide + ' [data-target-assessment-id="' + questionId
-        + '"] .asq-viz-graph';
-      manager.render(selector, 'correctness');
-      return;
-    }
+    var selector = '#' + slide + ' [data-target-assessment-id="' + questionId
+      + '"] .asq-viz-graph';
+    manager.render(selector, 'correctness');
+    return;
+  }
 
-    // TODO Burn the code below which is buggy and and ugly.
-    var $question = $('.assessment[question-id='+questionId+']');
+  // TODO Burn the code below which is buggy and and ugly.
+  var $question = $('.assessment[question-id='+questionId+']');
 
-    if($question.hasClass('multi-choice')){
-      for (var key in statsTypes) {
-        //if chart exists
-        if(statsTypes[key].chart[questionId]){
-          requestStats(questionId, statsTypes[key])
-        }
+  if($question.hasClass('multi-choice')){
+    for (var key in statsTypes) {
+      //if chart exists
+      if(statsTypes[key].chart[questionId]){
+        requestStats(questionId, statsTypes[key])
       }
     }
-    else if($question.hasClass('text-input')){
-      requestDistinct(questionId)
-    }
-    else if($question.hasClass('code-input')){
-      requestDistinctCode(questionId);
-    }
+  }
+  else if($question.hasClass('text-input')){
+    requestDistinct(questionId)
+  }
+  else if($question.hasClass('code-input')){
+    requestDistinctCode(questionId);
+  }
 
-  });
-})
+});
+
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
     console.log(data);

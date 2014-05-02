@@ -234,12 +234,10 @@ function uploadPresentation(req, res, next) {
 
         return when.all([
           (new MarkupGenerator(dust)).render(slideShowFileHtml,
-                                         parsedQuestions,
-                                        {userType:'presenter'})
-          , (new MarkupGenerator(dust)).render(slideShowFileHtml,
-                                         parsedQuestions,
-                                        {userType:'viewer'})
-          ]);
+            parsedQuestions, { userType : 'presenter' }),
+          (new MarkupGenerator(dust)).render(slideShowFileHtml,
+            parsedQuestions, { userType : 'viewer' })
+        ]);
     })
     //7) store new html with questions to file
     .then(
