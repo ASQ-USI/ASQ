@@ -60,12 +60,15 @@ questionSchema.methods.getStats = function getStats(sessionId) {
 appLogger.debug('Loading Question model');
 mongoose.model('Question', questionSchema, 'questions');
 
+// TODO: Refactor to static model method
+// (see: http://mongoosejs.com/docs/guide.html#statics)
 var create =  function(docs){
   //we cant use mongoose promises because the
   // save operation returns undefined
   // see here: https://github.com/LearnBoost/mongoose/issues/1431
   // so we construct our own promise
   // to maintain code readability
+  // TODO use create instead: http://mongoosejs.com/docs/api.html#model_Model.create
 
   var deferred = when.defer()
   , Question = db.model('Question');

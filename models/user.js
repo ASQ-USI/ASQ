@@ -23,7 +23,7 @@ var registeredUserSchema = baseUserSchema.extend({
   password    : { type: String, required: false },
   firstname   : { type: String, required: true },
   lastname    : { type: String, required: true },
-  regComplete : {type:Boolean, required:true, default: false },
+  regComplete : { type:Boolean, required:true, default: false },
   email       : { type: String, required: false, sparse: true, unique: true }, // Email is unique
   slides      : { type: [ObjectId], default: [] }, //FIXME: rename me and make syntax like liveSessions
   ldap        : {
