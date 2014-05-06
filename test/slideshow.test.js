@@ -5,21 +5,19 @@
 var config    = require('../config')
   , mongoose  = require('mongoose');
 
-// mongodb connection (Global)  
+// mongodb connection (Global)
 db = mongoose.createConnection(config.host, config.dbName);
 
 var should = require('chai').should()
   , schemas  = require('../models')
 
 var mongooseFixtures = require('./util/mongoose-fixtures')
-  , slFixtures = require('./fixtures/slideshow.fixtures')
-  , ids = slFixtures.ids
-  , fixtures = slFixtures.fixtures
-  , Session = db.model("Session")
-  , Slideshow = db.model("Slideshow")
-  , Question = db.model("Question")
-  , QuestionOption = db.model("QuestionOption");
-
+, slFixtures         = require('./fixtures/slideshow.fixtures')
+, ids                = slFixtures.ids
+, fixtures           = slFixtures.fixtures
+, Session            = db.model('Session')
+, Slideshow          = db.model('Slideshow')
+, Question           = db.model('Question');
 
 describe('Slideshow model:', function() {
   describe('a new slideshow', function(){
@@ -119,7 +117,7 @@ describe('Slideshow model:', function() {
       });
     });
 
-    it("should remove associated sessions", function(done){
+    it('should remove associated sessions', function(done){
       Slideshow.findOne({_id: ids.slideshowNormalId}, function(err, slideshow){
         if (err) return done(err);
         slideshow.remove(function(err, removed){
@@ -134,7 +132,7 @@ describe('Slideshow model:', function() {
       })
     });
 
-    it("should remove associated questions", function(done){
+    it('should remove associated questions', function(done){
       Slideshow.findOne({_id: ids.slideshowNormalId}, function(err, slideshow){
         if (err) return done(err);
         slideshow.remove(function(err, removed){
@@ -146,13 +144,13 @@ describe('Slideshow model:', function() {
             done();
           })
         })
-      }) 
+      })
     });
 
-    it.skip("should remove associated answers", function(done){});
-    it.skip("should remove associated whitelists", function(done){});
+    it.skip('should remove associated answers', function(done){});
+    it.skip('should remove associated whitelists', function(done){});
 
-    it("should fail if the slideshow is live", function(done){
+    it('should fail if the slideshow is live', function(done){
       Slideshow.findOne({_id: ids.slideshowLiveId}, function(err, slideshow){
         if (err) return done(err)
         slideshow.remove(function(err, tade){

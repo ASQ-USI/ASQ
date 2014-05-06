@@ -161,7 +161,10 @@ exports.fixtures = {};
 exports.fixtures.User = {
   owner1: {
     _id: ids.owner1Id,
-    name: 'test user',
+    firstname: 'Test',
+    lastname: 'User',
+    username: 'testuser',
+    screenName: 'Test User',
     password: 'abcedfghiklmnopqrstuvwxyz',
     email: 'user@test.com',
     slides: [ids.slideshowNormalId, ids.slideshowLiveId],
@@ -200,7 +203,7 @@ exports.fixtures.Question = [
     }
   ]
 },
-{ 
+{
   _id: ids.question2Id,
   stem: "<h3 class=\"stem\">Which are the official languages of Switzerland?</h3>",
   stemText: "Which are the official languages of Switzerland?",

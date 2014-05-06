@@ -2,40 +2,44 @@
   @fileoverview tests for lib/upload.js for ASQ
 **/
 
-var config    = require('../config')
-  , mongoose  = require('mongoose');
+var mongoose = require('mongoose')
+, config     = require('../config');
 
-// mongodb connection (Global)  
+// mongodb connection (Global)
 db = mongoose.createConnection(config.host, config.dbName);
 
-var chai            = require('chai')
-  , chaiAsPromised  = require("chai-as-promised")
-  , expect          = chai.expect
-  , request         = require('supertest')
-  , express         = require('express')
-  , uploadHandler   = require('../routes/user/presentations/handlers').uploadPresentation
-  , schemas         = require('../models')
-  , passport        = require('passport')
-  , passportMock    = require('./util/mock-passport-middleware')
-  , configStub      = {}
-  , path            = require('path')
-  , lib             = require('../lib')
-  , fsUtils         = lib.utils.fs
-  , _               = require('lodash')
-  ,mongooseFixtures = require('./util/mongoose-fixtures')
+var _              = require('lodash')
+, chai             = require('chai')
+, chaiAsPromised   = require('chai-as-promised')
+, expect           = chai.expect
+, express          = require('express')
+, passport         = require('passport')
+, path             = require('path')
+, request          = require('supertest')
+, schemas          = require('../models') // Must load models b4 local requires.
+, passportMock     = require('./util/mock-passport-middleware')
+, lib              = require('../lib')
+, fsUtils          = lib.utils.fs
+, mongooseFixtures = require('./util/mongoose-fixtures')
+, uploadHandler    = require('../routes/user/presentations/handlers')
+  .uploadPresentation
+, configStub       = {};
 
 // support for promises
-require("mocha-as-promised")();
+require('mocha-as-promised')();
 chai.use(chaiAsPromised);
 
 
 // mock user
-var User = mongoose.model('User');
+var User     = mongoose.model('User');
 var mockUser = new User({
   _id: mongoose.Types.ObjectId('4edd40c86762e0fb12000003'),
-  name: "AlexandrosKontopides",
-  password : "Tony",
-  email : 'user@domain.com'
+  username    : 'alexandros',
+  password    : 'Tony',
+  firstname   : 'Alexandros',
+  lastname    : 'Kontop ides',
+  screenName  : 'Alexandros Kontopides',
+  email       : 'alexandros@kontopides.gr'
 });
 
 // setup a small app for the upload test
@@ -87,7 +91,7 @@ describe('upload', function() {
             var uploadPath = app.set('uploadDir');
             var totalDocs = docs.length;
             if(totalDocs == 0){
-              //return done(new Error("totalDocs shouldn't be 0"));
+              //return done(new Error('totalDocs shouldn't be 0'));
               return done();
             }
 
@@ -110,7 +114,7 @@ describe('upload', function() {
                         function(){
                           //cleanup question db
                           var Question = db.model('Question')
-                            return Question.remove({}).exec()                      
+                            return Question.remove({}).exec()
                       })
                       .then(
                         function(){
@@ -122,32 +126,33 @@ describe('upload', function() {
                             return done(err)
                           }
                       });
-                    } 
-                  //});         
-                });              
+                    }
+                  //});
+                });
             });
         });
     });
-    
-    
-    it.skip("should extract the questions and add them to the database");
-    it.skip("should create a file");
-    it.skip("with the correct markup for questions");
-    it.skip("should save the slideshow");
 
-    it("should redirect to the users page ", function(done){
+
+    it.skip('should extract the questions and add them to the database');
+    it.skip('should create a file');
+    it.skip('with the correct markup for questions');
+    it.skip('should save the slideshow');
+
+    it('should redirect to the users page ', function(done){
       request(app)
       .post('/upload/')
       .set('Accept', 'application/json')
-      .attach('upload', 'assets/SamplePresentation.zip', 'upload')      
+      .attach('upload', path.resolve(__dirname,'./fixtures/rubricsTest.zip'), 'upload')
       .expect(302)
       .end(function(err, res){
-        if (err) return done(err);
+        if (err) {
+          return done(err); }
         done()
       });
     });
 
-    it.skip("should not recreate a question that already exists");
+    it.skip('should not recreate a question that already exists');
 
   });
 
