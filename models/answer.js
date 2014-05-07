@@ -3,7 +3,7 @@
 */
 
 var mongoose      = require('mongoose')
- // , questionModel = require('./question') // Can't call question from answer because answer calls question...
+ // , questionModel = require('./question') // Can't call question from answer because question call answers...
   , Schema        = mongoose.Schema
   , ObjectId      = Schema.ObjectId
   , when          = require('when')
@@ -67,10 +67,4 @@ var answerLogSchema = new Schema({
   pageactive:{}
 });
 
-appLogger.debug('Loading AnswerLog model');
-mongoose.model("AnswerLog", answerLogSchema);
-
-module.exports =  {
-  answerSchema    : answerSchema,
-  answerLogSchema : answerLogSchema
-};
+module.exports = mongoose.model('Answer');

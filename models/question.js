@@ -91,7 +91,7 @@ var create =  function(docs){
 }
 
 module.exports =  {
-  questionSchema          : questionSchema,
+  Question          : mongoose.model('Question'),
   questionOptionSchema    : questionOptionSchema,
   create                  : create
 }

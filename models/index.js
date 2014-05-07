@@ -7,8 +7,8 @@ module.exports = {
   assessmentModel : require('./assessment'),
   questionModel   : require('./question'),
   rubricModel     : require('./rubric'),
-  sessionModel    : require('./session'),
-  slideshowModel  : require('./slideshow'),
   userModel       : require('./user'),
+  slideshowModel  : require('./slideshow'),
+  sessionModel    : require('./session'),
   whitelistModel  : require('./whitelist')
 };

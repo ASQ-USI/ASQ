@@ -24,4 +24,4 @@ var rubricSchema = abstractQuestionSchema.extend({
 appLogger.debug('Loading Rubric model');
 mongoose.model('Rubric', rubricSchema, 'rubrics');
 
-module.exports = rubricSchema;
+module.exports = mongoose.model('Rubric');

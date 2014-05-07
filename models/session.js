@@ -6,56 +6,42 @@ var mongoose = require('mongoose')
 , Schema     = mongoose.Schema
 , ObjectId   = Schema.ObjectId
 , when       = require('when')
-, appLogger  = require('../lib/logger').appLogger;
-
+, appLogger  = require('../lib/logger').appLogger
+// var Session = db.model('Session');
+, User       = db.model('User')
+, Slideshow  = mongoose.model('Slideshow');
 
 var sessionSchema = new Schema({
-	presenter: { type: ObjectId, ref: 'User'},
-	slides: { type: ObjectId, ref: 'Slideshow' },
-  authLevel: { type: String, default: 'public', enum: ['public', 'anonymous', 'private'] },
-	activeSlide: { type: String, default: '0' },
-	startDate: {type: Date, default: Date.now },
-  endDate: { type: Date, default: null },
-	viewers: {type: Array, default: []},
-
-	answers: { type:[ObjectId], ref: 'Answer'},
-	showingQuestion: { type: Boolean, default: false}, //maybe don't need it -> used to get a new connection up to date if it connects un the middle of a session
-	showingAnswer: { type: Boolean, default: false}, //maybe don't need it -> same as above
-	started: { type: Boolean, default: false},
-	questionsDisplayed: { type: [ObjectId], ref: 'Question'}, //maybe don't need it
-  activeQuestions: [ObjectId],
-  activeStatsQuestions : [ObjectId]
+  presenter            : { type: ObjectId, ref: 'User', required: true },
+  slides               : { type: ObjectId, ref: 'Slideshow', required: true },
+  authLevel            : { type: String, required: true, default: 'public',
+                           enum: ['public', 'anonymous', 'private'] },
+  activeSlide          : { type: String, required: true, default: '0' },
+  startDate            : { type: Date, required: true, default: Date.now },
+  endDate              : { type: Date, required: true, default: null },
+  answers              : { type:[{ type: ObjectId, ref: 'Answer' }],
+                           required: true, default: [] },
+  started              : { type: Boolean, default: false},
+  activeQuestions      : { type: [{ type: ObjectId, ref: 'Question' }],
+                           required: true, defalut: [] },
+  activeStatsQuestions : { type: [{ type: ObjectId, ref: 'Question' }],
+                           required: true, defalut: [] }
 });
 
 sessionSchema.virtual('isTerminated').get(function() {
   return this.endDate !== null;
 });
 
-//we do not allow more than one live session for the same user and the same slideshow
-sessionSchema.pre('save', true, function(next, done){
-  next();
-  var Session = db.model('Session');
-  Session.findOne({
-    _id : {$ne: this._id},
-    presenter: this.presenter,
-    slides: this.slides,
-    endDate: null,
-  }, function(err, session) {
-    if(err) done(err);
-    if (session) {
-      return done(new Error('A live session with the specified user and presentation already exists'));
-    }
-    done();
-  });
-});
+// Ensure only one session given a presenter and a set of slides.
+sessionSchema.index({ presenter: 1, slides: 1 });
 
 //slideshow should exist
-sessionSchema.pre('save', true, function(next, done){
+sessionSchema.pre('save', true, function checkSlidesOnSave(next, done){
   next();
-  var Slideshow = db.model('Slideshow');
+
   Slideshow.findOne({_id : this.slides}, function(err, slideshow) {
-    if(err) done(err)
-    if (!slideshow) {
+    if (err) { done(err); }
+    else if (!slideshow) {
       return done(new Error('Slides field must be a real Slideshow _id'));
     }
     done();
@@ -63,23 +49,23 @@ sessionSchema.pre('save', true, function(next, done){
 });
 
 //presenter should exist
-sessionSchema.pre('save', true, function(next, done){
+sessionSchema.pre('save', true, function checkPresenterOnSave(next, done){
   next();
-  var User = db.model('User');
+
   User.findOne({_id : this.presenter}, function(err, presenter) {
-    if(err) done(err)
-    if (!presenter) {
+    if (err) { done(err); }
+    else if (!presenter) {
       return done(new Error('Presenter field must be a real User _id'));
     }
     done();
   });
 });
 
-sessionSchema.statics.getLiveSessions = function getLiveSessions(userId, callback) {
+sessionSchema.statics.getLiveSessions = function(userId, callback) {
   var deferred = when.defer();
   this.find({ presenter: userId, endDate: null},
   function onLiveSessions(err, sessions) {
-    if (callback & (typeof(callback) == "function")) {
+    if (callback & (typeof (callback) === 'function')) {
       callback(err, sessions);
       return
     } else if (err) {
@@ -91,11 +77,11 @@ sessionSchema.statics.getLiveSessions = function getLiveSessions(userId, callbac
   return deferred.promise;
 }
 
-sessionSchema.statics.getLiveSessionIds = function getLiveSessionIds(userId, callback) {
+sessionSchema.statics.getLiveSessionIds = function(userId, callback) {
   var deferred = when.defer();
   this.find({ presenter: userId, endDate: null}, '_id',
   function onLiveSessions(err, sessions) {
-    if (callback & (typeof(callback) == "function")) {
+    if (callback & (typeof (callback) === 'function')) {
       callback(err, sessions);
       return
     } else if (err) {
@@ -108,10 +94,7 @@ sessionSchema.statics.getLiveSessionIds = function getLiveSessionIds(userId, cal
 }
 
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
-
-  var deferred = when.defer()
-  , Slideshow = db.model('Slideshow');
-
+  var deferred = when.defer();
   Slideshow.findById(this.slides).exec()
     .then(function(slideshow){
       deferred.resolve(slideshow.getQuestionsForSlide(slideHtmlId));
@@ -124,16 +107,13 @@ sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
 }
 
 sessionSchema.methods.statQuestionsForSlide = function(slideHtmlId) {
-
-  var deferred = when.defer()
-  , Slideshow = db.model('Slideshow');
-
+  var deferred = when.defer();
   Slideshow.findById(this.slides).exec()
     .then(function(slideshow){
       deferred.resolve(slideshow.getStatQuestionsForSlide(slideHtmlId));
     }
    ,function(err, slideshow) {
-      deferred.reject(err);  
+      deferred.reject(err);
   });
 
   return deferred.promise;
@@ -146,13 +126,11 @@ sessionSchema.methods.statQuestionsForSlide = function(slideHtmlId) {
 */
 
 sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
-
   var deferred = when.defer();
-
   this.questionsForSlide(slideHtmlId)
     .then(function(questions){
       for (var i=0; i<questions.length; i++){
-        if(questions[i]== questionId){
+        if (questions[i]== questionId){
            deferred.resolve(true);
         }
       }
@@ -163,10 +141,8 @@ sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
 
 // sessionSchema.methods.question = function(callback) {
 // 	var that = this;
-// 	var Slideshow = db.model('Slideshow');
 // 	Slideshow.findById(this.slides, function(err, slideshow) {
 // 		if (slideshow) {
-// 			var Question = db.model('Question');
 // 		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
 // 						afterslide: that.activeSlide},
 // 				        function(err, question) {
@@ -176,16 +152,15 @@ sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
 // 							callback(err, question);
 // 						});
 // 		}
-		
+
 // 	});
 // }
 
+// Export virtual fields as well
 sessionSchema.set('toObject', { virtuals: true });
 sessionSchema.set('toJSON', { virtuals: true });
 
 appLogger.debug('Loading Session model');
-mongoose.model("Session", sessionSchema);
+mongoose.model('Session', sessionSchema);
 
-module.exports = {
-  sessionSchema : sessionSchema
-}
+module.exports = mongoose.model('Session');

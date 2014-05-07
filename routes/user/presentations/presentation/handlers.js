@@ -9,8 +9,8 @@ var asyncblock = require('asyncblock')
   , nodefn     = require('when/node/function');
 
 function editPresentation(req, res) {
-  var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-  var questionDB = db.model('Question', schemas.questionSchema);
+  var Slideshow = db.model('Slideshow');
+  var questionDB = db.model('Question');
 
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
     if (err) {

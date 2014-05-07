@@ -29,6 +29,4 @@ assessmentSchema.index({
 appLogger.debug('Loading Assessment model');
 mongoose.model('Assessment', assessmentSchema);
 
-module.exports = {
-  assessmentSchema : assessmentSchema
-};
+module.exports = mongoose.model('Assessment');

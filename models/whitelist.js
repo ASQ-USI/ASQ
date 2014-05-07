@@ -5,10 +5,10 @@ var check   = require('validator').check
 , appLogger = require('../lib/logger').appLogger;
 
 var roles = {}
-roles['banned']    = 0;
-roles['viewer']    = 1;
-roles['assistant'] = 2;
-roles['presenter'] = 3;
+roles.banned    = 0;
+roles.viewer    = 1;
+roles.assistant = 2;
+roles.presenter = 3;
 
 
 var whitelistEntrySchema = new Schema({
@@ -38,6 +38,4 @@ whitelistEntrySchema.methods.validateRole = function validateRole(role) {
 appLogger.debug('Loading WhitelistEntry');
 mongoose.model('WhitelistEntry', whitelistEntrySchema);
 
-module.exports = {
-	whitelistEntrySchema : whitelistEntrySchema
-};
+module.exports = mongoose.model('WhitelistEntry');
