@@ -117,6 +117,7 @@ describe('uploadPresentation(req, res, next)', function upload() {
   });
 
   describe('with a valid slide show', function valid() {
+     this.timeout(0)
     var req;
     before(function setUp(done) {
       defaultSetUp().then(

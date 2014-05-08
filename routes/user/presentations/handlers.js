@@ -20,6 +20,7 @@ var _             = require('lodash')
 //, thumbUtils      = require('./utils') //TODO Fix thumbs
 , Question        = db.model('Question')
 , Rubric          = db.model('Rubric')
+, Exercise        = db.model('Exercise')
 , Slideshow       = db.model('Slideshow')
 , Session         = db.model('Session')
 , User            = db.model('User');
@@ -166,6 +167,7 @@ function uploadPresentation(req, res, next) {
   var questionIdsMap = {} //To map html id to object ids of questions
   , slideShowFileHtml
   , slideShowQuestions
+  , parsedExercises
   , parsedQuestions
   , parsedRubrics
   , parsedStats;
@@ -210,19 +212,48 @@ function uploadPresentation(req, res, next) {
     // TODO: create questions only if they exist
     .then(
       function(parsed){
-        parsedQuestions =  [];
-        parsed.exercises.each(function(exercise){
-          parsedQuestions= parsedQuestions.concat(exercise.questions)
-        })
-        // parsedQuestions = parsed.questions;
+
+        var dbQuestions =  [];
+        parsedExercises = parsed.exercises
         parsedRubrics   = parsed.rubrics;
         parsedStats     = parsed.stats;
-        var deferred = when.defer();
-        Question.create(parsedQuestions).then(
-          function(ques) {
-            deferred.resolve(ques); },
-          function(err) { deferred.reject(err); });
-        return deferred.promise;
+
+        //create questions and exercises
+        return when.map(parsedExercises, function(exercise){
+          return Question.create(exercise.questions)
+            .then(function(){
+              var createdQuestions = [].slice.call(arguments);
+              
+              exercise.questions.each(function(q, i){
+                //add db ids
+                q.id = createdQuestions[i].id
+                //map question htmlids to database id
+                questionIdsMap[q.htmlId] = createdQuestions[i].id;
+              })
+              dbQuestions= dbQuestions.concat(createdQuestions)
+              return Exercise.create({questions: createdQuestions.map(function(q){ return q._id; })})
+            })
+        }).then(function(){
+          parsedQuestions =  [];
+          parsed.exercises.each(function(exercise){
+            parsedQuestions= parsedQuestions.concat(exercise.questions)
+          })
+          return when.resolve(dbQuestions);
+        })
+
+        // parsedQuestions =  [];
+        // parsed.exercises.each(function(exercise){
+        //   parsedQuestions= parsedQuestions.concat(exercise.questions)
+        // })
+        // // parsedQuestions = parsed.questions;
+        // parsedRubrics   = parsed.rubrics;
+        // parsedStats     = parsed.stats;
+        // var deferred = when.defer();
+        // Question.create(parsedQuestions).then(
+        //   function(ques) {
+        //     deferred.resolve(ques); },
+        //   function(err) { deferred.reject(err); });
+        // return deferred.promise;
     })
     // 6) Update question refs in rubrics and stats with db ids.
     .then(
@@ -233,15 +264,15 @@ function uploadPresentation(req, res, next) {
         // NOTE: this relies on the db array to maintain the same order as
         // the parsed array. While there is no indication it is not kept,
         // there is no indication it is either... To check!
-        var i = parsedQuestions.length;
-        while(i--) {
-          questionIdsMap[parsedQuestions[i].htmlId] = dbQuestions[i].id;
-          parsedQuestions[i].id = dbQuestions[i].id;
-        }
+        // var i = parsedQuestions.length;
+        // while(i--) {
+        //   questionIdsMap[parsedQuestions[i].htmlId] = dbQuestions[i].id;
+        //   parsedQuestions[i].id = dbQuestions[i].id;
+        // }
 
         // Update stats refs to question using the HTML-ObjectId mapping
         // generated before.
-        i = parsedStats.length;
+        var i = parsedStats.length;
         while(i--) {
           var htmlId = parsedStats[i].questionHtmlId;
           if (! questionIdsMap.hasOwnProperty(htmlId)) {
@@ -277,9 +308,9 @@ function uploadPresentation(req, res, next) {
         console.log(dbRubrics)
         return when.all([
           (new MarkupGenerator(dust)).render(slideShowFileHtml,
-            parsedQuestions, dbRubrics, { userType : 'presenter' }),
+            parsedExercises, dbRubrics, { userType : 'presenter' }),
           (new MarkupGenerator(dust)).render(slideShowFileHtml,
-            parsedQuestions, dbRubrics, { userType : 'viewer' })
+            parsedExercises, dbRubrics, { userType : 'viewer' })
         ]);
     })
     // 8) store new html with questions to file

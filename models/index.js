@@ -5,6 +5,7 @@
 module.exports = {
   answerModel     : require('./answer'),
   assessmentModel : require('./assessment'),
+  exerciseModel   : require('./exercise'),
   questionModel   : require('./question'),
   rubricModel     : require('./rubric'),
   userModel       : require('./user'),
