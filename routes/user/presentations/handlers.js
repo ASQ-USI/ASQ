@@ -210,22 +210,24 @@ function uploadPresentation(req, res, next) {
     // TODO: create questions only if they exist
     .then(
       function(parsed){
-        parsedQuestions = parsed.questions;
+        parsedQuestions =  [];
+        parsed.exercises.each(function(exercise){
+          parsedQuestions= parsedQuestions.concat(exercise.questions)
+        })
+        // parsedQuestions = parsed.questions;
         parsedRubrics   = parsed.rubrics;
         parsedStats     = parsed.stats;
         var deferred = when.defer();
-        console.dir(parsed.exercises);
         Question.create(parsedQuestions).then(
-          function(ques) { deferred.resolve(ques); },
+          function(ques) {
+            deferred.resolve(ques); },
           function(err) { deferred.reject(err); });
         return deferred.promise;
     })
     // 6) Update question refs in rubrics and stats with db ids.
     .then(
-      function(one, two){
+      function(dbQuestions){
         appLogger.debug('questions successfully parsed');
-        console.log(one, two)
-
         // Update questions ids from HTML to db objects and save the mapping in
         // memory for further processing (rubrics and stats).
         // NOTE: this relies on the db array to maintain the same order as

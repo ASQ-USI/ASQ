@@ -21,7 +21,8 @@ db = mongoose.createConnection(
 
 chai.use(sinonChai);
 
-var models          = require('../models')
+var pfs              = require('promised-io/fs')
+, models             = require('../models')
 , dustHelpers        = require('../lib/dust-helpers')
 , microformat        = require('asq-microformat')
 , mongooseFixtures   = require('./util/mongoose-fixtures')
@@ -54,6 +55,7 @@ function defaultSetUp() {
 function defaultTearDown() {
   var deferred = when.defer();
   var models = fixtures;
+  var dir = app.get('uploadDir');
   mongooseFixtures.clear(models, db, function(err){
     if (err) { deferred.reject(err); }
     else { deferred.resolve(true); }
