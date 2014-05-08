@@ -8,10 +8,15 @@ var mongoose             = require('mongoose')
 , when                   = require('when')
 , wkeys                  = require('when/keys')
 , Answer                 = db.model('Answer')
-, abstractQuestionSchema = require('./abstractQuestion')
-, questionOptionSchema   = require('./questionOption')
+, abstractQuestionSchema = require('./abstractQuestionSchema')
 , stats                  = require('../lib/stats')
 , appLogger              = require('../lib/logger').appLogger;
+
+var questionOptionSchema = new Schema({
+  text      : { type: String, required: true },
+  classList : { type: String, required: true, default: '' },
+  correct   : { type: Boolean, required: true }
+}, { _id: false }); //Prevent creation of id for subdocuments.
 
 var questionSchema = abstractQuestionSchema.extend({
   questionOptions : { type: [questionOptionSchema] },
@@ -60,38 +65,4 @@ questionSchema.methods.getStats = function getStats(sessionId) {
 appLogger.debug('Loading Question model');
 mongoose.model('Question', questionSchema, 'questions');
 
-// TODO: Refactor to static model method
-// (see: http://mongoosejs.com/docs/guide.html#statics)
-var create =  function(docs){
-  //we cant use mongoose promises because the
-  // save operation returns undefined
-  // see here: https://github.com/LearnBoost/mongoose/issues/1431
-  // so we construct our own promise
-  // to maintain code readability
-  // TODO use create instead: http://mongoosejs.com/docs/api.html#model_Model.create
-
-  var deferred = when.defer()
-  , Question = db.model('Question');
-
-  Question.create(docs, function(err){
-    if (err) {
-      deferred.reject(err);
-      return;
-    }
-
-    // aggregate saved docs
-    var docs = [];
-    for (var i=1; i<arguments.length; ++i) {
-        docs.push(arguments[i]);
-    }
-    deferred.resolve(docs);
-  });
-
-  return deferred.promise;
-}
-
-module.exports =  {
-  Question          : mongoose.model('Question'),
-  questionOptionSchema    : questionOptionSchema,
-  create                  : create
-}
+module.exports =  mongoose.model('Question');

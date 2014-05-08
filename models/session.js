@@ -7,9 +7,8 @@ var mongoose = require('mongoose')
 , ObjectId   = Schema.ObjectId
 , when       = require('when')
 , appLogger  = require('../lib/logger').appLogger
-// var Session = db.model('Session');
 , User       = db.model('User')
-, Slideshow  = mongoose.model('Slideshow');
+, Slideshow  = db.model('Slideshow');
 
 var sessionSchema = new Schema({
   presenter            : { type: ObjectId, ref: 'User', required: true },

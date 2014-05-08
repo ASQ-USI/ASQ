@@ -8,7 +8,6 @@ var mongoose = require('mongoose')
 , when       = require('when')
 , appLogger  = require('../lib/logger').appLogger
 , Question   = db.model('Question')
-// , Session    = mongoose.model('Session')
 , User       = db.model('User');
 
 var questionsPerSlideSchema = new Schema({

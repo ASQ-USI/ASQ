@@ -9,11 +9,15 @@ var mongoose             = require('mongoose')
 , when                   = require('when')
 , wkeys                  = require('when/keys')
 , Answer                 = db.model('Answer')
-, abstractQuestionSchema = require('./abstractQuestion')
-, questionOptionSchema   = require('./questionOption')
-, criterionSchema        = require('./criterion')
+, abstractQuestionSchema = require('./abstractQuestionSchema')
 , stats                  = require('../lib/stats')
 , appLogger              = require('../lib/logger').appLogger;
+
+var criterionSchema = new Schema({
+  desc   : { type: String, required: true },
+  points : { type: Number, required: true },
+  label  : { type: String, required: true }
+}, { _id: false }); //Prevent creation of id for subdocuments.
 
 var rubricSchema = abstractQuestionSchema.extend({
   criteria: { type: [criterionSchema], required: false },
