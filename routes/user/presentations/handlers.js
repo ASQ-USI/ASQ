@@ -1,28 +1,28 @@
 require('when/monitor/console');
-var AdmZip          = require('adm-zip')
-  , cheerio         = require('cheerio')
-  , dust            = require('dustjs-linkedin')
-  , moment          = require('moment')
-  , path            = require('path')
-  , pfs             = require('promised-io/fs')
-  , _               = require('lodash')
-  , when            = require('when')
-  , nodefn          = require('when/node/function')
-  , lib             = require('../../../lib')
-  , appLogger       = lib.logger.appLogger
-  , microformat     = require('asq-microformat')
-  , Parser          = microformat.parser
-  , MarkupGenerator = microformat.generator
-  , fsUtils         = lib.utils.fs
-  , Slideshow       = db.model('Slideshow')
-  , User            = db.model('User')
-  , Session         = db.model('Session')
-  , model           = require('../../../models')
-  , slideshowModel  = model.slideshowModel
-  , questionModel   = model.questionModel
-  , thumbUtils      = require('./utils')
-  , errorTypes      = require('../../errorTypes')
-  , utils           = require('../../../lib/utils/routes')
+var _             = require('lodash')
+, AdmZip          = require('adm-zip')
+, cheerio         = require('cheerio')
+, dust            = require('dustjs-linkedin')
+, microformat     = require('asq-microformat')
+, Parser          = microformat.parser
+, MarkupGenerator = microformat.generator
+, moment          = require('moment')
+, nodefn          = require('when/node/function')
+, path            = require('path')
+, pfs             = require('promised-io/fs')
+, when            = require('when')
+, errorTypes      = require('../../errorTypes')
+, lib             = require('../../../lib')
+, appLogger       = lib.logger.appLogger
+, fsUtils         = lib.utils.fs
+, utils           = lib.utils.routes
+, questionModel   = require('../../../models/question') //TODO fix and remove this require
+//, thumbUtils      = require('./utils') //TODO Fix thumbs
+, Question        = db.model('Question')
+, Rubric          = db.model('Rubric')
+, Slideshow       = db.model('Slideshow')
+, Session         = db.model('Session')
+, User            = db.model('User');
 
 function deletePresentation(req, res, next) {
   errorTypes.add('invalid_request_error');
@@ -163,9 +163,11 @@ function uploadPresentation(req, res, next) {
   //STEPS TO CREATE A NEW SLIDESHOW
 
   // 1) create new Slideshow model
-  var slideShowFileHtml
+  var questionIdsMap = {} //To map html id to object ids of questions
+  , slideShowFileHtml
   , slideShowQuestions
   , parsedQuestions
+  , parsedRubrics
   , parsedStats;
 
   var newSlideshow = new Slideshow({
@@ -178,7 +180,7 @@ function uploadPresentation(req, res, next) {
   var zip = new AdmZip(req.files.upload.path);
   zip.extractAllTo(folderPath);
 
-  //3) make sure at least one html exists
+  // 3) make sure at least one html exists
   fsUtils.getFirstHtmlFile(folderPath)
     .tap(function(filePath){
       newSlideshow.originalFile = path.basename(filePath);
@@ -188,7 +190,7 @@ function uploadPresentation(req, res, next) {
       function(filePath){
         return pfs.readFile(filePath);
     })
-    //4) parse questions
+    // 4) parse questions
     .then(
       function(file) {
         slideShowFileHtml = file;
@@ -204,42 +206,81 @@ function uploadPresentation(req, res, next) {
         appLogger.debug('parsing main .html file for questions...');
         return (new Parser).parse(slideShowFileHtml);
     })
-    //5) create new questions for database
+    // 5) create new questions for database
     // TODO: create questions only if they exist
     .then(
       function(parsed){
         parsedQuestions = parsed.questions;
-        parsedStats = parsed.stats;
-        return questionModel.create(parsedQuestions)
+        parsedRubrics   = parsed.rubrics;
+        parsedStats     = parsed.stats;
+        var deferred = when.defer();
+        console.dir(parsed.exercises);
+        Question.create(parsedQuestions).then(
+          function(ques) { deferred.resolve(ques); },
+          function(err) { deferred.reject(err); });
+        return deferred.promise;
     })
-    //6) render questions inside to slideshow's html into memory
+    // 6) Update question refs in rubrics and stats with db ids.
     .then(
-      function(dbQuestions){
+      function(one, two){
         appLogger.debug('questions successfully parsed');
+        console.log(one, two)
 
-        //copy objectIDs created from mongoose
-        _.each(parsedQuestions, function(parsedQuestion, index){
-          parsedQuestion.id = dbQuestions[index].id;
+        // Update questions ids from HTML to db objects and save the mapping in
+        // memory for further processing (rubrics and stats).
+        // NOTE: this relies on the db array to maintain the same order as
+        // the parsed array. While there is no indication it is not kept,
+        // there is no indication it is either... To check!
+        var i = parsedQuestions.length;
+        while(i--) {
+          questionIdsMap[parsedQuestions[i].htmlId] = dbQuestions[i].id;
+          parsedQuestions[i].id = dbQuestions[i].id;
+        }
 
-           // push questions mongo ids to corresponding questions
-          _.each(parsedStats, function(parsedStat){
-            if(parsedStat.questionHtmlId == parsedQuestion.htmlId){
-              parsedStat.questionId = parsedQuestion.id;
-            }
-          });
-        });
+        // Update stats refs to question using the HTML-ObjectId mapping
+        // generated before.
+        i = parsedStats.length;
+        while(i--) {
+          var htmlId = parsedStats[i].questionHtmlId;
+          if (! questionIdsMap.hasOwnProperty(htmlId)) {
+            console.dir(questionIdsMap);
+            return when.reject(new Error([
+              'Invalid question Id reference "', htmlId,
+              '" for stats on slide "', parsedStats[i].slideHtmlId, '".'
+            ].join('')));
+          }
+          parsedStats[i].questionId = questionIdsMap[htmlId];
+        }
+
+        // Update rubrics refs to question using the HTML-ObjectId mapping
+        // generated before.
+        i = parsedRubrics.length;
+        while(i--) {
+          var qId = parsedRubrics[i].question;
+          if (! questionIdsMap.hasOwnProperty(qId)) {
+            return when.reject(new Error([
+              'Invalid question Id reference "', qId,
+              '"for rubrics on slide "', parsedRubrics[i].stemText, '".'
+            ].join('')));
+          }
+          parsedRubrics[i].question = questionIdsMap[qId];
+        }
 
         //hold reference to the db questions
         slideShowQuestions = dbQuestions;
 
+        return Rubric.create(parsedRubrics); //Dump rubrics in db
+    }).then( // 7) Render templates of slideshow for presenter and viewer.
+      function onSavedRubrics(dbRubrics) {
+        console.log(dbRubrics)
         return when.all([
           (new MarkupGenerator(dust)).render(slideShowFileHtml,
-            parsedQuestions, { userType : 'presenter' }),
+            parsedQuestions, dbRubrics, { userType : 'presenter' }),
           (new MarkupGenerator(dust)).render(slideShowFileHtml,
-            parsedQuestions, { userType : 'viewer' })
+            parsedQuestions, dbRubrics, { userType : 'viewer' })
         ]);
     })
-    //7) store new html with questions to file
+    // 8) store new html with questions to file
     .then(
       function(newHtml){
         appLogger.debug('presenter and audience files rendered in memory '
@@ -257,18 +298,18 @@ function uploadPresentation(req, res, next) {
         return  require('promised-io/promise').all(filePromises);
 
     })
-    //8) add questions to slideshow and persist
+    // 9) add questions to slideshow and persist
     .then(
       function(){
         newSlideshow.questions = slideShowQuestions
         // remember: parsedQuestions and parsedStats now have the question ObjectID
         // created when the mongo questions were created
-        newSlideshow.questionsPerSlide = slideshowModel.createQuestionsPerSlide(parsedQuestions)
-        newSlideshow.statsPerSlide = slideshowModel.createStatsPerSlide(parsedStats)
+        newSlideshow.setQuestionsPerSlide(parsedQuestions);
+        newSlideshow.setStatsPerSlide(parsedStats);
 
         return newSlideshow.saveWithPromise();
     })
-    //9) remove zip folder
+    // 10) remove zip folder
     .then(
       function(doc){
         appLogger.debug('new slideshow saved to db');
@@ -277,13 +318,13 @@ function uploadPresentation(req, res, next) {
        // thumbUtils.createThumbs(newSlideshow);
         return pfs.unlink(req.files.upload.path);
     })
-    //10) update slideshows for user
+    // 11) update slideshows for user
     .then(function(){
       return User.findByIdAndUpdate(req.user._id, {
         $push: { slides : newSlideshow._id }
       }).exec();
     })
-    //11) redirect to user profile page
+    //12) redirect to user profile page
     .then(
       function(user){
         appLogger.debug('upload zip file unlinked');
@@ -294,11 +335,11 @@ function uploadPresentation(req, res, next) {
     },
     // Error handling for all the above promises
     function(err){
-      next(err)
-      pfs.unlink(req.files.upload.path).then(
-        res.redirect(['/', req.user.username, '/presentations/?alert=',
-            err.toString(), '&type=error'].join(''))
-      );
+      pfs.unlink(req.files.upload.path).then(function() {
+        next(err);
+        // res.redirect(['/', req.user.username, '/presentations/?alert=',
+        //     err.toString(), '&type=error'].join(''))
+      });
     });
 }
 
