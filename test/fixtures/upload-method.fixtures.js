@@ -42,9 +42,9 @@ var reqs = {
 };
 
 // Empty fixtures on purpose to empty the db of docs created by the tested fn.
-// fixtures.Question = [];
-// fixtures.Rubric = [];
-// fixtures.Slideshow = [];
+fixtures.Question = [];
+fixtures.Rubric = [];
+fixtures.Slideshow = [];
 
 var uploadDir = path.resolve(__dirname, './tmp-upload-method-slides');
 

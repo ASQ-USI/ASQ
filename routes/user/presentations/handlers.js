@@ -206,12 +206,19 @@ function uploadPresentation(req, res, next) {
        // console.log(slideShowFileHtml)
 
         appLogger.debug('parsing main .html file for questions...');
-        return (new Parser).parse(slideShowFileHtml);
+        return (new Parser(appLogger)).parse(slideShowFileHtml);
     })
     // 5) create new questions for database
     // TODO: create questions only if they exist
     .then(
-      function(parsed){
+      function(parsed) {
+        // Check for parsing errors and fail if there are some.
+        if (parsed.errors) {
+          return when.reject(new Error(
+            'Parsing failed with the following errors: \n - ' +
+            parsed.errors.join('\n - ')
+          ));
+        }
 
         var dbQuestions =  [];
         parsedExercises = parsed.exercises
@@ -219,24 +226,25 @@ function uploadPresentation(req, res, next) {
         parsedStats     = parsed.stats;
 
         //create questions and exercises
-        return when.map(parsedExercises, function(exercise){
-          return Question.create(exercise.questions)
-            .then(function(){
+        return when.map(parsedExercises, function(exercise) {
+          return Question.create(exercise.questions).then(function() {
               var createdQuestions = [].slice.call(arguments);
-              
-              exercise.questions.each(function(q, i){
+
+              exercise.questions.each(function(q, i) {
                 //add db ids
                 q.id = createdQuestions[i].id
-                //map question htmlids to database id
+                //map question html ids to database id
                 questionIdsMap[q.htmlId] = createdQuestions[i].id;
-              })
-              dbQuestions= dbQuestions.concat(createdQuestions)
-              return Exercise.create({questions: createdQuestions.map(function(q){ return q._id; })})
+              });
+              dbQuestions = dbQuestions.concat(createdQuestions)
+              return Exercise.create({
+                questions : createdQuestions.map(function(q) { return q._id; })
+              });
             })
         }).then(function(){
-          parsedQuestions =  [];
-          parsed.exercises.each(function(exercise){
-            parsedQuestions= parsedQuestions.concat(exercise.questions)
+          parsedQuestions = [];
+          parsed.exercises.each(function(exercise) {
+            parsedQuestions = parsedQuestions.concat(exercise.questions)
           })
           return when.resolve(dbQuestions);
         })
@@ -305,7 +313,7 @@ function uploadPresentation(req, res, next) {
         return Rubric.create(parsedRubrics); //Dump rubrics in db
     }).then( // 7) Render templates of slideshow for presenter and viewer.
       function onSavedRubrics(dbRubrics) {
-        console.log(dbRubrics)
+        //console.log(dbRubrics)
         return when.all([
           (new MarkupGenerator(dust)).render(slideShowFileHtml,
             parsedExercises, dbRubrics, { userType : 'presenter' }),

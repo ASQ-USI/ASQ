@@ -2,6 +2,15 @@
   @fileoverview tests for ASQ's slideshow upload handling
 **/
 
+/* Tell jshint about global vars */
+/* global app: true */
+/* global after: true */
+/* global before: true */
+/* global db: true */
+/* global it: true */
+/* global  describe: true */
+/* global  __dirname: true */
+
 var chai    = require('chai')
 , sinon     = require('sinon')
 , sinonChai = require('sinon-chai')
@@ -11,7 +20,9 @@ var chai    = require('chai')
 , dust      = require('dustjs-linkedin')
 , fs        = require('fs')
 , path      = require('path')
+, rimraf    = require('rimraf')
 , when      = require('when');
+
 
 db = mongoose.createConnection(
   config.mongoDBServer,
@@ -21,8 +32,7 @@ db = mongoose.createConnection(
 
 chai.use(sinonChai);
 
-var pfs              = require('promised-io/fs')
-, models             = require('../models')
+var models           = require('../models')
 , dustHelpers        = require('../lib/dust-helpers')
 , microformat        = require('asq-microformat')
 , mongooseFixtures   = require('./util/mongoose-fixtures')
@@ -117,7 +127,6 @@ describe('uploadPresentation(req, res, next)', function upload() {
   });
 
   describe('with a valid slide show', function valid() {
-     this.timeout(0)
     var req;
     before(function setUp(done) {
       defaultSetUp().then(
@@ -167,17 +176,46 @@ describe('uploadPresentation(req, res, next)', function upload() {
       uploadPresentation(req, { redirect : redirect }, next);
     });
 
-    it.skip('should extract the zip archive in the appropriate location')
+    it.skip('should extract the zip archive in the appropriate location');
     it.skip('should remove the uploaded zip archive');
     it.skip('should create a slide show entry in the database');
     it.skip('should dump the questions in the database');
-    it.skip('should dump the rubrics in the database');
+    it('should dump the rubrics in the database',
+    function checkRubricsDump(done) {
+      Rubric.find().exec().then(function checkRubrics(rubrics) {
+        expect(rubrics).to.be.instanceof(Array);
+        expect(rubrics).to.have.length(2);
+        var i = rubrics.length;
+        while(i--) {
+          var rubric = rubrics[i];
+          expect(rubric).to.have.property('_type', 'Rubric');
+          expect(rubric).to.have.property('questionType', 'multi-choice');
+          expect(rubric).to.have.property('stemText', 'Correctness');
+          expect(rubric).to.have.property('maxScore', 1);
+          expect(rubric).to.have.property('formButtonType', 'radio');
+          expect(rubric).to.have.property('criteria');
+          var criteria = rubric.criteria;
+          expect(criteria).to.be.instanceof(Array);
+          expect(criteria).to.have.length(2);
+          var j = criteria.length;
+          while(j--) {
+            var criterion = criteria[j];
+            expect(criterion).to.have.property('points');
+            expect(criterion).to.have.property('label');
+            expect(criterion).to.have.property('desc');
+          }
+        }
+        done();
+      }, function onRubricQueryError(err) { done(err); });
+    });
     it.skip('should create a presenter dust template');
     it.skip('should create a viewer dust template');
 
     after(function tearDown(done) {
       defaultTearDown(done).then(
-        function onTearDown() { done(); },
+        function onTearDown() {
+          rimraf(app.get('uploadDir'), function onError(err) { done(err); });
+        },
         function onError(err) { done(err); });
     });
   });
