@@ -124,7 +124,6 @@ sessionSchema.methods.statQuestionsForSlide = function(slideHtmlId) {
 * @description Checks if the questionId is inside a slide
 * with an id of slideHtmlId, in the session;
 */
-
 sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
   var deferred = when.defer();
   this.questionsForSlide(slideHtmlId)
@@ -138,23 +137,6 @@ sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
     })
   return deferred.promise;
 }
-
-// sessionSchema.methods.question = function(callback) {
-// 	var that = this;
-// 	Slideshow.findById(this.slides, function(err, slideshow) {
-// 		if (slideshow) {
-// 		Question.findOne({$and: [ {_id: { $in: slideshow.questions }}, {_id: {$nin: that.questionsDisplayed}}],
-// 						afterslide: that.activeSlide},
-// 				        function(err, question) {
-// 							console.log('question');
-// 							console.log(question);
-// 							console.log(that.activeSlide);
-// 							callback(err, question);
-// 						});
-// 		}
-
-// 	});
-// }
 
 // Export virtual fields as well
 sessionSchema.set('toObject', { virtuals: true });

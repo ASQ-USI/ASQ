@@ -159,48 +159,46 @@ slideshowSchema.pre('save', true, function checkStatPerSlideOnSave(next, done) {
   done();
 });
 
-// TODO: This CANNOT BE DONE LIKE THIS: The Slideshow model is a dependency of the
-// Session model. The Slideshow model cannot require the Session Model
 // first check if presentation has a live session
 // we want this to execute serial before we start
 // deleting stuff
-// slideshowSchema.pre('remove', function checkLiveOnRemove(next) {
-//   Session.findOne({
-//     slides  : this._id,
-//     endDate : null
-//   }, function(err, session) {
-//     if (err) { next(err); }
-//     else if (session) {
-//       return next(new Error(
-//         'This presentation is being broadcast and cannot be removed.'));
-//     }
-//     next();
-//   });
-// });
+slideshowSchema.pre('remove', function checkLiveOnRemove(next) {
+  var Session = mongoose.model('Session');
+  Session.findOne({
+    slides  : this._id,
+    endDate : null
+  }, function(err, session) {
+    console.log('THIS IS NOT CALLED') //TODO: Fix the cb which is not being called
+    if (err) { next(err); }
+    else if (session) {
+      return next(new Error(
+        'This presentation is being broadcast and cannot be removed.'));
+    }
+    next();
+  });
+});
 
-// TODO: This CANNOT BE DONE LIKE THIS: The Slideshow model is a dependency of the
-// Session model. The Slideshow model cannot require the Session Model
 //remove sessions before removing a slideshow
-// slideshowSchema.pre('remove', true, function removeSessionOnRemove(next, done) {
-//   next();
+slideshowSchema.pre('remove', true, function removeSessionOnRemove(next, done) {
+  next();
+  var Session = mongoose.model('Session');
+  //we do not call remove on the model...
+  Session.find({ slides : this._id}, function(err, sessions) {
+    if (err) { done(err); }
 
-//   //we do not call remove on the model...
-//   Session.find({ slides : this._id}, function(err, sessions) {
-//     if (err) { done(err); }
+    var total = sessions.length;
+    if (!total) { done(); }
 
-//     var total = sessions.length;
-//     if (!total) { done(); }
-
-//     sessions.forEach(function(session) {
-//       // ... but on an instance so that the middleware
-//       // will run
-//       session.remove(function(err, removed) {
-//         if (err) { done(err); }
-//         else if (--total === 0) { done(); }
-//       });
-//     });
-//   });
-// });
+    sessions.forEach(function(session) {
+      // ... but on an instance so that the middleware
+      // will run
+      session.remove(function(err, removed) {
+        if (err) { done(err); }
+        else if (--total === 0) { done(); }
+      });
+    });
+  });
+});
 
 //remove questions before removing a slideshow
 // questions will remove the related answers in their own pre()
