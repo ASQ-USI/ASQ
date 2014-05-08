@@ -1,6 +1,7 @@
 var handlers   = require('./handlers')
   , user      = require('./user')
-  , appLogger = require('../lib/logger').appLogger;
+  , appLogger = require('../lib/logger').appLogger
+  , config  = require('config');
 
 module.exports.setUp = function setUp(app, middleware) {
   appLogger.debug('Setting root routes');
@@ -27,11 +28,14 @@ module.exports.setUp = function setUp(app, middleware) {
   //Login
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
 
-  //Get the campus login page
-  app.get('/login-campus/', middleware.isNotAuthenticated, handlers.getLoginCampus);
+  // Ldap login
+  if(config.enableLdap == true || "undefined" !== config.ldapOptions){  
+    //Get the campus login page
+    app.get('/login-campus/', middleware.isNotAuthenticated, handlers.getLoginCampus);
 
-  //Login with campus
-  app.post('/login-campus', middleware.ldapAuthenticate, handlers.postLoginCampus);
+    //Login with campus
+    app.post('/login-campus', middleware.ldapAuthenticate, handlers.postLoginCampus);
+  }
 
   //Sign out
   app.post('/logout', middleware.isAuthenticated, handlers.logout);

@@ -61,12 +61,15 @@ conf = {
   ldapOptions:{
     //ldap server URL (default: ldap://myldapserver.com)
     url : 'ldap://myldapserver.com',
+    // LDAP search filter with which to find a user by
+    //    username.(default: '(uid={{username}})') Use the 
+    //    literal '{{username}}' to have the given username
+    //    be interpolated in for the LDAP search.
+    searchFilter : '(uid={{username}})',
     //ldap base to search (default: o=example)
     searchBase : 'o=example',
-    //scope for the search. One of base, one, or sub. (default: base)
-    searchScope: 'base',
-    //field to search username, NOT a search filter (default: uid)
-    searchUserField: 'uid'
+    //scope for the search. One of base, one, or sub. (default: sub)
+    searchScope: 'sub',
   },
 
   //Slideshow
