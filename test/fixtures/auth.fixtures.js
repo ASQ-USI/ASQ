@@ -5,7 +5,7 @@ var SlideshowModel = require('../../models/slideshow')
 
 // ids
 var ObjectId = require('mongoose').Types.ObjectId
-var ids = exports.ids ={
+var ids = {
 
   validSlideshow: ObjectId(),
 
@@ -139,14 +139,10 @@ fixtures.Session = [
     startDate: new Date(1394895518459),
     endDate: null,
     viewers: [],
-
-    answers: [],
-    showingQuestion: false,
-    showingAnswer: false,
-    started: true,
-    questionsDisplayed: [],
     activeQuestions: [],
-    activeStatsQuestions : []
+    activeStatsQuestions: [],
+    answers: [],
+    started: true,
   }
 ];
 

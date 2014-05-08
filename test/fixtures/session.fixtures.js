@@ -73,9 +73,6 @@ exports.sessionWithInvalidPresenter = {
   authLevel: "public",
   endDate: null,
   presenter: ids.nonExistantOwnerId,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowNormalId,
   started: false,
   viewers: []
@@ -89,9 +86,6 @@ exports.sessionWithValidPresenter = {
   authLevel: "public",
   endDate: null,
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowNormalId,
   started: false,
   viewers: []
@@ -105,9 +99,6 @@ exports.sessionWithInvalidPresentation = {
   authLevel: "public",
   endDate: null,
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.nonExistantslideshowId,
   started: false,
   viewers: []
@@ -121,9 +112,6 @@ exports.sessionWithValidPresentation = {
   authLevel: "public",
   endDate: null,
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowNormalId,
   started: false,
   viewers: []
@@ -137,9 +125,6 @@ exports.sessionWithSamePresentationAndUser1 = {
   authLevel: "public",
   endDate: null,
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowNormalId,
   started: false,
   viewers: []
@@ -153,9 +138,6 @@ exports.sessionWithSamePresentationAndUser2 = {
   authLevel: "public",
   endDate: null,
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowNormalId,
   started: false,
   viewers: []
@@ -207,7 +189,7 @@ exports.fixtures.Question = [
     }
   ]
 },
-{ 
+{
   _id: ids.question2Id,
   stem: "<h3 class=\"stem\">Which are the official languages of Switzerland?</h3>",
   stemText: "Which are the official languages of Switzerland?",
@@ -326,9 +308,6 @@ exports.fixtures.Session = [
   authLevel: "public",
   endDate: null,
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowNormal2Id,
   started: false,
   viewers: []

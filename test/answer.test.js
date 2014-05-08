@@ -1,5 +1,5 @@
 /**
-  @fileoverview test file for the model/answer.js 
+  @fileoverview test file for the model/answer.js
 **/
 
 
@@ -34,10 +34,10 @@ app.get('/stats/getStats', statistics.getStats);
 var questionID;
 
 //Load required models
-var Question = db.model('Question', schemas.questionSchema);
-var Session = db.model('Session', schemas.sessionSchema);
-var Slideshow = db.model('Slideshow', schemas.slideshowSchema);
-var Answer = db.model('Answer', schemas.answerSchema);
+var Question  = db.model('Question');
+var Session   = db.model('Session');
+var Slideshow = db.model('Slideshow');
+var Answer    = db.model('Answer');
 
 describe('Create sample questions', function() {
 
@@ -80,7 +80,7 @@ describe('Create sample questions', function() {
 			}]
 		});
 		questionID = newQuestion._id;
-		
+
 		newQuestion.save(function(err, question) {
 			if (err) throw (err);
 			console.log('Question saved')
@@ -89,9 +89,9 @@ describe('Create sample questions', function() {
 				done();
 			})
 		})
-		
+
 	});
-	
+
 	it("should create a new slideshow", function(done) {
 		//Create sample Slideshow
 		var newSlideshow = new Slideshow({
@@ -104,7 +104,7 @@ describe('Create sample questions', function() {
 			lastSession : new Date(),
 			questions : [questionID]
 		});
-		
+
 		newSlideshow.save(function(err, slideshow) {
 			if (err) throw (err);
 			console.log('Slideshow saved')
@@ -122,7 +122,7 @@ describe('Create sample questions', function() {
 				answeree : "Student" + i,
 				question : questionID
 			});
-	
+
 			if (i % 2 == 0) {
 				newAnswer.submission = [true, false, false, false];
 				newAnswer.correctness = 100;
@@ -170,6 +170,6 @@ describe('Get stats for created answers', function() {
       });
     });
 });
-	
+
 });
 

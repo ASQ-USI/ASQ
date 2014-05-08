@@ -1,0 +1,53 @@
+.av-cor-xAxis {
+  stroke: white;
+}
+div.av-cor-tooltip {
+  position: absolute;
+  z-index: 10;
+  padding: 8px;
+  display: inline-block;
+  font: 14px sans-serif;
+  background: #1D1D1D;
+  pointer-events: none;
+}
+.av-cor-title {
+  font-weight: bold;
+}
+svg.av-cor {
+  font: 24px sans-serif;
+  shape-rendering: crispEdges;
+}
+svg.av-cor,
+div.av-cor-tooltip {
+  border: 2px solid white;
+  background: #1D1D1D;
+}
+svg.av-cor,
+div.av-cor-tooltip,
+.av-cor-title {
+  color: white;
+  fill: white;
+  text-align: center;
+  vertical-align: center;
+}
+.av-cor-button:hover {
+  cursor: pointer;
+}
+.av-cor-button:hover > .av-cor-button-bg {
+  fill: LightGray;
+}
+.av-cor-button-label {
+  fill: #1D1D1D;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+  -o-user-select: none;
+  /* Opera */
+  user-select: none;
+}
+.av-cor-button-bg {
+  fill: white;
+}

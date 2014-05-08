@@ -309,9 +309,6 @@ exports.fixtures.Session = [
   authLevel: "public",
   endDate: Date.now(),
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowNormalId,
   started: false,
   viewers: []
@@ -324,9 +321,6 @@ exports.fixtures.Session = [
   authLevel: "public",
   endDate: null,
   presenter: ids.owner1Id,
-  questionsDisplayed: [],
-  showingAnswer: false,
-  showingQuestion: false,
   slides: ids.slideshowLiveId,
   started: false,
   viewers: []

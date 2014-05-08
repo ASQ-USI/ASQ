@@ -4,7 +4,35 @@
 var fs          = require('fs');
 var mongoose    = require('mongoose');
 var async       = require('async');
-    
+
+
+var clear = function clear(data, db, callback) {
+    if (typeof db === 'function') {
+        callback = db;
+        db = mongoose.connection;
+    }
+
+    var Models;
+    if ('object' === typeof data) {
+        Models = Object.keys(data);
+    } else if (Array.isArray(data)) {
+        Models = data;
+    } else {
+        return callback(new Error('Invalid data to clear.'));
+    }
+
+    var total = i = Models.length, done = 0, Model;
+    while(i--) {
+        Model = db.model(Models[i]);
+        Model.collection.remove(onRemove);
+    }
+    function onRemove(err) {
+        if (err) { return callback(err); }
+        if (++done === total) {
+            return callback();
+        }
+    }
+}
 
 /**
  * Clears a collection and inserts the given data as new documents
@@ -16,7 +44,7 @@ var async       = require('async');
  *                          Defaults to mongoose.connection.
  * @param {Function}    Callback
  */
-var load = exports.load = function(data, db, callback) {
+var load = function(data, db, callback) {
     if (typeof db === 'function') {
         callback = db;
         db = mongoose.connection;
@@ -53,7 +81,7 @@ var load = exports.load = function(data, db, callback) {
     }
 }
 
-    
+
 /**
  * Clears a collection and inserts the given data as new documents
  *
@@ -67,17 +95,17 @@ var load = exports.load = function(data, db, callback) {
  */
 function insertCollection(modelName, data, db, callback) {
     callback = callback || {};
-    
+
     //Counters for managing callbacks
     var tasks = { total: 0, done: 0 };
-    
+
     //Load model
     var Model = db.model(modelName);
-    
+
     //Clear existing collection
     Model.collection.remove(function(err) {
         if (err) return callback(err);
-        
+
         //Convert object to array
         var items = [];
         if (Array.isArray(data)) {
@@ -87,20 +115,20 @@ function insertCollection(modelName, data, db, callback) {
                 items.push(data[i]);
             }
         }
-        
+
         //Check number of tasks to run
         if (items.length == 0) {
             return callback();
         } else {
             tasks.total = items.length;
         }
-        
+
         //Insert each item individually so we get Mongoose validation etc.
-        items.forEach(function(item) {                       
+        items.forEach(function(item) {
             var doc = new Model(item);
             doc.save(function(err) {
                 if (err) return callback(err);
-                
+
                 //Check if task queue is complete
                 tasks.done++;
                 if (tasks.done == tasks.total) callback();
@@ -112,7 +140,7 @@ function insertCollection(modelName, data, db, callback) {
 
 /**
  * Loads fixtures from object data
- * 
+ *
  * @param {Object}      The data to load, keyed by the Mongoose model name e.g.:
  *                          { User: [{name: 'Alex'}, {name: 'Bob'}] }
  * @param {Connection}  The mongoose connection to use
@@ -129,52 +157,57 @@ function loadObject(data, db, callback) {
 
 /**
  * Loads fixtures from one file
- * 
+ *
  * TODO: Add callback option
- * 
+ *
  * @param {String}      The full path to the file to load
  * @param {Connection}  The mongoose connection to use
  * @param {Function}    Callback
  */
-function loadFile(file, db, callback) { 
+function loadFile(file, db, callback) {
     callback = callback || function() {};
-    
+
     if (file.substr(0, 1) !== '/') {
         var parentPath = module.parent.filename.split('/');
         parentPath.pop();
         file = parentPath.join('/') + '/' + file;
     }
-    
+
     load(require(file), db, callback);
 }
 
 
 /**
  * Loads fixtures from all files in a directory
- * 
+ *
  * TODO: Add callback option
- * 
+ *
  * @param {String}      The directory path to load e.g. 'data/fixtures' or '../data'
  * @param {Connection}  The mongoose connection to use
  * @param {Function}    Callback
  */
 function loadDir(dir, db, callback) {
     callback = callback || function() {};
-    
+
     //Get the absolute dir path if a relative path was given
     if (dir.substr(0, 1) !== '/') {
         var parentPath = module.parent.filename.split('/');
         parentPath.pop();
         dir = parentPath.join('/') + '/' + dir;
     }
-    
+
     //Load each file in directory
     fs.readdir(dir, function(err, files){
         if (err) return callback(err);
-        
+
         var iterator = function(file, next){
             loadFile(dir + '/' + file, db, next);
         };
         async.forEach(files, iterator, callback);
     });
 };
+
+module.exports = {
+    clear : clear,
+    load  : load
+}

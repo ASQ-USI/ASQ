@@ -1,3 +1,7 @@
+/**
+  @fileoverview tests for lib/authnetication.js for ASQ
+**/
+
 var chai      = require('chai')
   , sinon     = require("sinon")
   , sinonChai = require("sinon-chai")
@@ -43,7 +47,7 @@ function populateDB(done) {
           return;
         }
         tasks.done++;
-        if (tasks.done == tasks.total) {
+        if (tasks.done === tasks.total) {
           done();
         }
       });
