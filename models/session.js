@@ -17,14 +17,14 @@ var sessionSchema = new Schema({
                            enum: ['public', 'anonymous', 'private'] },
   activeSlide          : { type: String, required: true, default: '0' },
   startDate            : { type: Date, required: true, default: Date.now },
-  endDate              : { type: Date, required: true, default: null },
+  endDate              : { type: Date, default: null },
   answers              : { type:[{ type: ObjectId, ref: 'Answer' }],
-                           required: true, default: [] },
+                           default: [] },
   started              : { type: Boolean, default: false},
   activeQuestions      : { type: [{ type: ObjectId, ref: 'Question' }],
-                           required: true, defalut: [] },
+                           default: [] },
   activeStatsQuestions : { type: [{ type: ObjectId, ref: 'Question' }],
-                           required: true, defalut: [] }
+                           default: [] }
 });
 
 sessionSchema.virtual('isTerminated').get(function() {

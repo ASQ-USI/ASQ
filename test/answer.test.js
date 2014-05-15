@@ -2,28 +2,31 @@
   @fileoverview test file for the model/answer.js
 **/
 
+var mongoose       = require('mongoose')
+  , config          = require('../config');
+
+// mongodb connection
+db = mongoose.createConnection('127.0.0.1', config.dbName);
 
 var chai           = require('chai')
   , chaiAsPromised = require("chai-as-promised")
   , expect         = chai.expect
-  , request        = require('supertest')
   , express        = require('express')
-  , schemas        = require('../models')
-  , mongoose       = require('mongoose')
+  , _              = require('lodash')
   , passport       = require('passport')
+  , path           = require('path')
+  , request        = require('supertest')
+  , schemas        = require('../models')
+  , statistics     = require('../routes/statistics')
   , passportMock   = require('./util/mock-passport-middleware')
   , configStub     = {}
-  , path           = require('path')
-  , _              = require('lodash')
-  , statistics     = require('../routes/statistics')
-  , config          = require('../config');
+
 
 // support for promises
 require("mocha-as-promised")();
 chai.use(chaiAsPromised);
 
-// mongodb connection
-db = mongoose.createConnection('127.0.0.1', config.dbName);
+
 
 
 // setup a small app for the test

@@ -15,6 +15,8 @@ db = mongoose.createConnection(
   config.mongoDBPort
 );
 
+require('../models'); //Load db models.
+
 chai.use(sinonChai);
 
 var mongooseFixtures = require('./util/mongoose-fixtures')
@@ -37,6 +39,7 @@ function populateDB(done) {
   mongooseFixtures.load(fixtures, db, function(err){
     if (err) {
       done(err);
+      return;
     }
     var tasks = { done: 0, total: fixtures.GuestUser.length };
     fixtures.GuestUser.forEach(function insertGuestUser(guest) {

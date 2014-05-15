@@ -2,23 +2,22 @@
   @fileoverview tests for models/session.js for ASQ
 **/
 
-var config    = require('../config')
-  , mongoose  = require('mongoose');
+var config = require('../config')
+, mongoose = require('mongoose');
 
-// mongodb connection (Global)  
+// mongodb connection (Global)
 db = mongoose.createConnection(config.host, config.dbName);
 
 var should = require('chai').should()
-  , schemas  = require('../models')
+, schemas  = require('../models')
 
 var mongooseFixtures = require('./util/mongoose-fixtures')
-  , seFixtures = require('./fixtures/session.fixtures')
-  , ids = seFixtures.ids
-  , fixtures = seFixtures.fixtures
-  , Session = db.model("Session")
-  , Slideshow = db.model("Slideshow")
-  , Question = db.model("Question")
-  , QuestionOption = db.model("QuestionOption");
+, seFixtures         = require('./fixtures/session.fixtures')
+, ids                = seFixtures.ids
+, fixtures           = seFixtures.fixtures
+, Session            = db.model("Session")
+, Slideshow          = db.model("Slideshow")
+, Question           = db.model("Question");
 
 
 describe('Session model:', function() {

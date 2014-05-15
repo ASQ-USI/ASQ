@@ -1,8 +1,3 @@
-//models and schemas
-var SlideshowModel = require('../../models/slideshow')
-  , QuestionsPerSlide = db.model("QuestionsPerSlide", SlideshowModel.questionsPerSlideSchema)
-  , StatsPerSlide = db.model("StatsPerSlide", SlideshowModel.statsPerSlideSchema);
-
 // ids
 var ObjectId = require('mongoose').Types.ObjectId
 var ids = {
@@ -131,18 +126,13 @@ fixtures.Slideshow = [
 //models.Session
 fixtures.Session = [
   {
-    _id: ids.validSession,
-    presenter: fixtures.User[0]._id,
-    slides: fixtures.Slideshow[0]._id,
-    authLevel: 'public',
-    activeSlide: '0',
-    startDate: new Date(1394895518459),
-    endDate: null,
-    viewers: [],
-    activeQuestions: [],
-    activeStatsQuestions: [],
-    answers: [],
-    started: true,
+    _id                  : ids.validSession,
+    presenter            : fixtures.User[0]._id,
+    slides               : fixtures.Slideshow[0]._id,
+    authLevel            : 'public',
+    activeSlide          : '0',
+    startDate            : new Date(1394895518459),
+    started              : true,
   }
 ];
 

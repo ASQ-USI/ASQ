@@ -1,7 +1,5 @@
 //models and schemas
 var SlideshowModel = require('../../models/slideshow')
-  , QuestionsPerSlide = db.model("QuestionsPerSlide", SlideshowModel.questionsPerSlideSchema)
-  , StatsPerSlide = db.model("StatsPerSlide", SlideshowModel.statsPerSlideSchema);
 
 // ids
 var ObjectId = require('mongoose').Types.ObjectId
@@ -27,40 +25,40 @@ var ids = exports.ids ={
 }
 
 //model instances
-var qPerSlide1 = new QuestionsPerSlide({
-  slideHtmlId: 'slide03',
-  questions: [ids.question1Id]
-});
-var qPerSlide2 = new QuestionsPerSlide({
-  slideHtmlId: 'slide05',
-  questions: [ids.question2Id]
-});
-var qPerSlide3 = new QuestionsPerSlide({
-  slideHtmlId: 'slide07',
-  questions: [ids.question3Id]
-});
+var qPerSlide1 = {
+  slideHtmlId : 'slide03',
+  questions   : [ids.question1Id]
+};
+var qPerSlide2 = {
+  slideHtmlId : 'slide05',
+  questions   : [ids.question2Id]
+};
+var qPerSlide3 = {
+  slideHtmlId : 'slide07',
+  questions   : [ids.question3Id]
+};
 
-var qPerSlideInvalid1 = new QuestionsPerSlide({
-  slideHtmlId: 'slide03',
-  questions: [ids.questionInvalid1Id]
-});
-var qPerSlideInvalid2 = new QuestionsPerSlide({
-  slideHtmlId: 'slide05',
-  questions: [ids.questionInvalid2Id]
-});
+var qPerSlideInvalid1 = {
+  slideHtmlId : 'slide03',
+  questions   : [ids.questionInvalid1Id]
+};
+var qPerSlideInvalid2 = {
+  slideHtmlId : 'slide05',
+  questions   : [ids.questionInvalid2Id]
+};
 
-var sPerSlide1 = new StatsPerSlide({
-  slideHtmlId: 'slide04',
-  statQuestions: [ids.question1Id]
-});
-var sPerSlide2 = new StatsPerSlide({
-  slideHtmlId: 'slide06',
-  statQuestions: [ids.question2Id]
-});
-var sPerSlide3 = new StatsPerSlide({
-  slideHtmlId: 'slide08',
-  statQuestions: [ids.question3Id]
-});
+var sPerSlide1 = {
+  slideHtmlId   : 'slide04',
+  statQuestions : [ids.question1Id]
+};
+var sPerSlide2 = {
+  slideHtmlId   : 'slide06',
+  statQuestions : [ids.question2Id]
+};
+var sPerSlide3 = {
+  slideHtmlId   : 'slide08',
+  statQuestions : [ids.question3Id]
+};
 
 exports.slideshowWithInvalidOwner = {
   title: 'test presentation that has invalid owner',

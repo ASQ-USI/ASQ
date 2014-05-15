@@ -3,21 +3,21 @@
 **/
 var config    = require('../config')
   , mongoose  = require('mongoose')
-  , models = require('../models')
 
-// mongodb connection (Global)  
+// mongodb connection (Global)
 db = mongoose.createConnection(config.host, config.dbName);
 
 
-var postLoginCampus = require('../routes/handlers').postLoginCampus
-  , chai            = require('chai')
-  , expect          = chai.expect
-  , express         = require('express')
-  , request         = require('supertest')
-  , passport       = require('passport')
-  , flash           = require('connect-flash')
-  , cons          = require('consolidate')
-  , dust            = require('dustjs-linkedin')
+var chai          = require('chai')
+, expect          = chai.expect
+, express         = require('express')
+, request         = require('supertest')
+, passport        = require('passport')
+, flash           = require('connect-flash')
+, cons            = require('consolidate')
+, dust            = require('dustjs-linkedin')
+, models          = require('../models')
+, postLoginCampus = require('../routes/handlers').postLoginCampus
 
 app = express();
 app.configure(function() {
@@ -85,7 +85,7 @@ describe('routes/handlers.postLoginCampus', function() {
 
   it.skip("should create a valid LDAP user that submits a valid asq username ", function(done){
     request(app)
-    .post('/login-campus') 
+    .post('/login-campus')
     .type('form')
     .expect(302)
     .expect('location', '/asqldap/?alert=Registration%20Succesful&type=success')
@@ -108,7 +108,7 @@ describe('routes/handlers.postLoginCampus', function() {
 
   it.skip("should reject a non existing username ", function(done){
     request(app)
-    .post('/login-campus') 
+    .post('/login-campus')
     .type('form')
     .expect(200)
     .end(function(err, res){
@@ -120,7 +120,7 @@ describe('routes/handlers.postLoginCampus', function() {
 
   it.skip("should reject when username is empty ", function(done){
     request(app)
-    .post('/login-campus') 
+    .post('/login-campus')
     .type('form')
     .expect(200)
     .end(function(err, res){

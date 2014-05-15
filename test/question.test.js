@@ -1,19 +1,27 @@
-var chai = require('chai')
-// , chaiAsPromised = require("chai-as-promised")
-, assert = chai.assert
-, expect = chai.expect
-, mongoose = require("mongoose")
-, questionModel = require("../models/question")
+/**
+  @fileoverview tests for model/question.js for ASQ
+**/
+var chai   = require('chai')
+, assert   = chai.assert
+, expect   = chai.expect
+, mongoose = require('mongoose')
+, config   = require('../config');
+
+db = mongoose.createConnection(
+  config.mongoDBServer,
+  config.dbName,
+  config.mongoDBPort
+);
+
+require('../models'); //Load db models.
+
+var questionModel = require("../models/question");
 
 // support for promises
 // require("mocha-as-promised")();
 // chai.use(chaiAsPromised);
 
-var db = mongoose.createConnection('127.0.0.1', 'test-asq');
-
-var Question = db.model("Question")
-, QuestionOption = db.model("QuestionOption")
-
+var Question = db.model("Question");
 
 
 describe('Question model', function() {
@@ -38,13 +46,13 @@ describe('Question model', function() {
       stem: "How's the weather today?",
       formButtonType: "checkbox",
       questionOptions:[
-        new QuestionOption({text:"Cloudy" , correct:true}),
-        new QuestionOption({text:"Sunny" , correct:true}),
-        new QuestionOption({text:"Rainy" , correct:true}),
-        new QuestionOption({text:"Stormy" , correct:true})
+        {text : "Cloudy", correct : true},
+        {text : "Sunny",  correct : true},
+        {text : "Rainy",  correct : true},
+        {text : "Stormy", correct : true}
       ]
     });
-    
+
     q.save(function (err, question) {
       if (err) throw(err);
       console.log('saved')
