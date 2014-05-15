@@ -167,7 +167,7 @@ var connect = function(host, port, session, mode, token) {
 
     //aggregate answers
     var answers = [];
-    $(this).find('input[type=checkbox], input[type=radio]:not(.asq-rating-input)').each(function() {
+    $(this).find('input[type=checkbox], input[type=radio]:not(.am-rating-input)').each(function() {
       answers.push($(this).is(":checked"));
     })
 
@@ -181,7 +181,7 @@ var connect = function(host, port, session, mode, token) {
     })
 
     // Get confidence
-    var confidence = $('input.asq-rating-input:checked').val() || -1;
+    var confidence = $this.find('input.asq-rating-input:checked').val() || -1;
 
     socket.emit('asq:submit', {
       session : session,
@@ -348,7 +348,7 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
     manager.render(selector, 'correctness');
     return;
   }
-  var $question = $('.assessment[question-id='+questionId+']');
+  var $question = $('.assessment[data-question-id=' + questionId + ']');
 
   if($question.hasClass('multi-choice')){
     for (var key in statsTypes) {

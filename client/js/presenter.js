@@ -196,13 +196,13 @@ function updateParticipation(submittedViewers, totalViewers, questionId) {
   }
 
   if (maxViewers == submittedViewers) {
-    $('[question-id="' + questionId + '"] .progressNum').text('All answers received (' + submittedViewers + '/' + maxViewers + '). ');
-    $('[question-id="' + questionId + '"] .show-stats').attr("class", "btn btn-success");
+    $('[data-question-id="' + questionId + '"] .progressNum').text('All answers received (' + submittedViewers + '/' + maxViewers + '). ');
+    $('[data-question-id="' + questionId + '"] .show-stats').attr("class", "btn btn-success");
   } else {
-    $('[question-id="' + questionId + '"] .progressNum').text(submittedViewers + '/' + maxViewers + ' answers received.');
+    $('[data-question-id="' + questionId + '"] .progressNum').text(submittedViewers + '/' + maxViewers + ' answers received.');
   }
   var width = (submittedViewers / maxViewers) * 100;
-  $('[question-id="' + questionId + '"] .progress-bar').css('width', width + "%");
+  $('[data-question-id="' + questionId + '"] .progress-bar').css('width', width + "%");
 }
 
 var showStats = function() {
@@ -310,7 +310,7 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
   }
 
   // TODO Burn the code below which is buggy and and ugly.
-  var $question = $('.assessment[question-id='+questionId+']');
+  var $question = $('.assessment[data-question-id='+questionId+']');
 
   if($question.hasClass('multi-choice')){
     for (var key in statsTypes) {
