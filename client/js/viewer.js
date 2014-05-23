@@ -150,6 +150,66 @@ var connect = function(host, port, session, mode, token) {
   });
 
    // form submission events
+  $(document).on('submit', '.asq-exercise form', function(event) {
+    event.preventDefault();
+    var $this = $(this);
+
+    //fadeout children and input fields
+    $this
+      .children().css('opacity', '0.5')
+        .end()
+      .find('input').attr('disabled', 'true')
+        .end()
+      .find('button:not(.changeanswer .btn)')
+        .attr('disabled', 'true')
+        .fadeOut(function() {
+          $this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
+          $this.find('.changeAnswer').fadeIn();
+    });
+
+    var answers= $this.find('.asq-question').map(function getQuestionData(){
+
+      //get question id
+      var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
+
+      //aggregate answers
+      var submissions = [];
+      $(this).find('input[type=checkbox], input[type=radio]:not(.am-rating-input)').each(function() {
+        submissions.push($(this).is(":checked"));
+      });
+
+      $(this).find('input[type=text]').each(function() {
+        submissions.push($(this).val());
+      });
+
+      $(this).find('.asq-code-editor').each(function() {
+        console.log(ace.edit(this.id).getSession().getValue())
+        submissions.push(ace.edit(this.id).getSession().getValue());
+      });
+
+      // Get confidence
+      var confidence = $this.find('input.asq-rating-input:checked').val() || -1;
+
+      return {
+        question : questionId,
+        submission: submissions
+        confidence : confidence,
+      }
+
+    });
+
+    //get question id
+    var exerciseId = $(this).find('input[type="hidden"][name="exercise-id"]').val()
+   
+    socket.emit('asq:submit', {
+      session : session,
+      exerciseId : exerciseId,
+      answers : answers
+    });
+    console.log('submitted answer for exercise with id:' + exerciseId);
+    console.dir(questions);
+  });
+
   $(document).on('submit', '.assessment form', function(event) {
     event.preventDefault();
     var $this = $(this);
