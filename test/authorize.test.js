@@ -101,7 +101,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: req.user.screenName,
-            uid: req.user._id,
+            user: req.user._id,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -119,8 +119,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           expect(req.whitelistEntry).to.have.property('token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid')
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user')
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session')
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -150,7 +150,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : req.user._id,
+            user        : req.user._id,
             screenName : req.user.screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -171,8 +171,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -262,7 +262,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: fixtures.GuestUser[1].screenName,
-            uid: ids.validGuest2,
+            user: ids.validGuest2,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -281,8 +281,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[1].screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest2.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -312,7 +312,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : ids.validGuest1,
+            user        : ids.validGuest1,
             screenName : fixtures.GuestUser[0].screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -333,8 +333,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[0].screenName);
-          expect(req.whitelistEntry).to.have.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest1.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -394,7 +394,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: req.user.screenName,
-            uid: req.user._id,
+            user: req.user._id,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -412,8 +412,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           expect(req.whitelistEntry).to.have.property('token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid')
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user')
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session')
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -443,7 +443,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : req.user._id,
+            user        : req.user._id,
             screenName : req.user.screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -464,8 +464,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -557,7 +557,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: fixtures.GuestUser[1].screenName,
-            uid: ids.validGuest2,
+            user: ids.validGuest2,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -576,8 +576,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[1].screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest2.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -608,7 +608,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : ids.validGuest1,
+            user        : ids.validGuest1,
             screenName : fixtures.GuestUser[0].screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -629,8 +629,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[0].screenName);
-          expect(req.whitelistEntry).to.have.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest1.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(

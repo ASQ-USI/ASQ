@@ -139,27 +139,27 @@ fixtures.Session = [
 fixtures.WhitelistEntry = [
   {
     session     : ids.validSession,
-    uid         : fixtures.User[0]._id,
+    user         : fixtures.User[0]._id,
     token       : tokens.validUser0,
     screenName  : fixtures.User[0].screenName,
     role        : 'presenter'
   },
   {
     session     : ids.validSession,
-    uid         : fixtures.User[1]._id,
+    user         : fixtures.User[1]._id,
     screenName  : fixtures.User[1].screenName,
     role        : 'viewer'
   },
   {
     session     : ids.validSession,
-    uid         : fixtures.User[1]._id,
+    user         : fixtures.User[1]._id,
     screenName  : fixtures.User[1].screenName,
     role        : 'viewer',
     token       : tokens.validUser3
   },
   {
     session     : ids.validSession,
-    uid         : fixtures.GuestUser[0]._id,
+    user         : fixtures.GuestUser[0]._id,
     token       : fixtures.GuestUser[0].token,
     screenName  : fixtures.GuestUser[0].screenName,
     role        : 'viewer'
