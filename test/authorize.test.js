@@ -1,6 +1,11 @@
 /**
   @fileoverview tests for lib/authnetication.js for ASQ
 **/
+/* global describe : true */
+/* global before : true */
+/* global after : true */
+/* global it : true */
+/* global db : true */
 
 var chai      = require('chai')
   , sinon     = require("sinon")
@@ -87,6 +92,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
 
     describe('with a not whitelisted registered user:', function regUserNotWhite() {
       var req = reqs.registeredNotWhite;
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -101,7 +107,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: req.user.screenName,
-            uid: req.user._id,
+            user: req.user._id,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -111,7 +117,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
@@ -119,24 +125,28 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           expect(req.whitelistEntry).to.have.property('token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid')
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user')
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session')
           expect(req.whitelistEntry.session.toString()).to.be.equal(
             req.liveSession._id.toString());
           expect(req.whitelistEntry).to.have.property('role', 'viewer');
           done();
-        });
+      });
       it('Should reset the cookie\'s max age',
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with a whitelisted registered user:', function regUserWhite() {
       var req = reqs.registeredWhite;
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -150,7 +160,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : req.user._id,
+            user        : req.user._id,
             screenName : req.user.screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -163,7 +173,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
               done();
             }
           });
-        });
+      });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
           expect(req.whitelistEntry).to.exist;
@@ -171,25 +181,29 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
             req.liveSession._id.toString());
           expect(req.whitelistEntry).to.have.property('role', 'viewer');
           done();
-        });
+      });
       it('Should reset the cookie\'s max age',
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with a new guest user:', function newGuestUser() {
       this.timeout(0);
       var req = reqs.newGuest;
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -210,7 +224,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should create a whitelist entry for the user',
         function createdEntry(done){
@@ -225,7 +239,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
@@ -238,16 +252,20 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             req.liveSession._id.toString());
           expect(req.whitelistEntry).to.have.property('role', 'viewer');
           done();
-        });
+      });
       it('Should reset the cookie\'s max age',
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with an existing not whitelisted guest:', function guestNotWhite() {
       var req = reqs.guestNotWhite;
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -262,7 +280,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: fixtures.GuestUser[1].screenName,
-            uid: ids.validGuest2,
+            user: ids.validGuest2,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -272,7 +290,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
@@ -281,8 +299,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[1].screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest2.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -294,11 +312,15 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with an existing whitelisted guest:', function guestWhite() {
       var req = reqs.guestWhite;
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -312,7 +334,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : ids.validGuest1,
+            user        : ids.validGuest1,
             screenName : fixtures.GuestUser[0].screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -325,7 +347,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
               done();
             }
           });
-        });
+      });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
           expect(req.whitelistEntry).to.exist;
@@ -333,20 +355,23 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[0].screenName);
-          expect(req.whitelistEntry).to.have.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest1.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
             req.liveSession._id.toString());
           expect(req.whitelistEntry).to.have.property('role', 'viewer');
           done();
-        });
+       });
       it('Should reset the cookie\'s max age',
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
   });
   describe('Anonymous Session', function testPublic() {
@@ -380,6 +405,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     describe('with a not whitelisted registered user:', function regUserNotWhite() {
       var req = reqs.registeredNotWhite;
       //req.liveSession.authLevel = 'anonymous';
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -394,7 +420,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: req.user.screenName,
-            uid: req.user._id,
+            user: req.user._id,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -404,7 +430,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
@@ -412,25 +438,29 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           expect(req.whitelistEntry).to.have.property('token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid')
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user')
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session')
           expect(req.whitelistEntry.session.toString()).to.be.equal(
             req.liveSession._id.toString());
           expect(req.whitelistEntry).to.have.property('role', 'viewer');
           done();
-        });
+      });
       it('Should reset the cookie\'s max age',
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with a whitelisted registered user:', function regUserWhite() {
       var req = reqs.registeredWhite;
       //req.liveSession.authLevel = 'anonymous';
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -443,7 +473,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : req.user._id,
+            user        : req.user._id,
             screenName : req.user.screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -464,8 +494,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', req.user.screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             req.user._id.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -477,13 +507,17 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with a new guest user:', function newGuestUser() {
       this.timeout(0);
       var req = reqs.newGuest;
       //req.liveSession.authLevel = 'anonymous';
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -504,7 +538,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should create a whitelist entry for the user',
         function createdEntry(done){
@@ -519,7 +553,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
@@ -532,17 +566,21 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             req.liveSession._id.toString());
           expect(req.whitelistEntry).to.have.property('role', 'viewer');
           done();
-        });
+      });
       it('Should reset the cookie\'s max age',
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with an existing not whitelisted guest:', function guestNotWhite() {
       var req = reqs.guestNotWhite;
       //req.liveSession.authLevel = 'anonymous';
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -557,7 +595,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
           WhitelistEntry.count({
             token: req.headers.cookie,
             screenName: fixtures.GuestUser[1].screenName,
-            uid: ids.validGuest2,
+            user: ids.validGuest2,
             session: req.liveSession._id,
             role : 'viewer'
           }, function onCount(err, count) {
@@ -567,7 +605,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
                 expect(count).to.equal(1);
                 done();
               }
-            });
+          });
       });
       it('Should set the whitelist entry in the request',
         function testSetEntry(done) {
@@ -576,8 +614,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[1].screenName);
-          expect(req.whitelistEntry).to.have.deep.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.deep.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest2.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -589,12 +627,16 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
 
     describe('with an existing whitelisted guest:', function guestWhite() {
       var req = reqs.guestWhite;
       //req.liveSession.authLevel = 'anonymous';
+      var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
       before(populateDB);
@@ -608,7 +650,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
       it('Should update the whitelist entry with the token (cookie)',
         function updateWhitelist(done) {
           WhitelistEntry.count({
-            uid        : ids.validGuest1,
+            user        : ids.validGuest1,
             screenName : fixtures.GuestUser[0].screenName,
             token      : req.headers.cookie,
             session    : req.liveSession._id,
@@ -629,8 +671,8 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
             'token', req.headers.cookie);
           expect(req.whitelistEntry).to.have.property(
             'screenName', fixtures.GuestUser[0].screenName);
-          expect(req.whitelistEntry).to.have.property('uid');
-          expect(req.whitelistEntry.uid.toString()).to.be.equal(
+          expect(req.whitelistEntry).to.have.property('user');
+          expect(req.whitelistEntry.user.toString()).to.be.equal(
             ids.validGuest1.toString());
           expect(req.whitelistEntry).to.have.deep.property('session');
           expect(req.whitelistEntry.session.toString()).to.be.equal(
@@ -642,7 +684,10 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
         function testCookieReset(done) {
           expect(touchSpy).to.have.been.calledOnce;
           done();
-        });
+      });
+      after(function tearDown() {
+        req.session.touch = originalTouch;
+      });
     });
   });
 });

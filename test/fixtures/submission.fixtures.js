@@ -136,7 +136,7 @@ for (i in ids) {
     var wle = {
       _id         : ids[i].whitelist,
       session     : ids[i].session,
-      uid         : uid,
+      user         : uid,
       token       : token,
       screenName  : 'bat-screenName',
       role        : 'viewer'
