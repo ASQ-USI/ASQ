@@ -2,6 +2,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var ids = {
   missmatch : {
     session : new ObjectId(),
+    whitelist : new ObjectId(),
     ex : new ObjectId(),
     questions : [
       new ObjectId('537e06283ee07f38c41fc550'),
@@ -19,6 +20,7 @@ var ids = {
   },
   resubmit : {
     session : new ObjectId(),
+    whitelist : new ObjectId(),
     ex : new ObjectId(),
     questions : [
       new ObjectId('537e06283ee07f38c41fc554'),
@@ -33,6 +35,7 @@ var ids = {
   },
   plain : {
     session : new ObjectId(),
+    whitelist : new ObjectId(),
     ex : new ObjectId(),
     questions : [
       new ObjectId('537e06283ee07f38c41fc557'),
@@ -47,6 +50,7 @@ var ids = {
   },
   self : {
     session : new ObjectId(),
+    whitelist : new ObjectId(),
     ex : new ObjectId(),
     questions : [
       new ObjectId('537e06283ee07f38c41fc560'),
@@ -61,6 +65,7 @@ var ids = {
   },
   peer : {
     session : new ObjectId(),
+    whitelist : new ObjectId(),
     ex : new ObjectId(),
     questions : [
       new ObjectId('537e06283ee07f38c41fc563'),
@@ -124,6 +129,23 @@ for (i in ids) {
   }
 }
 
+fixtures.WhitelistEntry = []
+var whitelist = {};
+for (i in ids) {
+  if(hasOwn.call(ids, i)) {
+    var wle = {
+      _id         : ids[i].whitelist,
+      session     : ids[i].session,
+      uid         : uid,
+      token       : token,
+      screenName  : 'bat-screenName',
+      role        : 'viewer'
+    };
+    fixtures.WhitelistEntry.push(wle);
+    whitelist[i] = wle;
+  }
+}
+
 // Questions
 fixtures.Question = [];
 for (i in ids) {
@@ -131,7 +153,8 @@ for (i in ids) {
     ids[i].questions.forEach(function(q) {
       fixtures.Question.push({
         _id: q,
-        assessment : (i === 'self' || i === 'peer') ? [i] : []
+        assessment : (i === 'self' || i === 'peer') ? [i] : [],
+        correctAnswer : 'submission-' + i + '-0'
       });
     });
   }
@@ -148,7 +171,7 @@ for (i in ids) {
         submission : [i + '-' + j],
         correctness : 90,
         confidence : 3,
-        answeree : token,
+        answeree : ids[i].whitelist,
         exercise : ids[i].ex
       });
     });
@@ -171,7 +194,8 @@ var submissions =  {}
 for (i in ids) {
   if(hasOwn.call(ids, i)) {
     submissions[i] = {
-      id : ids[i].ex,
+      _id : ids[i].ex,
+      id : ids[i].ex.toString(),
       answers : (hasOwn.call(ids[i], 'submitted')
         ? ids[i].submitted
         : ids[i].questions).map(function(q, j) {
@@ -193,5 +217,6 @@ module.exports = {
   token       : token,
   sessions    : sessions,
   fixtures    : fixtures,
-  submissions : submissions
+  submissions : submissions,
+  whitelist   : whitelist
 };

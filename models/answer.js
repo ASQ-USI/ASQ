@@ -8,20 +8,43 @@ var mongoose      = require('mongoose')
   , ObjectId      = Schema.ObjectId
   , when          = require('when')
   , arrayEqual    = require('../lib/utils/stats').arrayEqual
-  , appLogger     = require('../lib/logger').appLogger;
-
-
+  , appLogger     = require('../lib/logger').appLogger
+  , Assessment    = db.model('Assessment');
 
 var answerSchema = new Schema({
   exercise    : { type: ObjectId, ref: 'Exercise', required: true },
-  question    : { type: ObjectId, ref:'Question', required: true },
-  answeree    : { type: String, required: true }, // (wle token) student that answered the question
-  session     : { type: ObjectId, ref:'Session', required: true },
+  question    : { type: ObjectId, ref: 'Question', required: true },
+  answeree    : { type: ObjectId, ref: 'WhitelistEntry', required: true },
+  session     : { type: ObjectId, ref: 'Session', required: true },
   submission  : [],
-  correctness : { type: Number, min: 0, max: 100 },
   confidence  : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
   logData     : [answerLogSchema]
 });
+
+
+// Saves an automatic assessment for a user submited answer asynchronously
+// if there exist a solution for the related question.
+answerSchema.pre('save', function autoAssessment(next, done) {
+  next();
+  var Question = db.model('Question');
+  var answer = this;
+  Question.findById(answer.question).exec().then(function onQuestion(question) {
+    var solution = question.getSolution();
+    if (solution === null) {
+      done();
+      return;
+    }
+    var assessment = new Assessment({
+      session  : answer.session,
+      answer   : answer._id,
+      assessee : answer.answeree,
+      assessor : answer.answeree,
+      score    : arrayEqual(answer.submission, solution) ? 100 : 0, // TODO replace that with a finer grained answer method
+      type     : 'auto'
+    });
+    assessment.save(function onSave(err) { done(err); });
+  });
+})
 
 // // saves object and returns a promise
 // answerSchema.methods.saveWithPromise = function(){

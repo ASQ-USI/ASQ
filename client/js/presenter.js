@@ -66,10 +66,8 @@ function connect(host, port, session, mode, token) {
      Handle socket event 'new'
      Notifies the admin of a new connection to the presentation.
      */
-    socket.on('asq:submitted', function(event) {
-      // console.log("You've got an answer!");
-      // console.log(event);
-      updateParticipation(event.submittedViewers, event.totalViewers, event.questionId);
+    socket.on('asq:submitted', function(evt) {
+      updateProgress(evt.progress);
     });
 
     /**
@@ -189,20 +187,46 @@ function connect(host, port, session, mode, token) {
     });
   });
 }
-function updateParticipation(submittedViewers, totalViewers, questionId) {
-  var maxViewers = -1;
-  if (maxViewers < totalViewers) {
-    maxViewers = totalViewers;
+function updateProgress(progress) {
+  var $info = $('#' + progress.exercise + '.asq-exercise')
+    .find('.asq-progress-info');
+  var items = $info.find('.progress > .progress-bar').length;
+  var total = progress.audience + progress.disconnected;
+
+  // Answer
+  var answerProgress = (progress.answers / total) * 100;
+  // Progress bar
+  $info.find('.progress > .asq-progress-answers')
+    .css('width', (answerProgress / items) + '%');
+  // Label
+  $info.find('.asq-progress-details > .row > .asq-label-answers > span')
+  .html('Answers: ' + progress.answers + '/' + total + ' (' +
+    Math.floor(answerProgress) + '%)');
+
+  // Self-assessment
+  if ($info.find('.progress > .asq-progress-self').length > 0) {
+     var selfProgress = (progress.self / total) * 100;
+    // Progress bar
+    $info.find('.progress > .asq-progress-self')
+      .css('width', ( selfProgress / items) + '%');
+    // Label
+    $info.find('.asq-progress-details > .row > .asq-label-self  > span')
+      .html('Self-assessments: ' + progress.self + '/' + total + ' (' +
+        Math.floor(selfProgress) + '%)');
   }
 
-  if (maxViewers == submittedViewers) {
-    $('[data-question-id="' + questionId + '"] .progressNum').text('All answers received (' + submittedViewers + '/' + maxViewers + '). ');
-    $('[data-question-id="' + questionId + '"] .show-stats').attr("class", "btn btn-success");
-  } else {
-    $('[data-question-id="' + questionId + '"] .progressNum').text(submittedViewers + '/' + maxViewers + ' answers received.');
+  // Peer-assessment
+  if ($info.find('.progress > .asq-progress-peer').length > 0) {
+    var peerTotal = (total * total - total);
+    var peerProgress = (progress.peer / peerTotal) * 100;
+    // Progress bar
+    $info.find('.progress > .asq-progress-peer')
+      .css('width', (peerProgress / items) + '%');
+    // Label
+    $info.find('.asq-progress-details > .row > .asq-label-peer  > span')
+      .html('Peer-assessment: ' + progress.peer + '/' + peerTotal + ' (' +
+        Math.floor(peerProgress) + '%)');
   }
-  var width = (submittedViewers / maxViewers) * 100;
-  $('[data-question-id="' + questionId + '"] .progress-bar').css('width', width + "%");
 }
 
 var showStats = function() {

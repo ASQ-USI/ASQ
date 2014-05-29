@@ -17,7 +17,7 @@ var whitelistEntrySchema = new Schema({
 	token       : { type: String }, // Express Cookie session id
 	screenName  : { type: String, required: true },
 	role        : { type: String, default: 'viewer', enum: Object.keys(roles) }
-}, { collection: "whitelistEntries" });
+}, { collection: 'whitelistEntries' });
 
 whitelistEntrySchema.index({ session: 1, uid: 1 });
 

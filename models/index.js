@@ -4,8 +4,8 @@
 
 module.exports = {
   answerProgressModel : require('./answerProgress'),
-  answerModel         : require('./answer'),
   assessmentModel     : require('./assessment'),
+  answerModel         : require('./answer'),
   exerciseModel       : require('./exercise'),
   questionModel       : require('./question'),
   rubricModel         : require('./rubric'),
