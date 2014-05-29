@@ -20,7 +20,7 @@ var ids = {
   resubmit : {
     session : new ObjectId(),
     ex : new ObjectId(),
-   questions : [
+    questions : [
       new ObjectId('537e06283ee07f38c41fc554'),
       new ObjectId('537e06283ee07f38c41fc555'),
       new ObjectId('537e06283ee07f38c41fc556'),
@@ -34,7 +34,7 @@ var ids = {
   plain : {
     session : new ObjectId(),
     ex : new ObjectId(),
-   questions : [
+    questions : [
       new ObjectId('537e06283ee07f38c41fc557'),
       new ObjectId('537e06283ee07f38c41fc558'),
       new ObjectId('537e06283ee07f38c41fc559'),
@@ -48,7 +48,7 @@ var ids = {
   self : {
     session : new ObjectId(),
     ex : new ObjectId(),
-   questions : [
+    questions : [
       new ObjectId('537e06283ee07f38c41fc560'),
       new ObjectId('537e06283ee07f38c41fc561'),
       new ObjectId('537e06283ee07f38c41fc562'),
@@ -62,7 +62,7 @@ var ids = {
   peer : {
     session : new ObjectId(),
     ex : new ObjectId(),
-   questions : [
+    questions : [
       new ObjectId('537e06283ee07f38c41fc563'),
       new ObjectId('537e06283ee07f38c41fc564'),
       new ObjectId('537e06283ee07f38c41fc565'),
@@ -129,7 +129,10 @@ fixtures.Question = [];
 for (i in ids) {
   if(hasOwn.call(ids, i)) {
     ids[i].questions.forEach(function(q) {
-      fixtures.Question.push({ _id: q });
+      fixtures.Question.push({
+        _id: q,
+        assessment : (i === 'self' || i === 'peer') ? [i] : []
+      });
     });
   }
 }
@@ -142,10 +145,11 @@ for (i in ids) {
       fixtures.Answer.push({
         question : q,
         session: ids[i].session,
-        submission : ['submission-' + i + '-' + j],
+        submission : [i + '-' + j],
         correctness : 90,
         confidence : 3,
-        answeree : i + '-user'
+        answeree : token,
+        exercise : ids[i].ex
       });
     });
   }
@@ -156,8 +160,9 @@ fixtures.Exercise = [];
 for (i in ids) {
   if(hasOwn.call(ids, i)) {
     fixtures.Exercise.push({
-      _id       : ids[i].ex,
-      questions : ids[i].questions
+      _id        : ids[i].ex,
+      questions  : ids[i].questions,
+      assessment : (i === 'self' || i === 'peer') ? [i,] : []
     });
   }
 }
@@ -172,7 +177,7 @@ for (i in ids) {
         : ids[i].questions).map(function(q, j) {
           return {
             question : q,
-            submission : [ i + '-' + j],
+            submission : [ 'submission-' + i + '-' + j],
             correctness: 100,
             confidence: 4,
             logData : []

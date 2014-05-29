@@ -9,6 +9,7 @@ var mongoose             = require('mongoose')
 , wkeys                  = require('when/keys')
 , Answer                 = db.model('Answer')
 , abstractQuestionSchema = require('./abstractQuestionSchema')
+, assessmentTypes        = require('./assessmentTypes')
 , stats                  = require('../lib/stats')
 , appLogger              = require('../lib/logger').appLogger;
 
@@ -21,6 +22,8 @@ var questionOptionSchema = new Schema({
 var questionSchema = abstractQuestionSchema.extend({
   questionOptions : { type: [questionOptionSchema] },
   correctAnswer   : { type: String },
+  assessment      : { type: [{ type: String, enum: assessmentTypes }],
+                      default: [] }
 });
 
 //remove answers before removing a question
