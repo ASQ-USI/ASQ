@@ -3,13 +3,14 @@
 */
 
 module.exports = {
-  answerModel     : require('./answer'),
-  assessmentModel : require('./assessment'),
-  exerciseModel   : require('./exercise'),
-  questionModel   : require('./question'),
-  rubricModel     : require('./rubric'),
-  userModel       : require('./user'),
-  slideshowModel  : require('./slideshow'),
-  sessionModel    : require('./session'),
-  whitelistModel  : require('./whitelist')
+  answerProgressModel : require('./answerProgress'),
+  assessmentModel     : require('./assessment'),
+  answerModel         : require('./answer'),
+  exerciseModel       : require('./exercise'),
+  questionModel       : require('./question'),
+  rubricModel         : require('./rubric'),
+  userModel           : require('./user'),
+  slideshowModel      : require('./slideshow'),
+  sessionModel        : require('./session'),
+  whitelistModel      : require('./whitelist')
 };

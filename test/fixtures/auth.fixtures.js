@@ -4,7 +4,8 @@ var ids = {
 
   validSlideshow: ObjectId(),
 
-  validSession: ObjectId(),
+  publicSession: ObjectId(),
+  anonymousSession: ObjectId(),
   invalidSession: ObjectId(),
 
   validUser0: ObjectId(),
@@ -27,41 +28,81 @@ var tokens = {
 };
 
 var handshakes = {
-  validPresenter : {
-    "query"   : { "sid"    : ids.validSession },
-    "headers" : { "cookie" : tokens.validUser0 }
+  public : {
+    validPresenter : {
+      "query"   : { "sid"    : ids.publicSession },
+      "headers" : { "cookie" : tokens.validUser0 }
+    },
+    validViewer : {
+      "query"   : { "sid"    : ids.publicSession },
+      "headers" : { "cookie" : tokens.validUser3 }
+    },
+    invalidSession : {
+      "query"   : { "sid"    : ids.invalidSession },
+      "headers" : { "cookie" : tokens.validUser1 }
+    },
+    invalidToken : {
+      "query"   : { "sid"    : ids.publicSession },
+      "headers" : { "cookie" : tokens.invalid }
+    },
+    invalidSessionAndToken : {
+      "query"   : { "sid"    : ids.invalidSession },
+      "headers" : { "cookie" : tokens.invalid }
+    },
+    missingQuery : {
+      "headers" : { "cookie" : tokens.validUser1 }
+    },
+    missingSessionId : {
+      "query"   : {},
+      "headers" : { "cookie" : tokens.validUser1 }
+    },
+    missingHeaders : {
+      "query"   : { "sid"    : ids.invalidSession }
+    },
+    missingToken : {
+      "query"   : { "sid"    : ids.invalidSession },
+      "headers" : {}
+    },
+    empty : {}
   },
-  validViewer : {
-    "query"   : { "sid"    : ids.validSession },
-    "headers" : { "cookie" : tokens.validUser3 }
-  },
-  invalidSession : {
-    "query"   : { "sid"    : ids.invalidSession },
-    "headers" : { "cookie" : tokens.validUser1 }
-  },
-  invalidToken : {
-    "query"   : { "sid"    : ids.validSession },
-    "headers" : { "cookie" : tokens.invalid }
-  },
-  invalidSessionAndToken : {
-    "query"   : { "sid"    : ids.invalidSession },
-    "headers" : { "cookie" : tokens.invalid }
-  },
-  missingQuery : {
-    "headers" : { "cookie" : tokens.validUser1 }
-  },
-  missingSessionId : {
-    "query"   : {},
-    "headers" : { "cookie" : tokens.validUser1 }
-  },
-  missingHeaders : {
-    "query"   : { "sid"    : ids.invalidSession }
-  },
-  missingToken : {
-    "query"   : { "sid"    : ids.invalidSession },
-    "headers" : {}
-  },
-  empty : {}
+  anonymous : {
+    validPresenter : {
+      "query"   : { "sid"    : ids.anonymousSession },
+      "headers" : { "cookie" : tokens.validUser0 }
+    },
+    validViewer : {
+      "query"   : { "sid"    : ids.anonymousSession },
+      "headers" : { "cookie" : tokens.validUser3 }
+    },
+    invalidSession : {
+      "query"   : { "sid"    : ids.invalidSession },
+      "headers" : { "cookie" : tokens.validUser1 }
+    },
+    invalidToken : {
+      "query"   : { "sid"    : ids.anonymousSession },
+      "headers" : { "cookie" : tokens.invalid }
+    },
+    invalidSessionAndToken : {
+      "query"   : { "sid"    : ids.invalidSession },
+      "headers" : { "cookie" : tokens.invalid }
+    },
+    missingQuery : {
+      "headers" : { "cookie" : tokens.validUser1 }
+    },
+    missingSessionId : {
+      "query"   : {},
+      "headers" : { "cookie" : tokens.validUser1 }
+    },
+    missingHeaders : {
+      "query"   : { "sid"    : ids.invalidSession }
+    },
+    missingToken : {
+      "query"   : { "sid"    : ids.invalidSession },
+      "headers" : {}
+    },
+    empty : {}
+
+  }
 };
 
 var fixtures = {};
@@ -126,10 +167,19 @@ fixtures.Slideshow = [
 //models.Session
 fixtures.Session = [
   {
-    _id                  : ids.validSession,
+    _id                  : ids.publicSession,
     presenter            : fixtures.User[0]._id,
     slides               : fixtures.Slideshow[0]._id,
     authLevel            : 'public',
+    activeSlide          : '0',
+    startDate            : new Date(1394895518459),
+    started              : true,
+  },
+  {
+    _id                  : ids.anonymousSession,
+    presenter            : fixtures.User[0]._id,
+    slides               : fixtures.Slideshow[0]._id,
+    authLevel            : 'anonymous',
     activeSlide          : '0',
     startDate            : new Date(1394895518459),
     started              : true,
@@ -138,27 +188,54 @@ fixtures.Session = [
 
 fixtures.WhitelistEntry = [
   {
-    session     : ids.validSession,
+    session     : ids.publicSession,
     user         : fixtures.User[0]._id,
     token       : tokens.validUser0,
     screenName  : fixtures.User[0].screenName,
     role        : 'presenter'
   },
   {
-    session     : ids.validSession,
+    session     : ids.publicSession,
     user         : fixtures.User[1]._id,
     screenName  : fixtures.User[1].screenName,
     role        : 'viewer'
   },
   {
-    session     : ids.validSession,
+    session     : ids.publicSession,
     user         : fixtures.User[1]._id,
     screenName  : fixtures.User[1].screenName,
     role        : 'viewer',
     token       : tokens.validUser3
   },
   {
-    session     : ids.validSession,
+    session     : ids.publicSession,
+    user         : fixtures.GuestUser[0]._id,
+    token       : fixtures.GuestUser[0].token,
+    screenName  : fixtures.GuestUser[0].screenName,
+    role        : 'viewer'
+  },
+    {
+    session     : ids.anonymousSession,
+    user         : fixtures.User[0]._id,
+    token       : tokens.validUser0,
+    screenName  : fixtures.User[0].screenName,
+    role        : 'presenter'
+  },
+  {
+    session     : ids.anonymousSession,
+    user         : fixtures.User[1]._id,
+    screenName  : fixtures.User[1].screenName,
+    role        : 'viewer'
+  },
+  {
+    session     : ids.anonymousSession,
+    user         : fixtures.User[1]._id,
+    screenName  : fixtures.User[1].screenName,
+    role        : 'viewer',
+    token       : tokens.validUser3
+  },
+  {
+    session     : ids.anonymousSession,
     user         : fixtures.GuestUser[0]._id,
     token       : fixtures.GuestUser[0].token,
     screenName  : fixtures.GuestUser[0].screenName,
@@ -167,56 +244,166 @@ fixtures.WhitelistEntry = [
 ];
 
 var reqs = {
-  missingHeaders : {
+  public : {
+    missingHeaders : {
     "liveSession" : fixtures.Session[0],
     "isAuthenticated" : function isAuthenticated() { return false; }
-  },
-  missingToken : {
-    "headers" : {},
-    "liveSession" : fixtures.Session[0],
-    "isAuthenticated" : function isAuthenticated() { return false; }
-  },
-  registeredNotWhite : {
-    "headers" : { "cookie" : tokens.validUser2 },
-    "user" : fixtures.User[2],
-    "liveSession" : fixtures.Session[0],
-    "session" : {
-      "touch" : function touch() {}
     },
-    "isAuthenticated" : function isAuthenticated() { return true; }
-  },
-  registeredWhite : {
-    "headers" : { "cookie" : tokens.validUser3 },
-    "user" : fixtures.User[2],
-    "liveSession" : fixtures.Session[0],
-    "session" : {
-      "touch" : function touch() {}
+    missingToken : {
+      "headers" : {},
+      "liveSession" : fixtures.Session[0],
+      "isAuthenticated" : function isAuthenticated() { return false; }
     },
-    "isAuthenticated" : function isAuthenticated() { return true; }
-  },
-  newGuest : {
-    "headers" : { "cookie" : tokens.validGuest1 },
-    "liveSession" : fixtures.Session[0],
-    "session" : {
-      "touch" : function touch() {}
+    registeredNotWhite : {
+      "headers" : { "cookie" : tokens.validUser2 },
+      "user" : fixtures.User[2],
+      "liveSession" : fixtures.Session[0],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return true; }
     },
-    "isAuthenticated" : function isAuthenticated() { return false; }
-  },
-  guestNotWhite : {
-    "headers" : { "cookie" : tokens.validGuest2 },
-    "liveSession" : fixtures.Session[0],
-    "session" : {
-      "touch" : function touch() {}
+    registeredWhite : {
+      "headers" : { "cookie" : tokens.validUser3 },
+      "user" : fixtures.User[2],
+      "liveSession" : fixtures.Session[0],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return true; }
     },
-    "isAuthenticated" : function isAuthenticated() { return false; }
-  },
-  guestWhite : {
-    "headers" : { "cookie" : tokens.validGuest3 },
-    "liveSession" : fixtures.Session[0],
-    "session" : {
-      "touch" : function touch() {}
+    newGuest : {
+      "headers" : { "cookie" : tokens.validGuest1 },
+      "liveSession" : fixtures.Session[0],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; }
     },
-    "isAuthenticated" : function isAuthenticated() { return false; }
+    guestNotWhite : {
+      "headers" : { "cookie" : tokens.validGuest2 },
+      "liveSession" : fixtures.Session[0],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; }
+    },
+    guestWhite : {
+      "headers" : { "cookie" : tokens.validGuest3 },
+      "liveSession" : fixtures.Session[0],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; }
+    }
+  },
+  anonymous : {
+    missingHeaders : {
+      "liveSession" : fixtures.Session[1],
+      "isAuthenticated" : function isAuthenticated() { return false; },
+      "session" : {}
+    },
+    missingToken : {
+      "headers" : {},
+      "liveSession" : fixtures.Session[1],
+      "isAuthenticated" : function isAuthenticated() { return false; }
+    },
+    registeredNotWhite : {
+      "headers" : { "cookie" : tokens.validUser2 },
+      "user" : fixtures.User[2],
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return true; }
+    },
+    registeredWhite : {
+      "headers" : { "cookie" : tokens.validUser3 },
+      "user" : fixtures.User[2],
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return true; }
+    },
+    newGuest : {
+      "headers" : { "cookie" : tokens.validGuest1 },
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; }
+    },
+    guestNotWhite : {
+      "headers" : { "cookie" : tokens.validGuest2 },
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; }
+    },
+    guestWhite : {
+      "headers" : { "cookie" : tokens.validGuest3 },
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; }
+    }
+  }
+}
+
+var ress = {
+  anonymous : {
+    missingHeaders : {
+      "liveSession" : fixtures.Session[1],
+      "isAuthenticated" : function isAuthenticated() { return false; },
+      "session" : {
+        "redirect" : function redirect(path) {},
+      }
+    },
+    missingToken : {
+      "headers" : {},
+      "liveSession" : fixtures.Session[1],
+      "isAuthenticated" : function isAuthenticated() { return false; },
+      "session" : {
+        "redirect" : function redirect(path) {},
+      }
+    },
+    registeredNotWhite : {
+      "headers" : { "cookie" : tokens.validUser2 },
+      "user" : fixtures.User[2],
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return true; },
+      "session" : {
+        "redirect" : function redirect(path) {},
+      }
+    },
+    newGuest : {
+      "headers" : { "cookie" : tokens.validGuest1 },
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; },
+      "session" : {
+        "redirect" : function redirect(path) {},
+      }
+    },
+    guestNotWhite : {
+      "headers" : { "cookie" : tokens.validGuest2 },
+      "liveSession" : fixtures.Session[1],
+      "session" : {
+        "touch" : function touch() {}
+      },
+      "isAuthenticated" : function isAuthenticated() { return false; },
+      "session" : {
+        "redirect" : function redirect(path) {},
+      }
+    }
   }
 }
 
