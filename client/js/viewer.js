@@ -173,18 +173,18 @@ var connect = function(host, port, session, mode, token) {
       var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
 
       //aggregate answers
-      var submissions = [];
+      var submission = [];
       $(this).find('input[type=checkbox], input[type=radio]:not(.am-rating-input)').each(function() {
-        submissions.push($(this).is(":checked"));
+        submission.push($(this).is(":checked"));
       });
 
       $(this).find('input[type=text]').each(function() {
-        submissions.push($(this).val());
+        submission.push($(this).val());
       });
 
       $(this).find('.asq-code-editor').each(function() {
         console.log(ace.edit(this.id).getSession().getValue())
-        submissions.push(ace.edit(this.id).getSession().getValue());
+        submission.push(ace.edit(this.id).getSession().getValue());
       });
 
       // Get confidence
@@ -192,7 +192,7 @@ var connect = function(host, port, session, mode, token) {
 
       return {
         question : questionId,
-        submission: submissions
+        submission: submission
         confidence : confidence,
       }
 
@@ -202,58 +202,59 @@ var connect = function(host, port, session, mode, token) {
     var exerciseId = $(this).find('input[type="hidden"][name="exercise-id"]').val()
    
     socket.emit('asq:submit', {
-      session : session,
-      exerciseId : exerciseId,
-      answers : answers
+      exercise : {
+        id : exerciseId,
+        answers : answers
+      }
     });
     console.log('submitted answer for exercise with id:' + exerciseId);
     console.dir(questions);
   });
 
-  $(document).on('submit', '.assessment form', function(event) {
-    event.preventDefault();
-    var $this = $(this);
+  // $(document).on('submit', '.assessment form', function(event) {
+  //   event.preventDefault();
+  //   var $this = $(this);
 
-    var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
-    console.log("QuestionID= " + questionId);
+  //   var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
+  //   console.log("QuestionID= " + questionId);
 
-    $this.children().css('opacity', '0.5').end().find('input').attr('disabled', 'true').end().find('button:not(.changeanswer .btn)').attr('disabled', 'true').fadeOut(function() {
-      $this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
-      $this.find('.changeAnswer').fadeIn();
-    });
+  //   $this.children().css('opacity', '0.5').end().find('input').attr('disabled', 'true').end().find('button:not(.changeanswer .btn)').attr('disabled', 'true').fadeOut(function() {
+  //     $this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
+  //     $this.find('.changeAnswer').fadeIn();
+  //   });
 
-    //get question id
-    var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
+  //   //get question id
+  //   var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
 
-    //aggregate answers
-    var answers = [];
-    $(this).find('input[type=checkbox], input[type=radio]:not(.am-rating-input)').each(function() {
-      answers.push($(this).is(":checked"));
-    })
+  //   //aggregate answers
+  //   var answers = [];
+  //   $(this).find('input[type=checkbox], input[type=radio]:not(.am-rating-input)').each(function() {
+  //     answers.push($(this).is(":checked"));
+  //   })
 
-    $(this).find('input[type=text]').each(function() {
-      answers.push($(this).val());
-    })
+  //   $(this).find('input[type=text]').each(function() {
+  //     answers.push($(this).val());
+  //   })
 
-    $(this).find('.asq-code-editor').each(function() {
-      console.log(ace.edit(this.id).getSession().getValue())
-      answers.push(ace.edit(this.id).getSession().getValue());
-    })
+  //   $(this).find('.asq-code-editor').each(function() {
+  //     console.log(ace.edit(this.id).getSession().getValue())
+  //     answers.push(ace.edit(this.id).getSession().getValue());
+  //   })
 
-    // Get confidence
-    var confidence = $this.find('input.asq-rating-input:checked').val() || -1;
+  //   // Get confidence
+  //   var confidence = $this.find('input.asq-rating-input:checked').val() || -1;
 
-    socket.emit('asq:submit', {
-      session : session,
-      answers : answers,
-      confidence : confidence,
-      questionId : questionId
-    });
-    console.log('submitted answer for question with id:' + questionId);
-    console.log('Answer');
-    console.dir(answers);
-    console.dir(confidence);
-  });
+  //   socket.emit('asq:submit', {
+  //     session : session,
+  //     answers : answers,
+  //     confidence : confidence,
+  //     questionId : questionId
+  //   });
+  //   console.log('submitted answer for question with id:' + questionId);
+  //   console.log('Answer');
+  //   console.dir(answers);
+  //   console.dir(confidence);
+  // });
 
   document.addEventListener('local:resubmit', function(event) {
     socket.emit('asq:resubmit', {

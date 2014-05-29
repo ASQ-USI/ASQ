@@ -7,7 +7,7 @@ var assessmentDetailSchema = new Schema({
   label : { type: String, require: true },
   score : { type:Number, min: 0, required: true },
   desc  : { type: String, required: true }
-});
+}, { _id: false });
 
 var assessmentSchema = new Schema({
   session  : { type: ObjectId, ref: 'Answer', required: true },
