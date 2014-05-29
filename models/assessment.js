@@ -15,6 +15,8 @@ var assessmentSchema = new Schema({
   assessee : { type: ObjectId, ref: 'WhitelistEntry', required: true }, //TODO: decide if ref token or id?
   assessor : { type: ObjectId, ref: 'WhitelistEntry', required: true }, //TODO: decide if ref token or id?
   score    : { type: Number, min: 0, max: 5, required: true },
+  status   : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
+              required: true , default: "pending"},
   type     : { type: String, lowercase: true, enum: [ 'self', 'peer', 'pro' ],
                required: true },
   details  : { type: [assessmentDetailSchema], default: [] }
