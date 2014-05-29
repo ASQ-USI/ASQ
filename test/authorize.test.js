@@ -67,7 +67,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
   describe('Public Session', function testPublic() {
 
     describe('without headers:', function withoutToken() {
-      var req = reqs.missingHeaders;
+      var req = reqs.public.missingHeaders;
       before(populateDB);
       it('Should refuse the connection wit the error: "Unable to retrieve cookie"',
         function testNoHeaders(done) {
@@ -79,7 +79,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('without a token (cookie):', function withoutToken() {
-      var req = reqs.missingToken;
+      var req = reqs.public.missingToken;
       before(populateDB);
       it('Should refuse the connection wit the error: "Unable to retrieve cookie"',
         function testNoHeaders(done) {
@@ -91,7 +91,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with a not whitelisted registered user:', function regUserNotWhite() {
-      var req = reqs.registeredNotWhite;
+      var req = reqs.public.registeredNotWhite;
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
@@ -145,7 +145,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with a whitelisted registered user:', function regUserWhite() {
-      var req = reqs.registeredWhite;
+      var req = reqs.public.registeredWhite;
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
@@ -202,7 +202,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
 
     describe('with a new guest user:', function newGuestUser() {
       this.timeout(0);
-      var req = reqs.newGuest;
+      var req = reqs.public.newGuest;
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
@@ -264,7 +264,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with an existing not whitelisted guest:', function guestNotWhite() {
-      var req = reqs.guestNotWhite;
+      var req = reqs.public.guestNotWhite;
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
@@ -319,7 +319,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with an existing whitelisted guest:', function guestWhite() {
-      var req = reqs.guestWhite;
+      var req = reqs.public.guestWhite;
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
       req.session.touch = touchSpy;
@@ -377,12 +377,12 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
   describe('Anonymous Session', function testPublic() {
 
     describe('without headers:', function withoutToken() {
-      var req = reqs.missingHeaders;
+      var req = reqs.anonymous.missingHeaders;
       //req.liveSession.authLevel = 'anonymous';
       before(populateDB);
       it('Should refuse the connection wit the error: "Unable to retrieve cookie"',
         function testNoHeaders(done) {
-          authentication.authorizeSession(req, null, function next(err) {
+          authentication.authorizeSession(req, res, function next(err) {
               expect(err).to.deep.equal(new Error('Unable to retrieve cookie'));
               done();
             });
@@ -390,7 +390,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('without a token (cookie):', function withoutToken() {
-      var req = reqs.missingToken;
+      var req = reqs.anonymous.missingToken;
       //req.liveSession.authLevel = 'anonymous';
       before(populateDB);
       it('Should refuse the connection wit the error: "Unable to retrieve cookie"',
@@ -403,7 +403,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with a not whitelisted registered user:', function regUserNotWhite() {
-      var req = reqs.registeredNotWhite;
+      var req = reqs.anonymous.registeredNotWhite;
       //req.liveSession.authLevel = 'anonymous';
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
@@ -458,7 +458,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with a whitelisted registered user:', function regUserWhite() {
-      var req = reqs.registeredWhite;
+      var req = reqs.anonymous.registeredWhite;
       //req.liveSession.authLevel = 'anonymous';
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
@@ -515,7 +515,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
 
     describe('with a new guest user:', function newGuestUser() {
       this.timeout(0);
-      var req = reqs.newGuest;
+      var req = reqs.anonymous.newGuest;
       //req.liveSession.authLevel = 'anonymous';
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
@@ -578,7 +578,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with an existing not whitelisted guest:', function guestNotWhite() {
-      var req = reqs.guestNotWhite;
+      var req = reqs.anonymous.guestNotWhite;
       //req.liveSession.authLevel = 'anonymous';
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
@@ -634,7 +634,7 @@ describe('authentication.authorizeSession(req, res, next)', function session() {
     });
 
     describe('with an existing whitelisted guest:', function guestWhite() {
-      var req = reqs.guestWhite;
+      var req = reqs.anonymous.guestWhite;
       //req.liveSession.authLevel = 'anonymous';
       var originalTouch = req.session.touch;
       var touchSpy = sinon.spy(req.session.touch);
@@ -698,7 +698,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.empty, function(err, authorized) {
+        authentication.ctrlAuthorize(handshakes.public.empty, function(err, authorized) {
         error = err;
         expect(authorized).to.be.false;
         done();
@@ -716,7 +716,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.missingQuery,
+        authentication.ctrlAuthorize(handshakes.public.missingQuery,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -735,7 +735,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.missingSessionId,
+        authentication.ctrlAuthorize(handshakes.public.missingSessionId,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -754,7 +754,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.missingHeaders,
+        authentication.ctrlAuthorize(handshakes.public.missingHeaders,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -774,7 +774,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.missingToken,
+        authentication.ctrlAuthorize(handshakes.public.missingToken,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -794,7 +794,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.invalidSession,
+        authentication.ctrlAuthorize(handshakes.public.invalidSession,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -813,7 +813,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.invalidToken,
+        authentication.ctrlAuthorize(handshakes.public.invalidToken,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -832,7 +832,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.invalidSessionAndToken,
+        authentication.ctrlAuthorize(handshakes.public.invalidSessionAndToken,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -851,7 +851,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.ctrlAuthorize(handshakes.validViewer,
+        authentication.ctrlAuthorize(handshakes.public.validViewer,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -868,7 +868,7 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
   describe('with a user who has a "presenter" role:', function testPresenter(){
     before(populateDB);
     it('Should accept the connection', function testAcceptConnection(done) {
-      authentication.ctrlAuthorize(handshakes.validPresenter,
+      authentication.ctrlAuthorize(handshakes.public.validPresenter,
         function(err, authorized) {
           expect(err).to.not.exist;
           expect(authorized).to.be.true;
@@ -878,13 +878,13 @@ describe('authentication.ctrlAuthorize(handshakeData)', function testCtrlAuth() 
     it('Should set the session in the handshake', function testSetSession(){
       var keysToTest = ['_id', 'startDate', 'activeSlide', 'authLevel'];
       for (var key in keysToTest) {
-        expect(handshakes.validPresenter.session[key]).to.deep.equal(
+        expect(handshakes.public.validPresenter.session[key]).to.deep.equal(
           fixtures.Session[0][key]);
         // For some reason to.have(.deep).property(key, value) does not work.
         }
     });
     it('Should set the "screenName in the handshake', function testSetScreenName() {
-      expect(handshakes.validPresenter.screenName).to.equal(
+      expect(handshakes.public.validPresenter.screenName).to.equal(
         fixtures.WhitelistEntry[0].screenName);
     });
   });
@@ -896,7 +896,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.empty, function(err, granted) {
+        authentication.liveAuthorize(handshakes.public.empty, function(err, granted) {
         error = err;
         expect(granted).to.be.false;
         done();
@@ -914,7 +914,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.missingQuery,
+        authentication.liveAuthorize(handshakes.public.missingQuery,
           function(err, authorized) {
         error = err;
         expect(authorized).to.be.false;
@@ -933,7 +933,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.missingSessionId,
+        authentication.liveAuthorize(handshakes.public.missingSessionId,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -952,7 +952,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.missingHeaders,
+        authentication.liveAuthorize(handshakes.public.missingHeaders,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -972,7 +972,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.missingToken,
+        authentication.liveAuthorize(handshakes.public.missingToken,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -991,7 +991,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.invalidSession,
+        authentication.liveAuthorize(handshakes.public.invalidSession,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -1010,7 +1010,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.invalidToken,
+        authentication.liveAuthorize(handshakes.public.invalidToken,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -1029,7 +1029,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should refuse the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.invalidSessionAndToken,
+        authentication.liveAuthorize(handshakes.public.invalidSessionAndToken,
           function(err, authorized) {
             error = err;
             expect(authorized).to.be.false;
@@ -1047,7 +1047,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     before(populateDB);
     it('Should accept the connection',
       function testRefuseConnection(done) {
-        authentication.liveAuthorize(handshakes.validViewer,
+        authentication.liveAuthorize(handshakes.public.validViewer,
           function(err, authorized) {
             expect(err).to.not.exist;
             expect(authorized).to.be.true;
@@ -1057,13 +1057,13 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     it('Should set the session in the handshake', function testSetSession(){
       var keysToTest = ['_id', 'startDate', 'activeSlide', 'authLevel'];
       for (var key in keysToTest) {
-        expect(handshakes.validViewer.session[key]).to.deep.equal(
+        expect(handshakes.public.validViewer.session[key]).to.deep.equal(
           fixtures.Session[0][key]);
         // For some reason to.have(.deep).property(key, value) does not work.
         }
     });
     it('Should set the "screenName in the handshake', function testSetScreenName() {
-      expect(handshakes.validViewer.screenName).to.equal(
+      expect(handshakes.public.validViewer.screenName).to.equal(
         fixtures.WhitelistEntry[1].screenName);
     });
   });
@@ -1071,7 +1071,7 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
   describe('with a user who has a "presenter" role:', function testPresenter(){
     before(populateDB);
     it('Should accept the connection', function testAcceptConnection(done) {
-      authentication.liveAuthorize(handshakes.validPresenter,
+      authentication.liveAuthorize(handshakes.public.validPresenter,
         function(err, authorized) {
           expect(err).to.not.exist;
           expect(authorized).to.be.true;
@@ -1081,13 +1081,13 @@ describe('authentication.liveAuthorize(handshakeData)', function testCtrlAuth() 
     it('Should set the session in the handshake', function testSetSession(){
       var keysToTest = ['_id', 'startDate', 'activeSlide', 'authLevel'];
       for (var key in keysToTest) {
-        expect(handshakes.validPresenter.session[key]).to.deep.equal(
+        expect(handshakes.public.validPresenter.session[key]).to.deep.equal(
           fixtures.Session[0][key]);
         // For some reason to.have(.deep).property(key, value) does not work.
         }
     });
     it('Should set the "screenName in the handshake', function testSetScreenName() {
-      expect(handshakes.validPresenter.screenName).to.equal(
+      expect(handshakes.public.validPresenter.screenName).to.equal(
         fixtures.WhitelistEntry[0].screenName);
     });
   });
