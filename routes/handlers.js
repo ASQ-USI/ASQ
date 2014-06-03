@@ -23,7 +23,6 @@ function getHomePage(req, res) {
 
 function getCompleteRegistration(req, res, next) {
   var username = req.user.ldap.sAMAccountName ||  req.flash('username') ;
-  console.log(username)
   if("undefined" == typeof username || username.length ==0){
     res.render('completeRegistration', {
       tipMessages : completeRegistrationMessages,
@@ -38,7 +37,7 @@ function getCompleteRegistration(req, res, next) {
         var asqUsername = null;
         if (count === 0 && username) {
           asqUsername = username;
-          activate.username = 'ok';        
+          activate.username = 'ok';
         }
         res.render('completeRegistration', {
           tipMessages : completeRegistrationMessages,
@@ -49,7 +48,7 @@ function getCompleteRegistration(req, res, next) {
         });
     });
   }
- 
+
 }
 
 function postCompleteRegistration(req, res) {
@@ -59,8 +58,8 @@ function postCompleteRegistration(req, res) {
 
   var errs = validation.getErrorsSignupCampus(data);
 
-  errUsername = (!!errs.username) 
-    ? when.resolve(true) 
+  errUsername = (!!errs.username)
+    ? when.resolve(true)
     : User.count({ username: data.username, _type: 'User' }).exec();
 
   errUsername.then(
@@ -133,12 +132,12 @@ function postSignup(req, res, next) {
 
   var errs = validation.getErrorsSignup(data);
 
-  errEmail = (!!errs.email) 
-    ? true 
+  errEmail = (!!errs.email)
+    ? true
     : User.count({ email: data.email, _type: 'User' }).exec();
 
-  errUsername = (!!errs.username) 
-    ? true 
+  errUsername = (!!errs.username)
+    ? true
     : User.count({ username: data.username, _type: 'User' }).exec();
 
   when.join(errEmail, errUsername)
@@ -209,7 +208,6 @@ function getLogin(req, res) {
 }
 
 function postLogin(req, res) {
-  console.log('I made it')
   res.redirect(utils.redirectToOrGoHome(req));
 }
 
@@ -220,7 +218,7 @@ function getLoginCampus(req, res) {
   if("undefined" != typeof error){
     alert.error = error
   }
-  
+
   res.render('loginCampus', {
       formSignup : false,
       alert: alert
@@ -251,10 +249,10 @@ function emailAvailable(req, res, next) {
   response.err = null;
   response.msg = null;
   response.username = null;
-  var email = !! req.query.email 
-    ? req.query.email.trim() 
+  var email = !! req.query.email
+    ? req.query.email.trim()
     : null;
-    
+
   var username = null;
   var err = validation.getErrorEmail(email);
   var promise = null;
@@ -265,7 +263,7 @@ function emailAvailable(req, res, next) {
     return;
   }
   User.count({ email : email, _type: 'User' }).exec()
-  .then( 
+  .then(
     function onEmail(count) {
       if (count !== 0) {
         response.err = 'taken';
@@ -309,7 +307,6 @@ function usernameAvailable(req, res) {
   response.msg = null;
   var username = !! req.query.username ? req.query.username.trim() : null;
   var err = validation.getErrorUsername(username);
-  console.log('%s -> %s', username, err);
   if (!! err) {
     response.err = err;
     response.msg = signupMessages.username.error[err];

@@ -206,7 +206,7 @@ function uploadPresentation(req, res, next) {
        // console.log(slideShowFileHtml)
 
         appLogger.debug('parsing main .html file for questions...');
-        return (new Parser(appLogger)).parse(slideShowFileHtml);
+        return (new Parser(appLogger)).parse(slideShowFileHtml, { wrap: false });
     })
     // 5) create new questions for database
     // TODO: create questions only if they exist
