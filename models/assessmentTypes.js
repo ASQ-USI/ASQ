@@ -3,4 +3,4 @@
  * @description list of assessment types for exercises and questions.
  **/
 
-module.exports = ['self', 'peer'];
+module.exports = ['self', 'peer', 'auto'];

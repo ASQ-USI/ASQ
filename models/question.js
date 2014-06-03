@@ -52,8 +52,8 @@ questionSchema.methods.getSolution = function(){
         //FIXME: is this ok?
         result = null;
       }
-      appLogger.debug('Solution for question ' + this.stem);
-      appLogger.debug(result);
+      // appLogger.debug('Solution for question ' + this.stem);
+      // appLogger.debug(result);
 			return result;
 }
 

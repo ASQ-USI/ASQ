@@ -3,8 +3,8 @@
 */
 
 module.exports = {
-  answerProgressModel : require('./answerProgress'),
   assessmentModel     : require('./assessment'),
+  answerProgressModel : require('./answerProgress'),
   answerModel         : require('./answer'),
   exerciseModel       : require('./exercise'),
   questionModel       : require('./question'),

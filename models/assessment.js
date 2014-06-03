@@ -16,6 +16,7 @@ var assessmentSchema = new Schema({
   assessor : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
   score    : { type: Number, min: 0, max: 5, required: true },
   status   : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
+               required: true , default: "pending"},
   type     : { type: String, lowercase: true, enum: [ 'auto', 'self', 'peer', 'pro' ],
                required: true },
   details  : { type: [assessmentDetailSchema], default: [] }
@@ -25,6 +26,7 @@ assessmentSchema.index({
   answer   : 1,
   assessee : 1,
   assessor : 1,
+  status : 1
 }, { unique : true });
 
 appLogger.debug('Loading Assessment model');
