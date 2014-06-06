@@ -24,15 +24,15 @@ $(function(){
 
   impress().init();
   connect(host, port, sessionId, mode, token)
-})
+});
 
 /** Connect back to the server with a websocket */
 var connect = function(host, port, session, mode, token) {
   var started = false;
-  var socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session)
+  var socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session);
     //+ '&token=' + token ); TODO use token for socket auth.
 
-  socket.on('connect', function(event) {
+  socket.on('connect', function(evt) {
     // console.log("connected")
     socket.emit('asq:viewer', {
       session : session,
@@ -40,30 +40,16 @@ var connect = function(host, port, session, mode, token) {
     });
     $('.asq-welcome-screen h4').text("You are connected to the presentation.");
 
-    socket.on('asq:start', function(event) {
+    socket.on('asq:start', function(evt) {
       if (!started) {
         console.log('started');
-        $('#welcomeScreen').modal('hide');
+        // $('#welcomeScreen').modal('hide');
         started = true;
       }
     });
 
-    socket.on('disconnect', function(event){
+    socket.on('disconnect', function(evt) {
         console.log('disconnected')
-    })
-
-    socket.on('asq:question', function(event) {
-      questionId = event.question._id;
-      showQuestion(event.question);
-      console.log("Wohoo a Question is coming!");
-    });
-
-    socket.on('asq:answer', function(event) {
-      showAnswer(event.question);
-    });
-
-    socket.on('asq:hide-answer', function(event) {
-      $('#answer').modal('hide');
     });
 
     /**
@@ -74,7 +60,7 @@ var connect = function(host, port, session, mode, token) {
       // Handle stats
       if (!! evt.stats) {
         $.each(evt.stats, function forGraphs(id, graphs) {
-          var selector = '#' + evt.slide + ' [data-target-assessment-id="' +
+          var selector = '#' + evt.slide + ' [data-target-asq-question-id="' +
           id + '"] .asq-viz-graph';
           $.each(graphs, function forData(graphName, data) {
             manager.update(selector, graphName, data);
@@ -88,20 +74,73 @@ var connect = function(host, port, session, mode, token) {
      Handle socket event 'goto'
      Uses impress.js API to go to the specified slide in the event.
      */
-    socket.on('asq:gotosub', function(event) {
-      impress().gotoSub(event.substepIndex);
+    socket.on('asq:gotosub', function(evt) {
+      impress().gotoSub(evt.substepIndex);
     });
 
-    socket.on('asq:stat', function(event) {
-      //console.log(event)
-      for (var i = 0; i < event.questions.length; i++) {
-        var question = event.questions[i];
+    /**
+     Indicate a submission was accepted.
+     **/
+    socket.on('asq:submitted', function sumbitted(evt) {
+      if (!evt.exercise || ! evt.status) { return; }
+      // saved submission of exercise.
+      var $exercise = $('.asq-exercise[data-asq-exercise-id="' +
+          evt.exercise + '"]');
+        // Remove waiting message
+      if (evt.status === 'success') {
+        // If the server replies quickly we try to remove the wait message
+        // before it is inserted.
+        setTimeout(function() {
+          $exercise.siblings('.asq-submit-wait').fadeOut(200).remove();
+        }, 600);
+        // Add confirmation message
+        $([
+          '<span class="asq-submit-success"><span class="label label-success">',
+          '<i class="glyphicon glyphicon-ok"></i>',
+          ' Answer submitted successfully.</span></span>'
+          ].join(''))
+          .insertAfter($exercise).fadeIn(600);
+      }
+      if (evt.resubmit && $exercise.siblings('.asq-resubmit-btn').length === 0) {
+        $([
+          '<button class="btn btn-primary asq-resubmit-btn">',
+          '<i class="glyphicon glyphicon-repeat"></i>',
+          ' Resubmit.</span></span>'
+          ].join(''))
+          .insertAfter($exercise).fadeIn(600);
+      }
+    });
+
+    socket.on('asq:assess', function assess(evt) {
+      if (! evt.html || ! evt.exercise) { return; } // Assessment expect the html and exercise
+      var $exercise = $('.asq-exercise[data-asq-exercise-id="' +
+          evt.exercise + '"]');
+      // Remove messages
+      $exercise.siblings(
+        '.asq-submit-wait,.asq-submit-success,.asq-resubmit-btn').fadeOut(200)
+        .remove();
+      // Hide the exercise
+      $exercise.fadeOut(600);
+      $(evt.html)
+        .insertAfter($exercise)
+        .hide()
+        .fadeIn(600, function() {
+          $(this).find('.asq-flex-handle').drags();
+          console.log('should not be called twice')
+          $exercise.closest('.step').asqExpandSlide();
+        });
+    });
+
+    socket.on('asq:stat', function(evt) {
+      //console.log(evt)
+      for (var i = 0; i < evt.questions.length; i++) {
+        var question = evt.questions[i];
         var $this = $("[target-assessment-id='" + question._id + "'] .answersolutions");
         $this.find(".feedback").remove();
 
         //Search for answers for this question
-        var answerArray = $.grep(event.answers, function(e) {
-          return e.question == question._id;
+        var answerArray = $.grep(evt.answers, function(e) {
+          return e.question === question._id;
         });
 
         if (answerArray.length === 1) {
@@ -112,7 +151,7 @@ var connect = function(host, port, session, mode, token) {
           }
         }
 
-        if (answerArray.length == 1 && question.questionType == "multi-choice") {
+        if (answerArray.length === 1 && question.questionType === 'multi-choice') {
           $this.find("li").each(function(el) {
             if (answerArray[0].submission[el]) {
               $(this).find("input").attr("checked", "true");
@@ -125,56 +164,41 @@ var connect = function(host, port, session, mode, token) {
               $(this).find("input").before('<span class="feedback">&#10007;&nbsp;</span>');
             }
           });
-        } else if (answerArray.length == 1 && question.questionType == "text-input") {
+        } else if (answerArray.length === 1 && question.questionType === "text-input") {
           $this.append('<p class="feedback">Your submission: ' + answerArray[0].submission[0] + '<br/>Solution: ' + question.correctAnswer + '</p>');
         } else {
           $this.append('<p class="feedback">No Answer recived!</p>');
         }
       }
-
     });
 
-    socket.on('asq:session-terminated', function(event) {
+    socket.on('asq:session-terminated', function(evt) {
       console.log('session terminated')
       $('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 50px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.</p></div>');
     });
-
   }) //TODO Check if this works
   .on('connect_failed', function(reason) {
     console.error('unable to connect to namespace', reason);
     $('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
   })
-
   .on('error', function (reason){
     console.error('Unable to connect Socket.IO', reason);
   });
 
    // form submission events
-  $(document).on('submit', '.asq-exercise form', function(event) {
-    event.preventDefault();
-    var $this = $(this);
+  $(document).on('submit', '.asq-exercise form', function(evt) {
+    evt.preventDefault();
+    var $exercise = $(evt.target).closest('.asq-exercise');
 
-    //fadeout children and input fields
-    $this
-      .children().css('opacity', '0.5')
-        .end()
-      .find('input').attr('disabled', 'true')
-        .end()
-      .find('button:not(.changeanswer .btn)')
-        .attr('disabled', 'true')
-        .fadeOut(function() {
-          $this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
-          $this.find('.changeAnswer').fadeIn();
-    });
-
-    var answers= $this.find('.asq-question').map(function getQuestionData(){
+    // Get the submission from the form
+    var answers = $exercise.find('.asq-question').map(function getQuestionData() {
 
       //get question id
       var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
 
       //aggregate answers
       var submission = [];
-      $(this).find('input[type=checkbox], input[type=radio]:not(.am-rating-input)').each(function() {
+      $(this).find('input[type=checkbox]:not(.asq-rating-input), input[type=radio]:not(.asq-rating-input)').each(function() {
         submission.push($(this).is(":checked"));
       });
 
@@ -188,133 +212,42 @@ var connect = function(host, port, session, mode, token) {
       });
 
       // Get confidence
-      var confidence = $this.find('input.asq-rating-input:checked').val() || -1;
+      var confidence = parseInt($(this).find('input.asq-rating-input:checked')
+        .val()) || 0;
 
       return {
         question : questionId,
-        submission: submission
+        submission: submission,
         confidence : confidence,
-      }
+      };
+    }).get(); // Return basic array of answers
 
+    //disable submission form
+    $exercise.find(':input').attr('disabled', true);
+    $exercise.find('.asq-rating').addClass('disabled');
+
+    // fadeout questions and insert wait msg
+    $exercise.fadeTo(200, 0.3, function() {
+      $('<span class="asq-submit-wait"><span class="label label-default">\
+        <i class="asq-spinner glyphicon glyphicon-refresh">\
+        </i> Submitting your answer...</span></span>')
+        .insertAfter($exercise).fadeIn(200);
     });
 
     //get question id
-    var exerciseId = $(this).find('input[type="hidden"][name="exercise-id"]').val()
-   
+    var exerciseId = $exercise.attr('data-asq-exercise-id');
+    console.log('submitted answer for exercise with id:' + exerciseId);
+    console.dir(answers);
+
     socket.emit('asq:submit', {
       exercise : {
         id : exerciseId,
         answers : answers
       }
     });
-    console.log('submitted answer for exercise with id:' + exerciseId);
-    console.dir(questions);
-  });
-
-  // $(document).on('submit', '.assessment form', function(event) {
-  //   event.preventDefault();
-  //   var $this = $(this);
-
-  //   var questionId = $this.find('input[type="hidden"][name="question-id"]').val()
-  //   console.log("QuestionID= " + questionId);
-
-  //   $this.children().css('opacity', '0.5').end().find('input').attr('disabled', 'true').end().find('button:not(.changeanswer .btn)').attr('disabled', 'true').fadeOut(function() {
-  //     $this.append('<div class="changeAnswer" style="display: none"><p><button class="btn btn-primary">Modify answer</button>&nbsp; &nbsp; <span class="muted"> ✔ Your answer has been submitted.<span></p></div>')
-  //     $this.find('.changeAnswer').fadeIn();
-  //   });
-
-  //   //get question id
-  //   var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
-
-  //   //aggregate answers
-  //   var answers = [];
-  //   $(this).find('input[type=checkbox], input[type=radio]:not(.am-rating-input)').each(function() {
-  //     answers.push($(this).is(":checked"));
-  //   })
-
-  //   $(this).find('input[type=text]').each(function() {
-  //     answers.push($(this).val());
-  //   })
-
-  //   $(this).find('.asq-code-editor').each(function() {
-  //     console.log(ace.edit(this.id).getSession().getValue())
-  //     answers.push(ace.edit(this.id).getSession().getValue());
-  //   })
-
-  //   // Get confidence
-  //   var confidence = $this.find('input.asq-rating-input:checked').val() || -1;
-
-  //   socket.emit('asq:submit', {
-  //     session : session,
-  //     answers : answers,
-  //     confidence : confidence,
-  //     questionId : questionId
-  //   });
-  //   console.log('submitted answer for question with id:' + questionId);
-  //   console.log('Answer');
-  //   console.dir(answers);
-  //   console.dir(confidence);
-  // });
-
-  document.addEventListener('local:resubmit', function(event) {
-    socket.emit('asq:resubmit', {
-      questionId : questionId
-    });
   });
 }
-var showQuestion = function(question) {
-  $('#blockOptions').css("display", "none");
-  $('#changeAnswer').css("display", "none");
-  $('#sendanswers').removeAttr("disabled");
 
-  $('#questionText').html('<h3>' + question.questionText + '</h3><button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
-  var optionsstring = '';
-  if (question.questionType === "Multiple choice") {
-    optionsstring = '<span class="help-block">Please select all correct answers.</span>';
-    for (var i = 0; i < question.answeroptions.length; i++) {
-      optionsstring += '<label class="checkbox"><input type="checkbox" id="checkbox' + i + '">' + question.answeroptions[i].optionText + '</label>';
-    }
-
-  } else {
-    optionsstring = '<span class="help-block">Please enter your solution. Capitalisation will be ignored.</span>';
-    optionsstring += '<input type="text" id="textbox" placeholder="Your solution...">';
-  }
-
-  $('#answeroptions').html(optionsstring);
-  $('#question').modal('show');
-}
-var showAnswer = function(question) {
-  $('#answerText').html('<h3>Statistics for</h3><h4>"' + question.questionText + '"</h4> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>');
-
-  var optionsstring = [];
-  if (question.questionType === 'Multiple choice') {
-    for (var i = 0; i < question.answeroptions.length; i++) {
-      optionsstring.push('<label class="checkbox" >');
-      if (question.answeroptions[i].correct === true) {
-        optionsstring.push('<i class="icon-ok"> </i>');
-      } else {
-        optionsstring.push('<i class="icon-remove"> </i>');
-      }
-      optionsstring.push(question.answeroptions[i].optionText)
-      optionsstring.push('</label>');
-    }
-
-  } else {
-    optionsstring.push('<span class="help-block">Correct answer.</span>');
-    optionsstring.push('<p></p>');
-    optionsstring.push('<span class="help-block">Your answer.</span>');
-    optionsstring.push('<input type="text" value="Norway" readonly>');
-  }
-
-  $('#answersolutions').html(optionsstring.join(''));
-  //$('#answer').on('show', function() {
-  //   $('#question').on('hidden', function() {/*nothing*/});
-  //});
-  $('#question').on('hidden', function() {
-    $('#answer').modal('show')
-  });
-  $('#question').modal('hide');
-}
 $(function() {
 
   $(document).on("click", ".changeAnswer", function(event) {
@@ -330,7 +263,7 @@ $(function() {
       $this.find('button').removeAttr('disabled').fadeIn()
     });
   });
-})
+});
 
 google.load("visualization", "1", {
   packages : ["corechart"]
@@ -382,7 +315,7 @@ var statsTypes = {
 
 function drawChart() {
   $('.stats').each(function(el) {
-    var questionId = $(this).attr('data-target-assessment-id');
+    var questionId = $(this).attr('data-target-asq-question-id');
     console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
@@ -397,14 +330,14 @@ function drawChart() {
 }
 
 $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
-  var questionId = $(this).parents("[data-target-assessment-id]")
-    .attr('data-target-assessment-id');
+  var questionId = $(this).parents("[data-target-asq-question-id]")
+    .attr('data-target-asq-question-id');
 
   if ($(this).html() === 'Correctness') {
     var slide = $(this).parents('.step.active').attr('id');
     if (! slide) { return; } //Trying to render stats on a different slide
 
-    var selector = '#' + slide + ' [data-target-assessment-id="' + questionId
+    var selector = '#' + slide + ' [data-target-asq-question-id="' + questionId
       + '"] .asq-viz-graph';
     manager.render(selector, 'correctness');
     return;

@@ -22,6 +22,9 @@ exerciseSchema.virtual('allowResubmit').get(function allowResubmit() {
     this.assessment.indexOf('peer') > -1;
 })
 
+exerciseSchema.set('toObject', { virtuals: true });
+exerciseSchema.set('toJSON', { virtuals: true });
+
 appLogger.debug('Loading Exercise model');
 mongoose.model('Exercise', exerciseSchema);
 module.exports = mongoose.model('Exercise');

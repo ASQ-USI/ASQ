@@ -10,16 +10,18 @@ var assessmentDetailSchema = new Schema({
 }, { _id: false });
 
 var assessmentSchema = new Schema({
-  session  : { type: ObjectId, ref: 'Answer', required: true },
-  answer   : { type: ObjectId, ref: 'Answer', required: true },
-  assessee : { type: ObjectId, ref: 'WhitelistEntry', required: true },
-  assessor : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
-  score    : { type: Number, min: 0, max: 5, required: true },
-  status   : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
-               required: true , default: "pending"},
-  type     : { type: String, lowercase: true, enum: [ 'auto', 'self', 'peer', 'pro' ],
-               required: true },
-  details  : { type: [assessmentDetailSchema], default: [] }
+  session    : { type: ObjectId, ref: 'Answer', required: true },
+  answer     : { type: ObjectId, ref: 'Answer', required: true },
+  assessee   : { type: ObjectId, ref: 'WhitelistEntry', required: true },
+  assessor   : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
+  score      : { type: Number, min: 0, max: 100, required: true },
+  confidence : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
+  status     : { type: String, lowercase: true,
+                 enum: [ 'pending', 'active', 'finished' ], required: true ,
+                 default: 'pending' },
+  type       : { type: String, lowercase: true,
+                 enum: [ 'auto', 'self', 'peer', 'pro' ], required : true },
+  details    : { type: [assessmentDetailSchema], default: [] }
 });
 
 assessmentSchema.index({

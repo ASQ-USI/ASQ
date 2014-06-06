@@ -102,7 +102,7 @@ function connect(host, port, session, mode, token) {
       // Handle stats
       if (!! evt.stats) {
         $.each(evt.stats, function forGraphs(id, graphs) {
-          var selector = '#' + evt.slide + ' [data-target-assessment-id="' + id
+          var selector = '#' + evt.slide + ' [data-target-asq-question-id="' + id
             + '"] .asq-viz-graph';
           $.each(graphs, function forData(graphName, data) {
             manager.update(selector, graphName, data);
@@ -194,38 +194,89 @@ function updateProgress(progress) {
   var total = progress.audience + progress.disconnected;
 
   // Answer
-  var answerProgress = (progress.answers / total) * 100;
-  // Progress bar
-  $info.find('.progress > .asq-progress-answers')
-    .css('width', (answerProgress / items) + '%');
-  // Label
-  $info.find('.asq-progress-details > .row > .asq-label-answers > span')
-  .html('Answers: ' + progress.answers + '/' + total + ' (' +
-    Math.floor(answerProgress) + '%)');
+  if (total > 0 && progress.audience > 0) {
+    var answerProgress = (progress.answers / total) * 100;
+    // Progress bar
+    $info.find('.progress > .asq-progress-answers')
+      .removeClass('progress-bar-danger')
+      .css('width', (answerProgress / items) + '%');
+    // Label
+    $info.find('.asq-progress-details > .row > .asq-label-answers > span')
+    .removeClass('label-danger')
+    .addClass('label-primary')
+    .html('Answers: ' + progress.answers + '/' + total + ' (' +
+      Math.floor(answerProgress) + '%)');
+  } else { // Handle answer progress when no audience
+    $info.find('.progress > .asq-progress-answers')
+      .addClass('progress-bar-danger')
+      .css('width', (100 / items) + '%');
+    // Label
+    $info.find('.asq-progress-details > .row > .asq-label-answers > span')
+      .removeClass('label-primary')
+      .addClass('label-danger')
+      .html('<i class="glyphicon glyphicon-remove-circle" \
+        style="vertical-align: text-top;"></i> Answers: ' + progress.answers);
+  }
 
   // Self-assessment
   if ($info.find('.progress > .asq-progress-self').length > 0) {
-     var selfProgress = (progress.self / total) * 100;
-    // Progress bar
-    $info.find('.progress > .asq-progress-self')
-      .css('width', ( selfProgress / items) + '%');
-    // Label
-    $info.find('.asq-progress-details > .row > .asq-label-self  > span')
-      .html('Self-assessments: ' + progress.self + '/' + total + ' (' +
-        Math.floor(selfProgress) + '%)');
+    if (total > 0 && progress.audience > 0) {
+      var selfProgress = (progress.self / total) * 100;
+      // Progress bar
+      $info.find('.progress > .asq-progress-self')
+        .removeClass('progress-bar-danger')
+        .addClass('progress-bar-warning')
+        .css('width', ( selfProgress / items) + '%');
+      // Label
+      $info.find('.asq-progress-details > .row > .asq-label-self  > span')
+        .removeClass('label-danger')
+        .addClass('label-warning')
+        .html('Self-assessments: ' + progress.self + '/' + total + ' (' +
+          Math.floor(selfProgress) + '%)');
+    } else { // Handle self-assessment progress when no audience
+      $info.find('.progress > .asq-progress-self')
+        .removeClass('progress-bar-warning')
+        .addClass('progress-bar-danger')
+        .css('width', (100 / items) + '%');
+      // Label
+
+      $info.find('.asq-progress-details > .row > .asq-label-self  > span')
+        .removeClass('label-warning')
+        .addClass('label-danger')
+        .html('<i class="glyphicon glyphicon-remove-circle" \
+          style="vertical-align: text-top;"></i> Self-assessment: ' +
+          progress.self);
+    }
   }
 
   // Peer-assessment
   if ($info.find('.progress > .asq-progress-peer').length > 0) {
     var peerTotal = (total * total - total);
-    var peerProgress = (progress.peer / peerTotal) * 100;
-    // Progress bar
-    $info.find('.progress > .asq-progress-peer')
-      .css('width', (peerProgress / items) + '%');
-    // Label
-    $info.find('.asq-progress-details > .row > .asq-label-peer  > span')
-      .html('Peer-assessment: ' + progress.peer + '/' + peerTotal + ' (' +
-        Math.floor(peerProgress) + '%)');
+    if (peerTotal > 0) {
+      var peerProgress = (progress.peer / peerTotal) * 100;
+      // Progress bar
+      $info.find('.progress > .asq-progress-peer')
+        .removeClass('progress-danger')
+        .addClass('progress-success')
+        .css('width', (peerProgress / items) + '%');
+      // Label
+      $info.find('.asq-progress-details > .row > .asq-label-peer  > span')
+        .removeClass('label-danger')
+        .addClass('label-success')
+        .html('Peer-assessment: ' + progress.peer + '/' + peerTotal + ' (' +
+          Math.floor(peerProgress) + '%)');
+    } else { // Handle no peer assessment possible
+      $info.find('.progress > .asq-progress-peer')
+        .removeClass('progress-bar-success')
+        .addClass('progress-bar-danger')
+        .css('width' , (100 / items) + '%');
+      $info.find('.asq-progress-details > .row > .asq-label-peer  > span')
+        .removeClass('label-success')
+        .addClass('label-danger')
+        .html('<i class="glyphicon glyphicon-remove-circle" \
+          style="vertical-align: text-top;"></i> Peer-assessment: ' +
+          progress.peer);
+    }
   }
 }
 
@@ -304,7 +355,7 @@ var statsTypes = {
 
 function drawChart() {
   $('.stats').each(function(el) {
-    var questionId = $(this).attr('data-target-assessment-id');
+    var questionId = $(this).attr('data-target-asq-question-id');
     console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
@@ -320,14 +371,14 @@ function drawChart() {
 }
 
 $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
-  var questionId = $(this).parents("[data-target-assessment-id]")
-    .attr('data-target-assessment-id');
+  var questionId = $(this).parents("[data-target-asq-question-id]")
+    .attr('data-target-asq-question-id');
 
   if ($(this).html() === 'Correctness') {
     var slide = $(this).parents('.step.active').attr('id');
     if (! slide) { return; } //Trying to render stats on a different slide
 
-    var selector = '#' + slide + ' [data-target-assessment-id="' + questionId
+    var selector = '#' + slide + ' [data-target-asq-question-id="' + questionId
       + '"] .asq-viz-graph';
     manager.render(selector, 'correctness');
     return;
@@ -362,7 +413,7 @@ function requestDistinct(questionId, obj) {
       list += '<li>' + data[i][0]  + times + '</li>'
     }
     list+='</ul>'
-    $('.stats[data-target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
   });
 }
 
@@ -390,7 +441,7 @@ function requestDistinctCode(questionId, obj) {
     }
 
     list+='</div>'
-    $('.stats[data-target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
     //this sucks
     $('.correct-btn').click(function(){
       $(this).parent().toggleClass('correct-answer')
