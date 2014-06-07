@@ -41,7 +41,7 @@ answerSchema.pre('save', function autoAssessment(next, done) {
       assessee : answer.answeree,
       assessor : answer.answeree,
       score    : arrayEqual(answer.submission, solution) ? 100 : 0, // TODO replace that with a finer grained answer method
-      status   : 'finished', 
+      status   : 'finished',
       type     : 'auto'
     });
     assessment.save(function onSave(err) { done(err); });

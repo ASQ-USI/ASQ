@@ -5,3 +5,5 @@
 'use strict';
 
 require('bootstrap');
+require('jqueryFlexbox');
+require('jqueryAsqExpandSlide');

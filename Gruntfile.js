@@ -14,58 +14,73 @@ module.exports = function(grunt) {
 
     //browserify
     browserify: {
-      vendor:{
+      vendor: {
         src: ['client/js/vendor/vendor-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
         dest: 'public/js/vendor.js',
-        options:{
+        options: {
           debug: true,
           // alias: 'client/js/vendor/jquery-1.10.2.js:jquery',
           // alias: 'jquery:$',
-          shim:{
-            jquery: { path: "node_modules/jquery/dist/jquery.js", exports: "$" },
-            bootstrap:{
-              path: 'client/js/vendor/bootstrap.js',
-              exports: null,  
-              depends: {jquery:'jquery'}
+          shim: {
+            jquery: {
+              path: "node_modules/jquery/dist/jquery.js",
+              exports: "$"
             },
-            jqueryScrollTo:{
+            bootstrap: {
+              path: 'client/js/vendor/bootstrap.js',
+              exports: null,
+              depends: { jquery:'jquery' }
+            },
+            jqueryScrollTo: {
               path: 'client/js/vendor/jquery.scrollTo.js',
               exports: null,
-              depends: {jquery:'jquery'}
+              depends: { jquery:'jquery' }
             },
-            isotope:{
+            isotope: {
               path: 'client/js/vendor/jquery.isotope.js',
               exports: null,
-              depends: {jquery:'jquery'}
+              depends: { jquery:'jquery' }
             },
-            jqueryHammer:{
+            jqueryHammer: {
               path: 'client/js/vendor/jquery.hammer.js',
               exports: 'Hammer',
-              depends: {jquery:'jquery'}
-            }    
+              depends: { jquery:'jquery' }
+            },
           }
         }
       },
-      vendorPresentation:{
+      vendorPresentation: {
         src: ['client/js/vendor/vendorPresentation-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
         dest: 'public/js/asq-vendor-presentation.js',
-        options:{
+        options: {
           debug: true,
           //alias: 'jQuery:$',
-          shim:{
-            jquery: { path: "node_modules/jquery/dist/jquery.js", exports: "$" },
-            bootstrap:{
+          shim: {
+            jquery: {
+              path: "node_modules/jquery/dist/jquery.js",
+              exports: "$" },
+            bootstrap: {
               path: 'client/js/vendor/bootstrap.js',
-              exports: null,  
-              depends: {jquery:'jquery'}
+              exports: null,
+              depends: { jquery:'jquery' }
+            },
+            jqueryFlexbox: {
+              path: 'client/js/vendor/jquery.flexbox.js',
+              exports: null,
+              depends: { jquery:'jquery' }
+            },
+            jqueryAsqExpandSlide: {
+              path: 'client/js/vendor/jquery.asq.expandSlide.js',
+              exports: null,
+              depends: { jquery:'jquery' }
             }
           }
         }
       },
-      client:{
+      client: {
         src: ['client/js/dom.js'],
         dest: 'public/js/asq-client.js',
-        options:{
+        options: {
           debug: true,
           alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom',
           external: ['jquery']
@@ -164,11 +179,11 @@ module.exports = function(grunt) {
     //parallel tasks
     concurrent: {
       compile: [
-        'less', 
-        'browserify:vendor', 
-        'browserify:vendorPresentation', 
-        'browserify:client', 
-        'browserify:presenter', 
+        'less',
+        'browserify:vendor',
+        'browserify:vendorPresentation',
+        'browserify:client',
+        'browserify:presenter',
         'browserify:viewer'
       ],
       uglify: ['uglify'],
@@ -176,7 +191,7 @@ module.exports = function(grunt) {
 
     //watch
     watch: {
-      options:{
+      options: {
         livereload: true
       },
       client: {

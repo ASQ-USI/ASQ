@@ -236,18 +236,26 @@ function uploadPresentation(req, res, next) {
                 //map question html ids to database id
                 questionIdsMap[q.htmlId] = createdQuestions[i].id;
               });
-              dbQuestions = dbQuestions.concat(createdQuestions)
+              dbQuestions = dbQuestions.concat(createdQuestions);
               return Exercise.create({
-                questions : createdQuestions.map(function(q) { return q._id; })
+                  assessment : exercise.assessment,
+                  questions  : createdQuestions.map(function(q) {
+                    return q._id;
+                  })
+                }).then(function setExIds(dbExercise) {
+                exercise.id = dbExercise.id;
+                return when.resolve(dbExercise);
               });
             })
-        }).then(function(){
+        }).then(function() {
           parsedQuestions = [];
           parsed.exercises.each(function(exercise) {
             parsedQuestions = parsedQuestions.concat(exercise.questions)
           })
           return when.resolve(dbQuestions);
-        })
+        }).then(null, function onError(err) {
+          return when.reject(err);
+        });
 
         // parsedQuestions =  [];
         // parsed.exercises.each(function(exercise){
@@ -284,7 +292,6 @@ function uploadPresentation(req, res, next) {
         while(i--) {
           var htmlId = parsedStats[i].questionHtmlId;
           if (! questionIdsMap.hasOwnProperty(htmlId)) {
-            console.dir(questionIdsMap);
             return when.reject(new Error([
               'Invalid question Id reference "', htmlId,
               '" for stats on slide "', parsedStats[i].slideHtmlId, '".'
