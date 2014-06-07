@@ -36,6 +36,7 @@ answerSchema.pre('save', function autoAssessment(next, done) {
     }
     var assessment = new Assessment({
       session  : answer.session,
+      exercise : answer.exercise,
       answer   : answer._id,
       assessee : answer.answeree,
       assessor : answer.answeree,

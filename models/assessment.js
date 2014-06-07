@@ -11,10 +11,11 @@ var assessmentDetailSchema = new Schema({
 
 var assessmentSchema = new Schema({
   session  : { type: ObjectId, ref: 'Answer', required: true },
+  exercise : { type: ObjectId, ref: 'Exercise', required: true },
   answer   : { type: ObjectId, ref: 'Answer', required: true },
   assessee : { type: ObjectId, ref: 'WhitelistEntry', required: true },
   assessor : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
-  score    : { type: Number, min: 0, max: 5, required: true },
+  score    : { type: Number, min: 0, max: 100, required: true },
   status   : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
                required: true , default: "pending"},
   type     : { type: String, lowercase: true, enum: [ 'auto', 'self', 'peer', 'pro' ],
@@ -25,11 +26,48 @@ var assessmentSchema = new Schema({
 assessmentSchema.index({
   answer   : 1,
   assessee : 1,
+  assessor : 1
+}, { unique : true });
+
+assessmentSchema.index({
+  answer   : 1,
+  assessee : 1,
   assessor : 1,
   status : 1
-}, { unique : true });
+});
 
 appLogger.debug('Loading Assessment model');
 mongoose.model('Assessment', assessmentSchema);
+
+var assessmentJobSchema = new Schema({
+  session     : { type: ObjectId, ref: 'Answer', required: true },
+  exercise    : { type: ObjectId, ref: 'Exercise', required: true },
+  assessments : { type: [assessmentSchema], ref: 'Assessment', required: true },
+  assessee    : { type: ObjectId, ref: 'WhitelistEntry', required: true },
+  assessor    : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
+  status      : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
+               required: true , default: "pending"},
+  type        : { type: String, lowercase: true, enum: [ 'auto', 'self', 'peer', 'pro' ],
+               required: true },
+});
+
+assessmentJobSchema.index({
+  exercise   : 1,
+  assessee : 1,
+  assessor : 1
+}, { unique : true });
+
+assessmentJobSchema.index({
+  exercise : 1,
+  assessee : 1,
+  assessor : 1,
+  status : 1
+});
+
+
+appLogger.debug('Loading AssessmentJob model');
+mongoose.model('AssessmentJob', assessmentJobSchema);
+
+
 
 module.exports = mongoose.model('Assessment');
