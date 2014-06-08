@@ -1,14 +1,14 @@
 var mongoose=require('mongoose');
+// mongoose.set("debug", true)
 db = mongoose.createConnection('localhost', 'benchmark');
 
 var gen = require('when/generator')
   , when = require('when')
   , models = require('../../models') // load all models
   , mongooseFixtures  = require('../util/mongoose-fixtures')
-  , assessmentManager =  require('../../lib/assessment/assessment')
-  , Assessment = db.model('Assessment')
-  , Exercise = db.model('Exercise')
+  , assessmentManager =  require('../../lib/assessment/assessmentWithJob')
   , Session = db.model('Session')
+  , Exercise = db.model('Exercise')
   , Answer = db.model('Answer')
   , WhitelistEntry = db.model('WhitelistEntry')
   , util = require('util');
@@ -42,16 +42,18 @@ var fixtureObj = require('./fixtures')(viewerNum)
   , exercise = fixtureObj.exercise
   , whitelist = fixtureObj.whitelist;
 
+
 start = gen.lift(function *boostrapAvgGen(){
   var result;
   try{
-    // retrieve a Mongoose session object
+    // retrieve Mongoose session objects for session and exercis
     session = yield Session.findOne({_id: session._id}).exec();
     exercise = yield Exercise.findOne({_id: exercise._id}).exec();
 
+
     // 5/60000 * (viewNum/5)
 
-    var lamda = viewerNum/6000 //viewer submissions every 10 minutes
+    var lamda = viewerNum/60000 //viewer submissions every 10 minutes
       , l = whitelist.length;
     
     // l = 1;
@@ -61,8 +63,8 @@ start = gen.lift(function *boostrapAvgGen(){
       whitelist.splice(index, 1);
 
       answers = yield Answer.find({answeree : whitelistEntry._id })
-      .select('_id answeree question session')
-      .populate('question', '_id, assessment')
+      .select('_id answeree exercise question session')
+      .populate('question', '_id assessment')
       .exec();
 
       var startAssessmentCreation = new Date;
@@ -95,7 +97,9 @@ user %d of %d %s", (new Date() - start), i+1, l, whitelistEntry.screenName);
 
 //Main work starts here
 var seedTimer = new Date();
-mongooseFixtures.load(fixtures, db, function(err){
+mongooseFixtures.load(fixtures, db,dataLoaded);
+
+ function dataLoaded(err){
   if (err)  return console.log(err);
   console.log('Data loaded in %s ms', new Date()- seedTimer);
   console.log('Using %s of memory', bytesToSize(process.memoryUsage().heapUsed));
@@ -105,7 +109,7 @@ mongooseFixtures.load(fixtures, db, function(err){
     console.log("job finished")
     process.exit();
   });
-});
+}
 
 
 //utility function to print bytes nicely

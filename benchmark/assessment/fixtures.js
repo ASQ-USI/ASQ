@@ -87,16 +87,26 @@ module.exports = function(viewers){
     slides    : sid
   });
 
+
   // Questions
   fixtures.Question = [];
   ids.basic.questions.forEach(function(q, index) {
     fixtures.Question.push({
       _id: q,
-      assessment : 'peer',
+      assessment : ['peer'],
       correctAnswer : 'submission-' + index + '-0'
     });
   });
 
+
+  // Exercise
+  fixtures.Exercise = [];
+
+  fixtures.Exercise.push({
+    _id        : ids.basic.ex,
+    questions  : ids.basic.questions,
+    assessment : ['peer']
+  });
 
   // Answer
   fixtures.Answer = [];
@@ -106,31 +116,23 @@ module.exports = function(viewers){
     questions.forEach(function(questionId, index){
       counter++
       fixtures.Answer.push({
-        _id : new ObjectId(),
+        _id : new ObjectId(), 
+        exercise : ids.basic.ex,
         question : questionId,
         session: ids.basic.session,
         submission : ['basic-question-' +questionId + '-user-' + i],
         confidence : 3,
-        answeree : whitelist[i]._id,
-        exercise : ids.basic.ex
+        answeree : whitelist[i]._id
       });
     });
   }
 
   console.log("Total answers", counter);
 
-  // Exercise
-  fixtures.Exercise = [];
-
-  fixtures.Exercise.push({
-    _id        : ids.basic.ex,
-    questions  : ids.basic.questions,
-    assessment : (i === 'self' || i === 'peer') ? [i,] : []
-  });
-
   //assessments
   var answers =  fixtures.Answer;
   fixtures.Assessment = [];
+  fixtures.AssessmentJob = [];
   // counter = 0;
   // answers.forEach(function(answer){
   //   for (var i=0; i<viewers; i++){
@@ -154,6 +156,7 @@ module.exports = function(viewers){
     fixtures: fixtures,
     answers : answers,
     session : sessions[0],
+    exercise : fixtures.Exercise[0],
     viewers : users.splice(0, (viewers -1)),
     whitelist : whitelist
   }
