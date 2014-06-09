@@ -270,6 +270,16 @@ var connect = function(host, port, session, mode, token) {
               })
         });
       });
+
+    // disable inputs
+    $assessment.find(':input').attr('disabled', true);
+    $assessment.find('p.text-right > button').attr('disabled', true); //submit btn
+    $assessment.find('p.text-right .asq-rating').attr('disabled', true).addClass('disabled'); //submit btn
+
+    $assessment.fadeTo(600, 0.3, function() {
+      $('<span class="asq-submit-wait"><span class="label label-default"><i class="asq-spinner glyphicon glyphicon-refresh"></i> Submitting your assessment...</span></span>')
+        .insertAfter($assessment).fadeIn(600);
+    });
   });
 }
 
