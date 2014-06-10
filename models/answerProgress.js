@@ -14,6 +14,19 @@ var answerProgressSchema = new Schema({
 
 answerProgressSchema.index({ session : -1, exercise: 1 }, { unique: true });
 
+/**
+ * Update the progress of answers submitted for a given exercise and session.
+ *
+ * @param {session} The session for the progress to update.
+ * @param {exercise} The exercise for the progress to update.
+ * @param {update} Object with the following optional fields: answers, self,
+ *                 peer, disconnected whose value indicate by how much to
+ *                 increment (negative values to decrement).
+ * @param {options} Object with the mongoose findAndUpdate options: upsert, new,
+ *                  sort and select
+ * @return A mongoose query to find and update a progress. The query is not
+ *         executed when returned, you must manually call .exec() afterwards.
+ */
 answerProgressSchema.statics.getUpdateQuery = function(session, exercise, update, options) {
   var obj = {}, ops = {}, hasOwn = Object.prototype.hasOwnProperty;
 

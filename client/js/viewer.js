@@ -185,7 +185,7 @@ var connect = function(host, port, session, mode, token) {
     console.error('Unable to connect Socket.IO', reason);
   });
 
-   // form submission events
+   // Handler for answer submission
   $(document).on('submit', '.asq-exercise form', function(evt) {
     evt.preventDefault();
     var $exercise = $(evt.target).closest('.asq-exercise');
@@ -244,6 +244,41 @@ var connect = function(host, port, session, mode, token) {
         id : exerciseId,
         answers : answers
       }
+    });
+  });
+
+  // Handler for assessment submission
+  $(document).on('submit', '.asq-assessment-inner', function(evt) {
+    evt.preventDefault();
+    var $assessment = $(evt.target).closest('.asq-assessment-inner');
+    $assessment.find('.asq-rubric[data-asq-target-question]').each(
+      function processQuestion() {
+        var questionId = $(this).attr('data-asq-target-question');
+        console.log('question', questionId);
+        $(this).find('[data-asq-rubric]').each(
+          function processRubric() {
+            var rubricId = $(this).attr('data-asq-rubric');
+            console.log('rubric', rubricId);
+            $(this).find('.asq-rubric-list .list-group-item').each(
+              function processRubricElem() {
+                var score = $(this).find('.asq-rubric-elem input').val();
+                var label = $(this).find('.asq-rubric-elem .label').html();
+                var desc  = $(this).find('.asq-rubric-elem').last().html();
+                console.log(score);
+                console.log(label);
+                console.log(desc);
+              })
+        });
+      });
+
+    // disable inputs
+    $assessment.find(':input').attr('disabled', true);
+    $assessment.find('p.text-right > button').attr('disabled', true); //submit btn
+    $assessment.find('p.text-right .asq-rating').attr('disabled', true).addClass('disabled'); //submit btn
+
+    $assessment.fadeTo(600, 0.3, function() {
+      $('<span class="asq-submit-wait"><span class="label label-default"><i class="asq-spinner glyphicon glyphicon-refresh"></i> Submitting your assessment...</span></span>')
+        .insertAfter($assessment).fadeIn(600);
     });
   });
 }
