@@ -10,7 +10,7 @@ var assessmentDetailSchema = new Schema({
 }, { _id: false });
 
 var assessmentSchema = new Schema({
-  session    : { type: ObjectId, ref: 'Answer', required: true },
+  session    : { type: ObjectId, ref: 'Session', required: true },
   exercise   : { type: ObjectId, ref: 'Exercise', required: true },
   answer     : { type: ObjectId, ref: 'Answer', required: true },
   assessee   : { type: ObjectId, ref: 'WhitelistEntry', required: true },
@@ -41,10 +41,22 @@ assessmentSchema.index({
 appLogger.debug('Loading Assessment model');
 mongoose.model('Assessment', assessmentSchema);
 
+// var assessmentJobSchema = new Schema({
+//   session     : { type: ObjectId, ref: 'Answer', required: true },
+//   exercise    : { type: ObjectId, ref: 'Exercise', required: true },
+//   assessments : { type: [assessmentSchema], ref: 'Assessment', required: true },
+//   assessee    : { type: ObjectId, ref: 'WhitelistEntry', required: true },
+//   assessor    : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
+//   status      : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
+//                required: true , default: "pending"},
+//   type        : { type: String, lowercase: true, enum: [ 'auto', 'self', 'peer', 'pro' ],
+//                required: true },
+// });
+
 var assessmentJobSchema = new Schema({
   session     : { type: ObjectId, ref: 'Answer', required: true },
   exercise    : { type: ObjectId, ref: 'Exercise', required: true },
-  assessments : { type: [assessmentSchema], ref: 'Assessment', required: true },
+  assets      : { type: [assessmentJobAssetsSchema], ref: 'Assessment', required: true },
   assessee    : { type: ObjectId, ref: 'WhitelistEntry', required: true },
   assessor    : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
   status      : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
@@ -52,6 +64,13 @@ var assessmentJobSchema = new Schema({
   type        : { type: String, lowercase: true, enum: [ 'auto', 'self', 'peer', 'pro' ],
                required: true },
 });
+
+var assessmentJobAssetsSchema = new Schema({
+  question : { type: Object, required: true },
+  rubric : { type: Object, required: true },
+  answer : { type: Object, required: true },
+}, { _id: false });
+
 
 assessmentJobSchema.index({
   exercise   : 1,

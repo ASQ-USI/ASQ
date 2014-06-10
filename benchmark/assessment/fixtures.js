@@ -88,13 +88,19 @@ module.exports = function(viewers){
   });
 
 
-  // Questions
+  // Questions and Rubrics
   fixtures.Question = [];
+  fixtures.Rubric = [];
   ids.basic.questions.forEach(function(q, index) {
     fixtures.Question.push({
       _id: q,
       assessment : ['peer'],
       correctAnswer : 'submission-' + index + '-0'
+    });
+
+    fixtures.Rubric.push({
+      question: q,
+      maxScore : 100
     });
   });
 
