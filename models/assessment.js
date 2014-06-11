@@ -41,18 +41,6 @@ assessmentSchema.index({
 appLogger.debug('Loading Assessment model');
 mongoose.model('Assessment', assessmentSchema);
 
-// var assessmentJobSchema = new Schema({
-//   session     : { type: ObjectId, ref: 'Answer', required: true },
-//   exercise    : { type: ObjectId, ref: 'Exercise', required: true },
-//   assessments : { type: [assessmentSchema], ref: 'Assessment', required: true },
-//   assessee    : { type: ObjectId, ref: 'WhitelistEntry', required: true },
-//   assessor    : { type: ObjectId, ref: 'WhitelistEntry', required: true  },
-//   status      : { type: String, lowercase: true, enum: [ 'pending', 'active', 'finished' ],
-//                required: true , default: "pending"},
-//   type        : { type: String, lowercase: true, enum: [ 'auto', 'self', 'peer', 'pro' ],
-//                required: true },
-// });
-
 var assessmentJobSchema = new Schema({
   session     : { type: ObjectId, ref: 'Answer', required: true },
   exercise    : { type: ObjectId, ref: 'Exercise', required: true },
@@ -67,7 +55,7 @@ var assessmentJobSchema = new Schema({
 
 var assessmentJobAssetsSchema = new Schema({
   question : { type: Object, required: true },
-  rubric : { type: Object, required: true },
+  rubrics : { type: [Object], required: true },
   answer : { type: Object, required: true },
 }, { _id: false });
 

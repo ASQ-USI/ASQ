@@ -238,8 +238,8 @@ function uploadPresentation(req, res, next) {
               });
               dbQuestions = dbQuestions.concat(createdQuestions);
               return Exercise.create({
-                  assessment : exercise.assessment,
-                  questions  : createdQuestions.map(function(q) {
+                  assessmentTypes : exercise.assessmentTypes,
+                  questions       : createdQuestions.map(function(q) {
                     return q._id;
                   })
                 }).then(function setExIds(dbExercise) {
