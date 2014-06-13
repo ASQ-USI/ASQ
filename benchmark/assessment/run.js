@@ -52,7 +52,7 @@ start = gen.lift(function *boostrapAvgGen(){
 
     // 5/60000 * (viewNum/5)
 
-    var lamda = viewerNum/600 //viewer submissions every 10 minutes
+    var lamda = viewerNum/6000 //viewer submissions every 10 minutes
       , l = whitelist.length;
     
     // l = 1;

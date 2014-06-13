@@ -94,7 +94,6 @@ module.exports = function(viewers){
   ids.basic.questions.forEach(function(q, index) {
     fixtures.Question.push({
       _id: q,
-      assessment : ['peer'],
       correctAnswer : 'submission-' + index + '-0'
     });
 
@@ -111,7 +110,7 @@ module.exports = function(viewers){
   fixtures.Exercise.push({
     _id        : ids.basic.ex,
     questions  : ids.basic.questions,
-    assessment : ['peer']
+    assessmentTypes : ['self', 'peer']
   });
 
   // Answer
