@@ -63,7 +63,8 @@ var assessmentJobAssetsSchema = new Schema({
 assessmentJobSchema.index({
   exercise   : 1,
   assessee : 1,
-  assessor : 1
+  assessor : 1,
+  session  : 1,
 }, { unique : true });
 
 assessmentJobSchema.index({
