@@ -1,11 +1,10 @@
 var ObjectId = require('mongoose').Types.ObjectId
   , ids = Object.create(null)
-  , token = 'bat-token'
   , fixtures = {}
-  , sessions,users,whitelist, i;
+  , users, whitelist, i;
 
 module.exports = function(viewers){
-  //basic scenario threes submissions for one question from three users
+  //basic scenario
   ids.basic = {
     session : new ObjectId(),
     whitelist : new ObjectId(),
@@ -24,8 +23,7 @@ module.exports = function(viewers){
     ],
   }
 
-
-  // User
+  /* ------------------ User ------------------ */
   var presenterId = new ObjectId()
   users = fixtures.User = [];
   whitelist = fixtures.WhitelistEntry = [];
@@ -63,7 +61,7 @@ module.exports = function(viewers){
     email      : 'jackie@cane.org'
   });
 
-  // Slides
+  /* ------------------ Slides ------------------ */
   var sid = new ObjectId();
   fixtures.Slideshow = [
     {
@@ -79,16 +77,15 @@ module.exports = function(viewers){
     }
   ];
 
-  // Sessions
-  sessions = fixtures.Session = [];
+  /* ------------------ Sessions ------------------ */
+  fixtures.Session = [];
   fixtures.Session.push({
     _id       : ids.basic.session,
     presenter : presenterId,
     slides    : sid
   });
 
-
-  // Questions and Rubrics
+  /* ------------------ Question and Rubrics ------------------ */
   fixtures.Question = [];
   fixtures.Rubric = [];
   ids.basic.questions.forEach(function(q, index) {
@@ -96,74 +93,31 @@ module.exports = function(viewers){
       _id: q,
       correctAnswer : 'submission-' + index + '-0'
     });
-
     fixtures.Rubric.push({
       question: q,
       maxScore : 100
     });
   });
 
-
-  // Exercise
+  /* ------------------ Exercise ------------------ */
   fixtures.Exercise = [];
-
   fixtures.Exercise.push({
     _id        : ids.basic.ex,
     questions  : ids.basic.questions,
-    assessmentTypes : ['self', 'peer']
+    assessmentTypes : ['peer']
   });
 
-  // Answer
+  // Empty Collections (will just be emptied)
   fixtures.Answer = [];
-  var questions = ids.basic.questions;
-  var counter = 0;
-  for (var i=0; i<viewers; i++){
-    questions.forEach(function(questionId, index){
-      counter++
-      fixtures.Answer.push({
-        _id : new ObjectId(), 
-        exercise : ids.basic.ex,
-        question : questionId,
-        session: ids.basic.session,
-        submission : ['basic-question-' +questionId + '-user-' + i],
-        confidence : 3,
-        answeree : whitelist[i]._id
-      });
-    });
-  }
-
-  console.log("Total answers", counter);
-
-  //assessments
-  var answers =  fixtures.Answer;
   fixtures.Assessment = [];
   fixtures.AssessmentJob = [];
-  // counter = 0;
-  // answers.forEach(function(answer){
-  //   for (var i=0; i<viewers; i++){
-  //     if(users[i]._id == answer.answeree) continue;
-  //     fixtures.Assessment.push({
-  //       session: ids.basic.session,
-  //       answer : answer._id,
-  //       assessee: answer.answeree,
-  //       assessor: users[i]._id,
-  //       score:0,
-  //       status : "pending",
-  //       type : 'peer'
-  //     });
-  //     counter++;
-  //   }
-  // })
-
-  // console.log("Total assessments", counter);
 
   return{
     fixtures: fixtures,
-    answers : answers,
-    session : sessions[0],
+    questions : fixtures.Question,
+    session : fixtures.Session[0],
     exercise : fixtures.Exercise[0],
     viewers : users.splice(0, (viewers -1)),
     whitelist : whitelist
   }
-
 }
