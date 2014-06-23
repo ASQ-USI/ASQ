@@ -1,19 +1,19 @@
 (function ($) {
-  $.fn.asqExpandSlide = function(slide, remove) {
-    // If slide is boolean and remove is not defined,
-    // We consider the signature to be fn(remove).
+  $.fn.asqExpandSlide = function(slide, enable) {
+    // If slide is boolean and enable is not defined,
+    // We consider the signature to be fn(enable).
     if (typeof slide === 'boolean' &&
-      (typeof remove === 'undefined' || remove === null)) {
-      remove = slide;
+      (typeof enable === 'undefined' || enable === null)) {
+      enable = slide;
       slide = '';
     }
 
     // Default value for slide if not set
     slide = slide || '';
 
-    // Deafualt value for remove if not set
-    if (remove !== true) {
-      remove = false;
+    // Deafualt value for enable if not set
+    if (enable !== false) {
+      enable = true;
     }
 
     var $el
@@ -29,9 +29,9 @@
 
     var self = this;
     // Remove an existing expand option from a slide
-    if (remove) {
+    if (! enable) {
       // If removing a currently expanded slide, restore the content first.
-      if (self.removeId && self.removeId === $el.attr('id')) {
+      if (self.enableId && self.enableId === $el.attr('id')) {
         resetModal();
         hideModal();
       }
@@ -41,6 +41,13 @@
 
     // Add extand option for a slide
     } else {
+
+      // If expansion is already enabled
+      if ($el.find('.asq-slide-expand').length > 0) {
+        console.error('Expansion is already enable for ' + this.html());
+        return;
+      }
+
       // Check if there is a modal to put the slide content
       // If not this is the first the plugin is being called
       // We need to add the container and listeners

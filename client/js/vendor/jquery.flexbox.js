@@ -45,7 +45,8 @@
 
         // console.log('l: ' + prev.outerWidth() + ', r:' + next.outerWidth());
         var offset = prev.offset();
-        offset = Object.prototype.hasOwnProperty.call(offset, 'left') ? offset.left : 0;
+        offset = typeof offset === "object" &&
+          Object.prototype.hasOwnProperty.call(offset, 'left') ? offset.left : 0;
         var leftPercentage = (((e.pageX - offset) + (pos_x - drg_w / 2)) / total);
         var rightPercentage = 1 - leftPercentage;
 

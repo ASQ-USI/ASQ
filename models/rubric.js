@@ -20,9 +20,10 @@ var criterionSchema = new Schema({
 }, { _id: false }); //Prevent creation of id for subdocuments.
 
 var rubricSchema = abstractQuestionSchema.extend({
-  criteria: { type: [criterionSchema], required: false },
-  question: { type: ObjectId, ref: 'Question', required: true },
-  maxScore: { type: Number, required: true } // Max score the rubric can have.
+  criteria:     { type: [criterionSchema], required: false },
+  question:     { type: ObjectId, ref: 'Question', required: true },
+  maxScore:     { type: Number, required: true }, // Max score the rubric can have.
+  deductPoints: { type: Boolean, default: false }
 });
 
 appLogger.debug('Loading Rubric model');
