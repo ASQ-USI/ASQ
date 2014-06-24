@@ -6,6 +6,7 @@ var mongoose  = require('mongoose')
 var assessmentSchema = new Schema({
   session    : { type: ObjectId, ref: 'Session', required: '{PATH} is required.' },
   exercise   : { type: ObjectId, ref: 'Exercise', required: '{PATH} is required.' },
+  question   : { type: ObjectId, ref: 'Question', required: '{PATH} is required.' },
   rubric     : { type: ObjectId, ref: 'Rubric'},
   answer     : { type: ObjectId, ref: 'Answer', required: '{PATH} is required.' },
   assessee   : { type: ObjectId, ref: 'WhitelistEntry', required: '{PATH} is required.' },
