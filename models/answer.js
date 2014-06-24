@@ -21,6 +21,8 @@ var answerSchema = new Schema({
   logData     : [answerLogSchema]
 });
 
+answerSchema.index({session: 1, answeree: 1, exercise: 1 });
+
 
 // Saves an automatic assessment for a user submited answer asynchronously
 // if there exist a solution for the related question.
@@ -37,9 +39,10 @@ answerSchema.pre('save', function autoAssessment(next, done) {
     var assessment = new Assessment({
       session  : answer.session,
       exercise : answer.exercise,
+      rubric   : null,
       answer   : answer._id,
       assessee : answer.answeree,
-      assessor : answer.answeree,
+      assessor : null,
       score    : arrayEqual(answer.submission, solution) ? 100 : 0, // TODO replace that with a finer grained answer method
       status   : 'finished',
       type     : 'auto'

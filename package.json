@@ -37,7 +37,7 @@
     "mkdirp": "~0.3.5",
     "mocha-as-promised": "~1.4.0",
     "moment": "~1.0.1",
-    "mongoose": "~3.8.0",
+    "mongoose": "^3.8.12",
     "mongoose-schema-extend": "^0.1.7",
     "passport": "^0.2.0",
     "passport-local": "~0.1.6",
