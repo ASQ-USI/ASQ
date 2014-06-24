@@ -88,6 +88,7 @@
     function setModal($slide) {
       // Set content of modal from slide and display modal
       self.restoreId = $slide.attr('id');
+      $slide.addClass('asqExpanded');
       $('#asq-slide-expanded').html($slide.children(':not(.asq-slide-expand)'));
     }
 
@@ -95,6 +96,7 @@
       // Restore existing content to slide from modal.
       if (self.restoreId) {
         $('#' + self.restoreId)
+          .removeClass('asqExpanded')
           .prepend($('#asq-slide-expanded').children());
       }
       self.restoreId = null;

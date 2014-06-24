@@ -11,6 +11,7 @@ var impress = require('impressViewer')
 
 // Save current question id;
 var questionId = null, socket, session;
+var client = null;
 
 $(function(){
   var $body     = $('body')
@@ -23,12 +24,16 @@ $(function(){
   assessment.initCodeEditors();
 
   impress().init();
-  connect(host, port, sessionId, mode, token)
+  client = connect(host, port, sessionId, mode, token)
 });
 
 /** Connect back to the server with a websocket */
-var connect = function(host, port, session, mode, token) {
+function connect(host, port, session, mode, token) {
   var started = false;
+  this.answerSaved = false;
+  this.assessmentSaved = false;
+  this.isAssessing = false;
+  var that = this;
   var socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session);
     //+ '&token=' + token ); TODO use token for socket auth.
 
@@ -49,6 +54,7 @@ var connect = function(host, port, session, mode, token) {
     });
 
     socket.on('disconnect', function(evt) {
+
         console.log('disconnected')
     });
 
@@ -75,6 +81,7 @@ var connect = function(host, port, session, mode, token) {
      Uses impress.js API to go to the specified slide in the event.
      */
     socket.on('asq:gotosub', function(evt) {
+
       impress().gotoSub(evt.substepIndex);
     });
 
@@ -82,43 +89,36 @@ var connect = function(host, port, session, mode, token) {
      Indicate a submission was accepted.
      **/
     socket.on('asq:submitted', function sumbitted(evt) {
-      if (!evt.exercise || ! evt.status) { return; }
-      // saved submission of exercise.
-      var $exercise = $('.asq-exercise[data-asq-exercise-id="' +
-          evt.exercise + '"]');
-        // Remove waiting message
-      if (evt.status === 'success') {
-        // If the server replies quickly we try to remove the wait message
-        // before it is inserted.
-        setTimeout(function() {
-          $exercise.siblings('.asq-submit-wait').fadeOut(200).remove();
-        }, 600);
-        // Add confirmation message
-        $([
-          '<span class="asq-submit-success"><span class="label label-success">',
-          '<i class="glyphicon glyphicon-ok"></i>',
-          ' Answer submitted successfully.</span></span>'
-          ].join(''))
-          .insertAfter($exercise).fadeIn(600);
-      }
-      if (evt.resubmit && $exercise.siblings('.asq-resubmit-btn').length === 0) {
-        $([
-          '<button class="btn btn-primary asq-resubmit-btn">',
-          '<i class="glyphicon glyphicon-repeat"></i>',
-          ' Resubmit.</span></span>'
-          ].join(''))
-          .insertAfter($exercise).fadeIn(600);
+      console.log('submitted')
+      console.log(evt);
+      if (!evt.type) { return; }
+      if (evt.type === 'answer') {
+        handleSubmittedAnswer(evt);
+      } else if (evt.type === 'assessment') {
+        handleSubmittedAssessment(evt);
       }
     });
 
     socket.on('asq:assess', function assess(evt) {
-      if (! evt.html || ! evt.exercise) { return; } // Assessment expect the html and exercise
+      console.log('Got assessment')
+      // Assessment expect the html and exercise and user should not be assessing
+      if (! evt.html || ! evt.exercise || that.isAssessing) { return; }
+
+      // This selector also works in the expanded slide.
       var $exercise = $('.asq-exercise[data-asq-exercise-id="' +
           evt.exercise + '"]');
-      // Remove messages
+
+      // Check if exercise found
+      if ($exercise.length < 1) { return; }
+
+      //start assessment
+      that.isAssessing = true;
+      console.log('removing wait msgs')
+      // Remove messages and previous assessments
       $exercise.siblings(
-        '.asq-submit-wait,.asq-submit-success,.asq-resubmit-btn').fadeOut(200)
+        '.asq-submit-label,.asq-resubmit-btn,.asq-assessment-container').fadeOut(200)
         .remove();
+
       // Hide the exercise
       $exercise.fadeOut(600);
       $(evt.html)
@@ -185,7 +185,7 @@ var connect = function(host, port, session, mode, token) {
     console.error('Unable to connect Socket.IO', reason);
   });
 
-   // Handler for answer submission
+  // Handler for answer submission
   $(document).on('submit', '.asq-exercise form', function(evt) {
     evt.preventDefault();
     var $exercise = $(evt.target).closest('.asq-exercise');
@@ -227,18 +227,18 @@ var connect = function(host, port, session, mode, token) {
     $exercise.find('.asq-rating').addClass('disabled');
 
     // fadeout questions and insert wait msg
-    $exercise.fadeTo(200, 0.3, function() {
-      $('<span class="asq-submit-wait"><span class="label label-default">\
+    $exercise.fadeTo(200, 0.3);
+    $('<span class="asq-submit-label"><span class="label label-default">\
         <i class="asq-spinner glyphicon glyphicon-refresh">\
         </i> Submitting your answer...</span></span>')
         .insertAfter($exercise).fadeIn(200);
-    });
 
     //get question id
     var exerciseId = $exercise.attr('data-asq-exercise-id');
     console.log('submitted answer for exercise with id:' + exerciseId);
     console.dir(answers);
 
+    that.answerSaved = false;
     socket.emit('asq:submit', {
       exercise : {
         id : exerciseId,
@@ -251,36 +251,59 @@ var connect = function(host, port, session, mode, token) {
   $(document).on('submit', '.asq-assessment-inner', function(evt) {
     evt.preventDefault();
     var $assessment = $(evt.target).closest('.asq-assessment-inner');
+    var assessment = {};
+    assessment.assessee = $assessment.attr('data-asq-assessee');
+    assessment.exercise = $assessment.attr('data-asq-exercise');
+    assessment.questions = [];
+
+    // Process each question
     $assessment.find('.asq-rubric[data-asq-target-question]').each(
       function processQuestion() {
-        var questionId = $(this).attr('data-asq-target-question');
-        console.log('question', questionId);
+        var question = {};
+        question.id = $(this).attr('data-asq-target-question');
+        question.answer = $(this).attr('data-asq-target-answer');
+        // Get confidence
+        question.confidence = $(this)
+          .find('.asq-rating > input.asq-rating-input:checked').val() || 0;
+        question.rubrics = [];
+        // Process each rubric for the question
         $(this).find('[data-asq-rubric]').each(
           function processRubric() {
-            var rubricId = $(this).attr('data-asq-rubric');
-            console.log('rubric', rubricId);
+            var rubric = {}
+            rubric.id = $(this).attr('data-asq-rubric');
+            rubric.score = $(this).attr('data-asq-score');
+            rubric.maGxScore = $(this).attr('data-asq-maxscore');
+            rubric.submission = [];
+
+            // Get checked items
             $(this).find('.asq-rubric-list .list-group-item').each(
               function processRubricElem() {
-                var score = $(this).find('.asq-rubric-elem input').val();
-                var label = $(this).find('.asq-rubric-elem .label').html();
-                var desc  = $(this).find('.asq-rubric-elem').last().html();
-                console.log(score);
-                console.log(label);
-                console.log(desc);
-              })
+                rubric.submission.push($(this).find('.asq-rubric-elem input')
+                  .is(':checked'));
+            });
+            question.rubrics.push(rubric);
         });
-      });
+        assessment.questions.push(question);
+    });
+    console.log(assessment);
 
     // disable inputs
     $assessment.find(':input').attr('disabled', true);
     $assessment.find('p.text-right > button').attr('disabled', true); //submit btn
     $assessment.find('p.text-right .asq-rating').attr('disabled', true).addClass('disabled'); //submit btn
 
-    $assessment.fadeTo(600, 0.3, function() {
-      $('<span class="asq-submit-wait"><span class="label label-default"><i class="asq-spinner glyphicon glyphicon-refresh"></i> Submitting your assessment...</span></span>')
-        .insertAfter($assessment).fadeIn(600);
-    });
+    $assessment.fadeTo(200, 0.3);
+    console.log('add ass wait');
+    $exercise = $('.asq-exercise[data-asq-exercise-id="' + $assessment.attr('data-asq-exercise') + '"]');
+    $('<span class="asq-submit-label"><span class="label label-default"><i class="asq-spinner glyphicon glyphicon-refresh"></i> Submitting your assessment...</span></span>')
+        .insertAfter($exercise).fadeIn(200);
+
+    that.isAssessing = false;
+    that.assessmentSaved = false;
+    // Sending assessment to server
+    socket.emit('asq:assess', {assessment : assessment});
   });
+  return that;
 }
 
 $(function() {
@@ -395,6 +418,100 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
   }
 
 });
+
+// Rubric handler to update grades on click
+$(document).change('.asq-rubric-elem input', function udpateRubricScores(e) {
+  var $panel =  $(e.target).closest('.panel')
+  var maxScore = parseInt($panel.attr('data-asq-maxScore'));
+  var val = 0;
+  // Compute sum of score for radio rubrics
+  if ($(e.target).attr('type') === 'radio') {
+    val = parseInt(e.target.value);
+  // Compute sum score for checkbox rubric
+  } else if ($(e.target).attr('type') === 'checkbox') {
+    $(e.target).closest('.asq-rubric-list')
+    .find('.asq-rubric-elem > input[type=checkbox]:checked').each(function getRubricScore() {
+      val += parseInt(this.value);
+    });
+  }
+  // Compute score
+  var deduct = $panel.attr('data-asq-deduct-points');
+  val = deduct ? maxScore + val : val;
+
+  // Update data attribute of rubric and UI
+  $panel.attr('data-asq-score', val);
+  $panel.find('span.label.asq-rubric-grade').html(val + '/' + maxScore);
+
+  // Compute global score for question
+  var totalScore = 0;
+  var totalMaxScore = 0;
+  var $group = $panel.closest('.panel-group');
+  $group.children('.panel').each( function getAllRubricScores() {
+    totalScore += parseInt($(this).attr('data-asq-score'));
+    totalMaxScore += parseInt($(this).attr('data-asq-maxScore'));
+  });
+
+  // Update global score UI
+  $group.siblings('.pull-right').find('.asq-rubrics-grade').html(totalScore + '/' + totalMaxScore);
+});
+
+function handleSubmittedAnswer(evt) {
+  if (!evt.exercise || ! evt.status) { return; }
+    // saved submission of exercise.
+    var $exercise = $('.asq-exercise[data-asq-exercise-id="' +
+      evt.exercise + '"]');
+      // Remove waiting message
+    if (evt.status === 'success') {
+      client.answerSaved = true; // Ack for saved answer
+
+      // If the server replies quickly we try to remove the wait message
+      // before it is inserted.
+     setTimeout(function() {
+      if (client.isAssessing) { return; } // Already assessing
+      $exercise.siblings('.asq-submit-label').fadeOut(200).remove();
+      console.log('Adding answer ok ' + client.isAssessing)
+      // Add confirmation message
+      $([
+        '<span class="asq-submit-label"><span class="label label-success">',
+        '<i class="glyphicon glyphicon-ok"></i>',
+        ' Answer submitted successfully.</span></span>'
+        ].join(''))
+        .insertAfter($exercise).fadeIn(200);
+     }, 210);
+    }
+    if (evt.resubmit && $exercise.siblings('.asq-resubmit-btn').length === 0) {
+      $([
+        '<button class="btn btn-primary asq-resubmit-btn">',
+        '<i class="glyphicon glyphicon-repeat"></i>',
+        ' Resubmit.</span></span>'
+        ].join(''))
+        .insertAfter($exercise).fadeIn(200);
+    }
+}
+
+function handleSubmittedAssessment(evt) {
+  if (!evt.exercise || ! evt.status) { return; }
+  var $exercise = $('.asq-exercise[data-asq-exercise-id="' +
+    evt.exercise + '"]');
+  if (evt.status === 'success') {
+    client.assessmentSaved = true; // Ack for saved answer
+    // If the server replies quickly we try to remove the wait message
+    // before it is inserted.
+    setTimeout(function() {
+      $exercise.siblings('.asq-submit-label').fadeOut(200).remove();
+      // Already assessing the next answer
+      if (client.isAssessing) { return; }
+      // Add confirmation message
+      console.log('Adding ass ok message ' + client.isAssessing);
+      $([
+        '<span class="asq-submit-label"><span class="label label-success">',
+        '<i class="glyphicon glyphicon-ok"></i>',
+        ' Assessment submitted successfully.</span></span>'
+        ].join(''))
+        .insertAfter($exercise).fadeIn(200);
+    }, 210);
+  }
+}
 
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {

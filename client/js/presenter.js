@@ -188,14 +188,19 @@ function connect(host, port, session, mode, token) {
   });
 }
 function updateProgress(progress) {
-  var $info = $('#' + progress.exercise + '.asq-exercise')
+  console.log('update progress')
+  console.dir(progress);
+  var $info = $('[data-asq-exercise-id=' + progress.exercise + '].asq-exercise')
     .find('.asq-progress-info');
   var items = $info.find('.progress > .progress-bar').length;
-  var total = progress.audience + progress.disconnected;
+  var audience     = progress.audience;
+  var totalAnswers = audience + progress.discAnswers;
+  var totalSelf    = audience + progress.discSelf;
+  var totalPeer    = audience * audience - audience  + progress.discPeer;
 
   // Answer
-  if (total > 0 && progress.audience > 0) {
-    var answerProgress = (progress.answers / total) * 100;
+  if (totalAnswers > 0 && audience > 0) {
+    var answerProgress = (progress.answers / totalAnswers) * 100;
     // Progress bar
     $info.find('.progress > .asq-progress-answers')
       .removeClass('progress-bar-danger')
@@ -204,7 +209,7 @@ function updateProgress(progress) {
     $info.find('.asq-progress-details > .row > .asq-label-answers > span')
     .removeClass('label-danger')
     .addClass('label-primary')
-    .html('Answers: ' + progress.answers + '/' + total + ' (' +
+    .html('Answers: ' + progress.answers + '/' + totalAnswers + ' (' +
       Math.floor(answerProgress) + '%)');
   } else { // Handle answer progress when no audience
     $info.find('.progress > .asq-progress-answers')
@@ -220,8 +225,8 @@ function updateProgress(progress) {
 
   // Self-assessment
   if ($info.find('.progress > .asq-progress-self').length > 0) {
-    if (total > 0 && progress.audience > 0) {
-      var selfProgress = (progress.self / total) * 100;
+    if (totalSelf > 0 && audience > 0) {
+      var selfProgress = (progress.self / totalSelf) * 100;
       // Progress bar
       $info.find('.progress > .asq-progress-self')
         .removeClass('progress-bar-danger')
@@ -231,7 +236,7 @@ function updateProgress(progress) {
       $info.find('.asq-progress-details > .row > .asq-label-self  > span')
         .removeClass('label-danger')
         .addClass('label-warning')
-        .html('Self-assessments: ' + progress.self + '/' + total + ' (' +
+        .html('Self-assessments: ' + progress.self + '/' + totalSelf + ' (' +
           Math.floor(selfProgress) + '%)');
     } else { // Handle self-assessment progress when no audience
       $info.find('.progress > .asq-progress-self')
@@ -251,9 +256,8 @@ function updateProgress(progress) {
 
   // Peer-assessment
   if ($info.find('.progress > .asq-progress-peer').length > 0) {
-    var peerTotal = (total * total - total);
-    if (peerTotal > 0) {
-      var peerProgress = (progress.peer / peerTotal) * 100;
+    if (totalPeer > 0) {
+      var peerProgress = (progress.peer / totalPeer) * 100;
       // Progress bar
       $info.find('.progress > .asq-progress-peer')
         .removeClass('progress-danger')
@@ -263,7 +267,7 @@ function updateProgress(progress) {
       $info.find('.asq-progress-details > .row > .asq-label-peer  > span')
         .removeClass('label-danger')
         .addClass('label-success')
-        .html('Peer-assessment: ' + progress.peer + '/' + peerTotal + ' (' +
+        .html('Peer-assessment: ' + progress.peer + '/' + totalPeer + ' (' +
           Math.floor(peerProgress) + '%)');
     } else { // Handle no peer assessment possible
       $info.find('.progress > .asq-progress-peer')
