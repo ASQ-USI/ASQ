@@ -20,7 +20,7 @@ var model         = require('../models')
 , when            = require('when')
 , path            = require('path')
 , _               = require('lodash')
-, asyncblock      = require('asyncblock')
+// , asyncblock      = require('asyncblock')
 , exec            = require('child_process').exec
 , mkdirp          = require('mkdirp')
 , fn = ('when/function')
@@ -64,10 +64,10 @@ module.exports.post = function(req, res) {
     })
     .then(
       function(filePath){
-        return pfs.readFile(filePath);     
+        return pfs.readFile(filePath);
     })
     //4) parse questions
-    .then(    
+    .then(
       function(file) {
         slideShowFileHtml = file;
         appLogger.debug('parsing main .html file for questions...');
@@ -114,7 +114,7 @@ module.exports.post = function(req, res) {
         var fileNoExt =  folderPath + '/' + path.basename(newSlideshow.originalFile, '.html');
         newSlideshow.presenterFile =  fileNoExt + '.asq-presenter.dust';
         newSlideshow.viewerFile =  fileNoExt + '.asq-viewer.dust';
-        
+
         var filePromises = [
           pfs.writeFile(newSlideshow.presenterFile, newHtml[0]),
           pfs.writeFile(newSlideshow.viewerFile, newHtml[1])
@@ -141,7 +141,7 @@ module.exports.post = function(req, res) {
         //create thumbs
         appLogger.debug('creating thumbnails')
         createThumb(newSlideshow);
-        return pfs.unlink(req.files.upload.path);         
+        return pfs.unlink(req.files.upload.path);
     })
     //10) update slideshows for user
     .then(function(){
@@ -178,7 +178,7 @@ function createThumb(slideshow) {
 				ids.push(id);
 			}
 		});
-		
+
 		asyncblock(function(flow){
 			mkdirp.sync(app.get('uploadDir') + '/thumbs/' + slideshow._id);
       var call = new Array();
@@ -197,13 +197,13 @@ function createThumb(slideshow) {
       url[5] = slideshow._id;
       url[6] = "/?url=";
       url = url.join("");
-      
+
       for(var i = 0; i < ids.length; i++){
         appLogger.debug("calling: " + call + i + " -s 0.3 " + url + ids[i]);
         exec(call + i + " -s 0.3 " + url + ids[i], flow.add());
   			flow.wait();
       }
 		});
-		
+
 	});
 }

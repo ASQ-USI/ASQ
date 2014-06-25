@@ -17,7 +17,6 @@
     "asq-microformat": "ASQ-USI/asq-microformat",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
-    "asyncblock": "~2.1.13",
     "bcrypt": "~0.7.6",
     "browserify": "~2.35.0",
     "cheerio": "~0.12.4",

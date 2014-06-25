@@ -1,5 +1,5 @@
-var asyncblock = require('asyncblock')
-  , cheerio    = require('cheerio')
+var cheerio    = require('cheerio')
+  // , asyncblock = require('asyncblock')
   , fs         = require('fs')
   , mkdirp     = require('mkdirp')
   , config     = require('../../../config')
@@ -22,7 +22,7 @@ function createThumbs(slideshow) {
         ids.push(id);
       }
     });
-    
+
     asyncblock(function(flow){
       mkdirp.sync(app.get('uploadDir') + '/thumbs/' + slideshow._id);
       var call = new Array();
@@ -42,7 +42,7 @@ function createThumbs(slideshow) {
       url[5] = slideshow._id;
       url[6] = "/?url=";
       url = url.join("");
-      
+
       for(var i = 0; i < ids.length; i++){
         appLogger.debug("calling: " + call + i + " -s 0.3 " + url + ids[i]);
         exec(call + i + " -s 0.3 " + url + ids[i], flow.add());

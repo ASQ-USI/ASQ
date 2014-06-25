@@ -7,7 +7,7 @@ var cheerio  = require('cheerio')
 , fs         = require("fs")
 , path       = require('path')
 , schemas    = require('../models')
-, asyncblock = require('asyncblock')
+// , asyncblock = require('asyncblock')
 , lib 		   = require('../lib')
 , appLogger  = lib.logger.appLogger;
 
@@ -18,13 +18,13 @@ module.exports.admin = function(req, res) {
   sessionFromUserId(userId, function(err, session) {
     if (err) throw err;
     if (!session || !session.id) {
-      res.redirect('/user/' + req.user.username + 
+      res.redirect('/user/' + req.user.username +
       	'/?alert=You have no session running!&type=error');
       return;
     }
 
     var slideshow = session.slides;
-    res.render(slideshow.presenterFile, { 
+    res.render(slideshow.presenterFile, {
     	title : slideshow.title,
     	mode  : 'admin',
       host  : ASQ.appHost,
@@ -56,7 +56,7 @@ module.exports.adminControll = function(req, res) {
 				var presentationSkeleton;
 				//Array with one field per slide. Each field has questions and stats
 				var slides = [];
-				
+
 				$ = cheerio.load(data);
 				$('.step').each(function() {
 					//Get questions on this slide. Get their text and push it into an array
@@ -69,7 +69,7 @@ module.exports.adminControll = function(req, res) {
 						questionsOnSlide.push(text);
 						//console.log(text);
 					});
-					
+
 					//Get stats on this slide. Get their text and push it into an array
 					var statsOnSlide = new Array();
 					$(this).find('.stats').each(function(el) {
@@ -80,12 +80,12 @@ module.exports.adminControll = function(req, res) {
 						statsOnSlide.push(text);
 						//console.log(text);
 					});
-					
+
 					var id = this.attr().id;
 					//If slide does not have id, use step-x instead (for url calling)
 					if (id == undefined) {
 						id =="step-" + (ids.length + 1);
-					} 
+					}
 					ids.push(id);
 					slides.push({
 						id: id,
@@ -107,7 +107,7 @@ module.exports.adminControll = function(req, res) {
 					date  : session.date,
 					slidesId     : slideshow._id,
 					slidesThumbs : slides,
-					slideshow    : slideshow, 
+					slideshow    : slideshow,
 					presenationSkeleton : presentationSkeleton,
 				});
 			});
@@ -136,7 +136,7 @@ module.exports.render = function(req, res) {
 	Slideshow.findById(id, function(err, slideshow) {
 		if(slideshow){
 			res.sendfile(slideshow.originalFile);
-		
+
 		}else{
 			res.send(404, "Slideshow not found");
 		}
@@ -227,7 +227,7 @@ module.exports.liveStatic = function(req, res) {
 		if (err) {
 			if (err.message === 'User does not exist') {
 				res.send(404, err.message);
-			
+
 			} else { throw err; }
 			return;
 		}
@@ -251,7 +251,7 @@ module.exports.start = function(req, res) {
 		//Error Handling
 		flow.errorCallback = function errorCallback(err) {
 			appLogger.error("Presentation Start\n" + err);
-			res.redirect(302, '/user/' + req.user.username 
+			res.redirect(302, '/user/' + req.user.username
 				+ '/?alert=Something went wrong. The Great ASQ Server said: '
 				+ err + '&type=error');
 			return;
@@ -268,7 +268,7 @@ module.exports.start = function(req, res) {
 		newSession.slides = flow.get('slideshow')._id;
 		newSession.authLevel = (Session.schema.path('authLevel').enumValues
 			.indexOf(req.query.al) > -1) ? req.query.al : "public";
-		
+
 		//Save the new session
 		newSession.save(flow.add());
 
@@ -308,14 +308,14 @@ module.exports.stop = function(req, res) {
 	}, function(err, user) {
 		if (err) { throw err; }
 		if (!user) {
-			res.redirect('/user/' + req.user.username 
+			res.redirect('/user/' + req.user.username
 			+ '/?alert=Something went wrong. The Great ASQ Server said: User not found');
 		}
-		
+
 		var WhitelistEntry = db.model('WhitelistEntry', schemas.whitelistEntrySchema);
 		WhitelistEntry.remove({ session : user.current }, function(err) {
 			if (err) { throw err; }
-			res.redirect('/user/' + req.user.username 
+			res.redirect('/user/' + req.user.username
 			+ '/?alert=Your session was stopped. You have no session running&type=info');
 		});
 	});
@@ -326,8 +326,8 @@ var sessionFromUserId = function(userId, callback) {
 	var User = db.model('User', schemas.userSchema);
 	User.findById(userId, function(err, user) {
 		if (err) { callback(err); }
-		
-		if (!user) { 
+
+		if (!user) {
 			callback(new Error('User does not exist'));
 
 		} else if (user.current) {
