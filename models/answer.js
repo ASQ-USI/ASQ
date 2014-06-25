@@ -47,7 +47,7 @@ answerSchema.pre('save', function autoAssessment(next, done) {
       score    : arrayEqual(answer.submission, solution) ? 100 : 0, // TODO replace that with a finer grained answer method
       status   : 'finished',
       type     : 'auto',
-      confidence : answer.confidence; //We save the answeree's confidence for the correctness chart.
+      confidence : answer.confidence //We save the answeree's confidence for the correctness chart.
     });
     assessment.save(function onSave(err) { done(err); });
   });
