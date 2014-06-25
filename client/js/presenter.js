@@ -8,8 +8,11 @@
 var impress  = require('impressPresenter')
 , io         = require('socket.io-browserify')
 , $          = require('jquery')
+// , microformatClient = require('asq-microformat/lib/client')
 , manager    = require('asq-visualization').Manager()
-, assessment = require('asq-microformat').assessment;
+, assessment = require('asq-microformat').assessment
+, EventEmitter2     = require('eventemitter2').EventEmitter2
+, eventBus          = new EventEmitter2({delimiter: ':'})
 
 $(function(){
   var $body   = $('body')
@@ -19,7 +22,7 @@ $(function(){
   , mode      = $body.attr('asq-socket-mode')
   , token     = $body.attr('asq-token');
 
-  assessment.initCodeEditors();
+  // microformatClient.setupMicroformatComponents(eventBus);
 
   impress().init();
   connect(host, port, sessionId, mode, token);
@@ -35,8 +38,8 @@ function connect(host, port, session, mode, token) {
   //+ '&token=' + token ); TODO use token for socket auth.
 
   var updateViewersCount = function(event) {
-    if (!event.connectedClients)
-      return;
+    console.log('viewer count update')
+    if (typeof event.connectedClients !== 'number') { return; }
     var connectedViewers = event.connectedClients;
     // Draw icons for the first 50 viewers
     var lim = connectedViewers < 50 ? connectedViewers : 50;
@@ -52,8 +55,12 @@ function connect(host, port, session, mode, token) {
 
     //update viewers count
     $(".connected-viewers-number").text(connectedViewers + " viewers");
-    //$('#numConnectedViewers').text(connectedViewers + '');
-    console.log('New viewer connected');
+    // New viewer connected.
+    if (event.screenName && event.token) {
+      console.info('Viewer ' + screenName + ' connected');
+      // eventBus.emit('asq:folo-connected',
+      //   { user: { token: event.token, nickname : event.screenName }});
+    }
   }
   socket.on('connect', function(event) {
     // socket.emit('asq:admin', { //unused
@@ -105,6 +112,7 @@ function connect(host, port, session, mode, token) {
           var selector = '#' + evt.slide + ' [data-target-asq-question-id="' + id
             + '"] .asq-viz-graph';
           $.each(graphs, function forData(graphName, data) {
+            console.log(data);
             manager.update(selector, graphName, data);
           });
         });

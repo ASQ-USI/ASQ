@@ -153,7 +153,6 @@ function getLivePresentations(req, res) {
                       + '/presentations/' + slideshow._id + '/live/'
                       + slideshowSessionMap[slideshow._id]
                       + '/?role=viewer&view=presentation';
-             console.log(slideshow)
       })
 
       res.render('userLive', {
