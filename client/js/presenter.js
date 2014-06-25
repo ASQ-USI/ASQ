@@ -244,7 +244,7 @@ function updateProgress(progress) {
       $info.find('.asq-progress-details > .row > .asq-label-self  > span')
         .removeClass('label-danger')
         .addClass('label-warning')
-        .html('Self-assessments: ' + progress.self + '/' + totalSelf + ' (' +
+        .html('Self: ' + progress.self + '/' + totalSelf + ' (' +
           Math.floor(selfProgress) + '%)');
     } else { // Handle self-assessment progress when no audience
       $info.find('.progress > .asq-progress-self')
@@ -257,7 +257,7 @@ function updateProgress(progress) {
         .removeClass('label-warning')
         .addClass('label-danger')
         .html('<i class="glyphicon glyphicon-remove-circle" \
-          style="vertical-align: text-top;"></i> Self-assessment: ' +
+          style="vertical-align: text-top;"></i> Self: ' +
           progress.self);
     }
   }
@@ -275,7 +275,7 @@ function updateProgress(progress) {
       $info.find('.asq-progress-details > .row > .asq-label-peer  > span')
         .removeClass('label-danger')
         .addClass('label-success')
-        .html('Peer-assessment: ' + progress.peer + '/' + totalPeer + ' (' +
+        .html('Peer: ' + progress.peer + '/' + totalPeer + ' (' +
           Math.floor(peerProgress) + '%)');
     } else { // Handle no peer assessment possible
       $info.find('.progress > .asq-progress-peer')
@@ -286,7 +286,7 @@ function updateProgress(progress) {
         .removeClass('label-success')
         .addClass('label-danger')
         .html('<i class="glyphicon glyphicon-remove-circle" \
-          style="vertical-align: text-top;"></i> Peer-assessment: ' +
+          style="vertical-align: text-top;"></i> Peer: ' +
           progress.peer);
     }
   }
