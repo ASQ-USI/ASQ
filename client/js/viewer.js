@@ -127,7 +127,7 @@ function connect(host, port, session, mode, token) {
         .hide()
         .fadeIn(600, function() {
           $(this).find('.asq-flex-handle').drags();
-          console.log('should not be called twice')
+          //console.log('should not be called twice')
           $exercise.closest('.step').asqExpandSlide();
         });
     });
@@ -292,7 +292,7 @@ function connect(host, port, session, mode, token) {
     $assessment.find('p.text-right .asq-rating').attr('disabled', true).addClass('disabled'); //submit btn
 
     $assessment.fadeTo(200, 0.3);
-    console.log('add ass wait');
+    // console.log('add ass wait');
     $exercise = $('.asq-exercise[data-asq-exercise-id="' + $assessment.attr('data-asq-exercise') + '"]');
     $('<span class="asq-submit-label"><span class="label label-default"><i class="asq-spinner glyphicon glyphicon-refresh"></i> Submitting your assessment...</span></span>')
         .insertAfter($exercise).fadeIn(200);
