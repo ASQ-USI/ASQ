@@ -9,7 +9,7 @@ var impress  = require('impressPresenter')
 , io         = require('socket.io-browserify')
 , $          = require('jquery')
 , manager    = require('asq-visualization').Manager()
-, assessment = require('asq-microformat').assessment;
+, microformatClient = require('asq-microformat').client;
 
 $(function(){
   var $body   = $('body')
@@ -19,7 +19,7 @@ $(function(){
   , mode      = $body.attr('asq-socket-mode')
   , token     = $body.attr('asq-token');
 
-  assessment.initCodeEditors();
+  microformatClient.initCodeEditors();
 
   impress().init();
   connect(host, port, sessionId, mode, token);
@@ -69,6 +69,7 @@ function connect(host, port, session, mode, token) {
     socket.on('asq:submitted', function(evt) {
       updateProgress(evt.progress);
     });
+
 
     /**
      * Update the viewers count when users connect or disconnect.

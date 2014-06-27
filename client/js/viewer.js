@@ -7,7 +7,7 @@ var impress = require('impressViewer')
 , io = require('socket.io-browserify')
 , $ = require('jquery')
 , manager    = require('asq-visualization').Manager()
-, assessment = require('asq-microformat').assessment;
+, microformatClient = require('asq-microformat').client;
 
 // Save current question id;
 var questionId = null, socket, session;
@@ -21,7 +21,7 @@ $(function(){
     , mode      = $body.attr('asq-socket-mode')
     , token     = $body.attr('asq-token');
 
-  assessment.initCodeEditors();
+  microformatClient.initCodeEditors();
 
   impress().init();
   client = connect(host, port, sessionId, mode, token)
