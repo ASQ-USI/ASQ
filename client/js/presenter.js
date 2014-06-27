@@ -10,6 +10,8 @@ var impress  = require('impressPresenter')
 , $          = require('jquery')
 , manager    = require('asq-visualization').Manager()
 , microformatClient = require('asq-microformat').client;
+, EventEmitter2     = require('eventemitter2').EventEmitter2
+, eventBus          = new EventEmitter2({delimiter: ':'})
 
 $(function(){
   var $body   = $('body')
@@ -35,8 +37,8 @@ function connect(host, port, session, mode, token) {
   //+ '&token=' + token ); TODO use token for socket auth.
 
   var updateViewersCount = function(event) {
-    if (!event.connectedClients)
-      return;
+    console.log('viewer count update')
+    if (typeof event.connectedClients !== 'number') { return; }
     var connectedViewers = event.connectedClients;
     // Draw icons for the first 50 viewers
     var lim = connectedViewers < 50 ? connectedViewers : 50;
@@ -52,8 +54,12 @@ function connect(host, port, session, mode, token) {
 
     //update viewers count
     $(".connected-viewers-number").text(connectedViewers + " viewers");
-    //$('#numConnectedViewers').text(connectedViewers + '');
-    console.log('New viewer connected');
+    // New viewer connected.
+    if (event.screenName && event.token) {
+      console.info('Viewer ' + screenName + ' connected');
+      // eventBus.emit('asq:folo-connected',
+      //   { user: { token: event.token, nickname : event.screenName }});
+    }
   }
   socket.on('connect', function(event) {
     // socket.emit('asq:admin', { //unused
@@ -69,7 +75,6 @@ function connect(host, port, session, mode, token) {
     socket.on('asq:submitted', function(evt) {
       updateProgress(evt.progress);
     });
-
 
     /**
      * Update the viewers count when users connect or disconnect.
@@ -106,6 +111,7 @@ function connect(host, port, session, mode, token) {
           var selector = '#' + evt.slide + ' [data-target-asq-question-id="' + id
             + '"] .asq-viz-graph';
           $.each(graphs, function forData(graphName, data) {
+            console.log(data);
             manager.update(selector, graphName, data);
           });
         });
@@ -237,7 +243,7 @@ function updateProgress(progress) {
       $info.find('.asq-progress-details > .row > .asq-label-self  > span')
         .removeClass('label-danger')
         .addClass('label-warning')
-        .html('Self-assessments: ' + progress.self + '/' + totalSelf + ' (' +
+        .html('Self: ' + progress.self + '/' + totalSelf + ' (' +
           Math.floor(selfProgress) + '%)');
     } else { // Handle self-assessment progress when no audience
       $info.find('.progress > .asq-progress-self')
@@ -250,7 +256,7 @@ function updateProgress(progress) {
         .removeClass('label-warning')
         .addClass('label-danger')
         .html('<i class="glyphicon glyphicon-remove-circle" \
-          style="vertical-align: text-top;"></i> Self-assessment: ' +
+          style="vertical-align: text-top;"></i> Self: ' +
           progress.self);
     }
   }
@@ -268,7 +274,7 @@ function updateProgress(progress) {
       $info.find('.asq-progress-details > .row > .asq-label-peer  > span')
         .removeClass('label-danger')
         .addClass('label-success')
-        .html('Peer-assessment: ' + progress.peer + '/' + totalPeer + ' (' +
+        .html('Peer: ' + progress.peer + '/' + totalPeer + ' (' +
           Math.floor(peerProgress) + '%)');
     } else { // Handle no peer assessment possible
       $info.find('.progress > .asq-progress-peer')
@@ -279,7 +285,7 @@ function updateProgress(progress) {
         .removeClass('label-success')
         .addClass('label-danger')
         .html('<i class="glyphicon glyphicon-remove-circle" \
-          style="vertical-align: text-top;"></i> Peer-assessment: ' +
+          style="vertical-align: text-top;"></i> Peer: ' +
           progress.peer);
     }
   }

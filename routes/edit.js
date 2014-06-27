@@ -4,7 +4,7 @@ var moment = require('moment');
 var sys = require('sys');
 var exec = require('child_process').exec;
 var cheerio = require('cheerio');
-var asyncblock = require('asyncblock');
+// var asyncblock = require('asyncblock');
 
 /*  --- Edit Slideshow ---*/
 function createThumb(slideshow) {
@@ -124,7 +124,7 @@ exports.deleteSlideshow = function(req, res) {
 	function(err){
 		res.redirect('/user?alert=Something went wrong &type=error');
 		throw err;
-		
+
 	})
 }
 

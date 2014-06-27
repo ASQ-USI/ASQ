@@ -1,5 +1,4 @@
-var asyncblock = require('asyncblock')
-  , cheerio    = require('cheerio')
+var cheerio    = require('cheerio')
   , pfs        = require('promised-io/fs')
   , lib        = require('../../../../lib')
   , appLogger  = lib.logger.appLogger

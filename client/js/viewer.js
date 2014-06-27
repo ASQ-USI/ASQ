@@ -9,6 +9,7 @@ var impress = require('impressViewer')
 , manager    = require('asq-visualization').Manager()
 , microformatClient = require('asq-microformat').client;
 
+
 // Save current question id;
 var questionId = null, socket, session;
 var client = null;
@@ -126,7 +127,7 @@ function connect(host, port, session, mode, token) {
         .hide()
         .fadeIn(600, function() {
           $(this).find('.asq-flex-handle').drags();
-          console.log('should not be called twice')
+          //console.log('should not be called twice')
           $exercise.closest('.step').asqExpandSlide();
         });
     });
@@ -222,9 +223,7 @@ function connect(host, port, session, mode, token) {
       };
     }).get(); // Return basic array of answers
 
-    //disable submission form
-    $exercise.find(':input').attr('disabled', true);
-    $exercise.find('.asq-rating').addClass('disabled');
+    disableExercise($exercise);
 
     // fadeout questions and insert wait msg
     $exercise.fadeTo(200, 0.3);
@@ -293,7 +292,7 @@ function connect(host, port, session, mode, token) {
     $assessment.find('p.text-right .asq-rating').attr('disabled', true).addClass('disabled'); //submit btn
 
     $assessment.fadeTo(200, 0.3);
-    console.log('add ass wait');
+    // console.log('add ass wait');
     $exercise = $('.asq-exercise[data-asq-exercise-id="' + $assessment.attr('data-asq-exercise') + '"]');
     $('<span class="asq-submit-label"><span class="label label-default"><i class="asq-spinner glyphicon glyphicon-refresh"></i> Submitting your assessment...</span></span>')
         .insertAfter($exercise).fadeIn(200);
@@ -455,6 +454,13 @@ $(document).change('.asq-rubric-elem input', function udpateRubricScores(e) {
   $group.siblings('.pull-right').find('.asq-rubrics-grade').html(totalScore + '/' + totalMaxScore);
 });
 
+/**
+* Handle the acknowledgment that an answer has been saved.
+* The event must have a status (evt.status) and an exercise id (evt.exercise)
+* The status must be 'success; for a recently saved answer 'confirmation' to
+* confirm an existing answer has been saved or 'processing' to indicate the
+* answer has been received but not is currently being processed.
+*/
 function handleSubmittedAnswer(evt) {
   if (!evt.exercise || ! evt.status) { return; }
     // saved submission of exercise.
@@ -463,6 +469,11 @@ function handleSubmittedAnswer(evt) {
       // Remove waiting message
     if (evt.status === 'success') {
       client.answerSaved = true; // Ack for saved answer
+    }
+    if (evt.status === 'confirmation') {
+      disableExercise($exercise);  //Previously submitted answer, we need to disable the question
+    }
+    if (evt.status === 'success' || evt.status === 'confirmation') {
 
       // If the server replies quickly we try to remove the wait message
       // before it is inserted.
@@ -511,6 +522,12 @@ function handleSubmittedAssessment(evt) {
         .insertAfter($exercise).fadeIn(200);
     }, 210);
   }
+}
+
+function disableExercise($exercise) {
+  //disable submission form
+  $exercise.find(':input').attr('disabled', true);
+  $exercise.find('.asq-rating').addClass('disabled');
 }
 
 function requestDistinct(questionId, obj) {

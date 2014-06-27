@@ -36,6 +36,9 @@ answerSchema.pre('save', function autoAssessment(next, done) {
       done();
       return;
     }
+    console.log('COMAPRING')
+    console.log(answer.submission);
+    console.log(solution);
     var assessment = new Assessment({
       session  : answer.session,
       exercise : answer.exercise,
