@@ -20,6 +20,7 @@ var questionOptionSchema = new Schema({
 }, { _id: false }); //Prevent creation of id for subdocuments.
 
 var questionSchema = abstractQuestionSchema.extend({
+  body            : {type: String, default: ''},
   questionOptions : { type: [questionOptionSchema] },
   correctAnswer   : { type: String },
   assessment      : { type: [{ type: String, enum: assessmentTypes }],

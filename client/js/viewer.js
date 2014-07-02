@@ -126,6 +126,7 @@ function connect(host, port, session, mode, token) {
         .insertAfter($exercise)
         .hide()
         .fadeIn(600, function() {
+          microformatClient.initCodeEditorsForAssessment();
           $(this).find('.asq-flex-handle').drags();
           //console.log('should not be called twice')
           $exercise.closest('.step').asqExpandSlide();
@@ -374,7 +375,7 @@ if("undefined" != typeof google){
   };
 
   function drawChart() {
-    $('.stats').each(function(el) {
+    $('.asq-stats').each(function(el) {
       var questionId = $(this).attr('data-target-asq-question-id');
       console.log($(this).find(".rvswChart").length);
       if($(this).find(".rvswChart").length){
@@ -403,7 +404,7 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
     manager.render(selector, 'correctness');
     return;
   }
-  var $question = $('.assessment[data-question-id=' + questionId + ']');
+  var $question = $('.asq-question[data-question-id=' + questionId + ']');
 
   if($question.hasClass('multi-choice')){
     for (var key in statsTypes) {
@@ -544,7 +545,7 @@ function requestDistinct(questionId, obj) {
     }
     list+='</ul>'
     console.log(list)
-    $('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.asq-stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
   });
 }
 
@@ -572,7 +573,7 @@ function requestDistinctCode(questionId, obj) {
     }
 
     list+='</div>'
-    $('.stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.asq-stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
   });
 }
 
