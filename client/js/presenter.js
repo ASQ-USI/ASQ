@@ -9,9 +9,9 @@ var impress  = require('impressPresenter')
 , io         = require('socket.io-browserify')
 , $          = require('jquery')
 , manager    = require('asq-visualization').Manager()
-, microformatClient = require('asq-microformat').client;
+, microformatClient = require('asq-microformat').client
 , EventEmitter2     = require('eventemitter2').EventEmitter2
-, eventBus          = new EventEmitter2({delimiter: ':'})
+, eventBus          = new EventEmitter2({delimiter: ':'});
 
 $(function(){
   var $body   = $('body')
@@ -21,7 +21,7 @@ $(function(){
   , mode      = $body.attr('asq-socket-mode')
   , token     = $body.attr('asq-token');
 
-  microformatClient.initCodeEditors();
+  microformatClient.configureMicroformatComponents('presenter', eventBus);
 
   impress().init();
   connect(host, port, sessionId, mode, token);
@@ -36,31 +36,6 @@ function connect(host, port, session, mode, token) {
   var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session)
   //+ '&token=' + token ); TODO use token for socket auth.
 
-  var updateViewersCount = function(event) {
-    console.log('viewer count update')
-    if (typeof event.connectedClients !== 'number') { return; }
-    var connectedViewers = event.connectedClients;
-    // Draw icons for the first 50 viewers
-    var lim = connectedViewers < 50 ? connectedViewers : 50;
-    $('.connected-viewers-icons').empty();
-    for (var i = 0; i < lim; i++) {
-      if (i % 10 === 0) {
-        $('.connected-viewers-icons').append('<br />');
-      } else if (i % 5 === 0) {
-        $('.connected-viewers-icons').append('<span>&nbsp;&nbsp;</span>');
-      }
-      $('.connected-viewers-icons').append('<i class="glyphicon glyphicon-user"> </i> ');
-    }
-
-    //update viewers count
-    $(".connected-viewers-number").text(connectedViewers + " viewers");
-    // New viewer connected.
-    if (event.screenName && event.token) {
-      console.info('Viewer ' + screenName + ' connected');
-      // eventBus.emit('asq:folo-connected',
-      //   { user: { token: event.token, nickname : event.screenName }});
-    }
-  }
   socket.on('connect', function(event) {
     // socket.emit('asq:admin', { //unused
     //  session : session
@@ -79,7 +54,7 @@ function connect(host, port, session, mode, token) {
     /**
      * Update the viewers count when users connect or disconnect.
      */
-    socket.on('asq:folo-connected', updateViewersCount);
+    socket.on('asq:folo-connected', onASQFoloConnected);
 
     socket.on('asq:start', function(event) {
       if (!started) {
@@ -139,6 +114,19 @@ function connect(host, port, session, mode, token) {
     socket.on('asq:hide-answer', function(event) {
       $('#answer').modal('hide');
     });
+
+    socket.on('asq:new-assessment-job', function(event){
+      eventBus.emit('asq:new-assessment-job', event);
+    });
+
+    socket.on('asq:assess', function(event){
+      eventBus.emit('asq:assess', event);
+    });
+
+    socket.on('asq:idle-assessment-job', function(event){
+      eventBus.emit('asq:idle-assessment-job', event);
+    });
+
     socket.on('asq:session-terminated', function(event) {
       console.log('session terminated')
       $('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 100px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.</p><p style="text-align: center;"><a href="/user">Return to presentations.</a></p></div>');
@@ -194,6 +182,38 @@ function connect(host, port, session, mode, token) {
     });
   });
 }
+
+function onASQFoloConnected(event){
+  eventBus.emit('asq:folo-connected',  {
+    user: { token: event.token, nickname : event.screenName }
+  });
+  updateViewersCount(event);
+}
+
+function updateViewersCount(event) {
+  console.log('viewer count update')
+  if (typeof event.connectedClients !== 'number') { return; }
+  var connectedViewers = event.connectedClients;
+  // Draw icons for the first 50 viewers
+  var lim = connectedViewers < 50 ? connectedViewers : 50;
+  $('.connected-viewers-icons').empty();
+  for (var i = 0; i < lim; i++) {
+    if (i % 10 === 0) {
+      $('.connected-viewers-icons').append('<br />');
+    } else if (i % 5 === 0) {
+      $('.connected-viewers-icons').append('<span>&nbsp;&nbsp;</span>');
+    }
+    $('.connected-viewers-icons').append('<i class="glyphicon glyphicon-user"> </i> ');
+  }
+
+  //update viewers count
+  $(".connected-viewers-number").text(connectedViewers + " viewers");
+  // New viewer connected.
+  if (event.screenName && event.token) {
+    console.info('Viewer ' + event.screenName + ' connected');
+  }
+}
+
 function updateProgress(progress) {
   console.log('update progress')
   console.dir(progress);
@@ -316,69 +336,72 @@ var showQuestion = function(question) {
 
 }
 
-google.load("visualization", "1", {
-  packages : ["corechart"]
-});
+if("undefined" != typeof google){
 
-google.setOnLoadCallback(drawChart);
+  google.load("visualization", "1", {
+    packages : ["corechart"]
+  });
 
-var statsTypes = {
+  google.setOnLoadCallback(drawChart);
 
-  rightVsWrong : {
-    metric : "rightVsWrong",
-    data : [],
-    chart : [],
-    options : {
-      width : 800,
-    }
-  },
+  var statsTypes = {
 
-  distinctOptions : {
-    metric : "distinctOptions",
-    data : [],
-    chart : [],
-    options : {
-      title : 'Different options frequency',
-      width : 800,
-      isStacked : true,
-      legend : {
-        position : 'top',
-        alignment : 'center'
+    rightVsWrong : {
+      metric : "rightVsWrong",
+      data : [],
+      chart : [],
+      options : {
+        width : 800,
+      }
+    },
+
+    distinctOptions : {
+      metric : "distinctOptions",
+      data : [],
+      chart : [],
+      options : {
+        title : 'Different options frequency',
+        width : 800,
+        isStacked : true,
+        legend : {
+          position : 'top',
+          alignment : 'center'
+        }
+      }
+    },
+
+    distinctAnswers : {
+      metric : "distinctAnswers",
+      data : [],
+      chart : [],
+      options : {
+        title : 'Different answers frequency',
+        isStacked : true,
+        width : 800,
+        legend : {
+          position : 'top',
+          alignment : 'center'
+        }
       }
     }
-  },
+  };
 
-  distinctAnswers : {
-    metric : "distinctAnswers",
-    data : [],
-    chart : [],
-    options : {
-      title : 'Different answers frequency',
-      isStacked : true,
-      width : 800,
-      legend : {
-        position : 'top',
-        alignment : 'center'
+  function drawChart() {
+    $('.asq-stats').each(function(el) {
+      var questionId = $(this).attr('data-target-asq-question-id');
+      console.log($(this).find(".rvswChart").length);
+      if($(this).find(".rvswChart").length){
+        statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+        //statsTypes.correctness.chart[questionId]
       }
-    }
+      if($(this).find(".distinctOptions").length){
+        statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+      }
+      if($(this).find(".distinctAnswers").length){
+        statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+      }
+    })
   }
-};
-
-function drawChart() {
-  $('.stats').each(function(el) {
-    var questionId = $(this).attr('data-target-asq-question-id');
-    console.log($(this).find(".rvswChart").length);
-    if($(this).find(".rvswChart").length){
-      statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-      //statsTypes.correctness.chart[questionId]
-    }
-    if($(this).find(".distinctOptions").length){
-      statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-    }
-    if($(this).find(".distinctAnswers").length){
-      statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
-    }
-  })
 }
 
 $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
@@ -396,7 +419,7 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
   }
 
   // TODO Burn the code below which is buggy and and ugly.
-  var $question = $('.assessment[data-question-id='+questionId+']');
+  var $question = $('.asq-question[data-question-id='+questionId+']');
 
   if($question.hasClass('multi-choice')){
     for (var key in statsTypes) {
@@ -424,7 +447,7 @@ function requestDistinct(questionId, obj) {
       list += '<li>' + data[i][0]  + times + '</li>'
     }
     list+='</ul>'
-    $('.stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.asq-stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
   });
 }
 
@@ -452,7 +475,7 @@ function requestDistinctCode(questionId, obj) {
     }
 
     list+='</div>'
-    $('.stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.asq-stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
     //this sucks
     $('.correct-btn').click(function(){
       $(this).parent().toggleClass('correct-answer')
@@ -463,12 +486,16 @@ function requestDistinctCode(questionId, obj) {
 
 
 function requestStats(questionId, obj) {
-  $.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
-    console.log(data)
-    obj.data[questionId] = google.visualization.arrayToDataTable(data);
-    obj.chart[questionId].draw(obj.data[questionId], obj.options);
-  });
+  if("undefined" != typeof google){
+    $.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
+      console.log(data)
+      obj.data[questionId] = google.visualization.arrayToDataTable(data);
+      obj.chart[questionId].draw(obj.data[questionId], obj.options);
+    });
+  }
 }
+
+
 
 
 $(".mobileNext").click(function() {

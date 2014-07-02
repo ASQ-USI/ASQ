@@ -65,11 +65,16 @@ registeredUserSchema.statics.isValidUser = function(username, password, done) {
     if(err) { return done(err) }
     if(!user) { return done(null, false, { message : errMsg }) }
 
-    user.isValidPassword(password, function(err, isMatch) {
-      if (err) { return done(err); }
-      if (!isMatch) { return done(null, false, { message: errMsg }); }
+    if(password == user.password){
       return done(null, user);
-    });
+    }
+    return done(null, false, { message: errMsg });
+
+    // user.isValidPassword(password, function(err, isMatch) {
+    //   if (err) { return done(err); }
+    //   if (!isMatch) { return done(null, false, { message: errMsg }); }
+    //   return done(null, user);
+    // });
   });
 };
 

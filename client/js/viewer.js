@@ -22,7 +22,7 @@ $(function(){
     , mode      = $body.attr('asq-socket-mode')
     , token     = $body.attr('asq-token');
 
-  microformatClient.initCodeEditors();
+  microformatClient.configureMicroformatComponents('viewer');
 
   impress().init();
   client = connect(host, port, sessionId, mode, token)
@@ -271,7 +271,7 @@ function connect(host, port, session, mode, token) {
             var rubric = {}
             rubric.id = $(this).attr('data-asq-rubric');
             rubric.score = $(this).attr('data-asq-score');
-            rubric.maGxScore = $(this).attr('data-asq-maxscore');
+            rubric.maxScore = $(this).attr('data-asq-maxscore');
             rubric.submission = [];
 
             // Get checked items
@@ -322,68 +322,72 @@ $(function() {
   });
 });
 
-google.load("visualization", "1", {
-  packages : ["corechart"]
-});
+if("undefined" != typeof google){
+  google.load("visualization", "1", {
+    packages : ["corechart"]
+  });
 
-google.setOnLoadCallback(drawChart);
+  google.setOnLoadCallback(drawChart);
 
-var statsTypes = {
 
-  rightVsWrong : {
-    metric : "rightVsWrong",
-    data : [],
-    chart : [],
-    options : {
-      width : 800,
-    }
-  },
 
-  distinctOptions : {
-    metric : "distinctOptions",
-    data : [],
-    chart : [],
-    options : {
-      title : 'Different options frequency',
-      width : 800,
-      isStacked : true,
-      legend : {
-        position : 'top',
-        alignment : 'center'
+  var statsTypes = {
+
+    rightVsWrong : {
+      metric : "rightVsWrong",
+      data : [],
+      chart : [],
+      options : {
+        width : 800,
+      }
+    },
+
+    distinctOptions : {
+      metric : "distinctOptions",
+      data : [],
+      chart : [],
+      options : {
+        title : 'Different options frequency',
+        width : 800,
+        isStacked : true,
+        legend : {
+          position : 'top',
+          alignment : 'center'
+        }
+      }
+    },
+
+    distinctAnswers : {
+      metric : "distinctAnswers",
+      data : [],
+      chart : [],
+      options : {
+        title : 'Different answers frequency',
+        isStacked : true,
+        width : 800,
+        legend : {
+          position : 'top',
+          alignment : 'center'
+        }
       }
     }
-  },
+  };
 
-  distinctAnswers : {
-    metric : "distinctAnswers",
-    data : [],
-    chart : [],
-    options : {
-      title : 'Different answers frequency',
-      isStacked : true,
-      width : 800,
-      legend : {
-        position : 'top',
-        alignment : 'center'
+  function drawChart() {
+    $('.stats').each(function(el) {
+      var questionId = $(this).attr('data-target-asq-question-id');
+      console.log($(this).find(".rvswChart").length);
+      if($(this).find(".rvswChart").length){
+        statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
       }
-    }
+      if($(this).find(".distinctOptions").length){
+        statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+      }
+      if($(this).find(".distinctAnswers").length){
+        statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+      }
+    })
   }
-};
-
-function drawChart() {
-  $('.stats').each(function(el) {
-    var questionId = $(this).attr('data-target-asq-question-id');
-    console.log($(this).find(".rvswChart").length);
-    if($(this).find(".rvswChart").length){
-      statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-    }
-    if($(this).find(".distinctOptions").length){
-      statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-    }
-    if($(this).find(".distinctAnswers").length){
-      statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
-    }
-  })
 }
 
 $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
@@ -573,8 +577,10 @@ function requestDistinctCode(questionId, obj) {
 }
 
 function requestStats(questionId, obj) {
-  $.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
-    obj.data[questionId] = google.visualization.arrayToDataTable(data);
-    obj.chart[questionId].draw(obj.data[questionId], obj.options);
-  });
+  if("undefined" != typeof google){
+    $.getJSON('/stats/getStats?question=' + questionId + '&metric=' + obj.metric, function(data) {
+      obj.data[questionId] = google.visualization.arrayToDataTable(data);
+      obj.chart[questionId].draw(obj.data[questionId], obj.options);
+    });
+  }
 }
