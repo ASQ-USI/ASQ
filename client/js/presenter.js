@@ -338,12 +338,6 @@ var showQuestion = function(question) {
 
 if("undefined" != typeof google){
 
-  google.load("visualization", "1", {
-    packages : ["corechart"]
-  });
-
-  google.setOnLoadCallback(drawChart);
-
   var statsTypes = {
 
     rightVsWrong : {
@@ -402,6 +396,12 @@ if("undefined" != typeof google){
       }
     })
   }
+  
+  google.load("visualization", "1", {
+    packages : ["corechart"]
+  });
+
+  google.setOnLoadCallback(drawChart);
 }
 
 $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
