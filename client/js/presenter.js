@@ -336,7 +336,16 @@ var showQuestion = function(question) {
 
 }
 
+
+
 if("undefined" != typeof google){
+
+  google.load("visualization", "1", {
+    packages : ["corechart"]
+  });
+
+  google.setOnLoadCallback(drawChart);
+}
 
   var statsTypes = {
 
@@ -380,28 +389,21 @@ if("undefined" != typeof google){
     }
   };
 
-  function drawChart() {
-    $('.asq-stats').each(function(el) {
-      var questionId = $(this).attr('data-target-asq-question-id');
-      console.log($(this).find(".rvswChart").length);
-      if($(this).find(".rvswChart").length){
-        statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-        //statsTypes.correctness.chart[questionId]
-      }
-      if($(this).find(".distinctOptions").length){
-        statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-      }
-      if($(this).find(".distinctAnswers").length){
-        statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
-      }
-    })
-  }
-  
-  google.load("visualization", "1", {
-    packages : ["corechart"]
-  });
-
-  google.setOnLoadCallback(drawChart);
+function drawChart() {
+  $('.asq-stats').each(function(el) {
+    var questionId = $(this).attr('data-target-asq-question-id');
+    console.log($(this).find(".rvswChart").length);
+    if($(this).find(".rvswChart").length){
+      statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+      //statsTypes.correctness.chart[questionId]
+    }
+    if($(this).find(".distinctOptions").length){
+      statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+    }
+    if($(this).find(".distinctAnswers").length){
+      statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+    }
+  })
 }
 
 $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {

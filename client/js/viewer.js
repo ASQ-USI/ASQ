@@ -324,69 +324,70 @@ $(function() {
 });
 
 if("undefined" != typeof google){
-  var statsTypes = {
-
-    rightVsWrong : {
-      metric : "rightVsWrong",
-      data : [],
-      chart : [],
-      options : {
-        width : 800,
-      }
-    },
-
-    distinctOptions : {
-      metric : "distinctOptions",
-      data : [],
-      chart : [],
-      options : {
-        title : 'Different options frequency',
-        width : 800,
-        isStacked : true,
-        legend : {
-          position : 'top',
-          alignment : 'center'
-        }
-      }
-    },
-
-    distinctAnswers : {
-      metric : "distinctAnswers",
-      data : [],
-      chart : [],
-      options : {
-        title : 'Different answers frequency',
-        isStacked : true,
-        width : 800,
-        legend : {
-          position : 'top',
-          alignment : 'center'
-        }
-      }
-    }
-  };
-
-  function drawChart() {
-    $('.asq-stats').each(function(el) {
-      var questionId = $(this).attr('data-target-asq-question-id');
-      console.log($(this).find(".rvswChart").length);
-      if($(this).find(".rvswChart").length){
-        statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
-      }
-      if($(this).find(".distinctOptions").length){
-        statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
-      }
-      if($(this).find(".distinctAnswers").length){
-        statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
-      }
-    })
-  }
 
   google.load("visualization", "1", {
     packages : ["corechart"]
   });
 
   google.setOnLoadCallback(drawChart);
+}
+
+var statsTypes = {
+
+  rightVsWrong : {
+    metric : "rightVsWrong",
+    data : [],
+    chart : [],
+    options : {
+      width : 800,
+    }
+  },
+
+  distinctOptions : {
+    metric : "distinctOptions",
+    data : [],
+    chart : [],
+    options : {
+      title : 'Different options frequency',
+      width : 800,
+      isStacked : true,
+      legend : {
+        position : 'top',
+        alignment : 'center'
+      }
+    }
+  },
+
+  distinctAnswers : {
+    metric : "distinctAnswers",
+    data : [],
+    chart : [],
+    options : {
+      title : 'Different answers frequency',
+      isStacked : true,
+      width : 800,
+      legend : {
+        position : 'top',
+        alignment : 'center'
+      }
+    }
+  }
+};
+
+function drawChart() {
+  $('.asq-stats').each(function(el) {
+    var questionId = $(this).attr('data-target-asq-question-id');
+    console.log($(this).find(".rvswChart").length);
+    if($(this).find(".rvswChart").length){
+      statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
+    }
+    if($(this).find(".distinctOptions").length){
+      statsTypes.distinctOptions.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctOptions")[0]);
+    }
+    if($(this).find(".distinctAnswers").length){
+      statsTypes.distinctAnswers.chart[questionId] = new google.visualization.ColumnChart($(this).find(".distinctAnswers")[0]);
+    }
+  })
 }
 
 $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
