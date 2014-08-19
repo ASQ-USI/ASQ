@@ -212,7 +212,7 @@ routes.setUp(app, middleware);
 /** HTTP(S) Server */
 if (config.enableHTTPS) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
-        ASQ.rootUrl = "https://" + config.host + ":" + config.HTTPSPort
+        ASQ.rootUrl = "https://" + config.host + ":" + app.get('port')
         appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 
@@ -222,7 +222,7 @@ if (config.enableHTTPS) {
 
 } else {
     var server = http.createServer(app).listen(app.get('port'), '0.0.0.0', function(){
-      ASQ.rootUrl = "http://" + config.host + ":" + config.HTTPPort
+      ASQ.rootUrl = "http://" + config.host + ":" + app.get('port')
       appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
 }
