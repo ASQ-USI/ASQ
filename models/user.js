@@ -7,17 +7,9 @@ var mongoose       = require('mongoose')
 , Schema           = mongoose.Schema
 , ObjectId         = Schema.ObjectId
 , extend           = require('mongoose-schema-extend')
-//, bcrypt           = require('bcrypt')
+, bcrypt           = require('bcrypt')
 , SALT_WORK_FACTOR = 10
 , appLogger        = require('../lib/logger').appLogger;
-
-
-var bcrypt;
-try {
-  bcrypt = require('bcrypt')
-} catch (e) {
-  bcrypt = require('isolated-bcrypt')
-}
 
 
 var baseUserSchema = new Schema({
@@ -65,16 +57,11 @@ registeredUserSchema.statics.isValidUser = function(username, password, done) {
     if(err) { return done(err) }
     if(!user) { return done(null, false, { message : errMsg }) }
 
-    if(password == user.password){
+    user.isValidPassword(password, function(err, isMatch) {
+      if (err) { return done(err); }
+      if (!isMatch) { return done(null, false, { message: errMsg }); }
       return done(null, user);
-    }
-    return done(null, false, { message: errMsg });
-
-    // user.isValidPassword(password, function(err, isMatch) {
-    //   if (err) { return done(err); }
-    //   if (!isMatch) { return done(null, false, { message: errMsg }); }
-    //   return done(null, user);
-    // });
+    });
   });
 };
 
@@ -105,23 +92,23 @@ registeredUserSchema.statics.createOrAuthenticateLdapUser = function(ldapUser, d
   });
 };
 
-// registeredUserSchema.pre('save', function(next) {
-//   var user = this;
+registeredUserSchema.pre('save', function(next) {
+  var user = this;
 
-//   // return if the password was not modified.
-//   if (!user.isModified('password')) { return next(); }
+  // return if the password was not modified.
+  if (!user.isModified('password')) { return next(); }
 
-//   bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-//       if (err) { return next(err); }
+  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+      if (err) { return next(err); }
 
-//       bcrypt.hash(user.password, salt, function(err, hash) {
-//           if (err) { return next(err); }
+      bcrypt.hash(user.password, salt, function(err, hash) {
+          if (err) { return next(err); }
 
-//           user.password = hash;
-//           next();
-//       });
-//   });
-// });
+          user.password = hash;
+          next();
+      });
+  });
+});
 
 // Temporary user with public sessions
 var guestUserSchema = baseUserSchema.extend({
