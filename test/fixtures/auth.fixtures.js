@@ -245,17 +245,12 @@ fixtures.WhitelistEntry = [
 
 var reqs = {
   public : {
-    missingHeaders : {
+    missingSessionID : {
     "liveSession" : fixtures.Session[0],
     "isAuthenticated" : function isAuthenticated() { return false; }
     },
-    missingToken : {
-      "headers" : {},
-      "liveSession" : fixtures.Session[0],
-      "isAuthenticated" : function isAuthenticated() { return false; }
-    },
     registeredNotWhite : {
-      "headers" : { "cookie" : tokens.validUser2 },
+      "sessionID" : tokens.validUser2,
       "user" : fixtures.User[2],
       "liveSession" : fixtures.Session[0],
       "session" : {
@@ -264,7 +259,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return true; }
     },
     registeredWhite : {
-      "headers" : { "cookie" : tokens.validUser3 },
+      "sessionID" : tokens.validUser3,
       "user" : fixtures.User[2],
       "liveSession" : fixtures.Session[0],
       "session" : {
@@ -273,7 +268,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return true; }
     },
     newGuest : {
-      "headers" : { "cookie" : tokens.validGuest1 },
+      sessionID: tokens.validGuest1,
       "liveSession" : fixtures.Session[0],
       "session" : {
         "touch" : function touch() {}
@@ -281,7 +276,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return false; }
     },
     guestNotWhite : {
-      "headers" : { "cookie" : tokens.validGuest2 },
+      sessionID: tokens.validGuest2,
       "liveSession" : fixtures.Session[0],
       "session" : {
         "touch" : function touch() {}
@@ -289,7 +284,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return false; }
     },
     guestWhite : {
-      "headers" : { "cookie" : tokens.validGuest3 },
+      sessionID: tokens.validGuest3,
       "liveSession" : fixtures.Session[0],
       "session" : {
         "touch" : function touch() {}
@@ -298,18 +293,13 @@ var reqs = {
     }
   },
   anonymous : {
-    missingHeaders : {
+    missingSessionID : {
       "liveSession" : fixtures.Session[1],
       "isAuthenticated" : function isAuthenticated() { return false; },
       "session" : {}
     },
-    missingToken : {
-      "headers" : {},
-      "liveSession" : fixtures.Session[1],
-      "isAuthenticated" : function isAuthenticated() { return false; }
-    },
     registeredNotWhite : {
-      "headers" : { "cookie" : tokens.validUser2 },
+      sessionID: tokens.validUser2,
       "user" : fixtures.User[2],
       "liveSession" : fixtures.Session[1],
       "session" : {
@@ -318,7 +308,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return true; }
     },
     registeredWhite : {
-      "headers" : { "cookie" : tokens.validUser3 },
+      sessionID: tokens.validUser3,
       "user" : fixtures.User[2],
       "liveSession" : fixtures.Session[1],
       "session" : {
@@ -327,7 +317,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return true; }
     },
     newGuest : {
-      "headers" : { "cookie" : tokens.validGuest1 },
+      sessionID: tokens.validGuest1,
       "liveSession" : fixtures.Session[1],
       "session" : {
         "touch" : function touch() {}
@@ -335,7 +325,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return false; }
     },
     guestNotWhite : {
-      "headers" : { "cookie" : tokens.validGuest2 },
+      sessionID: tokens.validGuest2,
       "liveSession" : fixtures.Session[1],
       "session" : {
         "touch" : function touch() {}
@@ -343,7 +333,7 @@ var reqs = {
       "isAuthenticated" : function isAuthenticated() { return false; }
     },
     guestWhite : {
-      "headers" : { "cookie" : tokens.validGuest3 },
+      sessionID: tokens.validGuest3,
       "liveSession" : fixtures.Session[1],
       "session" : {
         "touch" : function touch() {}
