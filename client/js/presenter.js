@@ -33,7 +33,7 @@ $(function(){
 function connect(host, port, session, mode, token) {
   console.log('Connecting to socket server');
   var started = false;
-  var socket = io.connect('http://' + host + ':' + port + '/ctrl?sid=' + session)
+  var socket = io.connect(window.location.protocol + '//' + host + ':' + port + '/ctrl?sid=' + session)
   //+ '&token=' + token ); TODO use token for socket auth.
 
   socket.on('connect', function(event) {

@@ -28,11 +28,10 @@ conf = {
   //Note this is overwritten by the environment PORT value if it exists.
   HTTPSPort: 3443,
 
-  //Clients limit (default: 50)
-  clientsLimit: 50,
-
-  //HTTPS Settings
-  //Enable HTTPS (default: false)
+  // HTTPS Settings
+  // Enable HTTPS (default: false). WARNING: When 'usingReverseProxy' is true,
+  // the server accepts HTTP only. Make sure your reverseProxy is using HTTPS to
+  // communicate with the Internet
   enableHTTPS: false,
   //Key path needed for HTTPS (default: './ssl/server.key')
   keyPath: "./ssl/server.key",
@@ -53,6 +52,20 @@ conf = {
   //Database name (default: 'asq')
   dbName: "asq",
 
+  // Reverse Proxy Settings
+  // if usingReverseProxy is true, ASQ will the proxy host option for the url 
+  // (default: false).  The reverse proxy communicates with ASQ through http
+  // requests (enableHTTPS option will be ignored)
+  usingReverseProxy: true,
+
+  reverseProxyOptions:{
+    // secure: whether the reverse proxy is using http or https (defualt: true)
+    secure: true,
+    // host: the host of the reverse proxy (defualt: 'www.example.com')
+    host: 'www.example.com',
+    // port: the port of the reverse proxy (defualt: 443)
+    port: 443
+  },
 
   //LDAP Settings
   //Enable LDAP (default: false)
@@ -71,6 +84,9 @@ conf = {
     //scope for the search. One of base, one, or sub. (default: sub)
     searchScope: 'sub',
   },
+
+  //Clients limit (default: 50)
+  clientsLimit: 50,
 
   //Slideshow
   //Upload directory.Make sure you have the correct permissions.

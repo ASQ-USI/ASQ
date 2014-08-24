@@ -113,8 +113,8 @@ function livePresentation(req, res) {
   res.render(renderOpts.template, {
     //username            : req.user.username, //needed for ctrl but not necessary present as this might be public (guest users)
     title               : presentation.title,
-    host                : process.env.HOST,
-    port                : process.env.PORT,
+    host                : ASQ.host,
+    port                : ASQ.port,
     mode                : renderOpts.mode,
     presentation        : presentation._id,
     id                  : req.liveSession.id,

@@ -35,7 +35,7 @@ function connect(host, port, session, mode, token) {
   this.assessmentSaved = false;
   this.isAssessing = false;
   var that = this;
-  var socket = io.connect('http://' + host + ':' + port + '/folo?sid=' + session);
+  var socket = io.connect(window.location.protocol + '//' + host + ':' + port + '/folo?sid=' + session);
     //+ '&token=' + token ); TODO use token for socket auth.
 
   socket.on('connect', function(evt) {

@@ -210,22 +210,38 @@ app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: 
 routes.setUp(app, middleware);
 
 /** HTTP(S) Server */
-if (config.enableHTTPS) {
-    var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
-        ASQ.rootUrl = "https://" + config.host + ":" + app.get('port')
-        appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
-    });
-
-    var serverHTTP = http.createServer(app).listen(config.HTTPPort, function() {
-        appLogger.log("HTTP redirection ready, listening on port " + config.HTTPPort);
-    });
-
+if (config.enableHTTPS && !config.usingReverseProxy) {
+  var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
+      appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
+  });
+  var serverHTTP = http.createServer(app).listen(config.HTTPPort, function() {
+      appLogger.log("HTTP redirection ready, listening on port " + config.HTTPPort);
+  });
 } else {
-    var server = http.createServer(app).listen(app.get('port'), '0.0.0.0', function(){
-      ASQ.rootUrl = "http://" + config.host + ":" + app.get('port')
-      appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
-    });
+  var server = http.createServer(app).listen(app.get('port'), '0.0.0.0', function(){
+    appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
+  });
 }
+
+// to generate urls from the rest of the app we need the following info
+if(config.usingReverseProxy){
+  var opts = config.reverseProxyOptions;
+  ASQ.protocol = opts.secure 
+    ? "https"
+    : "http";
+  ASQ.port = (opts.port && parseInt(opts.port) !== 80) 
+  ? opts.port
+  : "";
+  ASQ.host = opts.host
+}else{
+  ASQ.protocol = config.enableHTTPS
+    ? "https"
+    : "http";
+  ASQ.port = app.get('port')
+  ASQ.host = config.host;
+}
+
+ASQ.rootUrl = ASQ.protocol +"://" + ASQ.host + ":" + ASQ.port
 
 /**
    @description  Require socket.io (websocket wrapper) and listen to the server.
