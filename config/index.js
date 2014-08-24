@@ -21,11 +21,11 @@ conf = {
   host: "127.0.0.1",
 
   //Port used by the server to listen for http requests (default: 80)
-  //Note this is overwritten by the environment HOST value if it exists.
+  //Note this is overwritten by the environment PORT value if it exists.
   HTTPPort: 3000,
 
   //Port used by the server to listen for https requests (default: 443)
-  //Note this is overwritten by the environment HOST value if it exists.
+  //Note this is overwritten by the environment PORT value if it exists.
   HTTPSPort: 3443,
 
   //Clients limit (default: 50)
