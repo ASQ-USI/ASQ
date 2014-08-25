@@ -1,0 +1,59 @@
+## ASQ
+## Maintainer: @triglian
+##
+## Modified from https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/gitlab
+## Lines starting with two hashes (##) are comments with information.
+## Lines starting with one hash (#) are configuration parameters that can be uncommented.
+
+#ASQ
+upstream asq_node_upstream {
+    ##sticky connections
+    ip_hash; 
+    server 127.0.0.1:3000;
+    ## put more upstream servers here
+    #server 127.0.0.1:3001;
+    keepalive 64;
+}
+
+server {
+    listen 80;
+
+    server_name asq; ## Replace this with something like asq.example.com
+    server_tokens off; ## Don't show the nginx version number, a security best practice
+
+    ## Individual nginx logs for this ASQ server block
+    access_log  /var/log/nginx/asq_access.log;
+    error_log   /var/log/nginx/asq_error.log;
+
+    ## if upstream fails
+    error_page 502  /errors/502.html;
+
+    ## serve static assets
+    location ~ ^/(images/|img/|javascript/|js/|css/|stylesheets/|fonts/|flash/|media/|static/|robots.txt|humans.txt|favicon.ico) {
+      root /Users/vassilis/Sites/ASQ-USI/ASQ/public;
+      access_log off;
+      expires max;
+    }
+
+    location /errors {
+      internal;
+      alias /Users/vassilis/Sites/ASQ-USI/ASQ/public/errors;
+    }
+
+    ## proxy to node
+    location / {
+      proxy_redirect off;
+      proxy_set_header   X-Real-IP $remote_addr;
+      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header   X-Forwarded-Proto $scheme;
+      proxy_set_header   Host $host;
+      proxy_set_header   X-NginX-Proxy true;
+      proxy_set_header   Connection "";
+      proxy_http_version 1.1;
+      proxy_pass http://asq_node_upstream;
+      ## upgrade is used for websockets
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      tcp_nodelay on;
+    }
+}
