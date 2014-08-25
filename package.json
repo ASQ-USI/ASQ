@@ -88,8 +88,8 @@
   },
   "scripts": {
     "test": "make test-unit",
-    "start-dev": "export NODE_ENV=development; nodemon app.js",
-    "start": "export NODE_ENV=production; node --use_strict app.js"
+    "start-dev": "NODE_ENV=development nodemon --harmony app.js",
+    "start": "NODE_ENV=production node --harmony app.js"
   },
   "keywords": [
     "node.js"
