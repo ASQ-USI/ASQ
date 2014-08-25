@@ -16,6 +16,7 @@ var cons          = require('consolidate')
 , express         = require('express')
 , flash           = require('connect-flash')
 , fs              = require('fs')
+, mkdirp          = require('mkdirp')
 , http            = require('http')
 , path            = require('path')
 , redisStore      = require('connect-redis')(express)
@@ -103,7 +104,14 @@ app.configure(function() {
   if (config.enableHTTPS) {
     app.use(middleware.forceSSL);
   }
-  app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
+
+  //make sure upload directory exists
+  var uploadDir =  path.resolve(__dirname, config.uploadDir);
+  if( ! fs.existsSync(uploadDir)){
+    appLogger.debug("Creating uploadDir at ", uploadDir)
+    mkdirp.sync(uploadDir);
+  }
+  app.set('uploadDir', uploadDir);
   app.use(express.bodyParser({uploadDir: app.get('uploadDir')}));
   app.use(express.static(path.join(__dirname, '/public/')));
   app.use(express.favicon(path.join(__dirname, '/public/favicon.ico')));
