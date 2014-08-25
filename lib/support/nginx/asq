@@ -18,7 +18,7 @@ upstream asq_node_upstream {
 server {
     listen 80;
 
-    server_name asq; ## Replace this with something like asq.example.com
+    server_name YOUR_SERVER_FQDN; ## Replace this with something like asq.example.com
     server_tokens off; ## Don't show the nginx version number, a security best practice
 
     ## Individual nginx logs for this ASQ server block
