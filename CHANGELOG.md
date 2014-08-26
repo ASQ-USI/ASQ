@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v 0.2
+ * Needs node v0.11.x
+ * CHANGE: microformat was move to a seperate repo: [asq-microformat](https://github.com/ASQ-USI/asq-microformat)
+ * ADD: Self-peer assessment
+ * ADD: Configuration files
+
 ## v 0.1
  * Supports Node.js up to v0.8.22
  * Adminstrator view
