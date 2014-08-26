@@ -1,6 +1,6 @@
 {
   "name": "asq",
-  "version": "0.1.1",
+  "version": "0.2.0-pre",
   "description": "Synchronous slideshow mixed with a classroom clicker.",
   "author": "Jacques DAFFLON <jacques.dafflon@gmail.com>, Margarita GRINVALD <grinvalm@student.ethz.ch>, Max VON BUELOW, Vasileios Triglianos <vasileios.triglianos@usi.ch>",
   "main": "app.js",
