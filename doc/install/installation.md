@@ -20,12 +20,12 @@ An ASQ installation consists of setting up the following components:
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
     sudo apt-get update -y
     sudo apt-get upgrade -y
-    sudo apt-get install -y redis-server mongodb-org
+    sudo apt-get install -y build-essentials redis-server mongodb-org
 ### Mac OS X
-First make sure you have brew installed on your system. Brew needs the XCode command lines tools, to install them have a look at __step 1__ of this [guide](http://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/). Then install brew
+First make sure you have [homebrew](http://brew.sh/) installed on your system. Homebrew needs the XCode command line tools, to install them have a look at __step 1__ of this [guide](http://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/). Then install homebrew
 
     ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-Then install dependencies
+Now let's install the dependencies
 
     brew update
     brew install mongodb redis-server
@@ -33,10 +33,10 @@ Then install dependencies
 
 ## Node.js
 ### Ubuntu
-First install nvm to manage Node.js versions
+First install [nvm](https://github.com/creationix/nvm) to manage Node.js versions
 
     curl https://raw.githubusercontent.com/creationix/nvm/v0.13.1/install.sh | bash
-reload your shell and then install Node.js
+Reload your shell and then install Node.js
 
     nvm install 0.11.13
     nvm use 0.11.13
@@ -46,15 +46,23 @@ If you wish this version to be your default one, you can type:
 and to use it
 
     nvm use default
+Finally, install globally the [grunt-cli](http://gruntjs.com/getting-started) tool
+    
+    npm install -g grunt-cli
+
 
 ### Mac OS X
-Download and install version [0.11.13](http://nodejs.org/dist/v0.11.13/node-v0.11.13.pkg) from  the node.js website
+Download and install version [0.11.13](http://nodejs.org/dist/v0.11.13/node-v0.11.13.pkg) from  the node.js website.
+Finally, install globally the [grunt-cli](http://gruntjs.com/getting-started) tool
+    
+    npm install -g grunt-cli
+
 
 ##ASQ
 First, clone the repository
 
     git clone https://github.com/ASQ-USI/ASQ.git ASQ
-then configure it
+Then configure it
 
     cd ASQ
     # Install dependencies
@@ -67,7 +75,11 @@ then configure it
     #
     # If you are using a reverse proxy (like nginx) make sure `usingReverseProxy` is set to `true` and configure the 'reverseProxyOptions' object.
     editor config/config.defaults.js
-At this point you can start ASQ
+Build assets
+
+    grunt build-concurrent
+
+At this point you can start ASQ. Run __one__ of the following
 
     # start using npm
     npm start
@@ -122,7 +134,7 @@ Append the contents of `lib/support/nginx/asq` (`lib/support/nginx/asq-ssl` if y
 
 If you are using the `sites_available` and `sites_enabled` paradigm of Ubuntu, follow the Ubuntu configuration instructions above.
 
-To validate your `asq` or `asq-ssl` Nginx config file issue:
+To validate your `asq` or `asq-ssl` Nginx config file, issue:
 
     sudo nginx -t
     
