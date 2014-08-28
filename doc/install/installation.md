@@ -20,7 +20,7 @@ An ASQ installation consists of setting up the following components:
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
     sudo apt-get update -y
     sudo apt-get upgrade -y
-    sudo apt-get install -y build-essentials redis-server mongodb-org
+    sudo apt-get install -y build-essential git redis-server mongodb-org
 ### Mac OS X
 First make sure you have [homebrew](http://brew.sh/) installed on your system. Homebrew needs the XCode command line tools, to install them have a look at __step 1__ of this [guide](http://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/). Then install homebrew
 
@@ -65,8 +65,6 @@ First, clone the repository
 Then configure it
 
     cd ASQ
-    # Install dependencies
-    npm install
     # Copy the default example configuration
     cp config/config.defaults.js.example config/config.defaults.js
     # Set the `host` variable to your host's fully-qualified domain name
@@ -75,6 +73,9 @@ Then configure it
     #
     # If you are using a reverse proxy (like nginx) make sure `usingReverseProxy` is set to `true` and configure the 'reverseProxyOptions' object.
     editor config/config.defaults.js
+Install npm packages
+    
+    npm install
 Build assets
 
     grunt build-concurrent
