@@ -45,7 +45,7 @@ module.exports = {
   // if usingReverseProxy is true, ASQ will the proxy host option for the url 
   // (default: false).  The reverse proxy communicates with ASQ through http
   // requests (enableHTTPS option will be ignored)
-  usingReverseProxy: true,
+  usingReverseProxy: false,
 
   reverseProxyOptions:{
     // secure: whether the reverse proxy is using http or https (defualt: true)
