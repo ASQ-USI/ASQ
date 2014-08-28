@@ -29,7 +29,7 @@ module.exports.setUp = function setUp(app, middleware) {
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
 
   // Ldap login
-  if(config.enableLdap == true || "undefined" !== config.ldapOptions){
+  if(config.enableLdap == true && "undefined" !== config.ldapOptions){
     //Get the campus login page
     app.get('/login-campus/', middleware.isNotAuthenticated, handlers.getLoginCampus);
 
