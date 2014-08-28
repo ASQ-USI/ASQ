@@ -36,7 +36,7 @@ Then install dependencies
 First install nvm to manage Node.js versions
 
     curl https://raw.githubusercontent.com/creationix/nvm/v0.13.1/install.sh | bash
-then install Node.js
+reload your shell and then install Node.js
 
     nvm install 0.11.13
     nvm use 0.11.13

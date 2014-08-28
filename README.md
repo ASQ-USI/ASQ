@@ -1,65 +1,53 @@
 ASQ
 ===
-
-This web app allows to broadcast a slideshow synchronously to multiple clients
-with a classroom clicker in the form of questions and answers which can be added
-in between slides.
+ASQ aims to increase teacher awareness and student engagement in traditional brick-and-mortar classrooms by taking advantage of the latest Web technologies.
+With ASQ teachers broadcast a Web-based slideshow synchronously to all students. They can pose [many types]() of questions, track the students answering them, filter and discuss answers in real time.
 
 About The Name
 --------------
 
 ASQ stands for Answer, Slide, Question.
-It is the core concept of this app, where you have a **S**lide followed by a
-**Q**uestion where you submit your answer and finaly the correct **A**nswer is
-given.
-The three initials: S, Q, A reorganized give ASQ.  
-This was an idea from Max.
+The core concept of this app is a **S**lide that contains one or more **Q**uestion(s) for which the audience submits solutions and finaly the correct **A**nswer is displayed.
+The three initials: S, Q, A can be reordered give ASQ (many thanks to Max for the idea!).  
 
-About This Project
-------------------
+Installation
+-------------
+Please follow the [installation guide](doc/install/installation.md)
 
-This project is part of the group project from the
-[Faculty of Informatics](http://www.inf.usi.ch/)
-of the [Università della Svizzera italian](http://www.usi.ch/en/index.htm)
-for the course [Software Atelier III: Web 2.0 technologies](http://www.inf.usi.ch/presentazione-studiare/container_education_utilities/orario_corsi/corso?id=985)
-by [Prof. Cesare Pautasso](http://www.inf.usi.ch/faculty/pautasso/).
+Getting started
+----------------
+Please follow the [getting started guide](doc/manual/getting_started.md)
 
-The group project is one of the key aspect of this course and consist of building
-a web 2.0 application in a group of 3 or 4 students.
-
-The Teaching Assistant (TA) assigned to this project is Vassilis Triglianos.
-
-**PLEASE NOTE**  
-This project is open-source but for the time being we will not allow external
-participations as this project is part of a graded evaluation.
-
-Authors
--------
-
-* [Jacques DAFFLON](http://atelier.inf.usi.ch/~dafflonj/)
-* [Margarita GRINVALD](http://atelier.inf.usi.ch/~grinvalm/)
-* [Max VON BÜLOW](http://www.people.usi.ch/vonbum/index.html)
-
-Technologies Used
------------------
-- [node.js][1]
-- [express.js][2]
-- [MongoDB][3]
-- [embeddded js (ejs)][4]
-- [Passport.js][5]
-- [impress.js][6]
+Requirements
+-------------
+Ubuntu/Mac OS X/L**
+node 0.11.13+
+mongoDB 2.4.0 +
+redis 2.0+
 
 Browser Support
 ---------------
+Currently we focus on supporting __Google Chrome__ and __Chromium__ . Safari and Firefox also seem to work but they are not officially supported. Please note that browser support depends also on [impress.js][5].
 
-Currently we will focus on supporting Google Chrome and Chromium.
-We might support Firefox in the future but this will not be a priority.  
-Please note that browser support depends also on [impress.js][5].
+A brief history of ASQ
+----------------------
+
+This project started as part of the group project for the course [Software Atelier III: Web 2.0 technologies](http://www.inf.usi.ch/presentazione-studiare/container_education_utilities/orario_corsi/corso?id=985), taught by [Prof. Cesare Pautasso](http://www.inf.usi.ch/faculty/pautasso/), at the [Faculty of Informatics](http://www.inf.usi.ch/) of the [Università della Svizzera italiana](http://www.usi.ch/en/index.htm). The original authors were [Jacques DAFFLON](http://atelier.inf.usi.ch/~dafflonj/), [Margarita GRINVALD](http://atelier.inf.usi.ch/~grinvalm/) and [Max VON BÜLOW](http://www.people.usi.ch/vonbum/index.html). The project was supervised by [Vasileios Triglianos](http://www.inf.usi.ch/phd/triglianos/).
+
+Maintainers
+-------
+* [Vasileios Triglianos](http://www.inf.usi.ch/phd/triglianos/)
+* [Jacques DAFFLON](http://atelier.inf.usi.ch/~dafflonj/)
+
+Past Contributors
+-----------------
+* [Margarita GRINVALD](http://atelier.inf.usi.ch/~grinvalm/)
+* [Max VON BÜLOW](http://www.people.usi.ch/vonbum/index.html)
 
 Changelog
 ---------
 
-See the changelog [here](https://github.com/jacquesd/ASQ/blob/master/CHANGELOG.md).
+See the changelog [here](https://github.com/ASQ-USI/ASQ/blob/master/CHANGELOG.md).
 
 [1]: http://nodejs.org/                     "node.js"
 [2]: http://expressjs.com/                  "express.js"
