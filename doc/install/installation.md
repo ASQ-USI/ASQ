@@ -28,7 +28,7 @@ First make sure you have [homebrew](http://brew.sh/) installed on your system. H
 Now let's install the dependencies
 
     brew update
-    brew install mongodb redis-server
+    brew install mongodb redis
  
 
 ## Node.js
