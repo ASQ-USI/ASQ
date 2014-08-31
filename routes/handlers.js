@@ -90,7 +90,7 @@ function postCompleteRegistration(req, res) {
   }).then(
     function onNewUser(user) {
       appLogger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.sAMAccountName);
-      res.redirect(utils.redirectToOrGoHome(req));
+      res.redirect(utils.getPreviousURLOrHome(req));
 
   }).then(null,
     function onError(err) {
@@ -212,18 +212,17 @@ function postLogin(req, res) {
     req.session.cookie.maxAge = 2592000000 //30 days
     // we also need to set the cookie in the response
     res.cookie(
-    'asq.sid', 
-    req.cookies["asq.sid"], 
-    {
+      'asq.sid', 
+      req.cookies["asq.sid"], 
+      {
         maxAge: req.session.cookie.maxAge,
         path: '/', 
         httpOnly: true
-    }
-);
-    
+      }
+    );
   }
   
-  res.redirect(utils.redirectToOrGoHome(req));
+  res.redirect(utils.getPreviousURLOrHome(req));
 }
 
 function getLoginCampus(req, res) {
@@ -241,7 +240,7 @@ function getLoginCampus(req, res) {
 }
 
 function postLoginCampus(req, res) {
-  res.redirect(utils.redirectToOrGoHome(req));
+  res.redirect(utils.getPreviousURLOrHome(req));
 }
 
 function logout(req, res) {

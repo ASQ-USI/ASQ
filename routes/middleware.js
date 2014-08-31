@@ -67,7 +67,7 @@ function isNotRegistrationComplete(req, res, next) {
   if (!req.user) {
     next(new Error('There is no authenticated user to check'));
   } else if (req.user.regComplete == true) {
-    res.redirect(utils.redirectToOrGoHome(req))
+    res.redirect(utils.getPreviousURLOrHome(req))
   } else {
     next(null);
   }
