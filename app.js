@@ -128,9 +128,9 @@ app.configure(function() {
     key : 'asq.sid',
     secret : 'ASQSecret',
     store  : redisSessionStore,
-    cookie : {
-      maxAge : 2592000000 // 30 days
-    }
+    // cookie : {
+    //   maxAge : 2592000000 // 30 days
+    // }
   }));
   app.set('sessionStore', redisSessionStore);
   //necessary initialization for passport plugin

@@ -23,7 +23,7 @@ module.exports.setUp = function setUp(app, middleware) {
   app.post('/signup', middleware.isNotAuthenticated, handlers.postSignup);
 
   //Get the login page
-  app.get('/login/', middleware.isNotAuthenticated, handlers.getLogin);
+  app.get('/login/',middleware.isNotAuthenticated, handlers.getLogin);
 
   //Login
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
