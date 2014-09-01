@@ -19,26 +19,14 @@ function errorHandler(options){
     , dumpExceptions = options.dumpExceptions
  
   return function errorHandler(err, req, res, next){
-    //http://www.senchalabs.org/connect/errorHandler.html
+    // http://www.senchalabs.org/connect/errorHandler.html
     if (err.status) res.statusCode = err.status;
     if (res.statusCode < 400) res.statusCode = 500;
 
-    //http://www.senchalabs.org/connect/errorHandler.html
+    // http://www.senchalabs.org/connect/errorHandler.html
     var stackArr = (err.stack || '').split('\n').slice(1)
    
     if(dumpExceptions) console.error(err.stack);
-
-    //if we don't show the stack probably we don't want
-    // to reveal errors tat are not in the errorTypes list
-    var isErrorTypeAllowed = errorTypes.hasType(err.type)
-
-    var noStackErrorType = isErrorTypeAllowed
-     ? err.type
-     : 'api_error';
-
-    var noStackErrorMessage = isErrorTypeAllowed
-     ? err.message
-     : 'something went wrong on ASQ\'s end';
 
     if(showStack) {
       // html
@@ -61,6 +49,16 @@ function errorHandler(options){
         res.end(stackArr);
       }
     }else{
+      // if we don't show the stack, we don't want
+      // to reveal errors tat are not in the errorTypes list
+      var noStackErrorType = 'api_error'
+        , noStackErrorMessage ='something went wrong on ASQ\'s end';
+
+      if(errorTypes.hasType(err.type)){
+        noStackErrorType = err.type;
+        noStackErrorMessage = err.message;
+      }
+
       // public error page render
       // html
       if (req.accepts('html')) {

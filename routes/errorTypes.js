@@ -1,6 +1,6 @@
 /**
     @fileoverview routes/errorTypes.js
-    @description Error types that can be displayed to clients
+    @description Error types that are allowed to be displayed to clients
 */
 
 var types =[];
