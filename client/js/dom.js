@@ -209,7 +209,7 @@ function psesentationsDOMBinder(){
             type: "DELETE"
           })
           .success(function (data, textStatus, jqXHR){
-            if(textStatus === "success"){
+            if(textStatus === "success" ||textStatus === "nocontent"){
               dust.render('alert', {
                 alerts: [
                   {dismissible: true,

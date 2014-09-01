@@ -1,3 +1,7 @@
+/**
+    @fileoverview user/presentations/presentation/handlers.js
+    @description Handlers for a presentation resource
+*/
 var cheerio    = require('cheerio')
   , pfs        = require('promised-io/fs')
   , lib        = require('../../../../lib')
@@ -205,14 +209,20 @@ function startPresentation(req, res, next) {
 }
 
 function stopPresentation(req, res, next) {
-  appLogger.debug('Stoping session from ' + req.user.username);
+  appLogger.debug('Stopping session from ' + req.user.username);
 
-  Session.find({
-    presenter: req.user._id,
-    slides: req.params.presentationId,
-    endDate: null
-  }).exec()
-  .then(function(sessions){
+  //start with when to have the catch method at the end;
+  when.resolve(true)
+  .then(function(){
+    return Session.find({
+      presenter: req.user._id,
+      slides: req.params.presentationId,
+      endDate: null
+    }).exec()
+  })
+  .then(function(sessions){ 
+    //DELETE is idempotent so even id we don't have a live session
+    // we can still return success
     return when.map(sessions, function(session){
       session.endDate = Date.now();
       return nodefn.lift(session.save.bind(session))();
@@ -223,19 +233,13 @@ function stopPresentation(req, res, next) {
 
        //JSON
     if(req.accepts('application/json')){
-      res.json({
-        "presentationId": req.params.presentationId,
-        "stopped": true
-      });
-      return;
+      return res.send(204);
     }
     //HTML
       res.send(204);
-    },
-    function onError(err){
-      next(err)
-    }
-  );
+  }).catch(function onError(err){
+    next(err)
+  });
 }
 
 module.exports = {
