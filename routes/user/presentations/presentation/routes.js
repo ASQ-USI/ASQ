@@ -8,10 +8,10 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/:user/presentations/:presentationId/edit/', middleware.isRouteOwner,
     handlers.editPresentation);
 
-  app.post('/:user/presentations/:presentationId/live/',
+  app.post('/:user/presentations/:presentationId/live',
     middleware.isRouteOwner, handlers.startPresentation);
 
-  app.delete('/:user/presentations/:presentationId/live/',
+  app.delete('/:user/presentations/:presentationId/live',
     middleware.isRouteOwner, handlers.stopPresentation);
 
   app.get('/:user/presentations/:presentationId/live/:liveId', 

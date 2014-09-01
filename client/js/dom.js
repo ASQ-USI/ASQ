@@ -90,7 +90,6 @@ function psesentationsDOMBinder(){
 
     //isotope
     var $container = $('.accordion-inner');
-    console.log($container.isotope);
     
     $container.isotope({
       itemSelector: '.thumb-container',
@@ -179,8 +178,7 @@ function psesentationsDOMBinder(){
           var username = $this.data('username');
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
-          var url = ['/', username, '/presentations/', presentationId, '/live/?start&al=',
-            authLevel].join('');
+          var url = ['/', username, '/presentations/', presentationId, '/live'].join('');
           console.log('POST ' + url);
           $.post(url, null)
           .success(function (data, textStatus, jqXHR){
@@ -201,8 +199,7 @@ function psesentationsDOMBinder(){
           var username = $this.data('username');
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
-          var url = ['/', username, '/presentations/', presentationId, '/live/?stop&al=',
-            authLevel].join('');
+          var url = ['/', username, '/presentations/', presentationId, '/live'].join('');
           console.log('DELETE ' + url);
           $.ajax({
             url: url,
@@ -210,6 +207,26 @@ function psesentationsDOMBinder(){
           })
           .success(function (data, textStatus, jqXHR){
             if(textStatus === "success" ||textStatus === "nocontent"){
+
+              //re-render thumb
+              var $currentThumb = $('#' + presentationId);
+              var thumbData = {
+                _id : presentationId,
+                position : $currentThumb.attr('data-sort-position'),
+                params: {
+                  username: username
+                },
+                lastSession: $currentThumb.find('.last-session').text(),
+                lastEdit: $currentThumb.find('.last-session').text()
+              }
+              dust.render('presentationThumb', thumbData, function(err, out){
+                  if(err){
+                    console.log(err)
+                  }else{
+                    $currentThumb.html($(out).html());
+                  }
+              });    
+              // show alert
               dust.render('alert', {
                 alerts: [
                   {dismissible: true,

@@ -60,7 +60,7 @@
             <div class=" accordion-body collapse in" id="course-{idx}">
               <div class=" accordion-inner">
                 {#value}
-                  {>presentationThumb position=$idx/}
+                  {>"shared/presentationThumb" position=$idx/}
                 {/value}
               </div>
             </div>

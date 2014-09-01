@@ -66,8 +66,8 @@
       </div>
       </div>
       <div class="thumb-dates">
-        <p><span class="glyphicon glyphicon-play"></span> {lastSession}</p>
-        <p><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
+        <p class="last-session"><span class="glyphicon glyphicon-play"></span> {lastSession}</p>
+        <p class="last-edit"><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
       </div>
     </div>
   </div>
