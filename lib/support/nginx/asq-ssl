@@ -40,7 +40,7 @@ server {
     ssl_session_cache  builtin:1000  shared:SSL:10m;
 
     add_header Strict-Transport-Security max-age=63072000;
-    add_header X-Frame-Options SAME-ORIGIN;
+    add_header X-Frame-Options SAMEORIGIN;
     add_header X-Content-Type-Options nosniff;
 
     ## Individual nginx logs for this ASQ server block
