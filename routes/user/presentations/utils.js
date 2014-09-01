@@ -2,9 +2,57 @@ var cheerio    = require('cheerio')
   // , asyncblock = require('asyncblock')
   , fs         = require('fs')
   , mkdirp     = require('mkdirp')
+  , moment      = require('moment')
   , config     = require('../../../config')
   , appLogger  = require('../../../lib').logger.appLogger
-  , exec       = require('child_process').exec;
+  , exec       = require('child_process').exec
+  , when       = require('when')
+  , gen        = require('when/generator');
+
+var getPresentationsByCourse = gen.lift(function *getPresentationsByCourseGen(userId, Session, Slideshow) {
+  appLogger.debug('getPresentationsByCourse');
+  var slidesByCourse = null; //to evaluate as false in dustjs
+  try{
+    var sessionPromise = Session.getLiveSessions(userId);
+    var slideshowPromise = Slideshow.find({
+      owner : userId
+    }, '_id title course lastSession lastEdit').exec();
+
+    var results = yield when.all([sessionPromise, slideshowPromise])
+    var sessions =  results[0];
+    var slides = results[1];
+    var live={};
+    sessions.forEach(function(session){
+      live[session.slides.toString()]=session._id;
+    });
+
+    if (typeof slides != "undefined"
+          && slides != null
+          && slides.length > 0) {
+      slidesByCourse = {};
+      for (var i = 0; i < slides.length; i++) {
+        var slideshow = slides[i].toJSON();
+        if (live.hasOwnProperty(slideshow._id)) {
+          slideshow.live = live[slideshow._id]
+        }else{
+          slideshow.live = null;
+        }
+
+        if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
+          slidesByCourse[slideshow.course] = [];
+        }
+        slideshow.lastEdit = moment( slideshow.lastEdit)
+            .format('DD.MM.YYYY HH:mm');
+        slideshow.lastSession = moment( slideshow.lastSession)
+            .format('DD.MM.YYYY HH:mm');
+        slidesByCourse[slideshow.course].push(slideshow);
+      }
+    }
+  }catch(err){
+    appLogger.error( err.toString(), { err: err.stack });
+  }
+  return slidesByCourse;
+});
 
 function createThumbs(slideshow) {
   //check if w2png exists
@@ -53,5 +101,6 @@ function createThumbs(slideshow) {
 }
 
 module.exports = {
-  createThumbs : createThumbs
+  createThumbs : createThumbs,
+  getPresentationsByCourse : getPresentationsByCourse
 }

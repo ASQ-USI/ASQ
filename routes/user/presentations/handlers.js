@@ -23,7 +23,8 @@ var _             = require('lodash')
 , Exercise        = db.model('Exercise')
 , Slideshow       = db.model('Slideshow')
 , Session         = db.model('Session')
-, User            = db.model('User');
+, User            = db.model('User')
+, getPresentationsByCourse = require('./utils').getPresentationsByCourse;
 
 function deletePresentation(req, res, next) {
   errorTypes.add('invalid_request_error');
@@ -93,66 +94,25 @@ function getPresentationFiles(req, res, next) {
 function listPresentations(req, res, next) {
   appLogger.debug('list presentations');
 
-  var sessionPromise = Session.getLiveSessions(req.user._id);
-
-  var slideshowPromise = Slideshow.find({
-    owner : req.user._id
-  }, '_id title course lastSession lastEdit').exec();
-
-  when.all([sessionPromise, slideshowPromise])
-  .then(
-    function onAll(results){
-      processPresentations(results[0], results[1]);
-    }
-  );
-
-  function processPresentations(sessions, slides) {
-    var live={};
-    sessions.forEach(function(session){
-      live[session.slides.toString()]=session._id;
-    });
-
-    var slidesByCourse = null; //to evaluate as false in dustjs
-
-    if (typeof slides != "undefined"
-          && slides != null
-          && slides.length > 0) {
-      slidesByCourse = {};
-      for (var i = 0; i < slides.length; i++) {
-        var slideshow = slides[i].toJSON();
-        if (!live.hasOwnProperty(slideshow._id)) {
-          slideshow.live = null;
-        }else{
-          slideshow.live = live[slideshow._id]
-        }
-
-        if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
-          slidesByCourse[slideshow.course] = [];
-        }
-        slideshow.lastEdit = moment( slideshow.lastEdit)
-            .format('DD.MM.YYYY HH:mm');
-        slideshow.lastSession = moment( slideshow.lastSession)
-            .format('DD.MM.YYYY HH:mm');
-        slidesByCourse[slideshow.course].push(slideshow);
-      }
-    }
-
+  getPresentationsByCourse(req.user._id, Session, Slideshow)
+  .then(function(slidesByCourse){
     var type = utils.getAlertTypeClass(req);
 
-    console.log(slidesByCourse);
-
     res.render('presentations', {
-      username        : req.user.username,
-      isOwner         : req.isOwner,
-      slidesByCourses : slidesByCourse,
-      host            : ASQ.appHost,
-      port            : app.get('port'),
-      //id              : req.user.current, //FIXME: remove?
-      alert           : req.query.alert,
-      type            : type,
-      //session         : req.user.current
-    });
-  }
+       username        : req.user.username,
+       slidesByCourses : slidesByCourse,
+       JSONIter        : dustHelpers.JSONIter,
+       host            : ASQ.appHost,
+       port            : app.get('port'),
+       //id              : req.user.current,
+       alert           : req.query.alert,
+       type            : type,
+       //session         : req.user.current
+     });
+  })
+  .catch(function onError(err) {
+    appLogger.error( err.toString(), { err: err.stack });
+  });
 }
 
 function updatePresentation(req, res, next) {

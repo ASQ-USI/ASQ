@@ -8,60 +8,37 @@ var when        = require('when')
   , Slideshow   = db.model('Slideshow')
   , User        = db.model('User')
   , Session     = db.model('Session')
-  , utils        = require('../../lib/utils/routes');
+  , utils       = require('../../lib/utils/routes')
+  , getPresentationsByCourse = require('./presentations/utils').getPresentationsByCourse;
 
 
 // GET /:user
 function getUserPage(req, res) {
+  appLogger.debug('user page');
   if (!req.isAuthenticated()) {
     res.send(200, 'Public user page of ' + req.routeOwner.username + '.');
   }
   else if (req.user.username === req.routeOwner.username) {
 
-    // TODO: this is the same as
-    // routes/user/presentations/handlers.js:listPresentations
-    // refactor into a common function
-    Slideshow.find({
-      owner : req.user._id
-    }, '_id title course lastSession lastEdit',
-    function processPresentations(err, slides) {
-      if (err) {
-        throw err;
-      }
-      var slidesByCourse = null; //to evaluate as false in dustjs
-
-      if (typeof slides != "undefined"
-            && slides != null
-            && slides.length > 0) {
-
-        slidesByCourse = {};
-        for (var i = 0; i < slides.length; i++) {
-          var slideshow = slides[i].toJSON();
-          if (!slidesByCourse.hasOwnProperty(slideshow.course)) {
-            slidesByCourse[slideshow.course] = [];
-          }
-          slideshow.lastEdit = moment( slideshow.lastEdit)
-              .format('DD.MM.YYYY HH:mm');
-          slideshow.lastSession = moment( slideshow.lastSession)
-              .format('DD.MM.YYYY HH:mm');
-          slidesByCourse[slideshow.course].push(slideshow);
-        }
-      }
-
+    getPresentationsByCourse(req.user._id, Session, Slideshow)
+    .then(function(slidesByCourse){
       var type = utils.getAlertTypeClass(req);
-
-      res.render('user', {
-        username        : req.user.username,
-        slidesByCourses : slidesByCourse,
-        JSONIter        : dustHelpers.JSONIter,
-        host            : ASQ.appHost,
-        port            : app.get('port'),
-        //id              : req.user.current,
-        alert           : req.query.alert,
-        type            : type,
-        //session         : req.user.current
-      });
+       res.render('user', {
+         username        : req.user.username,
+         slidesByCourses : slidesByCourse,
+         JSONIter        : dustHelpers.JSONIter,
+         host            : ASQ.appHost,
+         port            : app.get('port'),
+         //id              : req.user.current,
+         alert           : req.query.alert,
+         type            : type,
+         //session         : req.user.current
+       });
+    })
+    .catch(function onError(err) {
+      appLogger.error( err.toString(), { err: err.stack });
     });
+
   } else {
     res.send(200, 'Hello ' + req.user.username
         + '! You are viewing the user page of ' + req.routeOwner.username + '.');
