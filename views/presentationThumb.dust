@@ -18,8 +18,8 @@
       <div class="thumb-buttons">
         {?live}
         <div class="btn-group">
-          <a href="/user/statistics/{_id}" class="btn btn-danger live-join"><span class="glyphicon glyphicon-stop icon-white"> </span> Stop</a>
-          <div class="btn-group live-join">
+          <a href="#" class="btn btn-danger btn-thumb-small stop" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><span class="glyphicon glyphicon-stop icon-white"> </span> Stop</a>
+          <div class="btn-group btn-thumb-small">
             <a href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation" class="btn btn-primary"><span class="glyphicon glyphicon-picture"> </span> Join</a>
             <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>

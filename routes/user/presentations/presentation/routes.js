@@ -6,10 +6,13 @@ module.exports.setUp = function setUp(app, middleware) {
 
   // Get the presentation matching presentationId.
   app.get('/:user/presentations/:presentationId/edit/', middleware.isRouteOwner,
-      handlers.editPresentation);
+    handlers.editPresentation);
 
   app.post('/:user/presentations/:presentationId/live/',
-      middleware.isRouteOwner, handlers.startPresentation);
+    middleware.isRouteOwner, handlers.startPresentation);
+
+  app.delete('/:user/presentations/:presentationId/live/',
+    middleware.isRouteOwner, handlers.stopPresentation);
 
   app.get('/:user/presentations/:presentationId/live/:liveId', 
     middleware.authorizeSession, handlers.livePresentation);

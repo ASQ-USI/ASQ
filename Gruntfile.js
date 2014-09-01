@@ -82,7 +82,7 @@ module.exports = function(grunt) {
         dest: 'public/js/asq-client.js',
         options: {
           debug: true,
-          alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom',
+          alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom,node_modules/dustjs-linkedin/dist/dust-core.js:dust',
           external: ['jquery']
        }
       },
@@ -150,6 +150,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //less task
     less: {
       development: {
         options: {
@@ -176,9 +177,30 @@ module.exports = function(grunt) {
       }
     },
 
+    //dust task
+    dust: {
+      client: {
+        files: {
+          "client/js/templates.js": "views/shared/**/*.dust"
+        },
+        options: {
+          basePath: "dusts/" ,
+          wrapper: "commonjs",
+          wrapperOptions: {
+            deps: {
+              dust: "dust"
+            }
+          },
+          useBaseName: true,
+          runtime: false
+        }
+      }
+    },
+
     //parallel tasks
     concurrent: {
       compile: [
+        'dust',
         'less',
         'browserify:vendor',
         'browserify:vendorPresentation',
@@ -202,6 +224,14 @@ module.exports = function(grunt) {
           // interrupt: true
         },
       },
+      dust: {
+        files: ['views/shared/**/*.dust'],
+        tasks: ['dust'],
+        options: {
+          spawn: false,
+          interrupt: true
+        },
+      },
       less: {
         files: ['client/less/*.less'],
         tasks: ['less:development'],
@@ -214,7 +244,7 @@ module.exports = function(grunt) {
 
   // Our custom tasks.
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['maybeless', 'browserify', 'uglify']);
+  grunt.registerTask('build', ['dust', 'maybeless', 'browserify', 'uglify']);
   grunt.registerTask('build-concurrent', ['concurrent:compile', 'concurrent:uglify']);
   grunt.registerTask('devwatch', ['build-concurrent', 'watch']);
   grunt.registerTask('deploy', ['shell:deploy']);

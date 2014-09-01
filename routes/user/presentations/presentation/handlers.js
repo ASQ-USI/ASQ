@@ -5,11 +5,13 @@ var cheerio    = require('cheerio')
   , presUtils  = lib.utils.presentation
   , config     = require('../../../../config')
   , when       = require('when')
-  , nodefn     = require('when/node/function');
+  , nodefn     = require('when/node/function')
+  , Slideshow  = db.model('Slideshow')
+  , User = db.model('User', schemas.userSchema)
+  , Session = db.model('Session');
+
 
 function editPresentation(req, res) {
-  var Slideshow = db.model('Slideshow');
-  var questionDB = db.model('Question');
 
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
     if (err) {
@@ -112,6 +114,7 @@ function livePresentation(req, res) {
   appLogger.debug('Selected template: ' + renderOpts.template);
   res.render(renderOpts.template, {
     //username            : req.user.username, //needed for ctrl but not necessary present as this might be public (guest users)
+    username            : req.user.username,
     title               : presentation.title,
     host                : ASQ.host,
     port                : ASQ.port,
@@ -142,10 +145,7 @@ function livePresentationFiles(req, res) {
 function startPresentation(req, res, next) {
   appLogger.debug('New session from ' + req.user.username);
 
-  var Slideshow = db.model('Slideshow')
-    , Session = db.model('Session')
-    , User = db.model('User', schemas.userSchema)
-    , slidesId = req.params.presentationId
+  var  slidesId = req.params.presentationId
     , newSession;
 
   //Find slideshow
@@ -204,9 +204,44 @@ function startPresentation(req, res, next) {
   );
 }
 
+function stopPresentation(req, res, next) {
+  appLogger.debug('Stoping session from ' + req.user.username);
+
+  Session.find({
+    presenter: req.user._id,
+    slides: req.params.presentationId,
+    endDate: null
+  }).exec()
+  .then(function(sessions){
+    return when.map(sessions, function(session){
+      session.endDate = Date.now();
+      return nodefn.lift(session.save.bind(session))();
+    })
+  }).then(
+    function onStopped(){
+      appLogger.info('Session stopped');
+
+       //JSON
+    if(req.accepts('application/json')){
+      res.json({
+        "presentationId": req.params.presentationId,
+        "stopped": true
+      });
+      return;
+    }
+    //HTML
+      res.send(204);
+    },
+    function onError(err){
+      next(err)
+    }
+  );
+}
+
 module.exports = {
   editPresentation      : editPresentation,
   livePresentation      : livePresentation,
   livePresentationFiles : livePresentationFiles,
-  startPresentation     : startPresentation
+  startPresentation     : startPresentation,
+  stopPresentation      : stopPresentation
 }

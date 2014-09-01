@@ -13,6 +13,7 @@ var _             = require('lodash')
 , when            = require('when')
 , errorTypes      = require('../../errorTypes')
 , lib             = require('../../../lib')
+, dustHelpers     = lib.dustHelpers
 , appLogger       = lib.logger.appLogger
 , fsUtils         = lib.utils.fs
 , utils           = lib.utils.routes
@@ -44,7 +45,7 @@ function deletePresentation(req, res, next) {
   .then(
 
   //success response
-  function(removed){
+  function onRemoved(removed){
     //JSON
     if(req.accepts('application/json')){
       res.json({
@@ -59,7 +60,7 @@ function deletePresentation(req, res, next) {
   },
 
   //err response
-  function(err){
+  function onError(err){
     if(err) return next(err)
   });
 }

@@ -7,6 +7,8 @@
 */
 'use strict';
 var request = require('superagent')
+  , dust = require('dust')
+  , templates = require('./templates')
   , form = require('./form.js')
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
 
@@ -162,15 +164,18 @@ function psesentationsDOMBinder(){
           });
       })
 
-    // start presentation action
-    .on('tap', '.thumb-buttons a.btn' ,function(event) {
+    // click handlers for non GET requests
+    // if you add a new button, follow the style below, that is,
+    // check for a specific class instead of attaching a handler
+    // directly on a .thumb-buttons .btn . The reason for this is that
+    // it's easy to messup the 3d rotation click handler
+    .on('tap', '.thumb-buttons a.btn' , function(event) {
     // $(".thumb-buttons a").click(function (event) {
-      console.log('I am in')
         event.preventDefault();
         var $this = $(this);
 
+        // start presentation action
         if($this.hasClass("start")){
-          //start presentation
           var username = $this.data('username');
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
@@ -191,8 +196,37 @@ function psesentationsDOMBinder(){
             }
           });
         }
+        //stop presentation
+        else if($this.hasClass("stop")){ 
+          var username = $this.data('username');
+          var presentationId = $this.data('id');
+          var authLevel = $this.data('authlevel');
+          var url = ['/', username, '/presentations/', presentationId, '/live/?stop&al=',
+            authLevel].join('');
+          console.log('DELETE ' + url);
+          $.ajax({
+            url: url,
+            type: "DELETE"
+          })
+          .success(function (data, textStatus, jqXHR){
+            if(textStatus === "success"){
+              dust.render('alert', {
+                alerts: [
+                  {dismissible: true,
+                  type: "success",
+                  message: "Session stopped successfully"}
+                ]
+              }, function(err, out){
+                  if(err){
+                    console.log(err)
+                  }else{
+                    $("#mainContainer").prepend(out);
+                  }
+              });              
+            }
+          });
+        }
     });
-    
   })
 }
 

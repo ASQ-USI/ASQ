@@ -1,0 +1,10 @@
+{#alerts}
+  <div class="alert alert-{type} {?dismissible}alert-dismissible{/dismissible}">
+  {?dismissible}
+    <button type="button" class="close" data-dismiss="alert">
+      <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+    </button>
+  {/dismissible}
+  {message}
+  <div>
+{/alerts}
