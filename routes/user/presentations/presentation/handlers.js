@@ -117,13 +117,13 @@ function livePresentation(req, res) {
 
   appLogger.debug('Selected template: ' + renderOpts.template);
   res.render(renderOpts.template, {
-    //username            : req.user.username, //needed for ctrl but not necessary present as this might be public (guest users)
-    username            : req.user.username,
+    username            : req.user? req.user.username :'',
     title               : presentation.title,
     host                : ASQ.host,
     port                : ASQ.port,
     mode                : renderOpts.mode,
     presentation        : presentation._id,
+    slideTree           : JSON.stringify(presentation.slidesTree),
     id                  : req.liveSession.id,
     date                : req.liveSession.startDate,
     presentationViewUrl : presentationViewUrl,

@@ -6,7 +6,7 @@
     <title>ASQ - My Presentations</title>
   </head>
 
-  <body class='no-touch'>
+  <body class="no-touch" data-view-name="presentations">
 
     <!---   top menu -->
     {>menu/}
@@ -86,10 +86,5 @@
         }();        
       </script>
     {/session}
-    <script>
-      +function initDomBindings(){
-         require('dom').bindingsFor('presentations');
-      }();                
-    </script>
   </body>
 </html>

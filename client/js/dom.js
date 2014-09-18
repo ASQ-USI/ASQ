@@ -6,27 +6,31 @@
 * a good place to setup the form bindings as well.
 */
 'use strict';
-var request = require('superagent')
+var debug = require('bows')("dom")
+  , request = require('superagent')
   , dust = require('dust')
   , templates = require('./templates')
   , form = require('./form.js')
   , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
 
-var binders = {
-  'completeRegistration' :completeRegistrationDOMBinder,
-  'menu'   : menuDOMBinder,
-  'user'   : userDOMBinder,
-  'signup' : signupDOMBinder,
-  'presentations'    : psesentationsDOMBinder,
-  'presenterControl' : presenterControlDOMBinder,
-  'userLive' : userLiveDOMBinder
-}
+var binders = Object.create(null);
+binders['completeRegistration'] = completeRegistrationDOMBinder,
+binders['menu']   =  menuDOMBinder,
+binders['user']   =  userDOMBinder,
+binders['signup'] =  signupDOMBinder,
+binders['presentations']    =  psesentationsDOMBinder,
+binders['presenterControl'] =  function(){
+  menuDOMBinder();
+  presenterControlDOMBinder();
+},
+binders['userLive'] =  userLiveDOMBinder
+
 
 function bindingsFor(viewName){
-  if (binders.hasOwnProperty(viewName) && typeof binders[viewName] == 'function'){
+  if (typeof binders[viewName] == 'function'){
     binders[viewName]();
   }else{
-    console.log("No Dom Bindings for "+ viewName);
+    debug("No Dom Bindings for "+ viewName);
   }
 }
 
@@ -52,6 +56,7 @@ function menuDOMBinder(){
 
 // signup.dust
 function signupDOMBinder(){
+  bindingsFor('signupMenu')
   form.setup('signup');
 
   $(function(){
@@ -64,6 +69,7 @@ function signupDOMBinder(){
 
 // presentations.dust
 function psesentationsDOMBinder(){
+  menuDOMBinder();
   //enable no-touch classes
   if ('ontouchstart' in document) {
     $('body').removeClass('no-touch');
@@ -89,18 +95,31 @@ function psesentationsDOMBinder(){
     }
 
     //isotope
-    var $container = $('.accordion-inner');
+    // var $container = $('.accordion-inner');
+    var container = document.querySelector('.accordion-inner');
     
-    $container.isotope({
+    // $container.isotope({
+    //   itemSelector: '.thumb-container',
+    //   filter: ':not(.removed-item)',
+    //   sortBy: 'position',
+    //   getSortData : {
+    //     position : function ( $elem ) {
+    //       return parseInt( $elem.data('sort-position'), 10 );
+    //     }
+    //   }
+    // });
+
+    var iso = new Isotope(container, {
       itemSelector: '.thumb-container',
       filter: ':not(.removed-item)',
       sortBy: 'position',
       getSortData : {
         position : function ( $elem ) {
-          return parseInt( $elem.data('sort-position'), 10 );
+          return parseInt( $elem.dataset.sortPosition, 10 );
         }
       }
     });
+
 
     var $documentHammered = $(document).hammer();
     
@@ -112,7 +131,6 @@ function psesentationsDOMBinder(){
     $documentHammered
       // flip to show slideshow actions
       .on('tap', '.flipbox' ,function (event) {
-        console.log('Click!')
           event.stopPropagation();
           $('.flipbox')
             .not($(this).addClass('flipped'))
@@ -145,7 +163,7 @@ function psesentationsDOMBinder(){
         // clone thumb in case server responds with failure
         var $clone = $thumb.clone();
         //delete from DOM
-        $container.isotope('remove', $thumb);
+        iso('remove', $thumb);
           
         // send delete request to server
         request
@@ -153,7 +171,7 @@ function psesentationsDOMBinder(){
           .set('Accept', 'application/json')
           .end(function(err, res){
             if(err || res.statusType!=2){
-              $container.isotope('insert', $clone);
+              iso('insert', $clone);
               alert('Something went wrong with removing your presentation: ' + 
                 (err!=null ? err.message : JSON.stringify(res.body)));
               return;
@@ -179,7 +197,7 @@ function psesentationsDOMBinder(){
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
           var url = ['/', username, '/presentations/', presentationId, '/live'].join('');
-          console.log('POST ' + url);
+          debug('POST ' + url);
           $.post(url, null)
           .success(function (data, textStatus, jqXHR){
             var location = jqXHR.getResponseHeader('Location');
@@ -190,7 +208,6 @@ function psesentationsDOMBinder(){
               //window.focus();
             }else{
               window.location = $this.attr("href");
-              console.log(window.navigator.standalone);
             }
           });
         }
@@ -200,7 +217,7 @@ function psesentationsDOMBinder(){
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
           var url = ['/', username, '/presentations/', presentationId, '/live'].join('');
-          console.log('DELETE ' + url);
+          debug('DELETE ' + url);
           $.ajax({
             url: url,
             type: "DELETE"
@@ -221,7 +238,7 @@ function psesentationsDOMBinder(){
               }
               dust.render('presentationThumb', thumbData, function(err, out){
                   if(err){
-                    console.log(err)
+                    debug(err)
                   }else{
                     $currentThumb.html($(out).html());
                   }
@@ -235,7 +252,7 @@ function psesentationsDOMBinder(){
                 ]
               }, function(err, out){
                   if(err){
-                    console.log(err)
+                    debug(err)
                   }else{
                     $("#mainContainer").prepend(out);
                   }
@@ -299,7 +316,7 @@ function userLiveDOMBinder(){
           var authLevel = $this.data('authlevel');
           var url = ['/', username, '/presentations/', presentationId, '/live/?start&al=',
             authLevel].join('');
-          console.log('POST ' + url);
+          debug('POST ' + url);
           $.post(url, null)
           .success(function (data, textStatus, jqXHR){
             var location = jqXHR.getResponseHeader('Location');
@@ -310,7 +327,7 @@ function userLiveDOMBinder(){
               //window.focus();
             }else{
               window.location = $this.attr("href");
-              console.log(window.navigator.standalone);
+              debug(window.navigator.standalone);
             }
           });
         }
@@ -328,4 +345,12 @@ function userLiveDOMBinder(){
 function userDOMBinder(){
   //TODO update this for user
   psesentationsDOMBinder();
-}  
+} 
+
+var $ = require('jquery');
+$(function(){
+  var viewname = $('body').attr('data-view-name')
+  bindingsFor(viewname);
+})
+
+ 

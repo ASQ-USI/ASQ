@@ -4,7 +4,8 @@
 'use strict';
 
 var fs = require("fs")
-  , path = require("path");
+  , path = require("path")
+  , webpack = require("webpack");
 
 module.exports = function(grunt) {
 
@@ -12,101 +13,61 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
-    //browserify
-    browserify: {
-      vendor: {
-        src: ['client/js/vendor/vendor-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
-        dest: 'public/js/vendor.js',
-        options: {
-          debug: true,
-          // alias: 'client/js/vendor/jquery-1.10.2.js:jquery',
-          // alias: 'jquery:$',
-          shim: {
-            jquery: {
-              path: "node_modules/jquery/dist/jquery.js",
-              exports: "$"
-            },
-            bootstrap: {
-              path: 'client/js/vendor/bootstrap.js',
-              exports: null,
-              depends: { jquery:'jquery' }
-            },
-            jqueryScrollTo: {
-              path: 'client/js/vendor/jquery.scrollTo.js',
-              exports: null,
-              depends: { jquery:'jquery' }
-            },
-            isotope: {
-              path: 'client/js/vendor/jquery.isotope.js',
-              exports: null,
-              depends: { jquery:'jquery' }
-            },
-            jqueryHammer: {
-              path: 'client/js/vendor/jquery.hammer.js',
-              exports: 'Hammer',
-              depends: { jquery:'jquery' }
-            },
-          }
-        }
-      },
-      vendorPresentation: {
-        src: ['client/js/vendor/vendorPresentation-entry.js'],//, 'jquery-1.10.2.js', 'bootstrap.js'],
-        dest: 'public/js/asq-vendor-presentation.js',
-        options: {
-          debug: true,
-          //alias: 'jQuery:$',
-          shim: {
-            jquery: {
-              path: "node_modules/jquery/dist/jquery.js",
-              exports: "$" },
-            bootstrap: {
-              path: 'client/js/vendor/bootstrap.js',
-              exports: null,
-              depends: { jquery:'jquery' }
-            },
-            jqueryFlexbox: {
-              path: 'client/js/vendor/jquery.flexbox.js',
-              exports: null,
-              depends: { jquery:'jquery' }
-            },
-            jqueryAsqExpandSlide: {
-              path: 'client/js/vendor/jquery.asq.expandSlide.js',
-              exports: null,
-              depends: { jquery:'jquery' }
-            }
-          }
-        }
-      },
-      client: {
-        src: ['client/js/dom.js'],
-        dest: 'public/js/asq-client.js',
-        options: {
-          debug: true,
-          alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom,node_modules/dustjs-linkedin/dist/dust-core.js:dust',
-          external: ['jquery']
-       }
-      },
+    //webpack
+    webpack: {
       presenter: {
-        src: ['client/js/presenter.js'],
-        dest: 'public/js/asq-presenter.js',
-        options: {
-          debug: true,
-          shim: {
-            impressPresenter: {path: 'client/js/impress-presenter.js', exports: 'impress'}
-          },
-          external: ['jquery']
-        }
+        entry: "./client/js/presenter.js",
+        output: {
+          path: "./public/js/",
+          filename: "asq-presenter.js"
+        },
+        devtool: "sourcemap",
+        debug: true,
+        module:{
+          loaders: [
+              { test: /[\/]impress\.js$/, loader: "exports?impress" },
+          ]
+        },
+        externals:[{
+          jquery: 'jQuery'
+        }]
       },
       viewer: {
-        src: ['client/js/viewer.js'],
-        dest: 'public/js/asq-viewer.js',
-        options: {
-          debug: true,
-          shim: {
-            impressViewer: {path: 'client/js/impress-viewer.js', exports: 'impress'}
-          },
-          external: ['jquery']
-        }
+        entry: "./client/js/viewer.js",
+        output: {
+          path: "./public/js/",
+          filename: "asq-viewer.js"
+        },
+        devtool: "sourcemap",
+        debug: true,
+        module:{
+          loaders: [
+              { test: /[\/]impress\.js$/, loader: "exports?impress" },
+          ]
+        },
+        externals:[{
+          jquery: 'jQuery'
+        }]
+      },
+      client: {
+        entry: "./client/js/dom.js",
+        output: {
+          path: "./public/js/",
+          filename: "asq-client.js"
+        },
+        devtool: "sourcemap",
+        debug: true,
+        // alias: 'client/js/client-socket.js:clientSocket,client/js/dom.js:dom,node_modules/dustjs-linkedin/dist/dust-core.js:dust',
+        resolve:{
+          alias: {
+            clientSocket: __dirname + '/client/js/client-socket.js',
+            dom: __dirname + '/client/js/dom.js',
+            dust: __dirname +'/node_modules/dustjs-linkedin/dist/dust-core.js'
+          }
+        },
+        externals:[{
+          jquery: "jQuery"
+        }]
       }
     },
 
@@ -132,6 +93,21 @@ module.exports = function(grunt) {
           , '!client/js/vendor/**/*.js'
           , 'test/**/*.js']
     },
+
+    //concat
+    concat: {
+        options: {
+          separator: ';',
+        },
+        vendor: {
+          src: ['./node_modules/jquery/dist/jquery.js','client/js/vendor/bootstrap.js','client/js/vendor/jquery.hammer.js','client/js/vendor/isotope.pkgd.js'],
+          dest: 'public/js/vendor.js',
+        },
+        vendorPresentation: {
+          src: ['./node_modules/jquery/dist/jquery.js','client/js/vendor/bootstrap.js','client/js/vendor/jquery.flexbox.js','client/js/vendor/jquery.asq.expandSlide.js'],
+          dest: 'public/js/asq-vendor-presentation.js',
+        },
+      },
 
     //uglify
     uglify: {
@@ -202,11 +178,9 @@ module.exports = function(grunt) {
       compile: [
         'dust',
         'less',
-        'browserify:vendor',
-        'browserify:vendorPresentation',
-        'browserify:client',
-        'browserify:presenter',
-        'browserify:viewer'
+        'webpack:client',
+        'webpack:presenter',
+        'webpack:viewer'
       ],
       uglify: ['uglify'],
     },
@@ -218,7 +192,7 @@ module.exports = function(grunt) {
       },
       client: {
         files: ['client/js/*.js'],
-        tasks: ['concurrent:compile'],
+        tasks: ['webpack'],
         options: {
           spawn: false
           // interrupt: true
@@ -244,9 +218,10 @@ module.exports = function(grunt) {
 
   // Our custom tasks.
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['dust', 'maybeless', 'browserify', 'uglify']);
+  grunt.registerTask('build', ['dust', 'maybeless', 'webpack', 'uglify']);
   grunt.registerTask('build-concurrent', ['concurrent:compile', 'concurrent:uglify']);
-  grunt.registerTask('devwatch', ['build-concurrent', 'watch']);
+  grunt.registerTask('build-concurrent-dev', ['concurrent:compile']);
+  grunt.registerTask('devwatch', ['concat', 'build-concurrent-dev', 'watch']);
   grunt.registerTask('deploy', ['shell:deploy']);
 
   //ported from togetherjs

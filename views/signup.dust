@@ -6,7 +6,7 @@
 
 </head>
 
-<body>
+<body data-view-name="signup">
 	<!-- Tips and error for forms based on Twitter https://twitter.com/signup -->
 	{>signupMenu/}
 
@@ -99,12 +99,5 @@
 		</div> <!-- end div#signup-wrapper -->
 
 	</div> <!-- end div#page-canvas -->
-
-
-
-	<script>
-	/* dom bindings for the page */
-	require('dom').bindingsFor('signup');
-	</script>
 </body>
 </html>

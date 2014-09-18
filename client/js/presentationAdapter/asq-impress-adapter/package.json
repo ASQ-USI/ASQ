@@ -1,0 +1,29 @@
+{
+  "name": "asq-impress-adapter",
+  "version": "0.0.1",
+  "description": "This is adapter adds impress.js presentation support to ASQ",
+  "main": "asqImpressAdapter.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ASQ-USI/asq-impress-adapter.git"
+  },
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "ASQ",
+    "impress.js"
+  ],
+  "author": "Vasileios Triglianos",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-webpack": "^1.0.8",
+    "load-grunt-tasks": "^0.6.0",
+    "webpack": "^1.4.0-beta3",
+    "webpack-dev-server": "^1.6.3"
+  },
+  "dependencies": {
+    "bows": "^1.1.2"
+  }
+}

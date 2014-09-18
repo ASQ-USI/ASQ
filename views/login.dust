@@ -7,7 +7,7 @@
 
   </head>
   
-  <body data-from-signup="{formSignup}">
+  <body data-from-signup="{formSignup}" data-view-name="signIn">
 
 	<div id="login-wrapper" class="container">
 		<div class="login-box">
@@ -55,9 +55,5 @@
 			</div>
 		</div>
 	</div>
-	<script>
-		/* dom bindings for the page */
-		require('dom').bindingsFor('signIn');
-	</script>
 </body>
 </html>

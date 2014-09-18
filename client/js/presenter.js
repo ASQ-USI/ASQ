@@ -5,34 +5,33 @@
 
 'use strict';
 
-var impress  = require('impressPresenter')
-, io         = require('socket.io-browserify')
-, $          = require('jquery')
-, manager    = require('asq-visualization').Manager()
+var debug = require('bows')("presenter")
+, io      = require('socket.io-browserify')
+, $       = require('jquery')
+, manager = require('asq-visualization').Manager()
 , microformatClient = require('asq-microformat').client
-, EventEmitter2     = require('eventemitter2').EventEmitter2
-, eventBus          = new EventEmitter2({delimiter: ':'});
+, EventEmitter2     = require('eventemitter2')
+, eventBus          = new EventEmitter2({delimiter: ':'})
+, impress;
 
 $(function(){
   var $body   = $('body')
-  , host      =  $body.attr('asq-host')
-  , port      = parseInt($body.attr('asq-port'))
-  , sessionId = $body.attr('asq-session-id')
-  , mode      = $body.attr('asq-socket-mode')
-  , token     = $body.attr('asq-token');
+  , host      =  $body.attr('data-asq-host')
+  , port      = parseInt($body.attr('data-asq-port'))
+  , sessionId = $body.attr('data-asq-session-id')
+  , mode      = $body.attr('data-asq-socket-mode')
+  , token     = $body.attr('data-asq-token')
+  , slidesTree = $body.attr('data-asq-slide-tree')
 
   microformatClient.configureMicroformatComponents('presenter', eventBus);
 
-  impress().init();
-  connect(host, port, sessionId, mode, token);
-  impress().start();
+  connect(host, port, sessionId, mode, token, slidesTree);
 })
 
 /** Connect back to the server with a websocket */
 
-function connect(host, port, session, mode, token) {
-  console.log('Connecting to socket server');
-  var started = false;
+function connect(host, port, session, mode, token, slidesTree) {
+  debug('Connecting to socket server');
   var socket = io.connect(window.location.protocol + '//' + host + ':' + port + '/ctrl?sid=' + session)
   //+ '&token=' + token ); TODO use token for socket auth.
 
@@ -40,6 +39,22 @@ function connect(host, port, session, mode, token) {
     // socket.emit('asq:admin', { //unused
     //  session : session
     // });
+    
+
+    //init presentation adapter
+    try{
+      if("undefined" !== typeof slidesTree){
+       slidesTree = JSON.parse(slidesTree) 
+      }
+      var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
+      require('./presentationAdapter/adapters').impress(asi, slidesTree);
+      //Listeners are added let's include and start impress
+      var impress = require('./impress')
+      impress().init();
+    }catch(err){
+      debug(err.toString + err.stack)
+    }
+    
 
     $('.connected-viewers-number').text("0 viewers connected")
 
@@ -56,19 +71,8 @@ function connect(host, port, session, mode, token) {
      */
     socket.on('asq:folo-connected', onASQFoloConnected);
 
-    socket.on('asq:start', function(event) {
-      if (!started) {
-        impress().start();
-        $('#welcomeScreen').modal('hide');
-        $('#waitingScreen').hide();
-        $('#slidesControll').show();
-
-        started = true;
-      }
-    });
-
     socket.on('asq:goto', function(evt) {
-      console.log('GOTO received');
+      debug('asq:goto received');
       if (mode == 'control') {
         $('.controlThumbs .thumbsWrapper .active').removeClass('active');
         $('.controlThumbs').scrollTo('.' + evt.slide, 500, {
@@ -92,7 +96,6 @@ function connect(host, port, session, mode, token) {
         });
 
       }
-      impress().goto(evt.slide);
     });
 
     socket.on('asq:gotosub', function(event) {
@@ -152,17 +155,6 @@ function connect(host, port, session, mode, token) {
     socket.emit('asq:gotosub', {
       substepIndex : event.detail.index,
       session : session
-    });
-  });
-
-  /**
-   Handle impress:stepgoto event
-   sSend a socket event to notify which slide to go to.
-   */
-  document.addEventListener("impress:start", function(event) {
-    socket.emit('asq:start', {
-      session : session,
-      slide : $('#impress .active').attr('id')
     });
   });
 
@@ -392,7 +384,6 @@ if("undefined" != typeof google){
 function drawChart() {
   $('.asq-stats').each(function(el) {
     var questionId = $(this).attr('data-target-asq-question-id');
-    console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
       //statsTypes.correctness.chart[questionId]
@@ -443,13 +434,18 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
     console.log(data);
-    var list = '<ul class="different-options">'
+    var list = '<ul class="different-options list-group">'
     for (var i=1; i<data.length; i++){
       var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
-      list += '<li>' + data[i][0]  + times + '</li>'
+      list += '<li class="list-group-item">'
+      list += '<a href="#" class="correct-btn" ><i class="glyphicon glyphicon-ok"></i></a>'
+      list +=  data[i][0]  + times + '</li>'
     }
     list+='</ul>'
     $('.asq-stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.correct-btn').click(function(){
+      $(this).parent().toggleClass('correct-answer')
+    })
   });
 }
 

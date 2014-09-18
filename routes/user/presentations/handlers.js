@@ -10,6 +10,7 @@ var _             = require('lodash')
 , nodefn          = require('when/node/function')
 , path            = require('path')
 , pfs             = require('promised-io/fs')
+, fs              = require('fs')
 , when            = require('when')
 , errorTypes      = require('../../errorTypes')
 , lib             = require('../../../lib')
@@ -157,10 +158,16 @@ function uploadPresentation(req, res, next) {
     .then(
       function(file) {
         slideShowFileHtml = file;
+
+        //get slides Tree
+        var adapter = require('../../../lib/presentationAdapter/asqImpressAdapter')
+        newSlideshow.slidesTree = adapter.getSlidesTree(file);
+
         function replaceAll(find, replace, str) {
           return str.replace(new RegExp(find, 'g'), replace);
         }
         slideShowFileHtml = slideShowFileHtml.toString();
+        // Escape brackets otherwise dust will try to parse them
         slideShowFileHtml = replaceAll('{','ESCAPEFORDUSTBRACKETSASQ',slideShowFileHtml)
         slideShowFileHtml = replaceAll('}','{~rb}',slideShowFileHtml)
         slideShowFileHtml = replaceAll('ESCAPEFORDUSTBRACKETSASQ','{~lb}',slideShowFileHtml)
@@ -180,6 +187,12 @@ function uploadPresentation(req, res, next) {
             parsed.errors.join('\n - ')
           ));
         }
+
+        slideShowFileHtml  = parsed.html
+
+        //update original file with any corrections from parser
+        var fPath = folderPath + '/' +  newSlideshow.originalFile;
+        fs.writeFileSync(fPath, slideShowFileHtml)
 
         var dbQuestions =  [];
         parsedExercises = parsed.exercises

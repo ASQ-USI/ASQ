@@ -31,10 +31,3 @@
     </nav><!-- /.navbar-collapse -->  
   </div><!-- /.container -->  
 </header>
- <script>
- /* if the + sign looks strange to you have a look here:
- http://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name */
-  +function initMenuDomBindings(){
-    require('dom').bindingsFor('menu');
-  }();                
-</script>

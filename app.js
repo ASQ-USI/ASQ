@@ -12,7 +12,7 @@ db         = mongoose.createConnection(config.mongoDBServer, config.dbName, conf
 schemas    = require('./models');
 
 var cons          = require('consolidate')
-, dust            = require('dustjs-linkedin')
+, dust            = require('dustjs-helpers')
 , express         = require('express')
 , flash           = require('connect-flash')
 , fs              = require('fs')
@@ -98,7 +98,6 @@ app.configure(function() {
   app.enable('view cache');
   app.engine('dust', cons.dust);
   //Setup Dust.js helpers and options
-  require('dustjs-helpers');
   lib.dustHelpers(dust);
   microformat.templates(dust);
   if (config.enableHTTPS) {

@@ -3,11 +3,11 @@
  */
 
 /** Connect back to the server with a websocket */
-var impress = require('impressViewer')
-, io = require('socket.io-browserify')
-, $ = require('jquery')
-, manager    = require('asq-visualization').Manager()
-, microformatClient = require('asq-microformat').client;
+var debug = require('bows')("viewer")
+  , io = require('socket.io-browserify')
+  , $ = require('jquery')
+  , manager    = require('asq-visualization').Manager()
+  , microformatClient = require('asq-microformat').client;
 
 
 // Save current question id;
@@ -16,15 +16,15 @@ var client = null;
 
 $(function(){
   var $body     = $('body')
-    , host      =  $body.attr('asq-host')
-    , port      = parseInt($body.attr('asq-port'))
-    , sessionId = $body.attr('asq-session-id')
-    , mode      = $body.attr('asq-socket-mode')
-    , token     = $body.attr('asq-token');
+    , host      =  $body.attr('data-asq-host')
+    , port      = parseInt($body.attr('data-asq-port'))
+    , sessionId = $body.attr('data-asq-session-id')
+    , mode      = $body.attr('data-asq-socket-mode')
+    , token     = $body.attr('data-asq-token');
 
   microformatClient.configureMicroformatComponents('viewer');
 
-  impress().init();
+  // impress().init();
   client = connect(host, port, sessionId, mode, token)
 });
 
@@ -39,6 +39,17 @@ function connect(host, port, session, mode, token) {
     //+ '&token=' + token ); TODO use token for socket auth.
 
   socket.on('connect', function(evt) {
+    //init presentation adapter
+    try{
+      var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
+      require('./presentationAdapter/adapters').impress(asi);
+      //Listeners are added let's include and start impress
+      var impress = require('./impress')
+      impress().init();
+    }catch(err){
+      debug(err.toString + err.stack)
+    }
+
     // console.log("connected")
     socket.emit('asq:viewer', {
       session : session,
@@ -74,7 +85,7 @@ function connect(host, port, session, mode, token) {
           });
         });
       }
-      impress().goto(evt.slide);
+      //impress().goto(evt.slide);
     });
 
     /**
@@ -377,7 +388,6 @@ var statsTypes = {
 function drawChart() {
   $('.asq-stats').each(function(el) {
     var questionId = $(this).attr('data-target-asq-question-id');
-    console.log($(this).find(".rvswChart").length);
     if($(this).find(".rvswChart").length){
       statsTypes.rightVsWrong.chart[questionId] = new google.visualization.PieChart($(this).find(".rvswChart")[0]);
     }
@@ -536,7 +546,6 @@ function disableExercise($exercise) {
 
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
-    console.log(data);
     var list = '<ul class="different-options">'
     for (var i=1; i<data.length; i++){
       var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''

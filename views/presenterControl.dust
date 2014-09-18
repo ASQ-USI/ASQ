@@ -10,7 +10,8 @@
 
   <body onorientationchange="updateOrientation();" data-asq-host="{host}"
   data-asq-port="{port}" data-asq-session-id="{id}" data-asq-socket-mode="{mode}"
-  data-asq-last-session="{slideshow.lastSession}">
+  data-asq-last-session="{slideshow.lastSession}"  data-view-name="presenterControl"
+  data-asq-slide-tree="{slideTree}">
 
     <!---   Top menu -->
     {>menu/}
@@ -24,11 +25,11 @@
           <div class="col-sm-7 hidden-xs">
             <h4>Active slide</h4>
             {! TODO: security for invisible user !}
-            <iframe id="thisSlideFrame" src="http://{host}:{port}/{username}/presentations/{presentation}/live/{id}/?role=wtap" width="100%" height="340px" ></iframe>
+            <iframe id="thisSlideFrame" scrolling="no" src="//{host}:{port}/{username}/presentations/{presentation}/live/{id}/?role=wtap" width="100%" height="340px" ></iframe>
           </div>
           <div class="col-sm-5 hidden-xs">
             <h4>Next slide</h4>
-            <iframe id="nextSlideFrame" src="/slidesRender/{slidesId}/" width="100%" height="260px" ></iframe>
+            <iframe id="nextSlideFrame" scrolling="no" src="//{host}:{port}/{username}/presentations/{presentation}/live/{id}/?role=wtap" width="100%" height="260px" ></iframe>
           </div>
           <div class="col-md-5">
             <div id="clock">
@@ -48,18 +49,18 @@
           	<div class="mobileNext"><p><strong>Next slide</strong> <span class="glyphicon glyphicon-arrow-right"> </span> </p></div>
           </div>
           <div class="col-md-5">
-          	<a class="btn btn-danger btn-sm" id="stopSessionBtn" href="#"> Stop presentation </a>
-            <a href="/user/statistics/{slideshow._id}" class="btn btn-sm btn-inverse">Show statistics</a>
-            <a href="{presentationViewUrl}" class="btn btn-sm btn-inverse hidden-xs">Go to presentation view</a>
+          	<a class="btn btn-danger btn-sm" id="stopSessionBtn" href="#"> <i class="fa fa-stop fa-lg"></i> stop</a>
+            <a href="/user/statistics/{slideshow._id}" class="btn btn-sm btn-inverse"><i class="fa fa-line-chart fa-lg"></i> statistics</a>
+            <a href="{presentationViewUrl}" class="btn btn-sm btn-inverse hidden-xs"><i class="fa fa-picture-o fa-lg"></i> beamer view</a>
           </div>
           <div class="col-md-2 hidden-xs">
-            <button class="btn btn-info" onclick="impress().prev()">
-              Previous slide
+            <button class="btn btn-info" type="button" id="prev-btn"><i class="fa fa-step-backward fa-lg"></i>
+              previous
             </button>
           </div>
           <div class="col-md-2 hidden-xs">
-            <button class="btn btn-lg btn-primary" type="button" id="nextButton" onclick="impress().next();">
-              Next slide
+            <button class="btn btn-lg btn-primary" type="button" id="next-btn"><i class="fa fa-step-forward fa-lg"></i>
+              next
             </button>
           </div>
 
@@ -78,11 +79,11 @@
       <div class="controlBottom hidden-xs">
 
         <div id="controlToggle" class="hidden-xs">
-          <a href="#" ><span class="glyphicon glyphicon-chevron-down"> </span> Hide thumbnails <span class="glyphicon glyphicon-chevron-down"> </span></a>
+          <a href="#" ><span class="glyphicon glyphicon-chevron-down"> </span> Hide <span class="glyphicon glyphicon-chevron-down"> </span></a>
         </div>
 
-        <div class="controlThumbs">
-          <div class="thumbsWrapper">
+        <div class="control-thumbs" id="control-thumbs">
+          <ul class="thumbs-wrapper" id="thumbs-wrapper">
             {#slidesThumbs}
             <div class="thumb {id}" style="background-image: url('/slides/thumbs/{slidesId}/{$idx}-thumb.png')">
               <div class="labelsContainer">
@@ -97,7 +98,7 @@
               </div>
             </div>
             {/slidesThumbs}
-          </div>
+          </ul>
         </div>
 
       </div>
@@ -105,19 +106,5 @@
     </div>
     <!-- /Controlls for runnig presentation -->
 
-    <!-- Non visible presentation -->
-    <div id="impress" style="display: none">
-      {presenationSkeleton|s}
-    </div>
-
-    <script src="/js/asq-presenter.js"></script>
-    <script>
-			var slidesId = '{slideshow._id}';
-
-
-      +function initDomBindings(){
-        require('dom').bindingsFor('presenterControl');
-      }();
-    </script>
   </body>
 </html>
