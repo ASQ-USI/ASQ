@@ -171,7 +171,6 @@ function uploadPresentation(req, res, next) {
         slideShowFileHtml = replaceAll('{','ESCAPEFORDUSTBRACKETSASQ',slideShowFileHtml)
         slideShowFileHtml = replaceAll('}','{~rb}',slideShowFileHtml)
         slideShowFileHtml = replaceAll('ESCAPEFORDUSTBRACKETSASQ','{~lb}',slideShowFileHtml)
-       // console.log(slideShowFileHtml)
 
         appLogger.debug('parsing main .html file for questions...');
         return (new Parser(appLogger)).parse(slideShowFileHtml, { wrap: false });
