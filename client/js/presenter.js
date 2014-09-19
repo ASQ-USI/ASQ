@@ -422,7 +422,7 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
       }
     }
   }
-  else if($question.hasClass('text-input')){
+  else if($question.hasClass('text-input') || $question.hasClass('asq-css-select')){
     requestDistinct(questionId)
   }
   else if($question.hasClass('code-input')){
@@ -439,7 +439,7 @@ function requestDistinct(questionId, obj) {
       var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
       list += '<li class="list-group-item">'
       list += '<a href="#" class="correct-btn" ><i class="glyphicon glyphicon-ok"></i></a>'
-      list +=  data[i][0]  + times + '</li>'
+      list+=  data[i][0]  + times + '</li>'
     }
     list+='</ul>'
     $('.asq-stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);

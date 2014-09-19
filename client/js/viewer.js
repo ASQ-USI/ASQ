@@ -423,7 +423,7 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
       }
     }
   }
-  else if($question.hasClass('text-input')){
+  else if($question.hasClass('text-input') || $question.hasClass('asq-css-select')){
     requestDistinct(questionId)
   }
   else if($question.hasClass('code-input')){
@@ -544,16 +544,18 @@ function disableExercise($exercise) {
   $exercise.find('.asq-rating').addClass('disabled');
 }
 
+
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
-    var list = '<ul class="different-options">'
+    console.log(data);
+    var list = '<ul class="different-options list-group">'
     for (var i=1; i<data.length; i++){
       var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''
-      list += '<li>' + data[i][0]  + times + '</li>'
+      list += '<li class="list-group-item">'
+      list+=  data[i][0]  + times + '</li>'
     }
     list+='</ul>'
-    console.log(list)
-    $('.asq-stats[target-assessment-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
+    $('.asq-stats[data-target-asq-question-id=' + questionId+']').find('.tab-pane[id^="diffAns"]').eq(0).html(list);
   });
 }
 
