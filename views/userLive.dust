@@ -5,7 +5,7 @@
     <title>ASQ - {owner.name}'s live presentations</title>
   </head>
 
-  <body>
+  <body class="no-touch" data-view-name="userLive">
 
     <!---   top menu -->
     {>menu/}
@@ -66,22 +66,6 @@
 
     <!-- Le javascript -->
     <!-- Connect to sockets only if there's an active session -->
-    {?session}
 
-      <!-- Socket parameters that are needed by our javascript -->
-      {>serverParams/}
-      <script>
-        /* if the + sign looks strange to you have a look here:
-         http://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name */
-        +function initSocket(){
-          var clientSocket = require('clientSocket').init();
-        }();        
-      </script>
-    {/session}
-    <script>
-      +function initDomBindings(){
-         require('dom').bindingsFor('userLive');
-      }();                
-    </script>
   </body>
 </html>
