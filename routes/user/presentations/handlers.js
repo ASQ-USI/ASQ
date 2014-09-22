@@ -41,7 +41,7 @@ function deletePresentation(req, res, next) {
   function(slideshow) {
       if (slideshow) return nodefn.call(slideshow.remove.bind(slideshow));
       //no slideshow
-      next(Error.create().http(404, 'Invalid presentation Id', {type:'invalid_request_error'}));
+      next(Error.http(404, 'Invalid presentation Id', {type:'invalid_request_error'}));
   })
   .then(
 

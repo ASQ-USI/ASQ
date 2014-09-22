@@ -77,8 +77,9 @@ function connect(host, port, session, mode, token) {
     socket.on('asq:goto', function(evt) {
       // Handle stats
       if (!! evt.stats) {
+        var slide = evt.slide || evt.data.step;
         $.each(evt.stats, function forGraphs(id, graphs) {
-          var selector = '#' + evt.slide + ' [data-target-asq-question-id="' +
+          var selector = '#' + slide + ' [data-target-asq-question-id="' +
           id + '"] .asq-viz-graph';
           $.each(graphs, function forData(graphName, data) {
             manager.update(selector, graphName, data);

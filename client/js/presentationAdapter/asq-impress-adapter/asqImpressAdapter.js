@@ -138,31 +138,35 @@ module.exports = impressAdapter = function(asqSocket, slidesTree){
   goto(getElementFromHash() || steps[0], 0);
 
   document.addEventListener('keydown', function(){
-     if ( event.keyCode === 9 || ( event.keyCode >= 32 && event.keyCode <= 34 ) || (event.keyCode >= 37 && event.keyCode <= 40) ) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
+    if(event.target == document.body){
+       if ( event.keyCode === 9 || ( event.keyCode >= 32 && event.keyCode <= 34 ) || (event.keyCode >= 37 && event.keyCode <= 40) ) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
     }
   })
 
   document.addEventListener('keyup', function(){
-    if ( event.keyCode === 9 || ( event.keyCode >= 32 && event.keyCode <= 34 ) || (event.keyCode >= 37 && event.keyCode <= 40) ) {
+    if(event.target == document.body){
+      if ( event.keyCode === 9 || ( event.keyCode >= 32 && event.keyCode <= 34 ) || (event.keyCode >= 37 && event.keyCode <= 40) ) {
 
-      event.preventDefault();
-      event.stopImmediatePropagation();
+        event.preventDefault();
+        event.stopImmediatePropagation();
 
-      switch( event.keyCode ) {
-        case 33: // pg up
-        case 37: // left
-        case 38: // up
-        prev();
-        break;
-        case 9:  // tab
-        case 32: // space
-        case 34: // pg down
-        case 39: // right
-        case 40: // down
-        next();
-        break;
+        switch( event.keyCode ) {
+          case 33: // pg up
+          case 37: // left
+          case 38: // up
+          prev();
+          break;
+          case 9:  // tab
+          case 32: // space
+          case 34: // pg down
+          case 39: // right
+          case 40: // down
+          next();
+          break;
+        }
       }
     }
   },false);

@@ -163,7 +163,8 @@ function psesentationsDOMBinder(){
         // clone thumb in case server responds with failure
         var $clone = $thumb.clone();
         //delete from DOM
-        iso('remove', $thumb);
+        iso.remove($thumb[0]);
+        iso.layout();
           
         // send delete request to server
         request
@@ -171,7 +172,7 @@ function psesentationsDOMBinder(){
           .set('Accept', 'application/json')
           .end(function(err, res){
             if(err || res.statusType!=2){
-              iso('insert', $clone);
+              iso.insert($clone);
               alert('Something went wrong with removing your presentation: ' + 
                 (err!=null ? err.message : JSON.stringify(res.body)));
               return;

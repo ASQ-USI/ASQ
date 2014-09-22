@@ -115,7 +115,7 @@ app.configure(function() {
   app.use(express.static(path.join(__dirname, '/public/')));
   app.use(express.favicon(path.join(__dirname, '/public/favicon.ico')));
   app.use(express.logger('dev'));
-  app.use(express.methodOverride()); //Enable DELETE & PUT
+ // app.use(express.methodOverride()); //Enable DELETE & PUT
   app.use(express.cookieParser());
   //redis store for session cookies
   var redisSessionStore = new redisStore({
@@ -165,6 +165,13 @@ app.configure('development', function(){
 app.configure('production', function(){
   app.use(errorMiddleware.errorHandler());
 });
+
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+ });
+
 
 /** Stop a user current session **/
 app.get('/user/stop', ensureAuthenticated, routes.slides.stop);

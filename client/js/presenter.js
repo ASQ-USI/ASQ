@@ -87,7 +87,8 @@ function connect(host, port, session, mode, token, slidesTree) {
       // Handle stats
       if (!! evt.stats) {
         $.each(evt.stats, function forGraphs(id, graphs) {
-          var selector = '#' + evt.slide + ' [data-target-asq-question-id="' + id
+          var slide = evt.slide || evt.data.step
+          var selector = '#' + slide + ' [data-target-asq-question-id="' + id
             + '"] .asq-viz-graph';
           $.each(graphs, function forData(graphName, data) {
             console.log(data);

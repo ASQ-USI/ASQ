@@ -60,7 +60,7 @@ slideshowSchema.pre('save', true, function checkQuestionsOnSave(next, done) {
 
   var self = this;
   if (self.questions.length === 0) { return done(); }
-
+  
   Question.find({_id : {$in: this.questions}}, function(err, questions) {
     if (err) { done(err); }
     else if (questions.length !== self.questions.length) {
@@ -163,12 +163,11 @@ slideshowSchema.pre('save', true, function checkStatPerSlideOnSave(next, done) {
 // we want this to execute serial before we start
 // deleting stuff
 slideshowSchema.pre('remove', function checkLiveOnRemove(next) {
-  var Session = mongoose.model('Session');
+  var Session = db.model('Session');
   Session.findOne({
     slides  : this._id,
     endDate : null
-  }, function(err, session) {
-    console.log('THIS IS NOT CALLED') //TODO: Fix the cb which is not being called
+  }, null, null,  function(err, session) {
     if (err) { next(err); }
     else if (session) {
       return next(new Error(
@@ -181,7 +180,7 @@ slideshowSchema.pre('remove', function checkLiveOnRemove(next) {
 //remove sessions before removing a slideshow
 slideshowSchema.pre('remove', true, function removeSessionOnRemove(next, done) {
   next();
-  var Session = mongoose.model('Session');
+  var Session = db.model('Session');
   //we do not call remove on the model...
   Session.find({ slides : this._id}, function(err, sessions) {
     if (err) { done(err); }
