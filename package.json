@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "adm-zip": "~0.4.3",
-    "asq-microformat": "ASQ-USI/asq-microformat",
+    "asq-microformat": "^0.3.3",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.0",
