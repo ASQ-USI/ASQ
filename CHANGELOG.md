@@ -5,6 +5,7 @@
  * CHANGE: microformat was move to a seperate repo: [asq-microformat](https://github.com/ASQ-USI/asq-microformat)
  * ADD: Self-peer assessment
  * ADD: Configuration files
+ * ADD: asq-css-select, asq-js-function-body question types
 
 ## v 0.1
  * Supports Node.js up to v0.8.22
