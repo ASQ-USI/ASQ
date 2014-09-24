@@ -423,7 +423,9 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
       }
     }
   }
-  else if($question.hasClass('text-input') || $question.hasClass('asq-css-select')){
+  else if($question.hasClass('text-input') 
+    || $question.hasClass('asq-css-select')
+    || $question.hasClass('asq-js-function-body')){
     requestDistinct(questionId)
   }
   else if($question.hasClass('code-input')){

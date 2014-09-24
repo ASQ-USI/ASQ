@@ -221,8 +221,11 @@ function connect(host, port, session, mode, token) {
       });
 
       $(this).find('.asq-code-editor').each(function() {
-        console.log(ace.edit(this.id).getSession().getValue())
         submission.push(ace.edit(this.id).getSession().getValue());
+      });
+
+      $(this).find('.asq-code-input').each(function() {
+        submission.push($(this).text());
       });
 
       // Get confidence
@@ -424,7 +427,9 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
       }
     }
   }
-  else if($question.hasClass('text-input') || $question.hasClass('asq-css-select')){
+  else if($question.hasClass('text-input') 
+    || $question.hasClass('asq-css-select')
+    || $question.hasClass('asq-js-function-body')){
     requestDistinct(questionId)
   }
   else if($question.hasClass('code-input')){

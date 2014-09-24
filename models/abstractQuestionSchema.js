@@ -12,7 +12,7 @@ var mongoose = require('mongoose')
 // allowed form button types
 var formButtonTypes = ['checkbox', 'radio'];
 // allowed question types
-var questionTypes = ['multi-choice', 'text-input', 'code-input', 'asq-css-select'];
+var questionTypes = ['asq-css-select', 'asq-js-function-body', 'multi-choice', 'text-input', 'code-input'];
 
 // Remove all stat types we don't know about
 function statTypesValidator(types) {

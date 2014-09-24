@@ -350,7 +350,7 @@ function uploadPresentation(req, res, next) {
       function(user){
         appLogger.debug('upload zip file unlinked');
         appLogger.info(newSlideshow.title + ' uploaded successfully!');
-        res.redirect(['/', req.user.username, '/presentations/?alert=',
+        res.redirect(303, ['/', req.user.username, '/presentations/?alert=',
             newSlideshow.title, ' uploaded successfully!&type=success']
             .join(''));
     },
