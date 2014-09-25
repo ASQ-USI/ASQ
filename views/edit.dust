@@ -12,11 +12,11 @@
 		
 		
 		<!---   Content area   -->  
-    	<div class="container" id="mainContainer">
+    <div class="container" id="mainContainer">
 	        
 	        <!--- Edit menu -->
-	        <div class="row" >
-				<div class="span12"><h3>Edit presentation</h3></div>
+	  	<div class="row" >
+				<div class="col-md-12"><h3>Edit presentation</h3></div>
 	  			{>editSubmenu/}
 	  		</div>
 			
@@ -30,16 +30,16 @@
 			    <input type="text" name="courseName" value="{slideshow.course}">
 			    
 			    <br />
-			    <button type="submit" class="btn">Save changes</button>
+			    <button type="submit" class="btn btn-primary">Save changes</button>
 			  </fieldset>
 			</form>
 			
 			<div class="row" >
-				<div class="span12 headline"><h2>Slides overview</h2></div>
+				<div class="col-md-12 headline"><h2>Slides overview</h2></div>
 	  		</div>
 			
 			<div class="row">
-				<div class="span12" id="slidesOverview">
+				<div class="col-md-12" id="slides-overview">
 					
 					{#slides slideshowID=slideshow._id}
 						<div class="add"></div>

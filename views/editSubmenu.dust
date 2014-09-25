@@ -1,25 +1,15 @@
 <!---   Seperating Headline   -->
-<div class="span12 headline hidden-phone">
-	<h2 class="pull-left">{title}</h2>
+<div class="col-md-12 headline clearfix">
+	<h2 class="nav navbar-nav">{title}</h2>
 
 	<form id="delete-form" method="post" action="/slideshows/{slideshow.id}">
 		<input name="_method" value="DELETE" type="hidden">
-	</form>			
-	<a class="pull-right controls" id="delete" href="#"><i class="icon-trash icon-white"> </i>  Delete Slideshow </a>
-	<a class="pull-right controls" href="/user/edithtml/{slideshow._id}/"><i class="icon-align-left icon-white"> </i>  HTML </a>
-	<a class="pull-right controls" href="/user/editstyle/{slideshow._id}"><i class="icon-eye-open icon-white"> </i>  CSS </a>
-	<a class="pull-right controls" href="/user/editquestions/{slideshow._id}"><i class="icon-question-sign icon-white"> </i>  Questions </a>			
-	<a class="pull-right controls" href="/user/edit/{slideshow._id}"><i class="icon-th icon-white "> </i> Overview </a>
+	</form>		
+	<ul class="nav navbar-nav navbar-right edit-menu">
+		<li><a id="delete" href="#"><i class="glyphicon glyphicon-trash"> </i>  Delete Slideshow </a></li>
+		<li><a href="/user/edithtml/{slideshow._id}/"><i class="glyphicon glyphicon-align-left"> </i>  HTML </a></li>
+		<li><a href="/user/editstyle/{slideshow._id}"><i class="glyphicon glyphicon-eye-open"> </i>  CSS </a></li>
+		<li><a href="/user/editquestions/{slideshow._id}"><i class="glyphicon glyphicon-question-sign"> </i>  Questions </a></li>			
+		<li><a href="/user/edit/{slideshow._id}"><i class="glyphicon glyphicon-th "> </i> Overview </a></li>
+	</ul>		
 </div>
-		
-		
-<div class="visible-phone">
-	<h3>{title}</h3>
-	<ul class="nav nav-tabs nav-stacked">
-		<li><a class="pull-right controls " href="#"><i class="icon-trash icon-white"> </i>  Delete Slideshow </a></li>
-		<li><a class=" controls " href="/user/edithtml/{slideshow._id}"><i class="icon-align-left icon-white"> </i>  HTML </a></li>
-		<li><a class=" controls " href="/user/editstyle/{slideshow._id}"><i class="icon-eye-open icon-white"> </i>  CSS </a></li>
-		<li><a class=" controls " href="/user/editquestions/{slideshow._id}"><i class="icon-question-sign icon-white"> </i>  Questions </a></li>
-		<li><a class=" controls " href="/user/edit/{slideshow._id}"><i class="icon-th icon-white "> </i> Overview </a></li>
-	</ul>	
-</div>	
