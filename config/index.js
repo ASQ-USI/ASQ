@@ -144,4 +144,34 @@ if (fs.existsSync(__dirname + '/config.'+ env + '.js')){
 
 //overwrite default configuration with env configuration
 _.extend(conf, defaultConf, envConf);
+
+//Set the process host and port if undefined.
+process.env.HOST = conf.host = process.env.HOST || conf.host;
+process.env.PORT = conf.port = process.env.PORT || (conf.enableHTTPS ? conf.HTTPSPort : conf.HTTPPort);
+
+// to generate urls from the rest of the app we need the following info
+// urlProtocol, urlPort and urlHost MAY NOT be this process's protocol
+// port and host. It might as well be the reverse proxy ones. 
+if(conf.usingReverseProxy){
+  var proxyOpts = conf.reverseProxyOptions;
+
+  conf.urlProtocol = proxyOpts.secure 
+    ? "https"
+    : "http";
+
+  conf.urlPort = (proxyOpts.port && parseInt(proxyOpts.port) !== 80) 
+    ? proxyOpts.port
+    : "";
+
+  conf.urlHost = proxyOpts.host
+}else{
+  conf.urlProtocol = conf.enableHTTPS
+    ? "https"
+    : "http";
+  conf.urlPort = conf.port
+  conf.urlHost = conf.host;
+}
+
+conf.rootUrl = conf.urlProtocol +"://" + conf.urlHost + ":" + conf.urlPort
+
 module.exports = conf;

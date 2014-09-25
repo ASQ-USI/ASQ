@@ -119,8 +119,8 @@ function livePresentation(req, res) {
   res.render(renderOpts.template, {
     username            : req.user? req.user.username :'',
     title               : presentation.title,
-    host                : ASQ.host,
-    port                : ASQ.port,
+    host                : ASQ.urlHost,
+    port                : ASQ.urlPort,
     mode                : renderOpts.mode,
     presentation        : presentation._id,
     slideTree           : JSON.stringify(presentation.slidesTree),

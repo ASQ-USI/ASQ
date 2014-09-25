@@ -64,23 +64,22 @@ function ensureAuthenticated(req, res, next) {
     return false; //Ensure a value is always returned
 }
 
-//Set the process host and port if undefined.
-process.env.HOST = process.env.HOST || config.host;
-process.env.PORT = process.env.PORT || (config.enableHTTPS ? config.HTTPSPort : config.HTTPPort);
-appLogger.log('ASQ initializing with host ' + process.env.HOST + ' on port ' + process.env.PORT);
-
 app = express();
-
-
+appLogger.log('ASQ initializing with host ' + config.host + ' on port ' + config.port);
 
 // Global namespace
 var ASQ = global.ASQ = {};
 
+// to generate urls from the rest of the app we need the following info
+ASQ.urlProtocol = config.urlProtocol;
+ASQ.urlHost = config.urlHost;
+ASQ.urlPort = config.urlPort;
+ASQ.rootUrl = config.rootUrl;
+
 //hostname which we want to advertise for connection.
-ASQ.appHost = process.env.HOST;
+ASQ.appHost = config.host;
 clientsLimit = config.clientsLimit || 50;
 appLogger.log('Clients limit: ' + clientsLimit);
-
 
 
 //Reidrection to secure url when HTTPS is used.
@@ -92,7 +91,7 @@ app.configure(function() {
   //configure passport
   require('./lib/passport')(passport);
 
-  app.set('port', process.env.PORT);
+  app.set('port', config.port);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'dust');
   app.enable('view cache');
@@ -236,26 +235,6 @@ if (config.enableHTTPS && !config.usingReverseProxy) {
     appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
   });
 }
-
-// to generate urls from the rest of the app we need the following info
-if(config.usingReverseProxy){
-  var opts = config.reverseProxyOptions;
-  ASQ.protocol = opts.secure 
-    ? "https"
-    : "http";
-  ASQ.port = (opts.port && parseInt(opts.port) !== 80) 
-  ? opts.port
-  : "";
-  ASQ.host = opts.host
-}else{
-  ASQ.protocol = config.enableHTTPS
-    ? "https"
-    : "http";
-  ASQ.port = app.get('port')
-  ASQ.host = config.host;
-}
-
-ASQ.rootUrl = ASQ.protocol +"://" + ASQ.host + ":" + ASQ.port
 
 /**
    @description  Require socket.io (websocket wrapper) and listen to the server.
