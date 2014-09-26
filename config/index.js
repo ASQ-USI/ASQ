@@ -172,6 +172,10 @@ if(conf.usingReverseProxy){
   conf.urlHost = conf.host;
 }
 
-conf.rootUrl = conf.urlProtocol +"://" + conf.urlHost + ":" + conf.urlPort
+var portFragment =  (conf.urlPort === 80 || conf.urlPort === 443)
+  ? ''
+  : ':' + conf.urlPort;
+
+conf.rootUrl = conf.urlProtocol +"://" + conf.urlHost + portFragment
 
 module.exports = conf;

@@ -39,6 +39,7 @@ function isExistingUser(req, res, next, username) {
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function isAuthenticated(req, res, next) {
+  console.log(req.cookies)
   req.isAuthenticated() ? next(null) : next(new Error('Could not authenticate'));
 }
 
