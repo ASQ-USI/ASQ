@@ -218,7 +218,7 @@ module.exports = function(grunt) {
 
   // Our custom tasks.
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['dust', 'maybeless', 'webpack', 'uglify']);
+  grunt.registerTask('build', ['dust', 'maybeless', 'concat', 'webpack', 'uglify']);
   grunt.registerTask('build-concurrent', ['concurrent:compile', 'concurrent:uglify']);
   grunt.registerTask('build-concurrent-dev', ['concurrent:compile']);
   grunt.registerTask('devwatch', ['concat', 'build-concurrent-dev', 'watch']);
