@@ -14,11 +14,11 @@
     <nav class="navbar-collapse collapse navbar-main-nav" role="navigation">
       <ul class="nav navbar-nav">
         <li>
-          <a href="#">Landing Page link 1</a>
+          <a href="#"></a>
         </li>
         <!-- <li><a href="/questions">My Questions</a></li> -->
         <li>
-          <a href="#">Landing Page link 2</a>
+          <a href="#"></a>
         </li>
 
       </ul>
