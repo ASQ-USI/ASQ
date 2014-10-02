@@ -201,6 +201,7 @@ function postSignup(req, res, next) {
 }
 
 function getLogin(req, res) {
+
   res.render('login', {
       formSignup : false,
       alert: req.flash()

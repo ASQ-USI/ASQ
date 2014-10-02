@@ -76,6 +76,8 @@ ASQ.urlHost = config.urlHost;
 ASQ.urlPort = config.urlPort;
 ASQ.rootUrl = config.rootUrl;
 
+app.locals.rootUrl = ASQ.rootUrl;
+
 //hostname which we want to advertise for connection.
 ASQ.appHost = config.host;
 clientsLimit = config.clientsLimit || 50;
@@ -165,11 +167,11 @@ app.configure('production', function(){
   app.use(errorMiddleware.errorHandler());
 });
 
-app.all('*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
- });
+// app.all('*', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+//  });
 
 
 /** Stop a user current session **/

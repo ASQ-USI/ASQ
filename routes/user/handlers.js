@@ -46,9 +46,16 @@ function getUserPage(req, res) {
 }
 
 function getUserSettings(req, res) {
+ var cookie = 'asq.sid=' + req.cookies['asq.sid']
+  , encodedCookie = encodeURIComponent(cookie)
   res.render('settings', {
     username : req.user.username,
-    user : { name : req.user.username, email : req.user.email }
+    user : {
+      name : req.user.username,
+      email : req.user.email,
+      cookie:cookie,
+      encodedCookie: encodedCookie
+    }
   });
 }
 

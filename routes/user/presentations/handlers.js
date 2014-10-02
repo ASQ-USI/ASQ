@@ -160,7 +160,7 @@ function uploadPresentation(req, res, next) {
         slideShowFileHtml = file;
 
         //get slides Tree
-        var adapter = require('../../../lib/presentationAdapter/asqImpressAdapter')
+        var adapter = require('../../../lib/presentationAdapter/asq-impress-asq-fork-adapter/asqImpressAdapter')
         newSlideshow.slidesTree = adapter.getSlidesTree(file);
 
         function replaceAll(find, replace, str) {

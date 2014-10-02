@@ -47,9 +47,8 @@ function connect(host, port, session, mode, token, slidesTree) {
        slidesTree = JSON.parse(slidesTree) 
       }
       var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
-      require('./presentationAdapter/adapters').impress(asi, slidesTree);
-      //Listeners are added let's include and start impress
-      var impress = require('./impress')
+      require('./presentationAdapter/adapters').impressAsqFork(asi);
+      var impress = require('./impress-asq')
       impress().init();
     }catch(err){
       debug(err.toString + err.stack)

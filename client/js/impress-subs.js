@@ -19,7 +19,7 @@
 /*jshint bitwise:true, curly:true, eqeqeq:true, forin:true, latedef:true, newcap:true,
          noarg:true, noempty:true, undef:true, strict:true, browser:true */
 
-// You are one of those who like to know how thing work inside?
+// You are one of those who like to know how things work inside?
 // Let me show you the cogs that make impress.js run...
 (function ( document, window ) {
     'use strict';
@@ -191,7 +191,7 @@
     
     // GLOBALS AND DEFAULTS
     
-    // This is were the root elements of all impress.js instances will be kept.
+    // This is where the root elements of all impress.js instances will be kept.
     // Yes, this means you can have more than one instance on a page, but I'm not
     // sure if it makes any sense in practice ;)
     var roots = {};
@@ -563,6 +563,286 @@
             
             return goto(next);
         };
+
+        //PATCH for Menu
+
+        // add class also for menu item
+        var _addClass = function(dom, c) {
+            dom.classList.add(c);
+            var m_dom = document.getElementById("m-"+dom.id);
+            if (m_dom) m_dom.classList.add(c);
+        }
+        
+        // remove class also for menu item
+        var _removeClass = function(dom, c) {
+            dom.classList.remove(c);
+            var m_dom = document.getElementById("m-"+dom.id);
+            if (m_dom) m_dom.classList.remove(c);               
+        }
+         
+        // Capitalize first letter of string
+        var capitalize = function( str ) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+
+        // It defines the names of each entry by the id capitalized.
+        var showMenu = function() {
+            // Create the menu wrapper and the element that will be cloned
+            // for each entry.
+            //  console.log('showMenu')
+            var menu = document.createElement('div'),
+                frag = document.createDocumentFragment(),
+                el = document.createElement('div');
+
+            // Apply some classes
+            menu.className = 'menu';
+            el.className = 'menu-item';
+
+            // Create an element that will be the "button" and append it
+            // to the menu
+            var button = document.createElement('div');
+            button.className = 'menu-button';
+            button.textContent = '';
+            menu.appendChild(button);
+
+            // Now, for each div in the first element child of  #impress,
+            // add an entry to the menu         
+              arrayify(byId('impress').firstElementChild.children).forEach(
+                    function( child, index ) {
+                        
+                if (!child.classList.contains('step')) return;
+
+                var newEl = el.cloneNode(),
+                    i = index + 1, // We don't want to start at 0
+                    text = i + '. ' + capitalize(child.id);
+
+                // Set the text of the new element
+                newEl.innerHTML = '<a href="#/'+child.id+'" title="'+text+'">&bull;</a>';
+                newEl.id = "m-" + child.id;
+
+                // Add an onclick event to the new element
+                // We need to use a closure to make sure the index is correct
+                (function( index, id ) {
+                    newEl.addEventListener('click', function() {
+                        goto(index);
+                    });
+                    newEl.addEventListener('mouseover', function() {
+                        var baseURL = document.URL.substring(0, document.URL.search('#/'));
+                        button.innerHTML = '<iframe src="'+baseURL+"?preview#/"+id+'">';
+                    });
+                    newEl.addEventListener('mouseout', function() {
+                        button.innerHTML = "";
+                    });
+                }( index, child.id ));
+
+                // And append the new element to the menu
+                frag.appendChild(newEl);
+            });
+
+            // Add the frag to the menu
+            menu.appendChild(frag);
+
+            // And append the menu to the body.
+            // Appending it to #impress would mess things up, since
+            // `position: absolute` wouldn't work anymore in it.
+            document.body.appendChild(menu);
+        };
+         
+        //END PATCH
+                
+        //PATCH for SUBSTEPS
+        var forEach = Array.prototype.forEach,
+            slice = Array.prototype.slice,
+            isArray = Array.isArray;
+                
+        var removeClass = function (elm, className) {
+            if (elm.classList) {
+                elm.classList.remove(className);
+            } else {
+                if (!elm || !elm.className) {
+                    return false;
+                }
+                var regexp = new RegExp("(^|\\s)" + className + "(\\s|$)", "g");
+                elm.className = elm.className.replace(regexp, "$2");
+            }
+        }
+            
+        var setPrevious = function (data) {
+            if (isArray(data)) {
+                data.forEach(setPrevious);
+                return;
+            }
+            //removeClass(data,'active');
+            //data.className = data.className + ' previous';
+            data.classList.remove('active');
+            data.classList.add('previous');
+        };
+
+        var setActive = function (data) {
+            if (isArray(data)) {
+                data.forEach(setActive);
+                return;
+            }
+            //removeClass(data,'previous');
+            //data.className = data.className + ' active';
+            data.classList.remove('previous');
+            data.classList.add('active');
+        };
+
+        var clearSub = function (data) {
+            if (isArray(data)) {
+                data.forEach(clearSub);
+                return;
+            }
+            //removeClass(data,'previous');
+            //removeClass(data,'active');
+            data.classList.remove('active');
+            data.classList.remove('previous');
+        };
+         
+        // `gotoSub` API function that moves to substep given with `index` parameter.
+        var gotoSub = function(index){
+
+            var active = activeStep;
+            
+            var subactive, subSteps;
+            
+            if (!active.subSteps) {
+                setSubSteps(active);
+            }
+
+            subSteps = active.subSteps;
+
+            //if index is null then we got this from a prev action
+            // and we have to prepare the previous step
+            if(index === null){
+                prev = steps.indexOf( active ) - 1;
+                prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
+                if (!prev.subSteps) {
+                    setSubSteps(prev);
+                }
+                if (prev.subSteps.length &&
+                    (prev.subSteps.active !== (prev.subSteps.length - 1))) {
+                    slice.call(prev.subSteps, 0, -1).forEach(setPrevious);
+                    setActive(prev.subSteps[prev.subSteps.length - 1]);
+                    prev.subSteps.active = prev.subSteps.length - 1;
+                }
+
+            }
+
+            if (subSteps.length && (index >= 0) && (index <= (subSteps.length - 1))) {
+
+                //set previous substeps to have the class 'previous'
+                if(index){
+                    slice.call(subSteps, 0, index).forEach(setPrevious);
+                }
+
+                //clear next subSteps
+                if(index < (subSteps.length - 1) ){
+                    slice.call(subSteps, index).forEach(clearSub);
+                }
+
+                //if we are on the last substep we have to prepare the next step
+                if(index == (subSteps.length - 1)){
+                    next = steps.indexOf( active ) + 1;
+                    next = next < steps.length ? steps[ next ] : steps[ 0 ];
+                    if (!next.subSteps) {
+                        setSubSteps(next);
+                    }
+                    if (next.subSteps.active != null) {
+                        forEach.call(next.subSteps, clearSub);
+                        next.subSteps.active = null;
+                    }
+                }
+                
+                //set active
+                if(index != null ){
+                    setActive(subSteps[index]);
+                }
+                subSteps.active = index;
+            }
+
+        };
+
+        
+        var next = function () {
+            var active = activeStep;
+            
+            var subactive, next, subSteps;
+            
+            if (!active.subSteps) {
+                setSubSteps(active);
+            }
+            subSteps = active.subSteps;
+
+            //if we have substeps deal with them first
+            if (subSteps.length && ((subactive = subSteps.active) !== (subSteps.length - 1))) {
+                if(isNaN(subactive) || (subactive==null)){
+                    subactive = -1;
+                }
+                return gotoSub(++subactive)
+                //return emitGotoSub(++subactive);
+            }
+
+            next = steps.indexOf( active ) + 1;
+            next = next < steps.length ? steps[ next ] : steps[ 0 ];
+           
+            return goto(next);
+            // return emitGoto(next);
+        };
+        
+        var prev = function () {
+            var active = activeStep;
+            
+            var subactive, next, subSteps;
+            if (!active.subSteps) {
+                setSubSteps(active);
+            }
+            subSteps = active.subSteps;
+            //if we have substeps deal with them first
+            if (subSteps.length && ((subactive = subSteps.active) || (subactive === 0))) {
+                if (subactive) {
+                    --subactive;
+                } else {
+                    subactive = null;
+                }
+                // return emitGotoSub(subactive);
+                return gotoSub(subactive);
+            }
+
+            prev = steps.indexOf( active ) - 1;
+            prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
+
+            return goto(prev);
+            // return emitGoto(prev);
+        };
+         
+        var setSubSteps = function (el) {
+            var steps = el.querySelectorAll(".substep"),
+            order = [], unordered = [];
+            forEach.call(steps, function (el) {
+                if (el.dataset) {
+                    var index = Number(el.dataset.order);
+                    
+                    if (!isNaN(index)) {
+                        if (!order[index]) {
+                            order[index] = el;
+                        } else if (Array.isArray(order[index])) {
+                            order[index].push(el);
+                        } else {
+                            order[index] = [order[index], el];
+                        }
+                    } else {
+                        unordered.push(el);
+                    } 
+                } else {
+                   unordered.push(el);
+                }
+            });
+            el.subSteps = order.filter(Boolean).concat(unordered);
+        };
+         
+         //END PATCH       
         
         // Adding some useful classes to step elements.
         //
@@ -580,18 +860,18 @@
         root.addEventListener("impress:init", function(){
             // STEP CLASSES
             steps.forEach(function (step) {
-                step.classList.add("future");
+                _addClass(step,"future");
             });
             
             root.addEventListener("impress:stepenter", function (event) {
-                event.target.classList.remove("past");
-                event.target.classList.remove("future");
-                event.target.classList.add("present");
+                _addClass(event.target,"present");
+                _removeClass(event.target,"past");
+                _removeClass(event.target,"future");
             }, false);
             
             root.addEventListener("impress:stepleave", function (event) {
-                event.target.classList.remove("present");
-                event.target.classList.add("past");
+                _removeClass(event.target,"present");
+                _addClass(event.target,"past"); 
             }, false);
             
         }, false);
@@ -635,7 +915,9 @@
             init: init,
             goto: goto,
             next: next,
-            prev: prev
+            prev: prev,
+            gotoSub : gotoSub,
+            showMenu: showMenu
         });
 
     };
@@ -784,7 +1066,7 @@
         // rescale presentation when window is resized
         window.addEventListener("resize", throttle(function () {
             // force going to active step again, to trigger rescaling
-            api.goto( document.querySelector(".active"), 500 );
+            api.goto( document.querySelector(".step.active"), 500 );
         }, 250), false);
         
     }, false);

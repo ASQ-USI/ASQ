@@ -39,13 +39,19 @@ function isExistingUser(req, res, next, username) {
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function isAuthenticated(req, res, next) {
-  console.log(req.cookies)
   req.isAuthenticated() ? next(null) : next(new Error('Could not authenticate'));
 }
 
 function isNotAuthenticated(req, res, next) {
   !req.isAuthenticated() ? next(null) : next(new Error('Already authenticated'));
 }
+
+function isNotAuthenticatedOrGoHome(req, res, next) {
+  !req.isAuthenticated() 
+  ? next(null) 
+  : res.redirect('/');
+}
+
 
 /*  Most of ASQ Features need the user to have completed registration
  *  in order to have a valid ASQ username.
@@ -134,6 +140,7 @@ module.exports = {
   isAuthenticated    : isAuthenticated,
   isExistingUser     : isExistingUser,
   isNotAuthenticated : isNotAuthenticated,
+  isNotAuthenticatedOrGoHome : isNotAuthenticatedOrGoHome,
   isRouteOwner       : [
     isAuthenticated,
     isRegistrationComplete,

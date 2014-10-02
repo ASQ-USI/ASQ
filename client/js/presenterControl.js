@@ -48,7 +48,7 @@ function presenterControlDOMBinder(){
 	       slidesTree = JSON.parse(slidesTree) 
 	      }
 	      var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
-	      adapter = require('./presentationAdapter/adapters').impress(asi, slidesTree);
+	      adapter = require('./presentationAdapter/adapters').impressAsqFork(asi, slidesTree, true);
 	    }catch(err){
 	      debug(err.toString + err.stack)
 	    }

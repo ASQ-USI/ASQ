@@ -17,13 +17,13 @@ module.exports.setUp = function setUp(app, middleware) {
     middleware.isNotRegistrationComplete, handlers.postCompleteRegistration);
 
   //Get the register page
-  app.get('/signup/', middleware.isNotAuthenticated, handlers.getSignup);
+  app.get('/signup/', middleware.isNotAuthenticatedOrGoHome, handlers.getSignup);
 
   //Register as a new user
-  app.post('/signup', middleware.isNotAuthenticated, handlers.postSignup);
+  app.post('/signup', middleware.isNotAuthenticatedOrGoHome, handlers.postSignup);
 
   //Get the login page
-  app.get('/login/',middleware.isNotAuthenticated, handlers.getLogin);
+  app.get('/login/',middleware.isNotAuthenticatedOrGoHome, handlers.getLogin);
 
   //Login
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
@@ -31,7 +31,7 @@ module.exports.setUp = function setUp(app, middleware) {
   // Ldap login
   if(config.enableLdap == true && "undefined" !== config.ldapOptions){
     //Get the campus login page
-    app.get('/login-campus/', middleware.isNotAuthenticated, handlers.getLoginCampus);
+    app.get('/login-campus/', middleware.isNotAuthenticatedOrGoHome, handlers.getLoginCampus);
 
     //Login with campus
     app.post('/login-campus', middleware.ldapAuthenticate, handlers.postLoginCampus);

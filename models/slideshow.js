@@ -27,7 +27,7 @@ var slideshowSchema = new Schema({
   presenterFile     : { type: String, required: true },
   viewerFile        : { type: String, required: true },
   owner             : { type: ObjectId, ref: 'User', required: true },
-  slidesTree        : { type: Array, default:[]},
+  slidesTree        : { type: Object, default:{}},
   thumbnails        : { type: Array, default:[]},
   questions         : { type: [{ type: ObjectId, ref: 'Question' }] },
   questionsPerSlide : { type: [questionsPerSlideSchema] },

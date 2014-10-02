@@ -25,7 +25,7 @@ module.exports = function(grunt) {
         debug: true,
         module:{
           loaders: [
-              { test: /[\/]impress\.js$/, loader: "exports?impress" },
+              { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
           ]
         },
         externals:[{
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
         debug: true,
         module:{
           loaders: [
-              { test: /[\/]impress\.js$/, loader: "exports?impress" },
+              { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
           ]
         },
         externals:[{
