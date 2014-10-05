@@ -1,4 +1,6 @@
+// webpack checks  is going to first check the "browser" field of the package.json
+// of the required module
 module.exports = {
-  "impress" : require('./asq-impress-adapter'),
-  "impressAsqFork" : require('./asq-impress-asq-fork-adapter')
+  "impress" : require('impress-asq-adapter'),
+  "impressAsqFork" : require('impress-asq-fork-asq-adapter')
 }

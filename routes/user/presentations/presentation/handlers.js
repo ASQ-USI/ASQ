@@ -71,6 +71,7 @@ function editPresentation(req, res) {
 
 function livePresentation(req, res) {
   appLogger.debug(req.query.role);
+  appLogger.debug(req.query.offset)
   appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
@@ -169,6 +170,7 @@ function startPresentation(req, res, next) {
       newSession = new Session();
       newSession.presenter = req.user._id;
       newSession.slides = slideshow._id;
+      newSession.flow = 'ctrl';
       newSession.authLevel = ( Session.schema.path('authLevel').enumValues
         .indexOf(req.query.al) > -1 ) ? req.query.al : 'public';
       //update liveSessions of user

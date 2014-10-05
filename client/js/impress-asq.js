@@ -448,18 +448,7 @@
 
             var haveToGoToSubstep =false;
             if(activeStep !== el){
-                // Since we're going to transition to a  new step make sure that the previous
-                // and next steps have their substeps right, in case they are next :-)
-                var prev = steps.indexOf( el ) - 1;
-                prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
-                setActiveAllSubs(prev);
-
-                var next = steps.indexOf( el ) + 1;
-                next = next < steps.length ? steps[ next ] : steps[ 0 ];
-                clearAllSubs(next);
-
-                // we will handle substep after we transition to the step
-            
+                // we will handle substep after we transition to the step            
                 if((subIdx !== null && subIdx !== undefined || isNaN(subIdx))){
                     haveToGoToSubstep = true;
                 }
@@ -593,22 +582,6 @@
             
             return el;
         };
-        
-        // `prev` API function goes to previous step (in document order)
-        var prev = function () {
-            var prev = steps.indexOf( activeStep ) - 1;
-            prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
-            
-            return goto(prev);
-        };
-        
-        // `next` API function goes to next step (in document order)
-        var next = function () {
-            var next = steps.indexOf( activeStep ) + 1;
-            next = next < steps.length ? steps[ next ] : steps[ 0 ];
-            
-            return goto(next);
-        };
                 
         //PATCH for SUBSTEPS
         var forEach = Array.prototype.forEach,
@@ -732,6 +705,10 @@
             next = steps.indexOf( active ) + 1;
             next = next < steps.length ? steps[ next ] : steps[ 0 ];
 
+            if (!next.subSteps) {
+                setSubSteps(next);
+            }
+            clearAllSubs(next);
             return goto(next, -1);
         };
         
@@ -755,7 +732,10 @@
             prev = steps.indexOf( active ) - 1;
             prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
 
-            //prev.subSteps will be populated from the goto that lead to the current element
+            if (!prev.subSteps) {
+                setSubSteps(prev);
+            }
+            setActiveAllSubs(prev);
             return goto(prev, (prev.subSteps.length -1));
         };
          

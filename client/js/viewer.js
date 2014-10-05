@@ -28,6 +28,19 @@ $(function(){
   client = connect(host, port, sessionId, mode, token)
 });
 
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
 /** Connect back to the server with a websocket */
 function connect(host, port, session, mode, token) {
   var started = false;
@@ -41,8 +54,9 @@ function connect(host, port, session, mode, token) {
   socket.on('connect', function(evt) {
     //init presentation adapter
     try{
+      var offset = getUrlVars().offset || 0
       var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
-      require('./presentationAdapter/adapters').impressAsqFork(asi);
+      require('./presentationAdapter/adapters').impressAsqFork(asi, null, false, offset );
       var impress = require('./impress-asq')
       impress().init();
     }catch(err){

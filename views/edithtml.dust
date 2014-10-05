@@ -43,7 +43,7 @@
 
 		 	<!--- Edit menu -->
 	     <div class="row" >
-				<div class="span12"><h3>Edit HTML-Code</h3></div>
+				<div class="col-md-12"><h3>Edit HTML-Code</h3></div>
 	  			{>editSubmenu/}
 	  		</div>
 				
@@ -52,9 +52,9 @@
 				<form class="form-horizontal"  id="formeditor" method="post">	
 					<textarea name="editorvalue" id="editorvalue">&nbrsp;</textarea>
 										
-					<div id="editor" class="span12" name="editor">{html}</div>
+					<div id="editor" class="col-md-12" name="editor">{html}</div>
 				
-					<div class="span12">
+					<div class="col-md-12">
 						<br />	
 						<button id="save" class="btn btn-primary pull-right" type="button" >Save Changes</button>
 						<span class="pull-right">&nbsp; &nbsp;</span>
@@ -68,7 +68,7 @@
 			
 		</div>
 	<script src="/js/edit.js"></script>
-	<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src="//d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 	    var editor = ace.edit("editor");
 	    editor.setTheme("ace/theme/vibrant_ink");
