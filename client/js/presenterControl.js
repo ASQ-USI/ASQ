@@ -7,7 +7,7 @@ function presenterControlDOMBinder(){
 	'use strict';
 
 	var debug = require('bows')("presenterControl")
-	, io      = require('socket.io-browserify')
+	, io      = require('socket.io-client')
 	, $       = require('jquery')
 	, impress
 	, adapter;
@@ -18,7 +18,7 @@ function presenterControlDOMBinder(){
 	  , port      = parseInt($body.attr('data-asq-port'))
 	  , sessionId = $body.attr('data-asq-session-id')
 	  , mode      = $body.attr('data-asq-socket-mode')
-	  , token     = $body.attr('data-asq-token')
+	  , token     = $body.attr('data-asq-socket-token')
 	  , slidesTree = $body.attr('data-asq-slide-tree')
 
 	  connect(host, port, sessionId, mode, token, slidesTree);
@@ -28,8 +28,21 @@ function presenterControlDOMBinder(){
 
 	function connect(host, port, session, mode, token, slidesTree) {
 	  debug('Connecting to socket server');
-	  var socket = io.connect(window.location.protocol + '//' + host + ':' + port + '/ctrl?sid=' + session)
-	  //+ '&token=' + token ); TODO use token for socket auth.
+	  var socketUrl =  window.location.protocol + '//' + host + '/ctrl';
+	  var socket = io.connect(socketUrl, { 
+	  	'query': 'token=' + token+'&asq_sid=' + session 
+	  });
+
+	  //init presentation adapter
+	  try{
+	    if("undefined" !== typeof slidesTree){
+	     slidesTree = JSON.parse(slidesTree) 
+	    }
+	    var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
+	    adapter = require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, slidesTree, true);
+	  }catch(err){
+	    debug(err.toString + err.stack)
+	  }
 
 	  socket.on('connect', function(event) {
 	    // socket.emit('asq:admin', { //unused
@@ -40,19 +53,7 @@ function presenterControlDOMBinder(){
 	    // comes from the thumbnail manager
   	  document.addEventListener('thumbnailClicked', function(evt){
   			adapter.goto($(evt.detail).find('.thumb-step').attr('data-references'))
-	    })
-
-	    //init presentation adapter
-	    try{
-	      if("undefined" !== typeof slidesTree){
-	       slidesTree = JSON.parse(slidesTree) 
-	      }
-	      var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
-	      adapter = require('./presentationAdapter/adapters').impressAsqFork(asi, slidesTree, true);
-	    }catch(err){
-	      debug(err.toString + err.stack)
-	    }
-	    
+	    });	    
 
 	    $('.connected-viewers-number').text("0 viewers connected");
 

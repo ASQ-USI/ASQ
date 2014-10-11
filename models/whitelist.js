@@ -12,11 +12,11 @@ roles.presenter = 3;
 
 
 var whitelistEntrySchema = new Schema({
-	session     : { type: ObjectId, ref: 'Session', required: true },
-	user        : { type: ObjectId, ref: 'User', required: true },
-	token       : { type: String }, // Express Cookie session id
-	screenName  : { type: String, required: true },
-	role        : { type: String, default: 'viewer', enum: Object.keys(roles) }
+	session          : { type: ObjectId, ref: 'Session', required: true },
+	user             : { type: ObjectId, ref: 'User', required: true },
+	browserSessionId : { type: String }, // Express Cookie session id
+	screenName       : { type: String, required: true },
+	role             : { type: String, default: 'viewer', enum: Object.keys(roles) }
 }, { collection: 'whitelistEntries' });
 
 whitelistEntrySchema.index({ session: 1, user: 1 });

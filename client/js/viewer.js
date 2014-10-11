@@ -4,7 +4,7 @@
 
 /** Connect back to the server with a websocket */
 var debug = require('bows')("viewer")
-  , io = require('socket.io-browserify')
+  , io = require('socket.io-client')
   , $ = require('jquery')
   , manager    = require('asq-visualization').Manager()
   , microformatClient = require('asq-microformat').client;
@@ -20,7 +20,7 @@ $(function(){
     , port      = parseInt($body.attr('data-asq-port'))
     , sessionId = $body.attr('data-asq-session-id')
     , mode      = $body.attr('data-asq-socket-mode')
-    , token     = $body.attr('data-asq-token');
+    , token     = $body.attr('data-asq-socket-token');
 
   microformatClient.configureMicroformatComponents('viewer');
 
@@ -48,20 +48,23 @@ function connect(host, port, session, mode, token) {
   this.assessmentSaved = false;
   this.isAssessing = false;
   var that = this;
-  var socket = io.connect(window.location.protocol + '//' + host + ':' + port + '/folo?sid=' + session);
-    //+ '&token=' + token ); TODO use token for socket auth.
+  var socketUrl =  window.location.protocol + '//' + host + '/folo';
+  var socket = io.connect(socketUrl, { 
+    'query': 'token=' + token+'&asq_sid=' + session 
+  });
+
+  //init presentation adapter
+  try{
+    var offset = getUrlVars().offset || 0
+    var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
+     require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
+    var impress = require('./impress-asq')
+    impress().init();
+  }catch(err){
+    debug(err.toString + err.stack)
+  }
 
   socket.on('connect', function(evt) {
-    //init presentation adapter
-    try{
-      var offset = getUrlVars().offset || 0
-      var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
-      require('./presentationAdapter/adapters').impressAsqFork(asi, null, false, offset );
-      var impress = require('./impress-asq')
-      impress().init();
-    }catch(err){
-      debug(err.toString + err.stack)
-    }
 
     // console.log("connected")
     socket.emit('asq:viewer', {
@@ -79,7 +82,6 @@ function connect(host, port, session, mode, token) {
     });
 
     socket.on('disconnect', function(evt) {
-
         console.log('disconnected')
     });
 

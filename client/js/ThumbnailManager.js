@@ -1,6 +1,6 @@
 'use strict';
 var debug = require('bows')("Thumbmanager")
-var thumbGenerator =  require('./presentationAdapter/asq-impress-adapter/thumbGenerator')
+var thumbGenerator = require('./presentationAdapter/adapters').impressAsqFork.thumbGenerator;
 var ThumbManager = module.exports = function (options, $){
   this.impressEl = null;;
   this.options = options;

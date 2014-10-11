@@ -4,7 +4,7 @@ var passport     = require('passport')
 , errorTypes     = require('./errorTypes')
 , utils          = require('../lib/utils/routes');
 
-var authorizeSession = authentication.authorizeSession;
+var authorizeLiveSession = authentication.authorizeLiveSession;
 
 function forceSSL(req, res, next) {
   if (!req.secure) {
@@ -135,7 +135,7 @@ function setLiveSession(req, res, next, liveId) {
 }
 
 module.exports = {
-  authorizeSession   : authorizeSession,
+  authorizeLiveSession   : authorizeLiveSession,
   forceSSL           : forceSSL,
   isAuthenticated    : isAuthenticated,
   isExistingUser     : isExistingUser,

@@ -12,7 +12,8 @@ var cheerio    = require('cheerio')
   , nodefn     = require('when/node/function')
   , Slideshow  = db.model('Slideshow')
   , User = db.model('User', schemas.userSchema)
-  , Session = db.model('Session');
+  , Session = db.model('Session')
+  , jwt = require('jsonwebtoken');
 
 
 function editPresentation(req, res) {
@@ -69,9 +70,11 @@ function editPresentation(req, res) {
   });
 }
 
+function createSocketToken(profile){
+    return jwt.sign(profile, 'The secret about ASQ is that it is cool', { expiresInMinutes: 60*10 });
+}
+
 function livePresentation(req, res) {
-  appLogger.debug(req.query.role);
-  appLogger.debug(req.query.offset)
   appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
@@ -126,6 +129,7 @@ function livePresentation(req, res) {
     presentation        : presentation._id,
     slideTree           : JSON.stringify(presentation.slidesTree),
     id                  : req.liveSession.id,
+    token               : createSocketToken({'user': req.user, 'browserSessionId': req.sessionID}),
     date                : req.liveSession.startDate,
     presentationViewUrl : presentationViewUrl,
     presenterLiveUrl    : presenterLiveUrl

@@ -179,7 +179,7 @@ app.get('/user/stop', ensureAuthenticated, routes.slides.stop);
 
 
 /** Join the session of user */
-app.get('/live/:user/', authentication.authorizeSession, routes.slides.live);
+app.get('/live/:user/', authentication.authorizeLiveSession, routes.slides.live);
 app.get('/live/:user/*', routes.slides.liveStatic);
 
 /** Control your current session (if any) */

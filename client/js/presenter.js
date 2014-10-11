@@ -6,7 +6,7 @@
 'use strict';
 
 var debug = require('bows')("presenter")
-, io      = require('socket.io-browserify')
+, io      = require('socket.io-client')
 , $       = require('jquery')
 , manager = require('asq-visualization').Manager()
 , microformatClient = require('asq-microformat').client
@@ -20,39 +20,37 @@ $(function(){
   , port      = parseInt($body.attr('data-asq-port'))
   , sessionId = $body.attr('data-asq-session-id')
   , mode      = $body.attr('data-asq-socket-mode')
-  , token     = $body.attr('data-asq-token')
-  , slidesTree = $body.attr('data-asq-slide-tree')
+  , token     = $body.attr('data-asq-socket-token');
 
   microformatClient.configureMicroformatComponents('presenter', eventBus);
 
-  connect(host, port, sessionId, mode, token, slidesTree);
+  connect(host, port, sessionId, mode, token);
 })
 
 /** Connect back to the server with a websocket */
 
-function connect(host, port, session, mode, token, slidesTree) {
+function connect(host, port, session, mode, token) {
   debug('Connecting to socket server');
-  var socket = io.connect(window.location.protocol + '//' + host + ':' + port + '/ctrl?sid=' + session)
-  //+ '&token=' + token ); TODO use token for socket auth.
+  var socketUrl =  window.location.protocol + '//' + host + '/ctrl';
+  var socket = io.connect(socketUrl, { 
+    'query': 'token=' + token+'&asq_sid=' + session 
+  });
+
+  
+  //init presentation adapter
+  try{
+    var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
+    require('./presentationAdapter/adapters').impressAsqFork.adapter(asi);
+    var impress = require('./impress-asq')
+    impress().init();
+  }catch(err){
+    debug(err.toString + err.stack)
+  }
 
   socket.on('connect', function(event) {
     // socket.emit('asq:admin', { //unused
     //  session : session
     // });
-    
-
-    //init presentation adapter
-    try{
-      if("undefined" !== typeof slidesTree){
-       slidesTree = JSON.parse(slidesTree) 
-      }
-      var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
-      require('./presentationAdapter/adapters').impressAsqFork(asi);
-      var impress = require('./impress-asq')
-      impress().init();
-    }catch(err){
-      debug(err.toString + err.stack)
-    }
     
 
     $('.connected-viewers-number').text("0 viewers connected")
@@ -140,23 +138,23 @@ function connect(host, port, session, mode, token, slidesTree) {
    Handle impress:stepgoto event
    Send a socket event to notify which slide to go to.
    */
-  document.addEventListener("impress:stepgoto", function(event) {
-    socket.emit('asq:goto', {
-      slide : event.target.id,
-      session : session
-    });
-  });
+  // document.addEventListener("impress:stepgoto", function(event) {
+  //   socket.emit('asq:goto', {
+  //     slide : event.target.id,
+  //     session : session
+  //   });
+  // });
 
   /**
    Handle impress:stepgotosub event
    sSend a socket event to notify which slide subtest to go to.
    */
-  document.addEventListener("impress:stepgotosub", function(event) {
-    socket.emit('asq:gotosub', {
-      substepIndex : event.detail.index,
-      session : session
-    });
-  });
+  // document.addEventListener("impress:stepgotosub", function(event) {
+  //   socket.emit('asq:gotosub', {
+  //     substepIndex : event.detail.index,
+  //     session : session
+  //   });
+  // });
 
   document.addEventListener('asq:close', function(event) {
     socket.emit('asq:goto', {

@@ -21,6 +21,9 @@ module.exports = function(grunt) {
           path: "./public/js/",
           filename: "asq-presenter.js"
         },
+        node: {
+          crypto: false
+        },
         devtool: "sourcemap",
         debug: true,
         module:{
@@ -38,6 +41,9 @@ module.exports = function(grunt) {
           path: "./public/js/",
           filename: "asq-viewer.js"
         },
+        node: {
+          crypto: false
+        },
         devtool: "sourcemap",
         debug: true,
         module:{
@@ -54,6 +60,9 @@ module.exports = function(grunt) {
         output: {
           path: "./public/js/",
           filename: "asq-client.js"
+        },
+        node: {
+          crypto: false
         },
         devtool: "sourcemap",
         debug: true,
