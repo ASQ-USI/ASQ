@@ -161,7 +161,7 @@ function uploadPresentation(req, res, next) {
 
         //get slides Tree
         var adapter = require('../../../lib/presentationAdapter/adapters').impressAsqFork
-        //newSlideshow.slidesTree = adapter.getSlidesTree(file);
+        newSlideshow.slidesTree = adapter.getSlidesTree(file);
 
         function replaceAll(find, replace, str) {
           return str.replace(new RegExp(find, 'g'), replace);
