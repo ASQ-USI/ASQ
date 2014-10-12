@@ -58,6 +58,10 @@
               <!-- boiler jQuery -->
               <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="private">Private Presentation</a>
             </li>
+            <li class="divider"></li>
+            <li>
+              <a href="#" class="start" data-username="{params.username}" data-id="{_id}" data-authLevel="public" data-flow="self">Self flow</a>
+            </li>
           </ul>
         </div>
         {/live}

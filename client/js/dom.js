@@ -95,19 +95,7 @@ function psesentationsDOMBinder(){
     }
 
     //isotope
-    // var $container = $('.accordion-inner');
     var container = document.querySelector('.accordion-inner');
-    
-    // $container.isotope({
-    //   itemSelector: '.thumb-container',
-    //   filter: ':not(.removed-item)',
-    //   sortBy: 'position',
-    //   getSortData : {
-    //     position : function ( $elem ) {
-    //       return parseInt( $elem.data('sort-position'), 10 );
-    //     }
-    //   }
-    // });
 
     var iso = new Isotope(container, {
       itemSelector: '.thumb-container',
@@ -187,8 +175,7 @@ function psesentationsDOMBinder(){
     // check for a specific class instead of attaching a handler
     // directly on a .thumb-buttons .btn . The reason for this is that
     // it's easy to messup the 3d rotation click handler
-    .on('tap', '.thumb-buttons a.btn' , function(event) {
-    // $(".thumb-buttons a").click(function (event) {
+    .on('tap', '.thumb-buttons a' , function(event) {
         event.preventDefault();
         var $this = $(this);
 
@@ -197,9 +184,11 @@ function psesentationsDOMBinder(){
           var username = $this.data('username');
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
+          var flow = $this.data('flow') || 'ctrl';
+          var data = {authLevel : authLevel, flow: flow}
           var url = ['/', username, '/presentations/', presentationId, '/live'].join('');
           debug('POST ' + url);
-          $.post(url, null)
+          $.post(url, data)
           .success(function (data, textStatus, jqXHR){
             var location = jqXHR.getResponseHeader('Location');
             window.location = location;
@@ -292,52 +281,12 @@ function userLiveDOMBinder(){
     
     $('.thumb-container .flipbox').click(function (event) {
         
-        event.stopPropagation();
-        // $(".thumb").removeClass("flipped").css("z-index", "1");
-        
+        event.stopPropagation();        
         $(this).addClass("flipped");
-        // $(this).parent().css("z-index", "10");
-    });
-
-    $('.dropdown-toggle').click(function(event) {
-      event.stopPropagation();
-      $(this).parent().toggleClass("open");
-    });
-
-    
-    $(".buttons a").click(function (event) {
-        
-        var $this = $(this);
-
-        if($this.hasClass("start")){
-          event.preventDefault();
-          //start presentation
-          var username = $this.data('username');
-          var presentationId = $this.data('id');
-          var authLevel = $this.data('authlevel');
-          var url = ['/', username, '/presentations/', presentationId, '/live/?start&al=',
-            authLevel].join('');
-          debug('POST ' + url);
-          $.post(url, null)
-          .success(function (data, textStatus, jqXHR){
-            var location = jqXHR.getResponseHeader('Location');
-            window.location = location;
-            if(!window.navigator.standalone){
-              //window.open("/admin", '');
-              //slideshow.blur(); What is that?
-              //window.focus();
-            }else{
-              window.location = $this.attr("href");
-              debug(window.navigator.standalone);
-            }
-          });
-        }
-    });
-    
+    });    
     
     $(document).click(function () {
         $(".thumb-container .flipbox").removeClass("flipped");
-        // $(".thumb").parent().css("z-index", "100");
     });
   })
 }

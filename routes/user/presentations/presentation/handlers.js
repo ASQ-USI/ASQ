@@ -174,9 +174,10 @@ function startPresentation(req, res, next) {
       newSession = new Session();
       newSession.presenter = req.user._id;
       newSession.slides = slideshow._id;
-      newSession.flow = 'ctrl';
+      newSession.flow = ( Session.schema.path('flow').enumValues
+        .indexOf(req.body.flow) > -1 ) ? req.body.flow : 'ctrl';
       newSession.authLevel = ( Session.schema.path('authLevel').enumValues
-        .indexOf(req.query.al) > -1 ) ? req.query.al : 'public';
+        .indexOf(req.body.authLevel) > -1 ) ? req.body.authLevel : 'public';
       //update liveSessions of user
       var userPromise = User.findById(req.user._id).exec()
       .then(

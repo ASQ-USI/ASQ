@@ -114,6 +114,7 @@ var ldapAuthenticate = passport.authenticate('local-ldap', {
   failureFlash    : true
 });
 
+// TODO: if session is not found redirect somewhere sane
 function setLiveSession(req, res, next, liveId) {
   var Session = db.model('Session', schemas.sessionSchema);
   Session.findOne({

@@ -243,4 +243,4 @@ if (config.enableHTTPS && !config.usingReverseProxy) {
    This needs to be requierd at this point since we need the server to already
    be running.
  */
-var io = require('./lib/sockets').listen(server);
+var io = require('./lib/socket/sockets').listen(server);

@@ -124,6 +124,10 @@ function presenterControlDOMBinder(){
 	}
 
 	function updateViewersCount(event) {
+		// var clients = event.connectedClients;
+		// if (typeof clients !== 'number') { return; }
+		// var newText = clients + (clients > 1 ? 'viewers' : viewer )''
+		// $('.connected-viewers-number').text(newText)
 	  console.log('viewer count update')
 	  if (typeof event.connectedClients !== 'number') { return; }
 	  var connectedViewers = event.connectedClients;
