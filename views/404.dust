@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+		<title>Server Error · ASQ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable= no">
+
+    <style>
+  body {
+  margin: 0;
+  padding: 80px 100px;
+  font: 13px "Helvetica Neue", "Lucida Grande", "Arial";
+  background: #333;
+  color: #E9E9E9;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #FFF;
+}
+h1 em, h2 em {
+  padding: 0 5px;
+  font-weight: normal;
+}
+h1 {
+  font-size: 48px;
+}
+h2 {
+  font-size: 32px;
+  margin-top: 10px;
+  color: #686868;
+}
+h3 {
+  margin: 5px 0 10px 0;
+  padding-bottom: 5px;
+  font-size: 18px;
+}
+a {
+color: #428bca;
+text-decoration: none;
+}
+p {
+  line-height: 1.5;
+}
+#stacktrace {
+  margin-top: 15px;
+  font-family: monospace;
+}
+
+  </style>
+
+  </head>
+		
+  <body>
+    <h1>Oops! Nothing to see here</h1>
+    <h2><em>404</em> Not found</h2>
+    <h3>{msg} Jump to the <a href="/">main page</a></h3>
+  </body>
+</html>

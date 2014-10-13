@@ -167,6 +167,15 @@ app.configure('production', function(){
   app.use(errorMiddleware.errorHandler());
 });
 
+app.use(function(req, res, next){
+  res.status(404);
+  res.render('404', {'msg': 'Sorry cant find that!'});
+});
+
+app.get('/404', function(req, res, next){
+  res.render('404');
+});
+
 // app.all('*', function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
 //   res.header("Access-Control-Allow-Headers", "X-Requested-With");

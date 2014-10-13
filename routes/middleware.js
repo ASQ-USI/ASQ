@@ -23,7 +23,9 @@ function isExistingUser(req, res, next, username) {
     function onUser(user) {
       if (! user) {
         errorTypes.add('invalid_request_error');
-        return next(Error.http(404, 'User ' + username + ' does not exist!', {type:'invalid_request_error'}));
+        res.status(404);
+        return res.render('404', {'msg': 'User ' + username + ' does not exist!'});
+        //return next(Error.http(404, 'User ' + username + ' does not exist!', {type:'invalid_request_error'}));
       } else {
         req.routeOwner = user;
         next(null);
