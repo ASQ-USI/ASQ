@@ -50,7 +50,7 @@
           </div>
           <div class="col-md-5">
           	<a class="btn btn-danger btn-sm" id="stopSessionBtn" href="#"> <i class="fa fa-stop fa-lg"></i> stop</a>
-            <a href="/user/statistics/{slideshow._id}" class="btn btn-sm btn-inverse"><i class="fa fa-line-chart fa-lg"></i> statistics</a>
+            <a href="/{username}/sessions/{id}/stats" class="btn btn-sm btn-inverse"><i class="fa fa-line-chart fa-lg"></i> statistics</a>
             <a href="{presentationViewUrl}" class="btn btn-sm btn-inverse hidden-xs"><i class="fa fa-picture-o fa-lg"></i> beamer view</a>
           </div>
           <div class="col-md-2 hidden-xs">

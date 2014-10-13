@@ -487,6 +487,129 @@ h2{
   }
 }
 
+/* Session stats */ 
+.pl-head{
+  .display(flex);
+}
+
+.pl-entry{
+  .display(flex);
+  
+  &:last-child{
+    border-bottom:none;
+  }
+}
+
+.participation-list{
+  padding:0;
+}
+
+.pl-timeline-head{
+  width: 100%;
+  height: 20px;
+  .display(flex);
+}
+
+.pl-timeline-head-answers{
+  overflow: hidden;
+  margin-left: 1px;
+  position:relative;
+  background: #666;
+  border: 1px solid darken(#666, 10%);
+  height: 100%;
+  text-align: center;
+  font-style: italic;
+}
+
+.pl-timeline{
+  width: 100%;
+  height: 50px;
+  .display(flex);
+}
+
+.pl-timeline-answers{
+  overflow: hidden;
+  margin-left: 1px;
+  .border-radius(4px);
+  position:relative;
+  background: #666;
+  border: 1px solid darken(#666, 10%);
+  height: 100%;
+  
+  > .pl-start{
+    left: 1px;
+    bottom: 0px;
+  }
+  
+  > .pl-finish{
+    right: 1px;
+    bottom: 0px;
+  }
+  
+  &.pl-correct{
+    background: #5AC93E;
+    border-color: darken(#5AC93E, 10%);
+    color: darken(#5AC93E, 30%);
+    
+  }
+  
+  &.pl-wrong{
+    background: #EC6161;
+    border-color: darken(#EC6161, 10%);
+    color: darken(#EC6161, 30%);
+  }
+  &.pl-pending{
+    background: #A166C9;
+    border-color: darken(#A166C9, 10%);
+    color: darken(#A166C9, 30%);
+    
+  }
+}
+
+.pl-timestamp{
+  position:absolute;
+  font-size:10px;
+}
+
+.pl-nick{
+  width: 220px;
+  display:table;
+  height: 50px;
+}
+
+.pl-nick-head{
+  width: 220px;
+  display:table;
+  height: 20px;
+}
+
+.cp-access-leds{
+  .display(flex);
+}
+
+.pl-nick-lbl{
+  color: #fff;
+  font-size: 16px;
+  padding-bottom:2px;
+  display:table-cell;
+  vertical-align: middle;
+  background: #683ED4;
+  text-align: center;
+  border: 1px solid darken(#683ED4, 50%);
+  .border-radius(4px);
+}
+
+.pl-nick-head-lbl{
+  overflow: hidden;
+  color: #fff;
+  line-height: 1;
+  display:table-cell;
+  vertical-align: middle;
+  background: #666;
+  border: 1px solid darken(#666, 10%);
+  text-align: center;
+  font-style: italic;
+}
 
 /* ------ Style edit ----- */
 #editorImages{

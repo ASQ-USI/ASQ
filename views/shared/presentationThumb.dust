@@ -65,7 +65,7 @@
           </ul>
         </div>
         {/live}
-        <a href="/user/statistics/{_id}" class="btn btn-info"><span class="glyphicon glyphicon-signal icon-white"> </span> Show Statistics</a>
+        <a href="/{params.username}/presentations/{_id}/stats" class="btn btn-info"><span class="glyphicon glyphicon-signal icon-white"> </span> Show Statistics</a>
         <a href="/{params.username}/presentations/{_id}/edit/" class="btn btn-success"><span class="glyphicon glyphicon-pencil icon-white"> </span> Edit Presentation</a>
       </div>
       </div>

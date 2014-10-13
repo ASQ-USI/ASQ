@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {>htmlHead/}
+    <link rel="stylesheet" href="css/asq-default-theme.css">
+    <title>ASQ - Statistics of {title}</title>
+
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".question-list">
+
+    <!--   top menu -->
+    {>menu/}
+
+    <!--   Content area   -->
+    <div class="container" id="mainContainer">
+
+      <div class="row">
+        <div class="col-md-4 col-md-offset-8  hidden-xs" headline"" data-spy="affix" data-offset="0">
+          <div class="headline">
+            <h3>Session: &nbsp;
+            <select id="session" class="input-medium">
+              <option value="null">All sessions</option>
+              {#sessions}
+              <option value="{sessionId}">{time}</option>
+              {/sessions}
+            </select></h3>
+          </div>
+          <div class="question-list">
+            <div class="headline">
+              <h4>Questions</h4>
+            </div>
+            <ul class="nav nav-tabs nav-stacked">
+              {#questions}
+              <li>
+                <a href="#{questionId}">{text}</a>
+              </li>
+              {/questions}
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div class="headline">
+            <h3>Statistics of {title}</h3>
+          </div>
+          {?liveData}
+          <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">
+              &times;
+            </button>
+            <strong>Live updates activated!</strong> Statistics will update it self when new answers are submitted.
+          </div>
+          {:else}
+          <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">
+              &times;
+            </button>
+            <strong>No live updates!</strong> It seems as if no session corresponding to this statistics is running.
+          </div>
+          {/liveData}
+          
+          {#questions}
+          <div class="stats" id="{questionId}" data-target-assessment-id={questionId}>
+            <h2>{text}</h2>
+
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a href="#answersolutions-{questionId}"  data-toggle="tab">Correct Answer</a>
+              </li>
+              <li>
+                <a href="#rvsw-{questionId}" data-toggle="tab">Right vs. Wrong</a>
+              </li>
+              <li>
+                <a href="#mscstats-{questionId}" data-toggle="tab">Multiple Choice Statistics</a>
+              </li>
+              <li>
+                <a href="#diffAns-{questionId}" data-toggle="tab">Different answers</a>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+              <!--  Displays correct solution -->
+              <div class="tab-pane active" id='answersolutions-{questionId}'>
+                <p>
+                  <strong>{text}</strong>
+                </p>
+                {>"question-multi-choice-stats"/}
+                {?question.correctAnswer}
+                <p>
+                  Solution: {question.correctAnswer}
+                </p>
+                <br/>
+                {/question.correctAnswer}
+              </div>
+
+              <!-- Displays Pie-Chart Right vs. Wrong -->
+              <div class="tab-pane" id="rvsw-{questionId}">
+                <div id="rvswChart-{questionId}" class="chart rvswChart-{questionId}"></div>
+              </div>
+
+              <!-- Display multiple choice stats -->
+              <div class="tab-pane" id="mscstats-{questionId}">
+                <div id="mscstatChart-{questionId}" class="chart distinctAnswers-{questionId}" ></div>
+              </div>
+
+              <!-- Display different aswers  -->
+              <div class="tab-pane" id="diffAns-{questionId}">
+                <div id="diffAnsChart-{questionId}" class="chart distinctOptions-{questionId}"></div>
+              </div>
+            </div>
+          </div>
+          {/questions}
+
+        </div>
+      </div>
+
+    </div>
+    <!-- /container -->
+
+    <!-- Le javascript -->
+    {?liveData}
+	    <script>
+	    var mode = "controll";
+			window.onload = function() {
+				connect( "{host}" , {port} , "{liveId}");
+			}
+	    </script>
+    {/liveData}
+    <script src="/js/statistics.js"></script>
+
+  </body>
+</html>

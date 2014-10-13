@@ -269,7 +269,7 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
     statsObj.username = req.user.username;
     statsObj.host = ASQ.appHost;
     statsObj.port = app.get('port');
-    return res.render('presentationStats', statsObj);
+    return res.render('stats', statsObj);
   }catch(err){
     appLogger.error("Presentation %s not found", req.params.presentationId);
     appLogger.error(err.message, { err: err.stack });
