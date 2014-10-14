@@ -650,9 +650,10 @@ function requestStats(questionId, obj) {
 
 function onAssessment(evt) {
   // drop if the event is not about us
-  if(evt.assessee !== client.socket.id){
-    debug('Got an event that doesn\'t wasn\'t for me');
-  }
+  // if(evt.assessee !== client.socket.id){
+  //   debug('Got an event that doesn\'t wasn\'t for me');
+  //   return;
+  // }
 
   try{
     var assessment = evt;
