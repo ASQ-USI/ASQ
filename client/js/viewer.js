@@ -66,7 +66,19 @@ function connect(host, port, session, mode, token) {
     debug(err.toString + err.stack)
   }
 
-  var hammertime = new Hammer(document.body, {domEvents: true});
+  var hammertime = new Hammer(document.body, {
+    // domEvents: true,
+    preventDefault: true,
+    dragLockToAxis: true,
+    dragBlockHorizontal: true,
+    dragBlockVertical: true
+  });
+
+  //prevent touchmove
+  document.addEventListener('touchmove', function(evt){
+    evt.preventDefault();
+  })
+
   hammertime
     .on('swipeleft', function(evt) {
         console.log("SWIPELEFT", evt);
