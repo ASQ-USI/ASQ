@@ -5,7 +5,9 @@ module.exports = (function() {
     dust.register("alEntry", body_0);
 
     function body_0(chk, ctx) {
-      return chk.write("<li class=\"al-entry\" id=\"").reference(ctx._get(false, ["user", "id"]), ctx, "h").write("\"><div class=\"al-nick\"><div class=\"al-nick-lbl\">").reference(ctx._get(false, ["user", "screenName"]), ctx, "h").write("</div></div><!-- end div.cp-access-nick--><div class=\"al-timeline\">").section(ctx._get(false, ["userQuestions"]), ctx, {
+      return chk.write("<li class=\"al-entry\" id=\"").reference(ctx._get(false, ["user", "id"]), ctx, "h").write("\"><div class=\"al-nick\"><div class=\"al-nick-lbl\">").reference(ctx._get(false, ["user", "screenName"]), ctx, "h").write("</div><div class=\"al-score\">").reference(ctx._get(false, ["user", "score"]), ctx, "h").write("/").helper("size", ctx, {}, {
+        "key": ctx._get(false, ["userQuestions"])
+      }).write("</div><div class=\"al-time\">").reference(ctx._get(false, ["user", "time"]), ctx, "h").write("</div></div><!-- end div.cp-access-nick--><div class=\"al-timeline\">").section(ctx._get(false, ["userQuestions"]), ctx, {
         "block": body_1
       }, null).write("</div><!-- end div.cp-access-timeline--></li>");
     }

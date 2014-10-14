@@ -12,11 +12,12 @@
   , request = require('superagent')
   , dust = require('dust')
   , templates = require('./templates')
-  , $body, $list, socket;
+  , $body, $list, socket, total;
 
   $(function(){
     $body   = $('body');
     $list = $('#answer-list');
+    total = $('.al-timeline-head-answers').length
 
     //check if the session is live
     if($body.hasClass('live')){
@@ -97,10 +98,15 @@
       var assessment= evt;
       // Currently we support auto assessments only
       if(assessment.type !=='auto') return;
-      var selector = '.al-entry#'+ assessment.assessee;
+      var $entrySelector = $list.find('.al-entry#'+ assessment.assessee); 
+      var selector = '.al-timeline-answers[data-question-id="'+ assessment.question._id +'"]';
       var newClass = 'al-' + (assessment.score == 100 ? 'correct' : 'wrong');
-      selector += ' .al-timeline-answers[data-question-id="'+ assessment.question._id +'"]';
-      $list.find(selector).removeClass('al-pending', 'al-correct', 'al-wrong').addClass(newClass)
+      $entrySelector
+        .find(selector)
+          .removeClass('al-pending', 'al-correct', 'al-wrong')
+          .addClass(newClass);
+      var score = $entrySelector.find('.al-timeline-answers.al-correct').length;
+      $entrySelector.find('.al-score').text(score + '/' + total)
     }catch(err){
       debug(err.msg + err.stack)
     }

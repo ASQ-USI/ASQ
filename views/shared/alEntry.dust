@@ -1,6 +1,8 @@
 <li class="al-entry" id="{user.id}">
   <div class="al-nick">
     <div class="al-nick-lbl">{user.screenName}</div>
+    <div class="al-score">{user.score}/{@size key=userQuestions /}</div>
+    <div class="al-time">{user.time}</div>
   </div><!-- end div.cp-access-nick-->
 
   <div class="al-timeline">

@@ -28,7 +28,8 @@
         <div class="headline">
           <h3>Statistics for session {session.id}
           {?live}
-          <div class="live-icon" style="position: relative;top: -17px;">
+          &nbsp;
+          <div class="live-icon" style="display:inline;">
             <div class='live-text-container'>
               <div class='live-text'>live</div>
             </div>
@@ -57,9 +58,6 @@
         
         <ul class="answer-list" id="answer-list">
           <li class="al-head">
-            <div class="al-nick-head">
-              <div class="al-nick-head-lbl">Screen name</div>
-            </div><!-- end div.cp-access-nick-->
             <div class="al-timeline-head">
               {#questions}
               <div class="al-timeline-head-answers" style="width:{questionWidth}%;"> #{@idx}{.}{/idx}

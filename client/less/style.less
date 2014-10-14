@@ -15,6 +15,7 @@ body{
 }
 
 /* Live icon */
+.keyframes(~'live-anim, from { transform: rotateY(0deg) } to { transform: rotateY(360deg)}');
 
 .live-icon{
   position: relative;
@@ -23,20 +24,21 @@ body{
     top: 0px;
     left: 0px;
     z-index: 2;
-    .perspective(40px);
+    .perspective(100px);
     .transform-style(preserve-3d);
-    .perspective-origin(50% 40%);
+    // .perspective-origin(50% 40%);
 
     >.live-text {
-      padding: 2px 1px 1px 1px;
+      padding: 2px 1px 2px 1px;
       text-transform: uppercase;
-      font-size: 12px;
+      font-size: 24px;
       font-weight: bold;
-      line-height: 10px;
-      letter-spacing: 0.1pt;
+      line-height: 20px;
+      letter-spacing: 1pt;
       color: #d9534f;
-      border: 2px solid #d9534f;
-      .rotateY(20deg);
+      border: 4px solid #d9534f;
+      // .rotateY(20deg);
+      .animation(live-anim 4.0s linear infinite);
       -webkit-font-smoothing: antialiased;
     }
   }
@@ -530,7 +532,7 @@ h2{
 .keyframes(~'new-row-or-col, 0% { opacity: 0.2; } 100% { opacity: 1;}');
 
 .al-entry{
-  .display(flex);
+  list-style: none;
 
   &.new { 
     .animation(new-row-or-col 0.5s ease-out infinite alternate);
@@ -618,9 +620,9 @@ h2{
 }
 
 .al-nick{
-  width: 220px;
-  display:table;
-  height: 50px;
+  width: 100%;
+  height: 80px;
+  .display(flex);
 }
 
 .al-nick-head{
@@ -633,17 +635,27 @@ h2{
   .display(flex);
 }
 
-.al-nick-lbl{
+.al-nick-lbl, .al-score, .al-time{
   color: #fff;
-  font-size: 16px;
+  font-size: 52px;
   padding-bottom:2px;
-  display:table-cell;
+  .flex(1);
   vertical-align: middle;
-  background: #683ED4;
+  background: #7B5AD1;
   text-align: center;
-  border: 1px solid darken(#683ED4, 50%);
+  border: 1px solid darken(#7B5AD1, 50%);
+  height: 100%;
   .border-radius(4px);
 }
+
+.al-nick-lbl{
+  .flex(3);
+}
+
+.al-score{
+  background: none;
+}
+
 
 .al-nick-head-lbl{
   overflow: hidden;
