@@ -82,10 +82,10 @@ function connect(host, port, session, mode, token) {
   hammertime
     .on('swipeleft', function(evt) {
         console.log("SWIPELEFT", evt);
-        impress().prev();
+        impress().next();
     }).on('swiperight', function(evt) {
         console.log("SWIPERIGHT", evt);
-        impress().next();
+        impress().prev();
     });
 
   socket.on('connect', function(evt) {
