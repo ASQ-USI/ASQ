@@ -253,7 +253,7 @@ function connect(host, port, session, mode, token) {
     disableExercise($exercise);
 
     // fadeout questions and insert wait msg
-    $exercise.fadeTo(200, 0.3);
+    //$exercise.fadeTo(200, 0.3);
     $('<span class="asq-submit-label"><span class="label label-default">\
         <i class="asq-spinner glyphicon glyphicon-refresh">\
         </i> Submitting your answer...</span></span>')
@@ -518,7 +518,7 @@ function handleSubmittedAnswer(evt) {
         '<i class="glyphicon glyphicon-ok"></i>',
         ' Answer submitted successfully.</span></span>'
         ].join(''))
-        .insertAfter($exercise).fadeIn(200);
+       // .insertAfter($exercise).fadeIn(200);
      }, 210);
     }
     if (evt.resubmit && $exercise.siblings('.asq-resubmit-btn').length === 0) {
@@ -623,15 +623,33 @@ function onAssessment(evt) {
     var assessment = evt;
     var question = assessment.question;
     var options = question.questionOptions;
-    $('.asq-question[data-question-id="' + evt.question._id+'"]')
-      .find('.asq-option').each(function(){
-        var input = $(this).find('input')[0];
-        var index = input.value;
-        var className = (question.questionOptions[index].correct == input.checked) 
-          ? "asq-correct"
-          : "asq-wrong"
-        $(this).addClass(className)
-      })
+    if(assessment.score == 100){
+       $('.asq-question[data-question-id="' + evt.question._id+'"]')
+        .closest('.step').addClass("asq-correct-light");
+      $('.asq-question[data-question-id="' + evt.question._id+'"]')
+        .find('.asq-option').each(function(){
+          var input = $(this).find('input')[0];
+          var index = input.value;
+          if(question.questionOptions[index].correct){
+             $(this).addClass("asq-correct")
+          }
+        });
+    }else{
+      $('.asq-question[data-question-id="' + evt.question._id+'"]')
+        .closest('.step').addClass("asq-wrong-light");
+      $('.asq-question[data-question-id="' + evt.question._id+'"]')
+        .find('.asq-option').each(function(){
+          var input = $(this).find('input')[0];
+          var index = input.value;
+          if(input.checked && !question.questionOptions[index].correct){
+             $(this).addClass("asq-wrong")
+          }
+          if(question.questionOptions[index].correct){
+             $(this).addClass("asq-correct")
+          }
+        });
+    }
+   
   }catch(err){
     debug(err.message + ' ' + err.stack);
   }
