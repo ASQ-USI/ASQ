@@ -26,8 +26,18 @@
 
       <div class="row" style="margin: 0 40px;">
         <div class="headline">
-          <h3>Statistics for session {session.id}</h3>
-          <p><em class="muted">started on</em> {session.startDate} {?session.endDate}<em class="muted">ended on</em> {session.endDate}{/session.endDate}  </p>
+          <h3>Statistics for session {session.id}
+          {?live}
+          <div class="live-icon" style="position: relative;top: -17px;">
+            <div class='live-text-container'>
+              <div class='live-text'>live</div>
+            </div>
+          </div>
+          {/live}
+          </h3>
+          <span>
+            <em class="muted">started on</em> {session.startDate} {?session.endDate}<em class="muted">ended on</em> {session.endDate}{/session.endDate}
+          </span>
         </div>
         {?live}
         <div class="alert alert-success">

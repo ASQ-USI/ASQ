@@ -7,7 +7,8 @@ var debug = require('bows')("viewer")
   , io = require('socket.io-client')
   , $ = require('jquery')
   , manager    = require('asq-visualization').Manager()
-  , microformatClient = require('asq-microformat').client;
+  , microformatClient = require('asq-microformat').client
+  , $body;
 
 
 // Save current question id;
@@ -15,8 +16,8 @@ var questionId = null, socket, session;
 var client = null;
 
 $(function(){
-  var $body     = $('body')
-    , host      =  $body.attr('data-asq-host')
+  $body         = $('body');
+  var host      =  $body.attr('data-asq-host')
     , port      = parseInt($body.attr('data-asq-port'))
     , sessionId = $body.attr('data-asq-session-id')
     , mode      = $body.attr('data-asq-socket-mode')
@@ -49,7 +50,7 @@ function connect(host, port, session, mode, token) {
   this.isAssessing = false;
   var that = this;
   var socketUrl =  window.location.protocol + '//' + host + '/folo';
-  var socket = io.connect(socketUrl, { 
+  var socket = this.socket = io.connect(socketUrl, { 
     'query': 'token=' + token+'&asq_sid=' + session 
   });
 
@@ -116,6 +117,11 @@ function connect(host, port, session, mode, token) {
         handleSubmittedAssessment(evt);
       }
     });
+
+    /**
+    * Received assessment for self
+    */
+    socket.on('asq:assessment', onAssessment);
 
     socket.on('asq:assess', function assess(evt) {
       console.log('Got assessment')
@@ -604,5 +610,29 @@ function requestStats(questionId, obj) {
       obj.data[questionId] = google.visualization.arrayToDataTable(data);
       obj.chart[questionId].draw(obj.data[questionId], obj.options);
     });
+  }
+}
+
+function onAssessment(evt) {
+  // drop if the event is not about us
+  if(evt.assessee !== client.socket.id){
+    debug('Got an event that doesn\'t wasn\'t for me');
+  }
+
+  try{
+    var assessment = evt;
+    var question = assessment.question;
+    var options = question.questionOptions;
+    $('.asq-question[data-question-id="' + evt.question._id+'"]')
+      .find('.asq-option').each(function(){
+        var input = $(this).find('input')[0];
+        var index = input.value;
+        var className = (question.questionOptions[index].correct == input.checked) 
+          ? "asq-correct"
+          : "asq-wrong"
+        $(this).addClass(className)
+      })
+  }catch(err){
+    debug(err.message + ' ' + err.stack);
   }
 }

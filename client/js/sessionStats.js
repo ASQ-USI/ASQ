@@ -99,7 +99,7 @@
       if(assessment.type !=='auto') return;
       var selector = '.al-entry#'+ assessment.assessee;
       var newClass = 'al-' + (assessment.score == 100 ? 'correct' : 'wrong');
-      selector += ' .al-timeline-answers[data-question-id="'+ assessment.question +'"]';
+      selector += ' .al-timeline-answers[data-question-id="'+ assessment.question._id +'"]';
       $list.find(selector).removeClass('al-pending', 'al-correct', 'al-wrong').addClass(newClass)
     }catch(err){
       debug(err.msg + err.stack)

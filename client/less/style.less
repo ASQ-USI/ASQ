@@ -14,6 +14,35 @@ body{
   color: #888;
 }
 
+/* Live icon */
+
+.live-icon{
+  position: relative;
+  >.live-text-container {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+    .perspective(40px);
+    .transform-style(preserve-3d);
+    .perspective-origin(50% 40%);
+
+    >.live-text {
+      padding: 2px 1px 1px 1px;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 10px;
+      letter-spacing: 0.1pt;
+      color: #d9534f;
+      border: 2px solid #d9534f;
+      .rotateY(20deg);
+      -webkit-font-smoothing: antialiased;
+    }
+  }
+}
+
+
 
 #mainContainer{
 
