@@ -112,7 +112,7 @@ registeredUserSchema.pre('save', function(next) {
 
 // Temporary user with public sessions
 var guestUserSchema = baseUserSchema.extend({
-  token : { type: String }, //Express cookie (for now...)
+  browserSessionId : { type: String }, //Express cookie (for now...)
   createdAt: {type: Date, default: Date.now, expires: 2592000000 } //TTL of 30 days for guest users
 });
 
