@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     {>htmlHead/}
-    <link rel="stylesheet" href="css/asq-default-theme.css">
     <title>ASQ - Statistics of {title}</title>
 
     <!--Load the AJAX API-->
@@ -10,7 +9,14 @@
     <script src="/socket.io/socket.io.js"></script>
   </head>
 
-  <body>
+
+  <body data-asq-host="{host}" data-view-name="sessionStats"
+    data-asq-session-id="{session.id}"
+    {?live}
+      class='live'
+      data-asq-port="{port}" data-asq-socket-mode="{mode}" data-asq-socket-token="{token}" 
+    {/live}
+   >
 
     <!--   top menu -->
     {>menu/}
@@ -20,10 +26,10 @@
 
       <div class="row" style="margin: 0 40px;">
         <div class="headline">
-          <h3>Statistics for session {sessionId}</h3>
-          <p>started: </p>
+          <h3>Statistics for session {session.id}</h3>
+          <p><em class="muted">started on</em> {session.startDate} {?session.endDate}<em class="muted">ended on</em> {session.endDate}{/session.endDate}  </p>
         </div>
-        {?liveData}
+        {?live}
         <div class="alert alert-success">
           <button type="button" class="close" data-dismiss="alert">
             &times;
@@ -37,75 +43,27 @@
           </button>
           <strong>No live updates!</strong> It seems as if no session corresponding to this statistics is running.
         </div>
-        {/liveData}
+        {/live}
         
-        <h4>Participation list:</h4>
-        <ul class="participation-list">
-          <li class="pl-head">
-            <div class="pl-nick-head">
-              <div class="pl-nick-head-lbl">Screen name</div>
+        <ul class="answer-list" id="answer-list">
+          <li class="al-head">
+            <div class="al-nick-head">
+              <div class="al-nick-head-lbl">Screen name</div>
             </div><!-- end div.cp-access-nick-->
-            <div class="pl-timeline-head">
+            <div class="al-timeline-head">
               {#questions}
-              <div class="pl-timeline-head-answers" style="width:{questionWidth}%;"> #{@idx}{.}{/idx}
+              <div class="al-timeline-head-answers" style="width:{questionWidth}%;"> #{@idx}{.}{/idx}
               </div>
               {/questions}
             </div>
           </li>
           {#users}
-              <li class="pl-entry">
-                <div class="pl-nick">
-                  <div class="pl-nick-lbl">{user.screenName}</div>
-                </div><!-- end div.cp-access-nick-->
-
-                <div class="pl-timeline">
-                  {#userQuestions}
-                  <div class="pl-timeline-answers pl-{answered}" style="width:{questionWidth}%;">
-                    <div class="pl-timestamp pl-start">0s</div>
-                    <div class="pl-timestamp pl-finish">3m5s</div>
-                  </div>
-                  {/userQuestions}
-                  <!-- <div class="pl-timeline-answers pl-correct" style="width:20%;">
-                    <div class="pl-timestamp pl-start">0s</div>
-                    <div class="pl-timestamp pl-finish">3m5s</div>
-                  </div>
-                  <div class="pl-timeline-answers pl-wrong" style="width:20%;">
-                    <div class="pl-timestamp pl-start">3m6s</div>
-                    <div class="pl-timestamp pl-finish">7m51s</div>
-                  </div>
-                  <div class="pl-timeline-answers pl-pending" style="width:20%;">
-                    <div class="pl-timestamp pl-start">7m52s</div>
-                    <div class="pl-timestamp pl-finish">9m8s</div>
-                  </div>
-                  <div class="pl-timeline-answers pl-pending" style="width:20%;">
-                    <div class="pl-timestamp pl-start">9m10s</div>
-                    <div class="pl-timestamp pl-finish">11m42s</div>
-                  </div>
-                  <div class="pl-timeline-answers pl-pending active" style="width:20%;">
-                    <div class="pl-timestamp pl-start">9m10s</div>
-                  </div> -->
-                </div><!-- end div.cp-access-timeline-->
-              </li>
-              {/users}
-            </ul>
-        
-        
-
+            {>"shared/alEntry"/}
+          {/users}
+        </ul>
       </div>
 
     </div>
     <!-- /container -->
-
-    <!-- Le javascript -->
-    {?liveData}
-	    <script>
-	    var mode = "controll";
-			window.onload = function() {
-				connect( "{host}" , {port} , "{liveId}");
-			}
-	    </script>
-    {/liveData}
-    <script src="/js/statistics.js"></script>
-
   </body>
 </html>

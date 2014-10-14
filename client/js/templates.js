@@ -1,5 +1,20 @@
 module.exports = (function() {
   var dust = require("dust");
+  // ../views/shared/alEntry.dust
+  (function() {
+    dust.register("alEntry", body_0);
+
+    function body_0(chk, ctx) {
+      return chk.write("<li class=\"al-entry\" id=\"").reference(ctx._get(false, ["user", "id"]), ctx, "h").write("\"><div class=\"al-nick\"><div class=\"al-nick-lbl\">").reference(ctx._get(false, ["user", "screenName"]), ctx, "h").write("</div></div><!-- end div.cp-access-nick--><div class=\"al-timeline\">").section(ctx._get(false, ["userQuestions"]), ctx, {
+        "block": body_1
+      }, null).write("</div><!-- end div.cp-access-timeline--></li>");
+    }
+
+    function body_1(chk, ctx) {
+      return chk.write("<div class=\"al-timeline-answers al-").reference(ctx._get(false, ["answered"]), ctx, "h").write("\" data-question-id='").reference(ctx._get(false, ["id"]), ctx, "h").write("' style=\"width:").reference(ctx._get(false, ["questionWidth"]), ctx, "h").write("%;\"><div class=\"al-timestamp al-start\">0s</div><div class=\"al-timestamp al-finish\">3m5s</div></div>");
+    }
+    return body_0;
+  })();
   // ../views/shared/alert.dust
   (function() {
     dust.register("alert", body_0);

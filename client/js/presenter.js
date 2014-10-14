@@ -96,10 +96,6 @@ function connect(host, port, session, mode, token) {
       }
     });
 
-    socket.on('asq:gotosub', function(event) {
-      impress().gotoSub(event.substepIndex);
-    });
-
     socket.on('asq:question', function(event) {
       window.alert("Question");
       showQuestion(event.question);
@@ -133,28 +129,6 @@ function connect(host, port, session, mode, token) {
       $('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 100px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.</p><p style="text-align: center;"><a href="/user">Return to presentations.</a></p></div>');
     });
   });
-
-  /**
-   Handle impress:stepgoto event
-   Send a socket event to notify which slide to go to.
-   */
-  // document.addEventListener("impress:stepgoto", function(event) {
-  //   socket.emit('asq:goto', {
-  //     slide : event.target.id,
-  //     session : session
-  //   });
-  // });
-
-  /**
-   Handle impress:stepgotosub event
-   sSend a socket event to notify which slide subtest to go to.
-   */
-  // document.addEventListener("impress:stepgotosub", function(event) {
-  //   socket.emit('asq:gotosub', {
-  //     substepIndex : event.detail.index,
-  //     session : session
-  //   });
-  // });
 
   document.addEventListener('asq:close', function(event) {
     socket.emit('asq:goto', {

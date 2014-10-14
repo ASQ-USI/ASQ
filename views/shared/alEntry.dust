@@ -1,0 +1,14 @@
+<li class="al-entry" id="{user.id}">
+  <div class="al-nick">
+    <div class="al-nick-lbl">{user.screenName}</div>
+  </div><!-- end div.cp-access-nick-->
+
+  <div class="al-timeline">
+    {#userQuestions}
+    <div class="al-timeline-answers al-{answered}" data-question-id='{id}' style="width:{questionWidth}%;">
+      <div class="al-timestamp al-start">0s</div>
+      <div class="al-timestamp al-finish">3m5s</div>
+    </div>
+    {/userQuestions}
+  </div><!-- end div.cp-access-timeline-->
+</li>

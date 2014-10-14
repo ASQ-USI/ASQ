@@ -8,6 +8,12 @@ body{
     background-color: #333;
 }
 
+/* Typography  */
+
+.muted{
+  color: #888;
+}
+
 
 #mainContainer{
 
@@ -433,7 +439,7 @@ body.no-touch .thumb-info:hover , .thumb-info.title{
     line-height: 1;
   }
   .lead{
-    color: #686868
+    color: #686868;
   }
 }
 @media screen and (min-width: 768px){
@@ -488,29 +494,35 @@ h2{
 }
 
 /* Session stats */ 
-.pl-head{
+.al-head{
   .display(flex);
 }
 
-.pl-entry{
+.keyframes(~'new-row-or-col, 0% { opacity: 0.2; } 100% { opacity: 1;}');
+
+.al-entry{
   .display(flex);
+
+  &.new { 
+    .animation(new-row-or-col 0.5s ease-out infinite alternate);
+  }
   
   &:last-child{
     border-bottom:none;
   }
 }
 
-.participation-list{
+.answer-list{
   padding:0;
 }
 
-.pl-timeline-head{
+.al-timeline-head{
   width: 100%;
   height: 20px;
   .display(flex);
 }
 
-.pl-timeline-head-answers{
+.al-timeline-head-answers{
   overflow: hidden;
   margin-left: 1px;
   position:relative;
@@ -521,13 +533,13 @@ h2{
   font-style: italic;
 }
 
-.pl-timeline{
+.al-timeline{
   width: 100%;
   height: 50px;
   .display(flex);
 }
 
-.pl-timeline-answers{
+.al-timeline-answers{
   overflow: hidden;
   margin-left: 1px;
   .border-radius(4px);
@@ -536,29 +548,29 @@ h2{
   border: 1px solid darken(#666, 10%);
   height: 100%;
   
-  > .pl-start{
+  > .al-start{
     left: 1px;
     bottom: 0px;
   }
   
-  > .pl-finish{
+  > .al-finish{
     right: 1px;
     bottom: 0px;
   }
   
-  &.pl-correct{
+  &.al-correct{
     background: #5AC93E;
     border-color: darken(#5AC93E, 10%);
     color: darken(#5AC93E, 30%);
     
   }
   
-  &.pl-wrong{
+  &.al-wrong{
     background: #EC6161;
     border-color: darken(#EC6161, 10%);
     color: darken(#EC6161, 30%);
   }
-  &.pl-pending{
+  &.al-pending{
     background: #A166C9;
     border-color: darken(#A166C9, 10%);
     color: darken(#A166C9, 30%);
@@ -566,18 +578,18 @@ h2{
   }
 }
 
-.pl-timestamp{
+.al-timestamp{
   position:absolute;
   font-size:10px;
 }
 
-.pl-nick{
+.al-nick{
   width: 220px;
   display:table;
   height: 50px;
 }
 
-.pl-nick-head{
+.al-nick-head{
   width: 220px;
   display:table;
   height: 20px;
@@ -587,7 +599,7 @@ h2{
   .display(flex);
 }
 
-.pl-nick-lbl{
+.al-nick-lbl{
   color: #fff;
   font-size: 16px;
   padding-bottom:2px;
@@ -599,7 +611,7 @@ h2{
   .border-radius(4px);
 }
 
-.pl-nick-head-lbl{
+.al-nick-head-lbl{
   overflow: hidden;
   color: #fff;
   line-height: 1;

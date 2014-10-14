@@ -2,20 +2,20 @@
     @fileoverview user/presentations/presentation/handlers.js
     @description Handlers for a presentation resource
 */
-var cheerio    = require('cheerio')
-  , pfs        = require('promised-io/fs')
-  , lib        = require('../../../../lib')
-  , appLogger  = lib.logger.appLogger
-  , presUtils  = lib.utils.presentation
-  , config     = require('../../../../config')
-  , when       = require('when')
-  , gen        = require('when/generator')
-  , nodefn     = require('when/node/function')
-  , Slideshow  = db.model('Slideshow')
-  , User = db.model('User', schemas.userSchema)
-  , Session = db.model('Session')
-  , jwt = require('jsonwebtoken')
-  , stats = require('../../../../lib/stats/stats');
+var cheerio     = require('cheerio')
+  , pfs         = require('promised-io/fs')
+  , lib         = require('../../../../lib')
+  , sockAuth    = require('../../../../lib/socket/authentication')
+  , appLogger   = lib.logger.appLogger
+  , presUtils   = lib.utils.presentation
+  , config      = require('../../../../config')
+  , when        = require('when')
+  , gen         = require('when/generator')
+  , nodefn      = require('when/node/function')
+  , Slideshow   = db.model('Slideshow')
+  , User        = db.model('User', schemas.userSchema)
+  , Session     = db.model('Session')
+  , stats       = require('../../../../lib/stats/stats');
 
 
 function editPresentation(req, res) {
@@ -72,10 +72,6 @@ function editPresentation(req, res) {
   });
 }
 
-function createSocketToken(profile){
-    return jwt.sign(profile, 'The secret about ASQ is that it is cool', { expiresInMinutes: 60*10 });
-}
-
 function livePresentation(req, res) {
   appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
@@ -115,11 +111,16 @@ function livePresentation(req, res) {
           mode: 'ctrl',
         };
       }
+       presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                            + presentation._id + '/live/' + req.liveSession.id
+                            + '/?role=' + role + '&view=presentation';
       return {
           template: presentation.viewerFile,
           mode: 'folo',
         };
   })(role, view, presentation);
+
+  var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
 
   appLogger.debug('Selected template: ' + renderOpts.template);
   res.render(renderOpts.template, {
@@ -131,7 +132,7 @@ function livePresentation(req, res) {
     presentation        : presentation._id,
     slideTree           : JSON.stringify(presentation.slidesTree),
     id                  : req.liveSession.id,
-    token               : createSocketToken({'user': req.user, 'browserSessionId': req.sessionID}),
+    token               : token,
     date                : req.liveSession.startDate,
     presentationViewUrl : presentationViewUrl,
     presenterLiveUrl    : presenterLiveUrl

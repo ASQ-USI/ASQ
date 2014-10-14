@@ -2,9 +2,9 @@
  @fileoverview Socket code for the presentercontrol client.
  *
  */
+'use strict';
 
-function presenterControlDOMBinder(){
-	'use strict';
+module.exports = function presenterControl(){
 
 	var debug = require('bows')("presenterControl")
 	, io      = require('socket.io-client')
@@ -82,10 +82,6 @@ function presenterControlDOMBinder(){
 	        var next = $('#' + evt.slide).next().attr('id');
 	        $('#nextSlideFrame').attr('src', '/slidesRender/' + slidesId + '/#/' + next);
 	      }
-	    });
-
-	    socket.on('asq:gotosub', function(event) {
-	      impress().gotoSub(event.substepIndex);
 	    });
 
 	  });
@@ -286,8 +282,4 @@ function presenterControlDOMBinder(){
 	$('#resetClock').click(function() {
 		sessionStart = new Date();
 	});
-}
-
-var presenterControl = module.exports = {
-	presenterControlDOMBinder : presenterControlDOMBinder
 }

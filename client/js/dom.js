@@ -11,7 +11,8 @@ var debug = require('bows')("dom")
   , dust = require('dust')
   , templates = require('./templates')
   , form = require('./form.js')
-  , presenterControlDOMBinder = require('./presenterControl.js').presenterControlDOMBinder;
+  , presenterControl = require('./presenterControl.js')
+  , sessionStats = require('./sessionStats.js');
 
 var binders = Object.create(null);
 binders['completeRegistration'] = completeRegistrationDOMBinder,
@@ -21,7 +22,11 @@ binders['signup'] =  signupDOMBinder,
 binders['presentations']    =  psesentationsDOMBinder,
 binders['presenterControl'] =  function(){
   menuDOMBinder();
-  presenterControlDOMBinder();
+  presenterControl();
+},
+binders['sessionStats'] =  function(){
+  menuDOMBinder();
+  sessionStats();
 },
 binders['userLive'] =  userLiveDOMBinder
 

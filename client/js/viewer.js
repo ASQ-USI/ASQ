@@ -101,16 +101,6 @@ function connect(host, port, session, mode, token) {
           });
         });
       }
-      //impress().goto(evt.slide);
-    });
-
-    /**
-     Handle socket event 'goto'
-     Uses impress.js API to go to the specified slide in the event.
-     */
-    socket.on('asq:gotosub', function(evt) {
-
-      impress().gotoSub(evt.substepIndex);
     });
 
     /**

@@ -1,14 +1,16 @@
 require('when/monitor/console');
 
-var _        = require('lodash')
-, gen        = require('when/generator')
-, errorTypes = require('../../errorTypes')
-, lib        = require('../../../lib')
-, appLogger  = lib.logger.appLogger
-, stats      = require('../../../lib/stats/stats')
-, Rubric     = db.model('Rubric')
-, Session    = db.model('Session')
-, User       = db.model('User');
+var _         = require('lodash')
+, gen         = require('when/generator')
+, moment      = require('moment')
+, errorTypes  = require('../../errorTypes')
+, lib         = require('../../../lib')
+, sockAuth    = require('../../../lib/socket/authentication')
+, appLogger   = lib.logger.appLogger
+, stats       = require('../../../lib/stats/stats')
+, Rubric      = db.model('Rubric')
+, Session     = db.model('Session')
+, User        = db.model('User');
 
 
 
@@ -26,14 +28,24 @@ exports.getSessionStats = gen.lift(function *getSessionStatsGen(req, res, next) 
 
   try{
     var statsObj = yield stats.getSessionStats(session);
-    // statsObj.session = {
-    //   start: session.start
-    // }
-    statsObj.sessionId = req.params.sessionId;
+    var endDate = session.endDate 
+      ? moment(session.endDate).format('MMMM Do YYYY, h:mm:ss a')
+      : undefined;
+    statsObj.session = {
+      id : session._id.toString(),
+      startDate:  moment(session.startDate).format('MMMM Do YYYY, h:mm:ss a'),
+      endDate : endDate
+    };
     statsObj.username = req.user.username;
-    statsObj.questionWidth = (100/statsObj.questions.length)
-    statsObj.host = ASQ.appHost;
-    statsObj.port = app.get('port');
+    statsObj.questionWidth = (100/statsObj.questions.length);
+    if(session.endData === null || session.endData === undefined){
+      var token = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID})
+      statsObj.host = ASQ.appHost;
+      statsObj.port = app.get('port');
+      statsObj.live = true;
+      statsObj.mode = 'ctrl';
+      statsObj.token = token;
+    }
     return res.render('sessionStats', statsObj);
   }catch(err){
     appLogger.error("Session %s not found", req.params.sessionId);
