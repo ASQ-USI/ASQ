@@ -59,7 +59,7 @@ function connect(host, port, session, mode, token) {
     //init presentation adapter
     try{
       var offset = getUrlVars().offset || 0
-      var bounce = (that.sessionType == 'self') //used so that goto events are fast on self mode
+      var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
       var asi = require('./presentationAdapter/adapterSocketInterface')(socket, bounce);
       require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
       var impress = require('./impress-asq')
@@ -100,10 +100,10 @@ function connect(host, port, session, mode, token) {
     });
     $('.asq-welcome-screen h4').text("You are connected to the presentation.");
 
-    socket.on('asq:sessionType', function(evt) {
+    socket.on('asq:sessionFlow', function(evt) {
       if (!impressInited) {
         console.log('impressInited');
-        that.sessionType = evt.sessionType
+        that.sessionFlow = evt.sessionFlow
         initImpress();
         impressInited = true;
       }

@@ -48,7 +48,7 @@ module.exports = function(asqSocket, bounce){
 
   var bounceGoto = function(data){
     debug("Bouncing goto data:", data);
-    onGoto({data : data });
+    onGotoReceived({data : data });
     debug("Data was bounced:");
   }
 
