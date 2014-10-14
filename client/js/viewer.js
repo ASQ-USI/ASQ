@@ -6,6 +6,7 @@
 var debug = require('bows')("viewer")
   , io = require('socket.io-client')
   , $ = require('jquery')
+  , Hammer = require('hammerjs')
   , manager    = require('asq-visualization').Manager()
   , microformatClient = require('asq-microformat').client
   , $body;
@@ -64,6 +65,16 @@ function connect(host, port, session, mode, token) {
   }catch(err){
     debug(err.toString + err.stack)
   }
+
+  var hammertime = new Hammer(document.body, {domEvents: true});
+  hammertime
+    .on('swipeleft', function(evt) {
+        console.log("SWIPELEFT", evt);
+        impress().prev();
+    }).on('swiperight', function(evt) {
+        console.log("SWIPERIGHT", evt);
+        impress().next();
+    });
 
   socket.on('connect', function(evt) {
 
