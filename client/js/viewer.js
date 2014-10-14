@@ -45,7 +45,7 @@ function getUrlVars()
 
 /** Connect back to the server with a websocket */
 function connect(host, port, session, mode, token) {
-  var started = false;
+  var impressInited = false;
   this.answerSaved = false;
   this.assessmentSaved = false;
   this.isAssessing = false;
@@ -55,38 +55,41 @@ function connect(host, port, session, mode, token) {
     'query': 'token=' + token+'&asq_sid=' + session 
   });
 
-  //init presentation adapter
-  try{
-    var offset = getUrlVars().offset || 0
-    var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
-     require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
-    var impress = require('./impress-asq')
-    impress().init();
-  }catch(err){
-    debug(err.toString + err.stack)
-  }
+  var initImpress = function(){
+    //init presentation adapter
+    try{
+      var offset = getUrlVars().offset || 0
+      var bounce = (that.sessionType == 'self') //used so that goto events are fast on self mode
+      var asi = require('./presentationAdapter/adapterSocketInterface')(socket, bounce);
+      require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
+      var impress = require('./impress-asq')
+      impress().init();
+    }catch(err){
+      debug(err.toString + err.stack)
+    }
 
-  var hammertime = new Hammer(document.body, {
-    // domEvents: true,
-    preventDefault: true,
-    dragLockToAxis: true,
-    dragBlockHorizontal: true,
-    dragBlockVertical: true
-  });
-
-  //prevent touchmove
-  document.addEventListener('touchmove', function(evt){
-    evt.preventDefault();
-  })
-
-  hammertime
-    .on('swipeleft', function(evt) {
-        console.log("SWIPELEFT", evt);
-        impress().next();
-    }).on('swiperight', function(evt) {
-        console.log("SWIPERIGHT", evt);
-        impress().prev();
+    var hammertime = new Hammer(document.body, {
+      // domEvents: true,
+      preventDefault: true,
+      dragLockToAxis: true,
+      dragBlockHorizontal: true,
+      dragBlockVertical: true
     });
+
+    //prevent touchmove
+    document.addEventListener('touchmove', function(evt){
+      evt.preventDefault();
+    })
+
+    hammertime
+      .on('swipeleft', function(evt) {
+          console.log("SWIPELEFT", evt);
+          impress().next();
+      }).on('swiperight', function(evt) {
+          console.log("SWIPERIGHT", evt);
+          impress().prev();
+      });
+  }
 
   socket.on('connect', function(evt) {
 
@@ -97,13 +100,22 @@ function connect(host, port, session, mode, token) {
     });
     $('.asq-welcome-screen h4').text("You are connected to the presentation.");
 
-    socket.on('asq:start', function(evt) {
-      if (!started) {
-        console.log('started');
-        // $('#welcomeScreen').modal('hide');
-        started = true;
+    socket.on('asq:sessionType', function(evt) {
+      if (!impressInited) {
+        console.log('impressInited');
+        that.sessionType = evt.sessionType
+        initImpress();
+        impressInited = true;
       }
     });
+
+    // socket.on('asq:start', function(evt) {
+    //   if (!started) {
+    //     console.log('started');
+    //     // $('#welcomeScreen').modal('hide');
+    //     started = true;
+    //   }
+    // });
 
     socket.on('disconnect', function(evt) {
         console.log('disconnected')

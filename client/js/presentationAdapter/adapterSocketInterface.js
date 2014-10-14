@@ -10,21 +10,26 @@
 * @param {Object} asqSocket the client side asq socket
 */
 
-module.exports = function(asqSocket){
+module.exports = function(asqSocket, bounce){
+  bounce = bounce || false
   var debug = require('bows')("adapterSocketInterface")
   var cbs = [];
 
-  asqSocket.on("asq:goto", function onSocketGoto(event){
-    debug("Reveived goto event:", event);
+  asqSocket.on("asq:goto", function onSocketGoto(evt){
+    debug("Reveived goto event:", evt);
+    onGotoReceived(evt);
+  });
+
+  var onGotoReceived = function(evt){
     for(var i=0, l=cbs.length; i<l; i++){
       //don't let one bad function affect the rest of them
       try{
-        cbs[i].call(null, event.data);
+        cbs[i].call(null, evt.data);
       }catch(err){
         debug(err.toString() + err.stack);
       }
     }
-  });
+  }
 
   var onGoto = function(cb){
     if("function" !== typeof cb){
@@ -41,8 +46,14 @@ module.exports = function(asqSocket){
     debug("Data was emitted:");
   }
 
+  var bounceGoto = function(data){
+    debug("Bouncing goto data:", data);
+    onGoto({data : data });
+    debug("Data was bounced:");
+  }
+
   return{
     onGoto : onGoto,
-    emitGoto: emitGoto
+    emitGoto: (bounce? bounceGoto: emitGoto)
   }
 }
