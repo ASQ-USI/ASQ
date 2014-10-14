@@ -684,6 +684,13 @@ function onAssessment(evt) {
           }
         });
     }
+
+    //go to next when we get an assessment
+    if(client.sesionFlow = 'self'){
+      setTimeout(function(){
+        impress().next();
+      },2000);
+    }
    
   }catch(err){
     debug(err.message + ' ' + err.stack);
