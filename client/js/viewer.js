@@ -89,11 +89,19 @@ function connect(host, port, session, mode, token) {
       }).on('swiperight', function(evt) {
           impress().prev();
       });
+
+    $('#start-btn').on('click', function(evt){
+      evt.preventDefault();
+      var name = document.getElementById("playername").value;
+      if(name.trim() === '')return;
+      socket.emit('asq:change-screenname', {value: name.trim()});
+    });
+    
   }
 
   socket.on('connect', function(evt) {
 
-    // console.log("connected")
+    // debug("connected")
     socket.emit('asq:viewer', {
       session : session,
       mode : mode
@@ -160,14 +168,14 @@ function connect(host, port, session, mode, token) {
 
     // socket.on('asq:start', function(evt) {
     //   if (!started) {
-    //     console.log('started');
+    //     debug('started');
     //     // $('#welcomeScreen').modal('hide');
     //     started = true;
     //   }
     // });
 
     socket.on('disconnect', function(evt) {
-        console.log('disconnected')
+        debug('disconnected')
     });
 
     /**
@@ -234,7 +242,7 @@ function connect(host, port, session, mode, token) {
         .fadeIn(600, function() {
           microformatClient.initCodeEditorsForAssessment();
           $(this).find('.asq-flex-handle').drags();
-          //console.log('should not be called twice')
+          //debug('should not be called twice')
           $exercise.closest('.step').asqExpandSlide();
         });
     });
@@ -308,7 +316,7 @@ function connect(host, port, session, mode, token) {
       $(this).find('input[type=checkbox]:not(.asq-rating-input), input[type=radio]:not(.asq-rating-input)').each(function() {
         submission[parseInt(this.value)]= this.checked;
       });
-      console.log(submission)
+      debug(submission)
 
       $(this).find('input[type=text]').each(function() {
         submission.push($(this).val());
@@ -344,7 +352,7 @@ function connect(host, port, session, mode, token) {
 
     //get question id
     var exerciseId = $exercise.attr('data-asq-exercise-id');
-    console.log('submitted answer for exercise with id:' + exerciseId);
+    debug('submitted answer for exercise with id:' + exerciseId);
     console.dir(answers);
 
     that.answerSaved = false;
@@ -394,7 +402,7 @@ function connect(host, port, session, mode, token) {
         });
         assessment.questions.push(question);
     });
-    console.log(assessment);
+    debug(assessment);
 
     // disable inputs
     $assessment.find(':input').attr('disabled', true);
@@ -402,7 +410,7 @@ function connect(host, port, session, mode, token) {
     $assessment.find('p.text-right .asq-rating').attr('disabled', true).addClass('disabled'); //submit btn
 
     $assessment.fadeTo(200, 0.3);
-    // console.log('add ass wait');
+    // debug('add ass wait');
     $exercise = $('.asq-exercise[data-asq-exercise-id="' + $assessment.attr('data-asq-exercise') + '"]');
     $('<span class="asq-submit-label"><span class="label label-default"><i class="asq-spinner glyphicon glyphicon-refresh"></i> Submitting your assessment...</span></span>')
         .insertAfter($exercise).fadeIn(200);
@@ -594,7 +602,7 @@ function handleSubmittedAnswer(evt) {
      setTimeout(function() {
       if (client.isAssessing) { return; } // Already assessing
       $exercise.siblings('.asq-submit-label').fadeOut(200).remove();
-      console.log('Adding answer ok ' + client.isAssessing)
+      debug('Adding answer ok ' + client.isAssessing)
       // Add confirmation message
       $([
         '<span class="asq-submit-label"><span class="label label-success">',
@@ -627,7 +635,7 @@ function handleSubmittedAssessment(evt) {
       // Already assessing the next answer
       if (client.isAssessing) { return; }
       // Add confirmation message
-      console.log('Adding ass ok message ' + client.isAssessing);
+      debug('Adding ass ok message ' + client.isAssessing);
       $([
         '<span class="asq-submit-label"><span class="label label-success">',
         '<i class="glyphicon glyphicon-ok"></i>',
@@ -647,7 +655,7 @@ function disableExercise($exercise) {
 
 function requestDistinct(questionId, obj) {
   $.getJSON('/stats/getStats?question=' + questionId + '&metric=distinctOptions', function(data) {
-    console.log(data);
+    debug(data);
     var list = '<ul class="different-options list-group">'
     for (var i=1; i<data.length; i++){
       var times =  data[i][2] > 1 ? '<span class="times">&nbsp;(' + data[i][2] +')</span>' : ''

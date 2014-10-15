@@ -5,12 +5,18 @@ module.exports = (function() {
     dust.register("alEntry", body_0);
 
     function body_0(chk, ctx) {
-      return chk.write("<li class=\"al-entry\" id=\"").reference(ctx._get(false, ["user", "id"]), ctx, "h").write("\" data-join-date=\"").reference(ctx._get(false, ["user", "joinDate"]), ctx, "h").write("\"><div class=\"al-nick\"><div class=\"al-nick-lbl\">").reference(ctx._get(false, ["user", "screenName"]), ctx, "h").write("</div><div class=\"al-score\">").reference(ctx._get(false, ["user", "score"]), ctx, "h").write("</div><div class=\"al-rank\">#").reference(ctx._get(false, ["user", "rank"]), ctx, "h").write("</div><div class=\"al-time\">").reference(ctx._get(false, ["user", "totalTime"]), ctx, "h").write("</div></div><!-- end div.cp-access-nick--><div class=\"al-timeline\">").section(ctx._get(false, ["userQuestions"]), ctx, {
+      return chk.write("<li class=\"al-entry").exists(ctx._get(false, ["user", "completed"]), ctx, {
         "block": body_1
+      }, null).write("\" id=\"").reference(ctx._get(false, ["user", "id"]), ctx, "h").write("\" data-join-date=\"").reference(ctx._get(false, ["user", "joinDate"]), ctx, "h").write("\"><div class=\"al-nick\"><div class=\"al-nick-lbl\">").reference(ctx._get(false, ["user", "screenName"]), ctx, "h").write("</div><div class=\"al-score\">").reference(ctx._get(false, ["user", "score"]), ctx, "h").write("</div><div class=\"al-rank\">#").reference(ctx._get(false, ["user", "rank"]), ctx, "h").write("</div><div class=\"al-time\" data-raw-total-time=\"").reference(ctx._get(false, ["user", "rawTotalTime"]), ctx, "h").write("\">").reference(ctx._get(false, ["user", "totalTime"]), ctx, "h").write("</div></div><!-- end div.cp-access-nick--><div class=\"al-timeline\">").section(ctx._get(false, ["userQuestions"]), ctx, {
+        "block": body_2
       }, null).write("</div><!-- end div.cp-access-timeline--></li>");
     }
 
     function body_1(chk, ctx) {
+      return chk.write("completed");
+    }
+
+    function body_2(chk, ctx) {
       return chk.write("<div class=\"al-timeline-answers al-").reference(ctx._get(false, ["answered"]), ctx, "h").write("\" data-question-id='").reference(ctx._get(false, ["id"]), ctx, "h").write("' style=\"width:").reference(ctx._get(false, ["questionWidth"]), ctx, "h").write("%;\"><div class=\"al-timestamp al-start\">0s</div><div class=\"al-timestamp al-finish\">3m5s</div></div>");
     }
     return body_0;

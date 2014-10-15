@@ -12,6 +12,7 @@
   , request = require('superagent')
   , dust = require('dust')
   , templates = require('./templates')
+  , moment = require('moment')
   , $body, $list, socket, total;
 
   $(function(){
@@ -51,6 +52,9 @@
 
       socket.on('asq:rankings', onRankings);
 
+      socket.on('asq:screenname-changed', onScreenNameChanged);
+
+      socket.on('asq:answered-all', onAnsweredAll);
     });
   }
 
@@ -141,5 +145,49 @@
     }catch(err){
        debug(err.msg + '\n' + err.stack);
     }
+  }
+
+  function onScreenNameChanged (evt){
+    try{
+      var $entrySelector = $list.find('.al-entry#'+ evt.userId); 
+       $entrySelector
+        .find('.al-nick-lbl')
+          .text(evt.screenName);
+
+    }catch(err){
+       debug(err.msg + '\n' + err.stack);
+    }
+  }
+
+  setInterval(advanceTimers, 1000);
+
+  function advanceTimers(){
+    try{
+      if(! $list) return;
+      
+      var $competing = $list.find('.al-entry').not( ".completed" )
+      $competing.find('.al-time').each(function(){
+        var $this = $(this);
+        var rawTime = parseInt($this.attr('data-raw-total-time'));
+        rawTime += 1000;
+        $this.attr('data-raw-total-time', rawTime)
+        $this.text(moment.utc(rawTime).format("mm:ss"));
+      })
+    }catch(err){
+     debug(err.msg + '\n' + err.stack);
+    }
+  }
+
+  function onAnsweredAll(evt){
+    try{
+      $list.find('.al-entry#'+ evt.userId).addClass('completed'); 
+      socket.emit('asq:get-user-session-stats', {
+        'userId' : evt.userId,
+        'sessionId' : $body.attr('data-asq-session-id')
+      });
+    }catch(err){
+     debug(err.msg + '\n' + err.stack);
+    }
+    
   }
 }
