@@ -85,10 +85,8 @@ function connect(host, port, session, mode, token) {
 
     hammertime
       .on('swipeleft', function(evt) {
-          console.log("SWIPELEFT", evt);
           impress().next();
       }).on('swiperight', function(evt) {
-          console.log("SWIPERIGHT", evt);
           impress().prev();
       });
   }
@@ -104,7 +102,6 @@ function connect(host, port, session, mode, token) {
 
     socket.on('asq:sessionFlow', function(evt) {
       if (!impressInited) {
-        console.log('impressInited');
         that.sessionFlow = evt.sessionFlow
         initImpress();
         impressInited = true;
@@ -195,8 +192,7 @@ function connect(host, port, session, mode, token) {
      Indicate a submission was accepted.
      **/
     socket.on('asq:submitted', function sumbitted(evt) {
-      console.log('submitted')
-      console.log(evt);
+      debug('submitted', evt)
       if (!evt.type) { return; }
       if (evt.type === 'answer') {
         handleSubmittedAnswer(evt);
@@ -211,7 +207,7 @@ function connect(host, port, session, mode, token) {
     socket.on('asq:assessment', onAssessment);
 
     socket.on('asq:assess', function assess(evt) {
-      console.log('Got assessment')
+      debug('Got assessment')
       // Assessment expect the html and exercise and user should not be assessing
       if (! evt.html || ! evt.exercise || that.isAssessing) { return; }
 
@@ -224,7 +220,7 @@ function connect(host, port, session, mode, token) {
 
       //start assessment
       that.isAssessing = true;
-      console.log('removing wait msgs')
+      debug('removing wait msgs')
       // Remove messages and previous assessments
       $exercise.siblings(
         '.asq-submit-label,.asq-resubmit-btn,.asq-assessment-container').fadeOut(200)
@@ -244,7 +240,6 @@ function connect(host, port, session, mode, token) {
     });
 
     socket.on('asq:stat', function(evt) {
-      //console.log(evt)
       for (var i = 0; i < evt.questions.length; i++) {
         var question = evt.questions[i];
         var $this = $("[target-assessment-id='" + question._id + "'] .answersolutions");
@@ -285,16 +280,16 @@ function connect(host, port, session, mode, token) {
     });
 
     socket.on('asq:session-terminated', function(evt) {
-      console.log('session terminated')
+     debug('session terminated')
       $('body').append('<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8);"><h2 style="color: white; text-align: center; margin-top: 50px">This presentation was terminated.</h2><p style="color: white; text-align: center;">To reconnect try refreshing your browser window.</p></div>');
     });
   }) //TODO Check if this works
   .on('connect_failed', function(reason) {
-    console.error('unable to connect to namespace', reason);
+    debug('unable to connect to namespace', reason);
     $('.asq-welcome-screen h4').text("ERROR - Connection could not be established!");
   })
   .on('error', function (reason){
-    console.error('Unable to connect Socket.IO', reason);
+    debug('Unable to connect Socket.IO', reason);
   });
 
   // Handler for answer submission
