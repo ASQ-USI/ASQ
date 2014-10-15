@@ -42,7 +42,7 @@
     "lodash": "^2.4.1",
     "mkdirp": "~0.3.5",
     "mocha-as-promised": "~1.4.0",
-    "moment": "~1.0.1",
+    "moment": "^2.8.3",
     "mongoose": "^3.8.12",
     "mongoose-schema-extend": "^0.1.7",
     "node-redis": "^0.1.7",

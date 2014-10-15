@@ -12,13 +12,14 @@ var mongoose      = require('mongoose')
   , Assessment    = db.model('Assessment');
 
 var answerSchema = new Schema({
-  exercise    : { type: ObjectId, ref: 'Exercise', required: true },
-  question    : { type: ObjectId, ref: 'Question', required: true },
-  answeree    : { type: ObjectId, ref: 'WhitelistEntry', required: true },
-  session     : { type: ObjectId, ref: 'Session', required: true },
-  submission  : [],
-  confidence  : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
-  logData     : [answerLogSchema]
+  exercise   : { type: ObjectId, ref: 'Exercise', required: true },
+  question   : { type: ObjectId, ref: 'Question', required: true },
+  answeree   : { type: ObjectId, ref: 'WhitelistEntry', required: true },
+  session    : { type: ObjectId, ref: 'Session', required: true },
+  submitDate : { type: Date, required: true, default: Date.now },
+  submission : [],
+  confidence : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
+  logData    : [answerLogSchema]
 });
 
 answerSchema.index({session: 1, answeree: 1, exercise: 1 });

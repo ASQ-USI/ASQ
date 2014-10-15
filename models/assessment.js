@@ -18,7 +18,8 @@ var assessmentSchema = new Schema({
                  default: 'pending' },
   type       : { type: String, lowercase: true,
                  enum: [ 'auto', 'self', 'peer', 'pro' ], required: '{PATH} is required.' },
-  submission : { type: Array, default: [] }
+  submission : { type: Array, default: [] },
+  submitDate  : { type: Date, required: true, default: Date.now }
 });
 
 assessmentSchema.index({

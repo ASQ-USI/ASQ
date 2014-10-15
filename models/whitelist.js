@@ -13,8 +13,10 @@ roles.presenter = 3;
 
 var whitelistEntrySchema = new Schema({
 	session          : { type: ObjectId, ref: 'Session', required: true },
+  sessionData      : { type: {} },
 	user             : { type: ObjectId, ref: 'User', required: true },
 	browserSessionId : { type: String }, // Express Cookie session id
+  joinDate       : { type: Date, required: true, default: Date.now },
 	screenName       : { type: String, required: true },
 	role             : { type: String, default: 'viewer', enum: Object.keys(roles) }
 }, { collection: 'whitelistEntries' });
