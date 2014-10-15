@@ -130,7 +130,8 @@ function setLiveSession(req, res, next, liveId) {
         req.liveSession = session;
         return next(null);
       } else {
-        return next(new Error('Failed to load session.'));
+        res.status(404);
+        return res.render('404', {'msg': 'This session does not exist or it\'s not live.'});
       }
     }, function onError(err) {
       return next(err);
