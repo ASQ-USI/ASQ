@@ -122,7 +122,6 @@ function livePresentation(req, res) {
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
 
-  appLogger.debug('Selected template: ' + renderOpts.template);
   res.render(renderOpts.template, {
     username            : req.user? req.user.username :'',
     title               : presentation.title,
@@ -133,6 +132,7 @@ function livePresentation(req, res) {
     slideTree           : JSON.stringify(presentation.slidesTree),
     id                  : req.liveSession.id,
     token               : token,
+    userSessionId        : req.whitelistEntry.id,
     date                : req.liveSession.startDate,
     presentationViewUrl : presentationViewUrl,
     presenterLiveUrl    : presenterLiveUrl

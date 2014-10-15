@@ -2,6 +2,7 @@
   <div class="al-nick">
     <div class="al-nick-lbl">{user.screenName}</div>
     <div class="al-score">{user.score}</div>
+    <div class="al-rank">#{user.rank}</div>
     <div class="al-time">{user.totalTime}</div>
   </div><!-- end div.cp-access-nick-->
 

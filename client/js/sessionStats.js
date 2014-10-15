@@ -41,12 +41,15 @@
     });
 
     socket.on('connect', function(event) {
+      debug('Connected')
 
       socket.on('asq:folo-connected', onFoloConnected);
 
       socket.on('asq:user-session-stats', onUserSessionStats);
 
       socket.on('asq:assessment', onAssessment);
+
+      socket.on('asq:rankings', onRankings);
 
     });
   }
@@ -106,9 +109,37 @@
           .removeClass('al-pending', 'al-correct', 'al-wrong')
           .addClass(newClass);
       var score = $entrySelector.find('.al-timeline-answers.al-correct').length;
-      $entrySelector.find('.al-score').text(score + '/' + total)
+      $entrySelector.find('.al-score').text(score)
     }catch(err){
       debug(err.msg + err.stack)
+    }
+  }
+
+  function onRankings (evt){
+    try{
+      var rankings = evt.rankings;
+
+      rankings.forEach(function(ranking, idx){
+        var rank = idx+1;
+
+        var rankClass = ''
+        if(rank === 1){
+          rankClass = 'rank-first';
+        }else if(rank === 2){
+          rankClass = 'rank-second';
+        }else if(rank === 2){
+          rankClass = 'rank-third';
+        }
+
+        var $entrySelector = $list.find('.al-entry#'+ ranking.userId); 
+         $entrySelector
+          .find('.al-rank')
+            .removeClass('rank-first rank-second rank-third')
+            .addClass(rankClass)
+            .text('#'+rank);
+      });
+    }catch(err){
+       debug(err.msg + '\n' + err.stack);
     }
   }
 }

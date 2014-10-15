@@ -6,5 +6,21 @@ module.exports.setUp = function setUp(app, middleware) {
 
   // Stats for specific session.
   app.get('/:user/sessions/:sessionId/stats', middleware.isRouteOwner,
-    handlers.getSessionStats);
+    function setLiveSession(req, res, next) {
+      var Session = db.model('Session', schemas.sessionSchema);
+      Session.findOne({
+        _id: req.params.sessionId,
+        endDate: null
+      }).exec().then(function onSession(session) {
+          if (session) {
+            req.liveSession = session;
+            return next(null);
+          } else {
+            return next(new Error('Failed to load session.'));
+          }
+        }, function onError(err) {
+          return next(err);
+        });
+    },
+    middleware.authorizeLiveSession,  handlers.getSessionStats);
 }

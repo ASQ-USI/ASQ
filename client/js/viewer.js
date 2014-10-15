@@ -9,7 +9,7 @@ var debug = require('bows')("viewer")
   , Hammer = require('hammerjs')
   , manager    = require('asq-visualization').Manager()
   , microformatClient = require('asq-microformat').client
-  , $body;
+  , $body, userId;
 
 
 // Save current question id;
@@ -23,6 +23,8 @@ $(function(){
     , sessionId = $body.attr('data-asq-session-id')
     , mode      = $body.attr('data-asq-socket-mode')
     , token     = $body.attr('data-asq-socket-token');
+
+  userId     = $body.attr('data-asq-user-session-id');
 
   microformatClient.configureMicroformatComponents('viewer');
 
@@ -106,6 +108,56 @@ function connect(host, port, session, mode, token) {
         that.sessionFlow = evt.sessionFlow
         initImpress();
         impressInited = true;
+      }
+    });
+
+    socket.on('asq:answered-all', function(evt){
+      socket.emit('asq:get-user-session-stats')
+    })
+
+    socket.on('asq:user-session-stats', function(evt){
+      try{
+        $("#total-results")
+          .find('.score-value')
+            .text(evt.user.score)
+            .end()
+          .find('.total-time-value')
+            .text(evt.user.totalTime)
+            .end();
+      }catch(err){
+         debug(err.msg + '\n' + err.stack);
+      }
+    });
+
+    socket.on('asq:rankings', function(evt){
+      try{
+        var rankings = evt.rankings;
+        var rank ='';
+        for(var i=0, l=rankings.length; i<l; i++){
+          if(rankings[i].userId === userId){
+            rank = i+1;
+            break;
+          }
+        }
+        var rankClass = ''
+        if(rank === 1){
+          rankClass = 'rank-first';
+        }else if(rank === 2){
+          rankClass = 'rank-second';
+        }else if(rank === 2){
+          rankClass = 'rank-third';
+        }
+
+        $("#total-results")
+          .find('.rank')
+          .removeClass('rank-first rank-second rank-third')
+            .addClass(rankClass)
+            .find('.rank-value')
+              .removeClass('rank-first rank-second rank-third')
+              .addClass(rankClass)
+              .text('#'+rank);
+      }catch(err){
+         debug(err.msg + '\n' + err.stack);
       }
     });
 
@@ -650,12 +702,6 @@ function requestStats(questionId, obj) {
 }
 
 function onAssessment(evt) {
-  // drop if the event is not about us
-  // if(evt.assessee !== client.socket.id){
-  //   debug('Got an event that doesn\'t wasn\'t for me');
-  //   return;
-  // }
-
   try{
     var assessment = evt;
     var question = assessment.question;
