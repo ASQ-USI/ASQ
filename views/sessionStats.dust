@@ -60,7 +60,7 @@
           <li class="al-head">
             <div class="al-timeline-head">
               {#questions}
-              <div class="al-timeline-head-answers" style="width:{questionWidth}%;"> #{@idx}{.}{/idx}
+              <div class="al-timeline-head-answers" style="width:{questionWidth}%;"> #{@math key=$idx method="add" operand="1"/}
               </div>
               {/questions}
             </div>

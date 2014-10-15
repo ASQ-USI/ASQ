@@ -179,6 +179,7 @@
   }
 
   function onAnsweredAll(evt){
+    console.log('hehe')
     try{
       $list.find('.al-entry#'+ evt.userId).addClass('completed'); 
       socket.emit('asq:get-user-session-stats', {

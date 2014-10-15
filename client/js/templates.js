@@ -17,7 +17,7 @@ module.exports = (function() {
     }
 
     function body_2(chk, ctx) {
-      return chk.write("<div class=\"al-timeline-answers al-").reference(ctx._get(false, ["answered"]), ctx, "h").write("\" data-question-id='").reference(ctx._get(false, ["id"]), ctx, "h").write("' style=\"width:").reference(ctx._get(false, ["questionWidth"]), ctx, "h").write("%;\"><div class=\"al-timestamp al-start\">0s</div><div class=\"al-timestamp al-finish\">3m5s</div></div>");
+      return chk.write("<div class=\"al-timeline-answers al-").reference(ctx._get(false, ["answered"]), ctx, "h").write("\" data-question-id='").reference(ctx._get(false, ["id"]), ctx, "h").write("' style=\"width:").reference(ctx._get(false, ["questionWidth"]), ctx, "h").write("%;\"></div>");
     }
     return body_0;
   })();
