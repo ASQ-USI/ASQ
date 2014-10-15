@@ -259,8 +259,9 @@ function connect(host, port, session, mode, token) {
       //aggregate answers
       var submission = [];
       $(this).find('input[type=checkbox]:not(.asq-rating-input), input[type=radio]:not(.asq-rating-input)').each(function() {
-        submission.push($(this).is(":checked"));
+        submission[parseInt(this.value)]= this.checked;
       });
+      console.log(submission)
 
       $(this).find('input[type=text]').each(function() {
         submission.push($(this).val());
