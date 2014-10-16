@@ -96,7 +96,7 @@ function connect(host, port, session, mode, token) {
       socket.emit('asq:change-screenname', {value: name.trim()});
     }
 
-    $('#playername-form').submit(function(){
+    $('#playername-form').submit(function(evt){
       evt.preventDefault();
       setPlayerName();
     })
