@@ -90,11 +90,20 @@ function connect(host, port, session, mode, token) {
           impress().prev();
       });
 
-    $('#start-btn').on('click', function(evt){
-      evt.preventDefault();
+    var setPlayerName = function(){
       var name = document.getElementById("playername").value;
       if(name.trim() === '')return;
       socket.emit('asq:change-screenname', {value: name.trim()});
+    }
+
+    $('#playername-form').submit(function(){
+      evt.preventDefault();
+      setPlayerName();
+    })
+
+    $('#start-btn').on('click', function(evt){
+      evt.preventDefault();
+      setPlayerName();
     });
     
   }
