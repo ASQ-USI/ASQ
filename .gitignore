@@ -73,3 +73,9 @@ Thumbs.db
 ######################
 .nodemonignore
 public/thumbs
+
+# ASQ Components #
+##################
+/bower_components
+/components
+
