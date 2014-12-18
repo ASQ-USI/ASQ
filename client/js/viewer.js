@@ -313,6 +313,25 @@ function connect(host, port, session, mode, token) {
   });
   // end of connect event handler
 
+  /**
+  *
+  * jQuery doesn't work well with polymer event. 
+  * Use javascript here.
+  * TODO: take care of the format.
+  *
+  **/
+  document.addEventListener('asq-submit', function(evt){
+    console.log(evt);
+    submission = evt.detail.submission;
+    console.log("##SUBMISSTION##", submission);
+    socket.emit('asq:submit', submission);
+  });
+
+  /**
+  *
+  * Commented.
+  *
+  */
   // Handler for answer submission
   // $(document).on('submit', '.asq-exercise form', function(evt) {
   //   evt.preventDefault();
@@ -377,29 +396,7 @@ function connect(host, port, session, mode, token) {
   //   });
   // });
   
-  /**
-  *
-  * jQuery doesn't work well with polymer event. 
-  * Use javascript here.
-  *
-  */
-  document.addEventListener('asq-submit', function(evt){
-    console.log(evt);
-    submission = evt.detail.submission;
-    console.log("##SUBMISSTION##", submission);
-    socket.emit('asq:submit', {
-      submission: submission
-    });
-  });
-
-  // $(document).on('asq-submit', function(evt) {
-  //   console.log(evt);
-  //   submission = evt.detail.submision;
-  //   console.log("##SUBMISSTION##", submission);
-  //   socket.emit('asq:submit', {
-  //     submission: submission
-  //   });
-  // });
+  
 
   // Handler for assessment submission
   $(document).on('submit', '.asq-assessment-inner', function(evt) {
