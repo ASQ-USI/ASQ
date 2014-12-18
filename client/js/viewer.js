@@ -376,13 +376,30 @@ function connect(host, port, session, mode, token) {
   //     }
   //   });
   // });
-
-  $(document).on('asq-submit', function(evt) {
-    submission = detail.submision;
-    socket.emit({
+  
+  /**
+  *
+  * jQuery doesn't work well with polymer event. 
+  * Use javascript here.
+  *
+  */
+  document.addEventListener('asq-submit', function(evt){
+    console.log(evt);
+    submission = evt.detail.submission;
+    console.log("##SUBMISSTION##", submission);
+    socket.emit('asq:submit', {
       submission: submission
     });
   });
+
+  // $(document).on('asq-submit', function(evt) {
+  //   console.log(evt);
+  //   submission = evt.detail.submision;
+  //   console.log("##SUBMISSTION##", submission);
+  //   socket.emit('asq:submit', {
+  //     submission: submission
+  //   });
+  // });
 
   // Handler for assessment submission
   $(document).on('submit', '.asq-assessment-inner', function(evt) {
