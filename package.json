@@ -72,6 +72,8 @@
     "webpack-dev-server": "^1.6.5",
     "when": "^2.8.0",
     "winston": "~0.7.2"
+
+
   },
   "engines": {
     "node": "0.10.x",

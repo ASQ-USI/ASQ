@@ -128,6 +128,7 @@ function livePresentation(req, res) {
     host                : ASQ.urlHost,
     port                : ASQ.urlPort,
     mode                : renderOpts.mode,
+    role                : role,
     presentation        : presentation._id,
     slideTree           : JSON.stringify(presentation.slidesTree),
     id                  : req.liveSession.id,

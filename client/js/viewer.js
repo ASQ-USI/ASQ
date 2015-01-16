@@ -96,7 +96,7 @@ function connect(host, port, session, mode, token) {
       socket.emit('asq:change-screenname', {value: name.trim()});
     }
 
-    $('#playername-form').submit(function(evt){
+    $('#a').submit(function(evt){
       evt.preventDefault();
       setPlayerName();
     })
@@ -107,6 +107,8 @@ function connect(host, port, session, mode, token) {
     });
     
   }
+  // end of initImpress
+
 
   socket.on('connect', function(evt) {
 
@@ -256,6 +258,7 @@ function connect(host, port, session, mode, token) {
         });
     });
 
+    
     socket.on('asq:stat', function(evt) {
       for (var i = 0; i < evt.questions.length; i++) {
         var question = evt.questions[i];
@@ -308,70 +311,92 @@ function connect(host, port, session, mode, token) {
   .on('error', function (reason){
     debug('Unable to connect Socket.IO', reason);
   });
+  // end of connect event handler
 
-  // Handler for answer submission
-  $(document).on('submit', '.asq-exercise form', function(evt) {
-    evt.preventDefault();
-    var $exercise = $(evt.target).closest('.asq-exercise');
-
-    // Get the submission from the form
-    var answers = $exercise.find('.asq-question').map(function getQuestionData() {
-
-      //get question id
-      var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
-
-      //aggregate answers
-      var submission = [];
-      $(this).find('input[type=checkbox]:not(.asq-rating-input), input[type=radio]:not(.asq-rating-input)').each(function() {
-        submission[parseInt(this.value)]= this.checked;
-      });
-      debug(submission)
-
-      $(this).find('input[type=text]').each(function() {
-        submission.push($(this).val());
-      });
-
-      $(this).find('.asq-code-editor').each(function() {
-        submission.push(ace.edit(this.id).getSession().getValue());
-      });
-
-      $(this).find('.asq-code-input').each(function() {
-        submission.push($(this).text());
-      });
-
-      // Get confidence
-      var confidence = parseInt($(this).find('input.asq-rating-input:checked')
-        .val()) || 0;
-
-      return {
-        question : questionId,
-        submission: submission,
-        confidence : confidence,
-      };
-    }).get(); // Return basic array of answers
-
-    disableExercise($exercise);
-
-    // fadeout questions and insert wait msg
-    //$exercise.fadeTo(200, 0.3);
-    $('<span class="asq-submit-label"><span class="label label-default">\
-        <i class="asq-spinner glyphicon glyphicon-refresh">\
-        </i> Submitting your answer...</span></span>')
-        .insertAfter($exercise).fadeIn(200);
-
-    //get question id
-    var exerciseId = $exercise.attr('data-asq-exercise-id');
-    debug('submitted answer for exercise with id:' + exerciseId);
-    console.dir(answers);
-
-    that.answerSaved = false;
-    socket.emit('asq:submit', {
-      exercise : {
-        id : exerciseId,
-        answers : answers
-      }
-    });
+  /**
+  *
+  * jQuery doesn't work well with polymer event. 
+  * Use javascript here.
+  * TODO: take care of the format.
+  *
+  **/
+  document.addEventListener('asq-submit', function(evt){
+    console.log(evt);
+    submission = evt.detail.submission;
+    console.log("##SUBMISSTION##", submission);
+    socket.emit('asq:submit', submission);
   });
+
+  /**
+  *
+  * Commented.
+  *
+  */
+  // Handler for answer submission
+  // $(document).on('submit', '.asq-exercise form', function(evt) {
+  //   evt.preventDefault();
+  //   var $exercise = $(evt.target).closest('.asq-exercise');
+
+  //   // Get the submission from the form
+  //   var answers = $exercise.find('.asq-question').map(function getQuestionData() {
+
+  //     //get question id
+  //     var questionId = $(this).find('input[type="hidden"][name="question-id"]').val()
+
+  //     //aggregate answers
+  //     var submission = [];
+  //     $(this).find('input[type=checkbox]:not(.asq-rating-input), input[type=radio]:not(.asq-rating-input)').each(function() {
+  //       submission[parseInt(this.value)]= this.checked;
+  //     });
+  //     debug(submission)
+
+  //     $(this).find('input[type=text]').each(function() {
+  //       submission.push($(this).val());
+  //     });
+
+  //     $(this).find('.asq-code-editor').each(function() {
+  //       submission.push(ace.edit(this.id).getSession().getValue());
+  //     });
+
+  //     $(this).find('.asq-code-input').each(function() {
+  //       submission.push($(this).text());
+  //     });
+
+  //     // Get confidence
+  //     var confidence = parseInt($(this).find('input.asq-rating-input:checked')
+  //       .val()) || 0;
+
+  //     return {
+  //       question : questionId,
+  //       submission: submission,
+  //       confidence : confidence,
+  //     };
+  //   }).get(); // Return basic array of answers
+
+  //   disableExercise($exercise);
+
+  //   // fadeout questions and insert wait msg
+  //   //$exercise.fadeTo(200, 0.3);
+  //   $('<span class="asq-submit-label"><span class="label label-default">\
+  //       <i class="asq-spinner glyphicon glyphicon-refresh">\
+  //       </i> Submitting your answer...</span></span>')
+  //       .insertAfter($exercise).fadeIn(200);
+
+  //   //get question id
+  //   var exerciseId = $exercise.attr('data-asq-exercise-id');
+  //   debug('submitted answer for exercise with id:' + exerciseId);
+  //   console.dir(answers);
+
+  //   that.answerSaved = false;
+  //   socket.emit('asq:submit', {
+  //     exercise : {
+  //       id : exerciseId,
+  //       answers : answers
+  //     }
+  //   });
+  // });
+  
+  
 
   // Handler for assessment submission
   $(document).on('submit', '.asq-assessment-inner', function(evt) {
@@ -431,6 +456,7 @@ function connect(host, port, session, mode, token) {
   });
   return that;
 }
+//end of connect function
 
 $(function() {
 
