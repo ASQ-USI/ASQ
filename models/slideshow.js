@@ -23,9 +23,9 @@ var statsPerSlideSchema = new Schema({
 var slideshowSchema = new Schema({
   title             : { type: String, required: true },
   course            : { type: String, required: true, default: 'General' },
-  originalFile      : { type: String, required: true },
-  presenterFile     : { type: String, required: true },
-  viewerFile        : { type: String, required: true },
+  originalFile      : { type: String, default: "" },
+  presenterFile     : { type: String, default: "" },
+  viewerFile        : { type: String, default: "" },
   owner             : { type: ObjectId, ref: 'User', required: true },
   slidesTree        : { type: Object, default:{}},
   thumbnails        : { type: Array, default:[]},

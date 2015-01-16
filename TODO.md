@@ -1,3 +1,4 @@
+- create a mongoose function for the slideshow model to return the paths for the files and remove path calls from the rest of the codebase
 - check what happens if the someone goes for a Url of a presentation that doesn't exist
 - Make stats more customizable
 - Reset stats.dust

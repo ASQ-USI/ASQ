@@ -13,13 +13,14 @@
     "test": "test"
   },
   "dependencies": {
-    "adm-zip": "~0.4.3",
     "asq-microformat": "ASQ-USI/asq-microformat",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.0",
+    "bluebird": "^2.7.1",
     "bows": "^1.1.2",
     "browserify": "~2.35.0",
+    "chai": "^1.10.0",
     "cheerio": "~0.12.4",
     "connect": "2.8.x",
     "connect-flash": "~0.1.1",
@@ -98,6 +99,7 @@
     "mocha": "^1.18.2",
     "mocha-as-promised": "~1.4.0",
     "proxyquire": "~0.5.0",
+    "sandboxed-module": "^2.0.0",
     "sinon": "^1.9.0",
     "sinon-chai": "^2.5.0",
     "supertest": "~0.8.0",
