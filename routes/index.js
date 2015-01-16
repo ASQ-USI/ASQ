@@ -4,7 +4,6 @@
 
 module.exports = {
   slides : require('./slides'),
-  upload : require('./upload'),
   index  : function(req, res){  res.render('index', { title: 'Express' })},
   setUp  : require('./routes').setUp
 }
