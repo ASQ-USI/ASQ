@@ -6,6 +6,8 @@ var mongoose = require('mongoose')
 , Schema     = mongoose.Schema
 , ObjectId   = Schema.ObjectId
 , when       = require('when')
+, Promise    = require("bluebird")
+, coroutine  = Promise.coroutine
 , appLogger  = require('../lib/logger').appLogger
 , Question   = db.model('Question')
 , User       = db.model('User');
@@ -24,6 +26,7 @@ var slideshowSchema = new Schema({
   title             : { type: String, required: true },
   course            : { type: String, required: true, default: 'General' },
   originalFile      : { type: String, default: "" },
+  asqFile           : { type: String, default: "" },
   presenterFile     : { type: String, default: "" },
   viewerFile        : { type: String, default: "" },
   owner             : { type: ObjectId, ref: 'User', required: true },
@@ -31,6 +34,7 @@ var slideshowSchema = new Schema({
   thumbnails        : { type: Array, default:[]},
   questions         : { type: [{ type: ObjectId, ref: 'Question' }] },
   questionsPerSlide : { type: [questionsPerSlideSchema] },
+  exercisesPerSlide : { type: Schema.Types.Mixed },
   statsPerSlide     : { type: [statsPerSlideSchema] },
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
@@ -181,47 +185,44 @@ slideshowSchema.pre('remove', function checkLiveOnRemove(next) {
 //remove sessions before removing a slideshow
 slideshowSchema.pre('remove', true, function removeSessionOnRemove(next, done) {
   next();
-  var Session = db.model('Session');
-  //we do not call remove on the model...
-  Session.find({ slides : this._id}, function(err, sessions) {
-    if (err) { done(err); }
-
-    var total = sessions.length;
-    if (!total) { done(); }
-
-    sessions.forEach(function(session) {
-      // ... but on an instance so that the middleware
-      // will run
-      session.remove(function(err, removed) {
-        if (err) { done(err); }
-        else if (--total === 0) { done(); }
-      });
-    });
-  });
+  this.removeSessions()
+    .then(function(){ return done();})
+    .catch(function(err){ return done(err);});
 });
 
 //remove questions before removing a slideshow
 // questions will remove the related answers in their own pre()
 slideshowSchema.pre('remove', true, function removeQuesOnRemove(next,done) {
-  next();;
+  next();
+  this.removeQuestions()
+    .then(function(){ return done();})
+    .catch(function(err){ return done(err);});
+});
 
-  //we do not call remove on the model...
-  Question.find({_id : {$in : this.questions}}, function(err, questions) {
-    if (err) { done(err); }
-
-    var total = questions.length;
-    if (!total) { done(); }
-
-    questions.forEach(function(question) {
-      // ... but on an instance so that the middleware
-      // will run
-      question.remove(function(err, removed) {
-        if (err) { done(err); }
-        if (--total === 0) { done(); }
-      });
-    });
+// removes all the question of a slideshow from the database
+slideshowSchema.methods.removeSessions = coroutine(function *removeSessionsGen() {
+  var Session = db.model('Session');
+  
+  // we do not call remove on the model but on
+  // an instance so that the middleware will run
+  var sessions = yield Session.find({ slides : this._id}).exec();
+  yield Promise.map(sessions, function(session){
+    return session.remove().exec(); 
   });
 
+  return;
+});
+
+// removes all the question of a slideshow from the database
+slideshowSchema.methods.removeQuestions = coroutine(function *removeQuestionsGen() {
+  // we do not call remove on the model but on
+  // an instance so that the middleware will run
+  var questions = yield Question.find({_id : {$in : this.questions}}).exec();
+  yield Promise.map(questions, function(question){
+    return question.remove().exec(); 
+  });
+
+  return;
 });
 
 

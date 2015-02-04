@@ -21,7 +21,7 @@
     "bows": "^1.1.2",
     "browserify": "~2.35.0",
     "chai": "^1.10.0",
-    "cheerio": "~0.12.4",
+    "cheerio": "^0.18.0",
     "connect": "2.8.x",
     "connect-flash": "~0.1.1",
     "connect-redis": "~1.4.5",
@@ -52,7 +52,7 @@
     "passport.socketio": "~0.0.5",
     "promised-io": "~0.3.3",
     "redis": "~0.8.4",
-    "rimraf": "~2.1.4",
+    "rimraf": "^2.2.8",
     "session-mongoose": "~0.2.2",
     "sillyname": "0.0.3",
     "simple-errors": "0.0.4",
@@ -72,8 +72,6 @@
     "webpack-dev-server": "^1.6.5",
     "when": "^2.8.0",
     "winston": "~0.7.2"
-
-
   },
   "engines": {
     "node": "0.10.x",

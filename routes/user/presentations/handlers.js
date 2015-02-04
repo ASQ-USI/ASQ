@@ -110,11 +110,52 @@ function listPresentations(req, res, next) {
   });
 }
 
-function updatePresentation(req, res, next) {
-  logger.error('NOT IMPLEMENTED: Updating a presentation is not supported.');
-  res.send(405, 'Cannot update a presentation so far...');
-}
+var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
+  try{
 
+    var owner_id = req.user._id
+    , name = req.files.upload.name
+    , zipPath = req.files.upload.path;
+
+    var slideshow = yield Slideshow.findById(req.params.presentationId).exec();
+    
+    if(! slideshow){
+      //treat it as new upload
+      return next();
+    }
+
+    // TODO: handle this better
+    if(slideshow.owner.toString() !== owner_id.toString() ){
+      next(new Error("You are not the owner of this presentation"))
+    }
+
+    var slideshow = yield upload.updatePresentationFromZipArchive(slideshow._id, name, zipPath);
+
+    //remove zip file
+    yield fs.unlinkAsync(zipPath);
+
+    logger.log({
+      owner_id: req.user._id,
+      slideshow: slideshow._id,
+      file_path: path,
+      file_name: name
+    }, "updated presentation from zip");
+
+    res.redirect(303, ['/', req.user.username, '/presentations/?alert=',
+      slideshow.title, ' updated successfully!&type=success']
+      .join(''));
+
+  }catch(err){
+    console.log(err.stack);
+
+    logger.error({
+      err: err,
+      owner_id: req.user._id,
+      file_path: zipPath,
+      file_name: name
+    }, "error updating presentation from zip");
+  }
+});
 
 var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, next){
   try{
@@ -122,7 +163,7 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
       , name = req.files.upload.name
       , zipPath = req.files.upload.path;
 
-    var slideshow = yield upload.createPresentationFromZipArchive( owner_id, name, zipPath);
+    var slideshow = yield upload.createPresentationFromZipArchiveElems( owner_id, name, zipPath);
 
     //remove zip file
     yield fs.unlinkAsync(zipPath);
@@ -139,7 +180,8 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
       .join(''));
 
   }catch(err){
-    console.dir(err.stack)
+    console.log(err.stack);
+
     logger.error({
       err: err,
       owner_id: req.user._id,
@@ -155,6 +197,6 @@ module.exports = {
   getPresentation      : getPresentation,
   getPresentationFiles : getPresentationFiles,
   listPresentations    : listPresentations,
-  updatePresentation   : updatePresentation,
+  putPresentation      : putPresentation,
   uploadPresentation   : uploadPresentation
 }
