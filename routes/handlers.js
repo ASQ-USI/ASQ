@@ -251,7 +251,15 @@ function logout(req, res) {
 }
 
 function getUploadForm(req, res) {
-  res.render('upload', { username: req.user.username });
+  var cookie = 'asq.sid=' + req.cookies['asq.sid'];
+  var rendObj = {
+    username : req.user.username,
+    user : {
+      name : req.user.username,
+      cookie:cookie
+    }
+  };
+  res.render('upload', rendObj);
 }
 
 function emailAvailable(req, res, next) {

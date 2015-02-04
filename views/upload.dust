@@ -15,7 +15,7 @@
 
 			<div class="row">
 				<!--   Seperating Headline   -->
-				<div class="span12 headline">
+				<div class="col-md-12 headline">
 					<h2>Upload new presentation</h2>
 				</div>
 
@@ -63,6 +63,18 @@
 						});
 						</script>
 					</form>
+				</div>
+			</div>
+
+			<div class="row" >
+				<div class="col-md-12 headline">
+					<h2>Upload with curl</h2>
+				</div>
+				<div class="col-md-12">
+					</p> To zip all the files in the current directory and upload them with curl do:  <br>
+					<pre><code>zip -r - * | curl -i --cookie "{user.cookie}" -F upload=@- {rootUrl}/{user.name}/presentations</code></pre>
+					</p>
+					
 				</div>
 			</div>
 
