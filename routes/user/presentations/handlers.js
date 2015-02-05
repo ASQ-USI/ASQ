@@ -1,6 +1,7 @@
 require('when/monitor/console');
 var _             = require('lodash')
 , moment          = require('moment')
+, validator       = require('validator')
 , nodefn          = require('when/node/function')
 , path            = require('path')
 , fs              = require('fs')
@@ -129,7 +130,11 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
       next(new Error("You are not the owner of this presentation"))
     }
 
-    var slideshow = yield upload.updatePresentationFromZipArchive(slideshow._id, name, zipPath);
+    var options = {
+      preserveSession: req.query.preserveSession
+    }
+  
+    var slideshow = yield upload.updatePresentationFromZipArchive(slideshow._id, name, zipPath, options);
 
     //remove zip file
     yield fs.unlinkAsync(zipPath);
@@ -191,6 +196,21 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
   }
 });
 
+function validatePutParams(req, res, next){
+  var ps = req.query.preserveSession
+  //if user has specified preserveSession it should either be true or false
+  if (validator.isNull(ps)){
+    ps = false;
+  }else {
+    ps = ps.trim()
+    if (! validator.matches(ps, /^(true|false)$/ )){
+      next(new Error('Invalid urlparam error. Parameter `preserveSession` should be either `true` or `false`'))
+    } 
+  }
+  //force Boolean
+  req.query.preserveSession = !!ps;
+  next();
+}
 
 module.exports = {
   deletePresentation   : deletePresentation,
@@ -198,5 +218,6 @@ module.exports = {
   getPresentationFiles : getPresentationFiles,
   listPresentations    : listPresentations,
   putPresentation      : putPresentation,
-  uploadPresentation   : uploadPresentation
+  uploadPresentation   : uploadPresentation,
+  validatePutParams    : validatePutParams
 }

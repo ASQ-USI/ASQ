@@ -16,7 +16,7 @@ module.exports.setUp = function setUp(app, middleware) {
   // Update the presentation matching presentationId. 
   // If it doesn't exist we create a new one using the upload handler
   app.put('/:user/presentations/:presentationId', middleware.isRouteOwner,
-    handlers.putPresentation, handlers.uploadPresentation);
+    handlers.validatePutParams, handlers.putPresentation, handlers.uploadPresentation);
 
   // Delete the presentation matching presentationId.
   app.del('/:user/presentations/:presentationId', middleware.isRouteOwner,

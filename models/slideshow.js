@@ -200,31 +200,26 @@ slideshowSchema.pre('remove', true, function removeQuesOnRemove(next,done) {
 });
 
 // removes all the question of a slideshow from the database
-slideshowSchema.methods.removeSessions = coroutine(function *removeSessionsGen() {
+slideshowSchema.methods.removeSessions = function(){
   var Session = db.model('Session');
-  
+
   // we do not call remove on the model but on
   // an instance so that the middleware will run
-  var sessions = yield Session.find({ slides : this._id}).exec();
-  yield Promise.map(sessions, function(session){
-    return session.remove().exec(); 
+  return Promise.resolve(Session.find({ slides : this._id}).exec())
+  .map(function(session){
+    return Promise.promisify(session.remove, session)(); 
   });
-
-  return;
-});
+} 
 
 // removes all the question of a slideshow from the database
-slideshowSchema.methods.removeQuestions = coroutine(function *removeQuestionsGen() {
+slideshowSchema.methods.removeQuestions = function(){
   // we do not call remove on the model but on
   // an instance so that the middleware will run
-  var questions = yield Question.find({_id : {$in : this.questions}}).exec();
-  yield Promise.map(questions, function(question){
-    return question.remove().exec(); 
+  return Promise.resolve(Question.find({_id : {$in : this.questions}}).exec())
+  .map(function(question){
+    return Promise.promisify(question.remove, question)(); 
   });
-
-  return;
-});
-
+} 
 
 // Adds an array of questionIDs to the slideshow
 // Array arr should be populated with questionIDs
