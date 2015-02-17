@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "asq-microformat": "ASQ-USI/asq-microformat",
+    "asq-plugin": "ASQ-USI/asq-plugin",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.0",

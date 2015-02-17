@@ -1,3 +1,21 @@
+##Plugin
+* Log error messages per plugin
+* put shared code for plugins like `getBooleanValueOfBooleanAttribute` to a utilitities package
+* load registered question type names from db
+* make all functions have a name
+* presentations/presentation/handler: remove old `livePresentation`
+* slideshow: remove `questionsPerSlide` if not used
+
+
+##Socket
+* REMOVE winston logger for sockets. They have their own now
+* nomenclature for event names
+* client handling of socket errors
+
+
+- Process errors at different levels of the stack to make them more meaningful. For example a mongoose validation error in the upload is getting caught at presentation/handlers.js:uploadPresentation(). It's very hard to understand where the error came from.
+_ 'PROTECT' against this: https://thecodebarbarian.wordpress.com/2014/09/04/defending-against-query-selector-injection-attacks/
+- rename `resubmit` in models/exercise.js to `allowResubmit`
 - create a mongoose function for the slideshow model to return the paths for the files and remove path calls from the rest of the codebase
 - check what happens if the someone goes for a Url of a presentation that doesn't exist
 - Make stats more customizable

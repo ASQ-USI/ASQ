@@ -20,6 +20,10 @@ module.exports = function(asqSocket, bounce){
     onGotoReceived(evt);
   });
 
+  var setBounce =  function(val){
+    bounce = !! val;
+  }
+
   var onGotoReceived = function(evt){
     for(var i=0, l=cbs.length; i<l; i++){
       //don't let one bad function affect the rest of them
@@ -53,6 +57,7 @@ module.exports = function(asqSocket, bounce){
   }
 
   return{
+    setBounce : setBounce,
     onGoto : onGoto,
     emitGoto: (bounce? bounceGoto: emitGoto)
   }

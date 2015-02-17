@@ -21,5 +21,5 @@ module.exports.setUp = function setUp(app, middleware) {
     middleware.authorizeLiveSession, handlers.livePresentationFiles);
 
   app.get('/:user/presentations/:presentationId/stats', 
-     middleware.isRouteOwner, handlers.getPresentationStats);
+    middleware.isRouteOwner, handlers.getPresentationStats);
 }

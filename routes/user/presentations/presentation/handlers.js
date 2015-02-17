@@ -72,7 +72,7 @@ function editPresentation(req, res) {
   });
 }
 
-function livePresentation(req, res) {
+function livePresentation_orig(req, res) {
   appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
@@ -134,6 +134,79 @@ function livePresentation(req, res) {
     id                  : req.liveSession.id,
     token               : token,
     userSessionId        : req.whitelistEntry.id,
+    date                : req.liveSession.startDate,
+    presentationViewUrl : presentationViewUrl,
+    presenterLiveUrl    : presenterLiveUrl
+  });
+}
+
+function livePresentation(req, res) {
+  appLogger.debug(require('util').inspect(req.whitelistEntry));
+  var role = req.query.role || 'viewer'; //Check user is allowed to have this role
+  if (req.whitelistEntry !== undefined) {
+    role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
+  } else {
+    appLogger.debug('Public session');
+    role = 'viewer'; //Public session and not whitelisted only allows viewers.
+  }
+  var view                = req.query.view || 'presentation'
+    , presentation        = req.liveSession.slides
+    , presentationViewUrl = ''
+    , presentationDir = app.get('uploadDir') + '/' + presentation._id + '/'
+    , presentationFile = presentationDir + presentation.asqFile
+    , presenterLiveUrl    = '';
+
+  //TMP until roles are defined more precisely
+  appLogger.debug('Select template for ' + role + ' ' + view);
+  var renderOpts = (function getTemplate(role, view, presentation) {
+      if (view === 'ctrl' && role !== 'viewer') {
+
+        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                            + presentation._id + '/live/' + req.liveSession.id
+                            + '/?role=' + role+ '&view=presentation';
+
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
+        return {
+          template: 'presenterControl',
+          namespace: 'ctrl', //change to role
+        };
+      } else if (role === 'presenter' || role === 'assistant') {
+        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                            + presentation._id + '/live/' + req.liveSession.id
+                            + '/?role=' + role+ '&view=presentation';
+
+        presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
+        return {
+          template: presentationFile,
+          namespace: 'ctrl',
+          asqScript : '/js/asq-presenter.js'
+        };
+      }
+       presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                            + presentation._id + '/live/' + req.liveSession.id
+                            + '/?role=' + role + '&view=presentation';
+      return {
+          template: presentationFile,
+          namespace: 'folo',
+          asqScript : '/js/asq-viewer.js'
+        };
+  })(role, view, presentation);
+
+  var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
+
+  res.render(renderOpts.template, {
+    username            : req.user? req.user.username :'',
+    title               : presentation.title,
+    host                : ASQ.urlHost,
+    port                : ASQ.urlPort,
+    namespace           : renderOpts.namespace,
+    asqScript           : renderOpts.asqScript,
+    role                : role,
+    presentation        : presentation._id,
+    slideTree           : JSON.stringify(presentation.slidesTree),
+    id                  : req.liveSession.id,
+    token               : token,
+    userSessionId       : req.whitelistEntry.id,
     date                : req.liveSession.startDate,
     presentationViewUrl : presentationViewUrl,
     presenterLiveUrl    : presenterLiveUrl

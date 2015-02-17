@@ -94,6 +94,10 @@ conf = {
   // without a backslash in the end
   uploadDir: './slides',
 
+  // plugins
+  // Plugin directory.Make sure you have the correct permissions.
+  pluginDir: './plugins',
+
   //Logging
   //  Available log level options:
   //    "silly"

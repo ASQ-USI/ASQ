@@ -27,6 +27,14 @@ var questionSchema = abstractQuestionSchema.extend({
                       default: [] }
 });
 
+var questionSchema = new Schema({
+  // TODO: enum questionTypes
+  type : { type: String },
+  data : {type: Schema.Types.Mixed},
+  date_created : {type: Date, default: Date.now()},
+  date_modified : {type: Date, default: Date.now()}
+});
+
 //remove answers before removing a question
 // Do we really want to do this?
 questionSchema.pre('remove', true, function preRemoveHook(next,done) {
@@ -41,21 +49,21 @@ questionSchema.pre('remove', true, function preRemoveHook(next,done) {
 
 //Returns array with solution
 questionSchema.methods.getSolution = function(){
-			var result = [];
-			if (this.questionType === 'multi-choice') {
-        var i, max;
-				for (i = 0, max =this.questionOptions.length; i <  max; i++) {
-			  		result.push(this.questionOptions[i].correct);
-				}
-			} else if (this.correctAnswer) {
-				result.push(this.correctAnswer);
-			} else {
-        //FIXME: is this ok?
-        result = null;
-      }
-      // appLogger.debug('Solution for question ' + this.stem);
-      // appLogger.debug(result);
-			return result;
+	var result = [];
+	if (this.questionType === 'multi-choice') {
+    var i, max;
+		for (i = 0, max =this.questionOptions.length; i <  max; i++) {
+	  		result.push(this.questionOptions[i].correct);
+		}
+	} else if (this.correctAnswer) {
+		result.push(this.correctAnswer);
+	} else {
+    //FIXME: is this ok?
+    result = null;
+  }
+  // appLogger.debug('Solution for question ' + this.stem);
+  // appLogger.debug(result);
+	return result;
 }
 
 questionSchema.methods.getStats = function getStats(sessionId) {

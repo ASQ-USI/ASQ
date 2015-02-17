@@ -30,6 +30,7 @@
 #################
 node_modules/
 slides/
+plugins/
 config/config.*
 !config/config.defaults.js.example
 !config/config.travis.js

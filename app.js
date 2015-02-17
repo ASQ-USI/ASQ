@@ -90,6 +90,8 @@ appLogger.log('Clients limit: ' + clientsLimit);
 /** Configure express */
 app.configure(function() {
 
+  app.set("rootDir", __dirname);
+
   //configure passport
   require('./lib/passport')(passport);
 
@@ -232,6 +234,10 @@ app.get('/stats/getStats', statistics.getStats)
 app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: req.query.questionId})});
 
 routes.setUp(app, middleware);
+
+//load plugins
+var loader = require('./lib/plugin/loader');
+loader.init()
 
 /** HTTP(S) Server */
 if (config.enableHTTPS && !config.usingReverseProxy) {

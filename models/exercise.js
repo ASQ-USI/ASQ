@@ -11,7 +11,7 @@ var mongoose         = require('mongoose')
 
 
 var exerciseSchema = new Schema({
-  questions       : { type: [{ type: ObjectId, ref: 'Question' }], required: true },
+  questions       : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
   assessmentTypes : { type: [{ type: String, enum: assessmentTypes }], default: [] },
   resubmit        : { type: Boolean, default: true }
 });

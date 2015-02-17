@@ -36,6 +36,8 @@ describe("upload.js", function(){
     });
   });
 
+  describe.skip("createPresentationFromZipArchiveElems", function() {});
+
   describe("createPresentationFromZipArchive", function() {
     beforeEach(function(done) {
       this.source = "/path/to/zip/file-name.zip";

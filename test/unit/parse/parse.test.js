@@ -222,6 +222,8 @@ describe("parse.js", function(){
     });
   });
 
+  describe.skip("parseAndPersistElems", function(){});
+
   describe("parseAndPersist", function(){
     before(function(){
       sinon.stub(this.parse, "generateMainFileForRoles").returns(Promise.resolve(true));

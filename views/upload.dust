@@ -79,7 +79,7 @@
 
 				<div class="col-md-12">
 					</p> To replace an existing presentation with a zip file do <br>
-					<pre><code>zip -r - * | curl -i --cookie "{user.cookie}" -F upload=@- {rootUrl}/{user.name}/presentations/(presentation id here)</code></pre>
+					<pre><code>zip -r - * | curl -X PUT -i --cookie "{user.cookie}" -F upload=@- {rootUrl}/{user.name}/presentations/(presentation id here)</code></pre>
 					</p>
 					You can append <code>?preserveSession=true</code> to the URL to preserve the sessions; good for testing on a live presentation
 					
