@@ -72,8 +72,8 @@
     "winston": "~0.7.2"
   },
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.1.X"
+    "node": "^0.12.0",
+    "npm": "^2.0.0"
   },
   "devDependencies": {
     "browserify": "~2.35.1",
