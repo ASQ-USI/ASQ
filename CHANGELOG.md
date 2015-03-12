@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v 0.3.0
+ * node 0.12
+ * ADD: plugin system
+ * ADD: hooks system
+ * ADD: Polymer web components
+ * DROP: asq-microformat (replaced with Polymer Web Components) 
+
 ## v 0.2
  * Needs node v0.11.x
  * CHANGE: microformat was move to a seperate repo: [asq-microformat](https://github.com/ASQ-USI/asq-microformat)
