@@ -1,5 +1,5 @@
 ##Installation
-Make sure you have install ASQ following our [installation guide](doc/install/installation.md)
+Make sure you have install ASQ following our [installation guide](../install/installation.md)
 
 ## Your first presentation
 1. Download an example presentation that contains questions in the asq-microformat from [here](https://github.com/ASQ-USI/asq-microformat/tree/master/examples/SamplePresentation)
