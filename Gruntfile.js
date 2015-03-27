@@ -111,7 +111,7 @@ module.exports = function(grunt) {
           alias: {
             clientSocket: __dirname + '/client/js/client-socket.js',
             dom: __dirname + '/client/js/dom.js',
-            dust: __dirname +'/node_modules/dustjs-linkedin/dist/dust-core.js'
+            // dust: __dirname +'/node_modules/dustjs-linkedin/dist/dust-core.min.js'
           }
         },
         externals:[{
@@ -213,7 +213,7 @@ module.exports = function(grunt) {
           wrapper: "commonjs",
           wrapperOptions: {
             deps: {
-              dust: "dust"
+              dust: "dustjs-linkedin"
             }
           },
           useBaseName: true,
