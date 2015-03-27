@@ -108,11 +108,14 @@ function psesentationsDOMBinder(){
     $('[data-toggle="tooltip"]').tooltip(tooltipOptions);
 
     //isotope
-    var container = document.querySelector('.accordion-inner');
+    var container = document.querySelector('.isotope');
 
     var iso = new Isotope(container, {
       itemSelector: '.thumb',
       filter: ':not(.removed-item)',
+      masonry: {
+        isFitWidth: true
+      },
       sortBy: 'position',
       getSortData : {
         position : function ( $elem ) {

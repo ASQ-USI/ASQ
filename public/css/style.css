@@ -493,6 +493,9 @@ h4 {
   text-align: center;
   width: 100%;
 }
+.isotope {
+  margin: 0 auto;
+}
 .thumb {
   width: 280px;
   position: relative;
@@ -585,7 +588,7 @@ h4 {
 .btn-thumb.btn-thumb-playback {
   font-size: 22px;
 }
-.btn-thumb.btn-start {
+.btn-thumb.btn-start:hover {
   color: #00B25B;
 }
 .btn-thumb.btn-stop {

@@ -149,7 +149,12 @@ module.exports = function(grunt) {
           separator: ';',
         },
         vendor: {
-          src: ['./node_modules/jquery/dist/jquery.js','client/js/vendor/bootstrap.js','client/js/vendor/jquery.hammer.js','client/js/vendor/isotope.pkgd.js'],
+          src: [
+            './node_modules/jquery/dist/jquery.js',
+            'client/js/vendor/bootstrap.js',
+            'client/js/vendor/jquery.hammer.js',
+            'client/js/vendor/isotope.pkgd.js'
+          ],
           dest: 'public/js/vendor.js',
         },
         vendorPresentation: {
@@ -241,7 +246,7 @@ module.exports = function(grunt) {
       },
       client: {
         files: ['client/js/*.js'],
-        tasks: ['webpack:viewerEls', 'webpack:presenterEls'],
+        tasks: ['webpack:client', 'webpack:viewerEls', 'webpack:presenterEls'],
         options: {
           spawn: false
           // interrupt: true

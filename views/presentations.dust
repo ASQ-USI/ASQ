@@ -58,7 +58,7 @@
               </div>
             </div>
             <div class=" accordion-body collapse in" id="course-{idx}">
-              <div class=" accordion-inner">
+              <div class="accordion-inner isotope">
                 {#value}
                   {>"shared/presentationThumb" position=$idx/}
                 {/value}

@@ -1,5 +1,5 @@
 module.exports = (function() {
-  var dust = require("dust");
+  var dust = require("dustjs-linkedin");
   // ../views/shared/alEntry.dust
   (function() {
     dust.register("alEntry", body_0);
@@ -62,7 +62,7 @@ module.exports = (function() {
     function body_0(chk, ctx) {
       return chk.w("<div class=\"thumb\" id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-sort-position=\"").f(ctx.get(["position"], false), ctx, "h").w("\"><a href=\"#remove\" class=\"remove show-on-thumb-hover\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Delete presentation\">&times;</a>").x(ctx.get(["live"], false), ctx, {
         "block": body_1
-      }, {}).w("<div class=\"thumb-img\" style=\"background-image: url('http://placehold.it/260x175')\"></div><div class=\"thumb-controls layout horizontal center\">").x(ctx.get(["live"], false), ctx, {
+      }, {}).w("<div class=\"thumb-img\" style=\"background-image: url('http://placehold.it/280x175')\"></div><div class=\"thumb-controls layout horizontal center\">").x(ctx.get(["live"], false), ctx, {
         "else": body_2,
         "block": body_3
       }, {}).w("<div class=\"flex layout horizontal justified\"><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/settings\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Settings\"><i class=\"fa fa-cog\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/edit/\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Edit presentation\"><i class=\"fa fa-pencil\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/stats\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Show statistics\"><i class=\"fa fa-signal\"> </i></a></div></div><div class=\"thumb-text\"><span class=\"thumb-title\">").f(ctx.get(["title"], false), ctx, "h").w("</span></div><div class=\"thumb-dates layout horizontal justify\"><p class=\"last-session flex\"><span class=\"glyphicon glyphicon-play\"></span> ").x(ctx.get(["lastSession"], false), ctx, {
