@@ -1,6 +1,8 @@
 # CHANGELOG
 
 ## v 0.3.0
+ * presentations view redesign
+ * presentations view: FIX 'invalid date' bug
  * node 0.12
  * ADD: plugin system
  * ADD: hooks system
