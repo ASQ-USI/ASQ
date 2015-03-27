@@ -8,7 +8,7 @@
 'use strict';
 var debug = require('bows')("dom")
   , request = require('superagent')
-  , dust = require('dust')
+  , dust = require('dustjs-linkedin')
   , templates = require('./templates')
   , form = require('./form.js')
   , presenterControl = require('./presenterControl.js')
@@ -79,6 +79,11 @@ function psesentationsDOMBinder(){
   if ('ontouchstart' in document) {
     $('body').removeClass('no-touch');
   }
+
+  var tooltipOptions = {
+    container: 'body',
+    delay: { "show": 600 }
+  };
   
   //iphone/ipad install as web-app pop up
   $(function(){
@@ -99,11 +104,14 @@ function psesentationsDOMBinder(){
       $('#iOSWebAppInfo').popover('show');
     }
 
+    //tooltip
+    $('[data-toggle="tooltip"]').tooltip(tooltipOptions);
+
     //isotope
     var container = document.querySelector('.accordion-inner');
 
     var iso = new Isotope(container, {
-      itemSelector: '.thumb-container',
+      itemSelector: '.thumb',
       filter: ':not(.removed-item)',
       sortBy: 'position',
       getSortData : {
@@ -121,37 +129,14 @@ function psesentationsDOMBinder(){
       $('#iOSWebAppInfo').popover('destroy');
     };
 
-    $documentHammered
-      // flip to show slideshow actions
-      .on('tap', '.flipbox' ,function (event) {
-          event.stopPropagation();
-          $('.flipbox')
-            .not($(this).addClass('flipped'))
-            .removeClass('flipped');
-      })
-
-      // flip to front fa
-      .on('tap',function () {
-        $(".thumb-container .flipbox").removeClass("flipped");
-      })
-
-      //show slideshow title
-      .on('swiperight', '.thumb-info' ,function (event) {
-          $(this).addClass('title')
-      })
-
-      //show slideshow screenshot
-      .on('swipeleft', '.thumb-info' ,function (event) {
-          $(this).removeClass('title')
-      })
-      
+    $documentHammered      
       //remove slideshow
-      .on('tap', '.thumb-container .remove' ,function(event) {
+      .on('tap', '.thumb > .remove' ,function(event) {
         event.preventDefault();
         var shouldDelete = confirm('Are you sure you want to delete this slideshow?')
         if(shouldDelete==false) return;
 
-        var $thumb = $(this).parents('.thumb-container');
+        var $thumb = $(this).parents('.thumb');
 
         // clone thumb in case server responds with failure
         var $clone = $thumb.clone();
@@ -176,16 +161,12 @@ function psesentationsDOMBinder(){
       })
 
     // click handlers for non GET requests
-    // if you add a new button, follow the style below, that is,
-    // check for a specific class instead of attaching a handler
-    // directly on a .thumb-buttons .btn . The reason for this is that
-    // it's easy to messup the 3d rotation click handler
-    .on('tap', '.thumb-buttons a' , function(event) {
+    .on('tap', '.thumb-controls a' , function(event) {
         event.preventDefault();
         var $this = $(this);
 
         // start presentation action
-        if($this.hasClass("start")){
+        if($this.hasClass("btn-start")){
           var username = $this.data('username');
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
@@ -207,7 +188,7 @@ function psesentationsDOMBinder(){
           });
         }
         //stop presentation
-        else if($this.hasClass("stop")){ 
+        else if($this.hasClass("btn-stop")){ 
           var username = $this.data('username');
           var presentationId = $this.data('id');
           var authLevel = $this.data('authlevel');
@@ -225,6 +206,7 @@ function psesentationsDOMBinder(){
               var thumbData = {
                 _id : presentationId,
                 position : $currentThumb.attr('data-sort-position'),
+                title : $currentThumb.find('.thumb-title').html(),
                 params: {
                   username: username
                 },
@@ -236,6 +218,7 @@ function psesentationsDOMBinder(){
                     debug(err)
                   }else{
                     $currentThumb.html($(out).html());
+                    $('#'+ presentationId).find('[data-toggle="tooltip"]').tooltip(tooltipOptions);
                   }
               });    
               // show alert
@@ -284,15 +267,6 @@ function userLiveDOMBinder(){
       $('#iOSWebAppInfo').popover('destroy');
     };
     
-    $('.thumb-container .flipbox').click(function (event) {
-        
-        event.stopPropagation();        
-        $(this).addClass("flipped");
-    });    
-    
-    $(document).click(function () {
-        $(".thumb-container .flipbox").removeClass("flipped");
-    });
   })
 }
 

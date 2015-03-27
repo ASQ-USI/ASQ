@@ -43,8 +43,11 @@ var getPresentationsByCourse = gen.lift(function *getPresentationsByCourseGen(us
         }
         slideshow.lastEdit = moment( slideshow.lastEdit)
             .format('DD.MM.YYYY HH:mm');
-        slideshow.lastSession = moment( slideshow.lastSession)
-            .format('DD.MM.YYYY HH:mm');
+
+        if( slideshow.lastSession){
+          slideshow.lastSession = moment( slideshow.lastSession)
+              .format('DD.MM.YYYY HH:mm');
+        }
         slidesByCourse[slideshow.course].push(slideshow);
       }
     }

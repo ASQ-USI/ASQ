@@ -1,0 +1,198 @@
+/* Ported from https://github.com/Polymer/polymer/blob/master/layout.html
+
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+
+*/ 
+
+
+@import "lib/lesshat.less";
+
+/*******************************
+          Flex Layout
+*******************************/
+
+.layout{
+  .display(flex);
+}
+
+.layout.inline{
+  .display(inline-flex);
+}
+
+.horizontal{
+  .flex-direction(row);
+}
+
+.horizontal.reverse{
+  .flex-direction(row-reverse);
+}
+
+.vertical{
+  .flex-direction(column);
+}
+
+.vertical.reverse{
+  .flex-direction(column-reverse);
+}
+
+.wrap{
+  .flex-wrap(wrap);
+}
+
+.wrap-reverse {
+  .flex-wrap(wrap-reverse);
+}
+
+.flex{
+  .flex(1);
+  .flex-basis(0.000000001px);
+}
+
+.vertical > .flex.auto-vertical{
+  .flex-basis(auto);
+}
+
+.flex.auto{
+  .flex-basis(auto);
+}
+
+.flex.none{
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+.flex.one{
+  .flex(1);
+}
+
+.flex.two{
+  .flex(2);
+}
+
+.flex.thee{
+  .flex(3);
+}
+
+.flex.four{
+  .flex(4);
+}
+
+.flex.five{
+  .flex(5);
+}
+
+.flex.six{
+  .flex(6);
+}
+
+.flex.seven{
+  .flex(7);
+}
+
+.flex.eight{
+  .flex(8);
+}
+
+.flex.nine{
+  .flex(9);
+}
+
+.flex.10{
+  .flex(10);
+}
+
+.flex.eleven{
+  .flex(11);
+}
+
+.flex.twelve{
+  .flex(12);
+}
+
+/* alignment in cross axis */
+.layout.start{
+  .align-items(flex-start);
+}
+
+.layout.center{
+  .align-items(center);
+}
+
+.layout.end{
+  .align-items(flex-end);
+}
+
+/* alignment in main axis */
+
+.layout.start-justified {
+  .justify-content(flex-start);
+}
+.layout.center-justified {
+  .justify-content(center);
+}
+.layout.end-justified {
+  .justify-content(flex-end);
+}
+.layout.around-justified {
+  .justify-content(space-around);
+}
+.layout.justified {
+  .justify-content(space-between);
+}
+
+/* self alignment */
+.self-start {
+  .align-self(flex-start);
+}
+.self-center {
+  .align-self(center);
+}
+.self-end {
+  .align-self(flex-end);
+}
+.self-stretch {
+  .align-self(stretch);
+}
+/*******************************
+          Other Layout
+*******************************/
+.block {
+  display: block;
+}
+/* ie support for hidden */
+.hidden {
+  display: none !important;
+}
+.relative {
+  position: relative;
+}
+.fit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+body.fullbleed {
+  margin: 0;
+  height: 100vh;
+}
+/*******************************
+            Other
+*******************************/
+.segment {
+  display: block;
+  position: relative;
+  .box-sizing(border-box);
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  .box-shadow(0px 0px 0px 1px rgba(0, 0, 0, 0.1));
+  border-radius: 5px 5px 5px 5px;
+}

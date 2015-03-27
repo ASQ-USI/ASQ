@@ -10,7 +10,7 @@
   , io      = require('socket.io-client')
   , $       = require('jquery')
   , request = require('superagent')
-  , dust = require('dust')
+  , dust = require('dustjs-linkedin')
   , templates = require('./templates')
   , moment = require('moment')
   , $body, $list, socket, total;

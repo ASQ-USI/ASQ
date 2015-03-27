@@ -1,5 +1,6 @@
 // mixins
 @import "lib/lesshat.less";
+@import "layout.less";
 
 body{
     background-image: url("../img/pattern5.jpg");
@@ -245,101 +246,69 @@ a.accordion-toggle:hover {
 }
 
 /* -- Style for presentation thumbnails on startpage -- */
-.thumb-container{
-  width: 240px;
-  height: 175px;
-  margin: 12px 24px;
-  float: left;
-  position: relative;
-  z-index: 1;
-}
 
-.flipbox {
-  // box-shadow: 0 3px 6px #000;
-
-  color: #000;
-  position: relative;
-  display: block;
-  height: 100%;
-  width: 100%;
-  .perspective(1400px);
-  .transform-style(preserve-3d);
-  .backface-visibility(hidden);
-
-  > * {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    .rotateY(180deg); //to fight iOS initial transition animation
-    .backface-visibility(hidden);
-    .transform-style(preserve-3d);
-    .transition(transform 0.65s); //if we remoge this then the iOS initial transition bug dissapears
-  }
-
-  > *:last-child {
-    .rotateY(180deg);
-    z-index: 1;
-  }
-
-  > *:first-child {
-    z-index: 2;
-    .rotateY(0deg);
-  }
-
-  &.flipped{
-    > *:last-child{
-      .rotateY(360deg);
-      z-index: 2;
-    }
-
-    > *:first-child {
-      z-index: 1;
-      .rotateY(180deg);
-    }
-  }
-}
-
-.thumb-bg{
-  .100WidthHeight;
-  background-size: cover;
-  background-position: center;
-  background-repeat:  no-repeat;
-  position: absolute;
-  z-index: 1;
-  .transition(opacity 0.3s);
-  box-shadow: inset 3px 3px 0px #ccc,
-  inset -3px -3px 0px #ccc,
-  inset 0px 0px 8px #000;
-}
 h4{
-  color: #ccc;
+  // color: #ccc;
   text-align: center;
-  z-index: 20;
+  // z-index: 20;
   width: 100%;
-  text-shadow: 0px 0px 40px black;
-  display: none;// table-cell;
-  vertical-align: middle;
-  word-wrap: break-word;
-  padding: 10px;
+  // text-shadow: 0px 0px 40px black;
+  // display: none;
+  // vertical-align: middle;
+  // word-wrap: break-word;
+  // padding: 10px;
   }
 
-.thumb-info{
-  display: table;
-  box-shadow: inset 3px 3px 0px #ccc,
-      inset -3px -3px 0px #ccc,
-      inset 0px 0px 8px #000;
-  background-color: #000;
-  text-shadow: black 0px 0px 500px;
+
+
+.thumb{
+  width: 280px;
+  position: relative;
+  padding: 6px 6px 0;
+  margin: 18px 12px;
+  float: left;
+  background: white;
+  .box-shadow( 1px 7px 30px 0px rgba(0, 0, 0, 0.70));
+  color: #040404;
+  font-size: 16px;
+  font-family: "HelveticaNeue-Light";
+
+  .show-on-thumb-hover{
+    transition: opacity 120ms ease-out;
+    pointer-events: none;
+    opacity: 0;
+    z-index:1;
+  }
+
+  > .hide-on-thumb-hover{
+    transition: opacity 120ms ease-out;
+    z-index:2;
+  }
+
+  &:hover {
+    .show-on-thumb-hover{
+      opacity: 1;
+      pointer-events: auto;
+      z-index:2;
+    }
+
+
+    .hide-on-thumb-hover{
+      opacity: 0;
+      z-index:1;
+      pointer-events: none;
+    }
+  }
+}
+
+.thumb-img{
+  height: 175px;
 }
 
 .thumb-live-container {
   position: absolute;
-  top: 8px;
-  right: 4px;
+  top: 12px;
+  right: 10px;
   z-index: 2;
   .perspective(40px);
   .transform-style(preserve-3d);
@@ -359,108 +328,65 @@ h4{
   -webkit-font-smoothing: antialiased;
 }
 
-body.no-touch .thumb-info:hover , .thumb-info.title{
-    .thumb-bg {
-      opacity: 0.1;
-      .hoverBorder;
-      }
-    h4{
-      display: table-cell;
-    }
-  }
+.btn-thumb{
+  display: inline-block;
+  .box-sizing(border-box);
+  .user-select(none);
+  border-radius: 2px;
+  padding: 7px;
+  margin: 2px;
+  vertical-align: middle;
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  color: #888;
+}
+
+.btn-thumb.btn-thumb-playback{
+  font-size: 22px;
+}
+
+.btn-thumb.btn-start{
+  color: #00B25B;
+}
+
+.btn-thumb.btn-stop{
+  color: #CD1800;
+}
+
+.btn-thumb:hover{
+  .box-shadow( 0 1px 0 0 rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.1));
+}
+
+.btn-thumb:active{
+  background-color: rgba(0, 0, 0, 0.05);
+  .box-shadow( inset 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.12));
+}
 
 .thumb-dates{
-  background-color: #ddd;
+  color: #888;
   width:100%;
   height:26px;
-  position: absolute;
-  bottom: 0;
   p{
     font-size: 11px;
-    display: inline;
     padding: 0 4px;
     line-height: 26px;
-    float: left;
-    margin: 0;
   }
   p:last-child{
-    float: right;
+    text-align: right;
   }
 }
-.thumb-buttons-container{
-  display: table;
-  background-color: #efefef;
-  box-shadow: 0px 50px 100px black;
+
+.thumb-text{
   text-align: center;
-  height: 151px;
-  width: 100%;
-}
-.thumb-buttons-container:before {
-  content: '';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-  // margin-right: -0.25em; /* Adjusts for spacing */
-}
-.thumb-buttons{
-  position:relative;
-  display:inline-block;
-  height:auto;
-  vertical-align: middle;
-  .btn-group{
-    margin-bottom:3px;
-    position:relative;
-    display: inline-block;
-    font-size: 0;
-    white-space: nowrap;
-    vertical-align: middle;
-    height:auto;
-    button{
-      width: 140px;
-    }
-    .dropdown-toggle{
-      width:auto;
-    }
-    .btn:first-child.start {
-      width: 130px;
-    }
-
-  }
-  *{
-     font-size: 13px;
-  }
-  .glyphicon{
-    top:1px;
-    line-height:12px;
-  }
-  > .btn, > .btn-group {
-    width: 156px;
-    margin: 3px 0
+  padding: 0 0 5px;
+  .thumb-title{
+    font-size: 1.25em;
   }
 }
 
-.btn-thumb-small.btn {
-  width: 70px;
-}
-
-.btn-thumb-small.btn-group > .btn {
-  width: 60px;
-}
-
-.btn-thumb-small.btn-group > .btn.dropdown-toggle {
-  width: 26px;
-}
-
-.100WidthHeight{
-     width: 100%;
-    height: 100%;
-}
-.hoverBorder{
-  box-shadow: inset 3px 3px 0px #6666CC,inset -3px -3px 0px #6666CC;
-  box-shadow: inset 3px 3px 0px #FFF,inset -3px -3px 0px #FFF;
-}
-
-/* -----  Styles for Langind page ----- */
+/* -----  Styles for Landing page ----- */
 .landhead {
   text-align:center;
   padding: 30px 15px;
@@ -922,26 +848,19 @@ h2{
 
 /* --- Remove button and animation --- */
 .remove{
-
-  background: #000;
-  font-family: Arial;
-  font-size: 20px;
-  color: #FFFFFF;
-  line-height: 20px;
+  font-size: 28px;
+  line-height: 1;
+  color: #333;
   position: absolute;
-  right: -12px;
-  text-align: center;
-  top: -11px;
-  width: 24px;
+  top: 3px;
+  right: 10px;
+  .user-select(none);
   text-decoration: none;
-  -webkit-border-radius: 12px;
-  -moz-border-radius: 12px;
-  border-radius: 12px;
-  border: 2px solid white;
-  -moz-box-shadow: 1px 1px 3px #000;
-  -webkit-box-shadow: 1px 1px 3px #000;
-  box-shadow: 1px 1px 3px #000;
-  }
+}
+
+.remove:hover{
+  text-decoration: none;
+}
 
 
 .removed-item {
