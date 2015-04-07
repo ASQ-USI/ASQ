@@ -20,7 +20,7 @@ An ASQ installation consists of setting up the following components:
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
     sudo apt-get update -y
     sudo apt-get upgrade -y
-    sudo apt-get install -y build-essential git redis-server mongodb-org
+    sudo apt-get install -y build-essential git redis-server mongodb-org unzip
 ### Mac OS X
 First make sure you have [homebrew](http://brew.sh/) installed on your system. Homebrew needs the XCode command line tools, to install them have a look at __step 1__ of this [guide](http://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/). Then install homebrew
 
