@@ -34,6 +34,14 @@ server {
       access_log off;
       expires max;
     }
+    
+    # server static assets for presentations. 
+    # matches: /:user/presentations/:presentationid/live/liveid/*
+    location ~ ^/[a-zA-z]+/presentations/([\da-f]+)/live/[\da-f]+/(.+) {
+      alias /Users/vassilis/Sites/ASQ-USI/ASQ/slides/$1/$2;
+      access_log off;
+      expires max;
+    }
 
     location /errors {
       internal;
