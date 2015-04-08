@@ -19,7 +19,7 @@ module.exports.setUp = function setUp(app, middleware) {
     handlers.validatePutParams, handlers.putPresentation, handlers.uploadPresentation);
 
   // Delete the presentation matching presentationId.
-  app.del('/:user/presentations/:presentationId', middleware.isRouteOwner,
+  app.delete('/:user/presentations/:presentationId', middleware.isRouteOwner,
     handlers.deletePresentation);
 
   // Get the presentation matching presentationId.

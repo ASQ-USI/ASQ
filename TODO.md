@@ -1,6 +1,9 @@
+* loggers: have a look at the option of morgan. Currently just using dev.
+
+
 ##Plugin
 * Log error messages per plugin
-* put shared code for plugins like `getBooleanValueOfBooleanAttribute` to a utilitities package
+* put shared code for plugins like `getBooleanValueOfBooleanAttribute` to a utilities package
 * load registered question type names from db
 * make all functions have a name
 * presentations/presentation/handler: remove old `livePresentation`

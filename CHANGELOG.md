@@ -2,6 +2,7 @@
 
 ## v 0.3.0
  * UPDATE: mongoose 4
+ * UPDATE: express 4
  * presentations view redesign
  * presentations view: FIX 'invalid date' bug
  * node 0.12
