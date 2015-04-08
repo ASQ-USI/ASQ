@@ -20,7 +20,7 @@ describe("presentationCreate.js", function(){
         "course": "General",
         setQuestionsPerSlide: function(){},
         setStatsPerSlide: function(){},
-        saveWithPromise: function(){ return Promise.resolve(this);}
+        save: function(){ return Promise.resolve(this);}
       }
 
     //mock db

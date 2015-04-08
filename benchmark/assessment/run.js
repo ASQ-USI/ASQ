@@ -3,7 +3,6 @@ db = mongoose.createConnection('localhost', 'benchmark');
 
 var gen = require('when/generator')
   , when = require('when')
-  , nodefn = require('when/node/function')
   , models = require('../../models') // load all models
   , mongooseFixtures  = require('../util/mongoose-fixtures')
   , assManager =  require('../../lib/assessment/assessment')
@@ -71,7 +70,7 @@ function *startJobGen(job, exercise, assessor){
 
    try{
     job.status = "active";
-    yield nodefn.lift(job.save.bind(job))();
+    yield job.save();
     
     // console.log("Assigned assessment #%d to user %s",
     // jobCounters[assessor._id] , assessor.screenName);
@@ -120,11 +119,11 @@ function *runGen(){
       });
 
       //persist to mongo
-      answers = yield nodefn.lift(Answer.create.bind(Answer))(answers);
+      answers = yield Answer.create(answers);
 
       //populate question field
       yield when.map(answers, gen.lift(function *populateQuestions(answer){
-        yield nodefn.lift(answer.populate.bind(answer))('question');
+        yield answer.populate('question').execPopulate();
       }));
      
       var startAssessmentCreation = new Date;

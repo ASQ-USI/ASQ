@@ -48,7 +48,7 @@ describe("upload.js", function(){
         "title": "SamplePresentation",
         "owner": "owner-id-123",
         "course": "General",
-        saveWithPromise: sinon.stub().returns(Promise.resolve(this))
+        save: sinon.stub().returns(Promise.resolve(this))
       };
       this.destination = this.uploadDir + '/' + this.presentation._id;
 
@@ -102,7 +102,7 @@ describe("upload.js", function(){
     });
 
     it("should save the presentation", function() {
-      this.presentation.saveWithPromise.called.should.equal(true);
+      this.presentation.save.called.should.equal(true);
     });
 
     it("should call parseAndPersist with the correct id", function() {

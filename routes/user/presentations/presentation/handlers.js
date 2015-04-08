@@ -167,7 +167,8 @@ function livePresentation(req, res) {
 
         presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
-          template: 'presenterControl',
+           // template: 'presenterControl',
+          template: '../client/presenterControlPolymer/app/asq.dust',
           namespace: 'ctrl', //change to role
         };
       } else if (role === 'presenter' || role === 'assistant') {
@@ -193,7 +194,7 @@ function livePresentation(req, res) {
   })(role, view, presentation);
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
-
+console.log(req.user)
   res.render(renderOpts.template, {
     username            : req.user? req.user.username :'',
     title               : presentation.title,
@@ -204,6 +205,7 @@ function livePresentation(req, res) {
     role                : role,
     presentation        : presentation._id,
     slideTree           : JSON.stringify(presentation.slidesTree),
+    presentationId      : presentation._id,
     id                  : req.liveSession.id,
     token               : token,
     userSessionId       : req.whitelistEntry.id,
@@ -264,13 +266,13 @@ function startPresentation(req, res, next) {
           } //FIXME create proper error like in list presentations
           // user.current = (newSession._id)
           // user.liveSessions.addToSet(newSession._id)
-          return nodefn.call(user.save.bind(user))
+          return user.save()
         }
       );
 
       return when.all([
-        nodefn.call(slideshow.save.bind(slideshow)),
-        nodefn.call(newSession.save.bind(newSession)),
+        slideshow.save(),
+        newSession.save(),
         userPromise
       ]);
     }
@@ -309,7 +311,7 @@ function stopPresentation(req, res, next) {
     // we can still return success
     return when.map(sessions, function(session){
       session.endDate = Date.now();
-      return nodefn.lift(session.save.bind(session))();
+      return session.save();
     })
   }).then(
     function onStopped(){

@@ -21,7 +21,7 @@ describe("parse.js", function(){
       "course": "General",
       setQuestionsPerSlide: function(){},
       setStatsPerSlide: function(){},
-      saveWithPromise: function(){ return Promise.resolve(this);}
+      save: function(){ return Promise.resolve(this);}
     }
 
     // careful here this is promisified in parse.js. This means

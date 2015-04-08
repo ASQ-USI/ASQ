@@ -11,6 +11,14 @@ var mongoose      = require('mongoose')
   , appLogger     = require('../lib/logger').appLogger
   , Assessment    = db.model('Assessment');
 
+var answerLogSchema = new Schema({
+  startTime:{},
+  endTime:{},
+  totalTime:{},
+  keystrokes:{},
+  pageactive:{}
+});
+
 var answerSchema = new Schema({
   exercise   : { type: ObjectId, ref: 'Exercise', required: true },
   question   : { type: ObjectId, ref: 'Question', required: true },
@@ -92,13 +100,5 @@ answerSchema.index({session: 1, answeree: 1, exercise: 1 });
 
 appLogger.debug('Loading Answer model');
 mongoose.model('Answer', answerSchema);
-
-var answerLogSchema = new Schema({
-  startTime:{},
-  endTime:{},
-  totalTime:{},
-  keystrokes:{},
-  pageactive:{}
-});
 
 module.exports = mongoose.model('Answer');

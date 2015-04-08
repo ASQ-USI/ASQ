@@ -71,7 +71,7 @@ describe("asqElementsParser.js", function(){
   describe.skip("prototype.injectServerInfo()", function(){});
   describe.skip("prototype.injectScripts()", function(){});
 
-  describe("prototype.assignIdsToAsqElements()", function(){});
+  describe("prototype.assignIdsToAsqElements()", function(){;
 
     beforeEach(function(){
       this.asqParser = new this.AsqElementsParser(this.asq);
@@ -100,7 +100,7 @@ describe("asqElementsParser.js", function(){
       var $els = this.$("asq-stem");
       $els.each(function(idx, el){
         expect(this.$(el).attr('uid')).to.not.exist();
-      }.bind(this));;
+      }.bind(this));
 
       $els = this.$("asq-option");
       $els.each(function(idx, el){
@@ -166,8 +166,3 @@ describe("asqElementsParser.js", function(){
   });
   
 });
-
-
-
-
-
