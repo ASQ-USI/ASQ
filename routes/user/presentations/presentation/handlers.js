@@ -3,6 +3,7 @@
     @description Handlers for a presentation resource
 */
 var cheerio     = require('cheerio')
+  , path        = require('path') 
   , pfs         = require('promised-io/fs')
   , lib         = require('../../../../lib')
   , sockAuth    = require('../../../../lib/socket/authentication')
@@ -223,7 +224,7 @@ function livePresentationFiles(req, res) {
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
-    res.sendfile(presentation.path + file);
+    res.sendFile( presentation.path + file, {root: app.get('rootDir')});
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }
