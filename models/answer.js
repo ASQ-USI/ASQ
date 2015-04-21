@@ -31,7 +31,7 @@ var answerSchema = new Schema({
   logData    : [answerLogSchema]
 });
 
-answerSchema.index({session: 1, answeree: 1, exercise: 1 });
+answerSchema.index({ session: 1, answeree: 1, exercise: 1, submitDate: 1 });
 
 
 // Saves an automatic assessment for a user submited answer asynchronously
