@@ -4,11 +4,12 @@ var check   = require('validator').check
 , ObjectId  = Schema.ObjectId
 , appLogger = require('../lib/logger').appLogger;
 
-var roles = {}
+var roles = {};
 roles.banned    = 0;
 roles.viewer    = 1;
 roles.assistant = 2;
 roles.presenter = 3;
+roles.ghost = 4;
 
 
 var whitelistEntrySchema = new Schema({

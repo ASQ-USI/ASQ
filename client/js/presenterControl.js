@@ -60,7 +60,7 @@ module.exports = function presenterControl(){
 	    /**
 	     * Update the viewers count when users connect or disconnect.
 	     */
-	    socket.on('asq:folo-connected', onASQFoloConnected);
+	    socket.on('asq:connected-clients', onASQConnectedClients);
 
 	    /**
 	     Handle socket event 'new'
@@ -115,18 +115,18 @@ module.exports = function presenterControl(){
 	  });
 	}
 
-	function onASQFoloConnected(event){
+	function onASQConnectedClients(event){
 	  updateViewersCount(event);
 	}
 
 	function updateViewersCount(event) {
-		// var clients = event.connectedClients;
+		// var clients = event.connectedViewers;
 		// if (typeof clients !== 'number') { return; }
 		// var newText = clients + (clients > 1 ? 'viewers' : viewer )''
 		// $('.connected-viewers-number').text(newText)
 	  console.log('viewer count update')
-	  if (typeof event.connectedClients !== 'number') { return; }
-	  var connectedViewers = event.connectedClients;
+	  if (typeof event.connectedViewers !== 'number') { return; }
+	  var connectedViewers = event.connectedViewers;
 	  // Draw icons for the first 50 viewers
 	  var lim = connectedViewers < 50 ? connectedViewers : 50;
 	  $('.connected-viewers-icons').empty();

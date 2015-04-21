@@ -66,7 +66,9 @@ function connect(host, port, session, mode, token) {
     /**
      * Update the viewers count when users connect or disconnect.
      */
+     onASQFoloConnected
     socket.on('asq:folo-connected', onASQFoloConnected);
+    socket.on('asq:connected-clients', onASQConnectedClients);
 
     socket.on('asq:goto', function(evt) {
       debug('asq:goto received');
@@ -151,6 +153,9 @@ function onASQFoloConnected(event){
   eventBus.emit('asq:folo-connected',  {
     user: { token: event.token, nickname : event.screenName }
   });
+}
+
+function onASQConnectedClients(event){
   updateViewersCount(event);
 }
 

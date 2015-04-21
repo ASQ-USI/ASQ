@@ -183,7 +183,16 @@ function livePresentation(req, res) {
           namespace: 'ctrl',
           asqScript : '/js/asq-presenter.js'
         };
-      }
+      } else if (role === 'ghost') {
+       presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                            + presentation._id + '/live/' + req.liveSession.id
+                            + '/?role=' + role + '&view=presentation';
+      return {
+          template: presentationFile,
+          namespace: 'ghost',
+          asqScript : '/js/asq-viewer.js'
+        };
+      } else { //viewer
        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role + '&view=presentation';
@@ -192,10 +201,12 @@ function livePresentation(req, res) {
           namespace: 'folo',
           asqScript : '/js/asq-viewer.js'
         };
+      }
+
   })(role, view, presentation);
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
-console.log(req.user)
+
   res.render(renderOpts.template, {
     username            : req.user? req.user.username :'',
     title               : presentation.title,
