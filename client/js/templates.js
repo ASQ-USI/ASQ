@@ -60,42 +60,63 @@ module.exports = (function() {
     dust.register("presentationThumb", body_0);
 
     function body_0(chk, ctx) {
-      return chk.w("<div class=\"thumb\" id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-sort-position=\"").f(ctx.get(["position"], false), ctx, "h").w("\"><a href=\"#remove\" class=\"remove show-on-thumb-hover\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Delete presentation\">&times;</a>").x(ctx.get(["live"], false), ctx, {
+      return chk.w("<div class=\"thumb").nx(ctx.get(["thumbnails"], false), ctx, {
         "block": body_1
-      }, {}).w("<div class=\"thumb-img\" style=\"background-image: url('http://placehold.it/280x175')\"></div><div class=\"thumb-controls layout horizontal center\">").x(ctx.get(["live"], false), ctx, {
-        "else": body_2,
+      }, {}).w("\" id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-sort-position=\"").f(ctx.get(["position"], false), ctx, "h").w("\" ><a href=\"#remove\" class=\"remove show-on-thumb-hover\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Delete presentation\">&times;</a>").x(ctx.get(["live"], false), ctx, {
+        "block": body_2
+      }, {}).w("<div class=\"thumb-wrapper\">").x(ctx.get(["thumbnails"], false), ctx, {
         "block": body_3
+      }, {}).w("</div><div class=\"thumb-controls layout horizontal center\">").x(ctx.get(["live"], false), ctx, {
+        "else": body_5,
+        "block": body_6
       }, {}).w("<div class=\"flex layout horizontal justified\"><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/settings\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Settings\"><i class=\"fa fa-cog\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/edit/\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Edit presentation\"><i class=\"fa fa-pencil\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/stats\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Show statistics\"><i class=\"fa fa-signal\"> </i></a></div></div><div class=\"thumb-text\"><span class=\"thumb-title\">").f(ctx.get(["title"], false), ctx, "h").w("</span></div><div class=\"thumb-dates layout horizontal justify\"><p class=\"last-session flex\"><span class=\"glyphicon glyphicon-play\"></span> ").x(ctx.get(["lastSession"], false), ctx, {
-        "else": body_4,
-        "block": body_5
+        "else": body_7,
+        "block": body_8
       }, {}).w("</p><p class=\"last-edit flex\"><span class=\"glyphicon glyphicon-pencil\" ></span> ").f(ctx.get(["lastEdit"], false), ctx, "h").w("</p></div>  </div>");
     }
     body_0.__dustBody = !0;
 
     function body_1(chk, ctx) {
-      return chk.w("<div class='thumb-live-container hide-on-thumb-hover'><div class='thumb-live'>live</div></div>");
+      return chk.w(" no-steps");
     }
     body_1.__dustBody = !0;
 
     function body_2(chk, ctx) {
-      return chk.w("<div class=\"flex layout horizontal justified\"><a class=\"btn-thumb show-on-thumb-hover\" href=\"#\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Public Presentation\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"public\"><i class=\"fa fa-group\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"#\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Anonymous Presentation\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"anonymous\"><i class=\"fa fa-user\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"#\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Private Presentation\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"private\"><i class=\"fa fa-user-secret\"></i></a></div><a class=\"btn-thumb btn-start btn-thumb-playback\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Start presentation\" href=\"#\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"public\"><i class=\"fa fa-play\"></i></a>");
+      return chk.w("<div class='thumb-live-container hide-on-thumb-hover'><div class='thumb-live'>live</div></div>");
     }
     body_2.__dustBody = !0;
 
     function body_3(chk, ctx) {
-      return chk.w("<div class=\"flex\"><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/live/").f(ctx.get(["live"], false), ctx, "h").w("/?role=presenter&view=ctrl\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"go to presenter control\"><i class=\"fa fa-dashboard\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/live/").f(ctx.get(["live"], false), ctx, "h").w("/?role=presenter&view=presentation\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Join as presenter\"><i class=\"fa fa-graduation-cap\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/live/").f(ctx.get(["live"], false), ctx, "h").w("/?role=viewer&view=presentation\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Join as viewer\"><i class=\"fa fa-group\"></i></a></div><a class=\"btn-thumb btn-stop btn-thumb-playback\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Stop presentation\" href=\"#\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"public\"><i class=\"fa fa-stop\"></i></a>");
+      return chk.w("<div class=\"show-on-thumb-hover thumb-nav horizontal layout center-justified\"><div><button class=\"thumb-nav-btn thumb-nav-prev-btn\"><span class=\"fa fa-caret-left\"></span></span></button><button class=\"thumb-nav-btn thumb-nav-next-btn\"><span class=\"fa fa-caret-right\"></span></button></div></div><div style=\"position:relative; overflow:hidden;\">").s(ctx.get(["thumbnails"], false), ctx, {
+        "block": body_4
+      }, {}).w("</div>");
     }
     body_3.__dustBody = !0;
 
     function body_4(chk, ctx) {
-      return chk.w("No sessions yet");
+      return chk.f(ctx.getPath(true, []), ctx, "h", ["s"]);
     }
     body_4.__dustBody = !0;
 
     function body_5(chk, ctx) {
-      return chk.f(ctx.get(["lastSession"], false), ctx, "h");
+      return chk.w("<div class=\"flex layout horizontal justified\"><a class=\"btn-thumb show-on-thumb-hover\" href=\"#\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Public Presentation\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"public\"><i class=\"fa fa-group\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"#\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Anonymous Presentation\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"anonymous\"><i class=\"fa fa-user\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"#\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Private Presentation\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"private\"><i class=\"fa fa-user-secret\"></i></a></div><a class=\"btn-thumb btn-start btn-thumb-playback\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Start presentation\" href=\"#\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"public\"><i class=\"fa fa-play\"></i></a>");
     }
     body_5.__dustBody = !0;
+
+    function body_6(chk, ctx) {
+      return chk.w("<div class=\"flex\"><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/live/").f(ctx.get(["live"], false), ctx, "h").w("/?role=presenter&view=ctrl\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"go to presenter control\"><i class=\"fa fa-dashboard\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/live/").f(ctx.get(["live"], false), ctx, "h").w("/?role=presenter&view=presentation\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Join as presenter\"><i class=\"fa fa-graduation-cap\"></i></a><a class=\"btn-thumb show-on-thumb-hover\" href=\"/").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("/presentations/").f(ctx.get(["_id"], false), ctx, "h").w("/live/").f(ctx.get(["live"], false), ctx, "h").w("/?role=viewer&view=presentation\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Join as viewer\"><i class=\"fa fa-group\"></i></a></div><a class=\"btn-thumb btn-stop btn-thumb-playback\"  data-toggle=\"tooltip\" data-placement=\"top\" title=\"Stop presentation\" href=\"#\" data-username=\"").f(ctx.getPath(false, ["params", "username"]), ctx, "h").w("\" data-id=\"").f(ctx.get(["_id"], false), ctx, "h").w("\" data-authLevel=\"public\"><i class=\"fa fa-stop\"></i></a>");
+    }
+    body_6.__dustBody = !0;
+
+    function body_7(chk, ctx) {
+      return chk.w("No sessions yet");
+    }
+    body_7.__dustBody = !0;
+
+    function body_8(chk, ctx) {
+      return chk.f(ctx.get(["lastSession"], false), ctx, "h");
+    }
+    body_8.__dustBody = !0;
     return body_0;
   })();
 

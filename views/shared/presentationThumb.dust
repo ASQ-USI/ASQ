@@ -1,4 +1,4 @@
-<div class="thumb" id="{_id}" data-sort-position="{position}">
+<div class="thumb{^thumbnails} no-steps{/thumbnails}" id="{_id}" data-sort-position="{position}" >
 
   <a href="#remove" class="remove show-on-thumb-hover" data-toggle="tooltip" data-placement="left" title="Delete presentation">&times;</a>
 
@@ -9,7 +9,19 @@
    {/live}
 
 
-  <div class="thumb-img" style="background-image: url('http://placehold.it/280x175')">
+  <div class="thumb-wrapper">
+  {?thumbnails}
+  <div class="show-on-thumb-hover thumb-nav horizontal layout center-justified">
+    <div>
+      <button class="thumb-nav-btn thumb-nav-prev-btn"><span class="fa fa-caret-left"></span></span></button><button class="thumb-nav-btn thumb-nav-next-btn"><span class="fa fa-caret-right"></span></button></div>
+  </div>
+  <div style="position:relative; overflow:hidden;">
+    {#thumbnails}
+      {.|s}
+    {/thumbnails}
+    </div>
+  {/thumbnails}
+  
   </div>
 
   <div class="thumb-controls layout horizontal center">

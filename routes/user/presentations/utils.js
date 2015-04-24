@@ -16,7 +16,7 @@ var getPresentationsByCourse = gen.lift(function *getPresentationsByCourseGen(us
     var sessionPromise = Session.getLiveSessions(userId);
     var slideshowPromise = Slideshow.find({
       owner : userId
-    }, '_id title course lastSession lastEdit').exec();
+    }, '_id title course lastSession lastEdit thumbnails fontFaces').exec();
 
     var results = yield when.all([sessionPromise, slideshowPromise])
     var sessions =  results[0];

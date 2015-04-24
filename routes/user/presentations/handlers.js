@@ -113,9 +113,8 @@ function listPresentations(req, res, next) {
 
 var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
   try{
-
     var owner_id = req.user._id
-    , name = req.files.upload.name
+    , name = req.body.title //if name is null of undefined it won't be udpated
     , zipPath = req.files.upload.path;
 
     var slideshow = yield Slideshow.findById(req.params.presentationId).exec();
@@ -165,7 +164,7 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
 var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, next){
   try{
     var owner_id = req.user._id
-      , name = req.files.upload.name
+      , name = req.body.title || req.files.upload.name
       , zipPath = req.files.upload.path;
 
     var slideshow = yield upload.createPresentationFromZipArchiveElems( owner_id, name, zipPath);

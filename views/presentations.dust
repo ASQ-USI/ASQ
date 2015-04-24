@@ -2,8 +2,20 @@
 <html lang="en">
   <head>
     {>htmlHead/}
-    
+    <link rel="stylesheet" href="">
+       <script src="/webcomponentsjs/webcomponents.min.js"></script>
+      <link rel="import" href="/asq-elements/asq-elements.html">
     <title>ASQ - My Presentations</title>
+
+      {?slidesByCourses}
+        {@JSONIter:slidesByCourses username=username}
+          {#value}
+            {#fontFaces}
+              <style>{.|s}</style>
+            {/fontFaces}
+          {/value}
+        {/JSONIter}
+      {/slidesByCourses}
   </head>
 
   <body class="no-touch" data-view-name="presentations">

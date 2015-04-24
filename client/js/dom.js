@@ -6,6 +6,7 @@
 * a good place to setup the form bindings as well.
 */
 'use strict';
+
 var debug = require('bows')("dom")
   , request = require('superagent')
   , dust = require('dustjs-linkedin')
@@ -87,6 +88,8 @@ function psesentationsDOMBinder(){
   
   //iphone/ipad install as web-app pop up
   $(function(){
+    var iso; //the isotope container
+
     if(!window.navigator.standalone && navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false ){
       $('#iOSWebAppInfo').popover({
         placement: "top",
@@ -107,23 +110,109 @@ function psesentationsDOMBinder(){
     //tooltip
     $('[data-toggle="tooltip"]').tooltip(tooltipOptions);
 
-    //isotope
-    var container = document.querySelector('.isotope');
+    var navThumSteps = function($thumb, direction) {
+      var activeThumbStep = parseInt($thumb[0].dataset.activeThumbStep);
+      var $thumbSteps = $thumb.find('.thumb-step');
+      var l = $thumbSteps.length;
 
-    var iso = new Isotope(container, {
-      itemSelector: '.thumb',
-      filter: ':not(.removed-item)',
-      masonry: {
-        isFitWidth: true
-      },
-      sortBy: 'position',
-      getSortData : {
-        position : function ( $elem ) {
-          return parseInt( $elem.dataset.sortPosition, 10 );
-        }
+      $thumbSteps.eq(activeThumbStep).hide();
+
+      //prev button
+      if(direction == "prev"){
+        activeThumbStep = (--activeThumbStep >= 0) ? activeThumbStep : (l-1);
+      }else{ //next button
+        activeThumbStep = (++activeThumbStep < l) ? activeThumbStep : 0;
       }
+      $thumb[0].dataset.activeThumbStep = activeThumbStep;
+      $thumbSteps.eq(activeThumbStep).show();
+    }
+
+
+    // Thumbs may contain polymer elements which take some time to render.
+    // Layout operations should occur after polymer has initialized
+    window.addEventListener('polymer-ready', function(e) {
+    
+    //resize thumbs
+      var thumbGenerator = require('impress-asq-fork-asq-adapter').impressThumbGenerator();
+      var thumbs = document.querySelectorAll('.thumb-step');
+
+      [].forEach.call(thumbs, function resizeThumb(thumb){
+        thumbGenerator.resizeThumb(thumb, {width: 280, height: 175});
+      });
+
+      // start isotope when thumbs are resized
+      var container = document.querySelector('.isotope');
+
+      iso = new Isotope(container, {
+        itemSelector: '.thumb',
+        filter: ':not(.removed-item)',
+        masonry: {
+          isFitWidth: true
+        },
+        sortBy: 'position',
+        getSortData : {
+          position : function ( $elem ) {
+            return parseInt( $elem.dataset.sortPosition, 10 );
+          }
+        }
+      });
+
+      //hide all thumbs but the first one
+      $('.thumb').each(function(){
+        this.dataset.activeThumbStep = 0;
+        $(this).find('.thumb-step').hide().eq(0).show();
+      });
+    });
+  
+    // store focused thumb
+    $(document).on('click', function(evt){ 
+      $('.thumb').each(function(){
+         this.setAttribute('hasFocus', false);
+      });
     });
 
+    
+    $(document).on('click', '.thumb', function(evt){ 
+      $('.thumb').each(function(){
+         this.setAttribute('hasFocus', false);
+      });
+      evt.stopPropagation();
+      evt.currentTarget.setAttribute('hasFocus', true);
+    })
+
+    //navigate thumbs with keyboard
+    $("body").keydown(function(e) {
+      var $focusedThumb = $('.thumb[hasFocus=true]');
+      if(! $focusedThumb.length) return;
+
+      var direction = "";
+      if(e.keyCode == 37) { // left
+        direction = "prev";
+      }
+      else if(e.keyCode == 39) { // right
+        direction = "next";
+      }
+
+      navThumSteps($focusedThumb, direction);
+    });
+
+
+    $(document).on('click', '.thumb-nav-btn', function(evt){
+      var $btn = $(evt.currentTarget);
+
+      var $thumb = $btn.parents('.thumb').eq(0);
+      if(! $thumb) return;
+
+      var direction = "";
+      //prev button
+      if($btn.hasClass('thumb-nav-prev-btn')){
+        direction = "prev";
+      }else{ //next button
+        direction = "next";
+      }
+
+      navThumSteps($thumb, direction);
+    });
 
     var $documentHammered = $(document).hammer();
     

@@ -530,8 +530,47 @@ h4 {
   z-index: 1;
   pointer-events: none;
 }
-.thumb-img {
-  height: 175px;
+.thumb-wrapper {
+  position: relative;
+  height: 210px;
+}
+.thumb.no-steps .thumb-wrapper {
+  background-image: url('/img/presentation.jpg');
+  background-size: cover;
+}
+.thumb-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 270px;
+  height: 30px;
+  z-index: 2;
+}
+.thumb-nav-btn {
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  outline: none;
+  border: 1px solid #aaa;
+  color: #aaa;
+  font-weight: bold;
+  font-family: 'Times New Roman';
+  line-height: 12px;
+  padding: 4px 8px;
+}
+.thumb-nav-btn:hover {
+  background: rgba(225, 225, 225, 0.6);
+}
+.thumb-nav-btn:active {
+  background: rgba(170, 170, 170, 0.6);
+}
+.thumb-nav-prev-btn {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+  border-right: none;
+}
+.thumb-nav-next-btn {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
 }
 .thumb-live-container {
   position: absolute;

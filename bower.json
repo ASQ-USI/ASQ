@@ -1,0 +1,19 @@
+{
+  "name": "ASQ",
+  "version": "0.2.0-pre2",
+  "authors": [
+    "Vasileios Triglianos <triglian@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "http://asq.inf.usi.ch",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "asq-elements": "ASQ-USI/asq-elements#master"
+  }
+}

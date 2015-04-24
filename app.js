@@ -125,6 +125,7 @@ app.use(multer({ dest: app.get('uploadDir')}))
 
 //static files
 app.use(serveStatic(path.join(__dirname, '/public/'), {'index': 'false'}));
+app.use(serveStatic(path.join(__dirname, '/bower_components/'), {'index': 'false'}));
 app.use(serveStatic(path.join(__dirname, '/client/presenterControlPolymer/public/'), {'index': 'false'}));
 app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
 
