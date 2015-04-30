@@ -22,6 +22,12 @@ var statsPerSlideSchema = new Schema({
   statQuestions : { type: [{ type: ObjectId, ref: 'Question'}], required: true }
 }, { _id: false });
 
+var defaultConf = {
+  maxnumsubmissions : 1,
+  flow              : 'flow',
+  assessment        : 'auto'
+};
+
 var slideshowSchema = new Schema({
   title             : { type: String, required: true },
   course            : { type: String, required: true, default: 'General' },
@@ -40,8 +46,10 @@ var slideshowSchema = new Schema({
   statsPerSlide     : { type: [statsPerSlideSchema] },
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
-  lastEdit          : { type: Date, default: Date.now }
+  lastEdit          : { type: Date, default: Date.now },
+  configuration     : { type: Schema.Types.Mixed, default: defaultConf }
 });
+
 
 //get the path of the slideshow. Usefull to server static files
 slideshowSchema.virtual('path').get(function() {
