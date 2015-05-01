@@ -19,8 +19,13 @@ var exerciseSchema = new Schema({
 
 
 exerciseSchema.virtual('allowResubmit').get(function allowResubmit() {
-  return this.assessmentTypes.indexOf('self') === -1 &&
-    this.assessmentTypes.indexOf('peer') > -1 && this.resubmit;
+  // return this.assessmentTypes.indexOf('self') === -1 &&
+  //   this.assessmentTypes.indexOf('peer') > -1 && this.resubmit;
+  //   
+  // if (this.assessmentTypes.indexOf('self') === -1 && 
+  //   this.assessmentTypes.indexOf('peer') > -1) {
+  //   return this.maxnumsubmissions
+  // }
 })
 
 exerciseSchema.set('toObject', { virtuals: true });

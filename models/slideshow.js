@@ -24,8 +24,8 @@ var statsPerSlideSchema = new Schema({
 
 var defaultConf = {
   maxnumsubmissions : 1,
-  flow              : 'flow',
-  assessment        : 'auto'
+  slideflow         : 'follow',
+  assessment        : 'self'
 };
 
 var slideshowSchema = new Schema({
