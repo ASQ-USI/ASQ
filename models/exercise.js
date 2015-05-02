@@ -14,17 +14,17 @@ var exerciseSchema = new Schema({
   questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
   assessmentTypes   : { type: [{ type: String, enum: assessmentTypes }], default: [] },
   resubmit          : { type: Boolean, default: true },
-  maxnumsubmissions : { type: Number, default: 1}
+  maxNumSubmissions : { type: Number, default: 1}
 });
 
 
 exerciseSchema.virtual('allowResubmit').get(function allowResubmit() {
-  // return this.assessmentTypes.indexOf('self') === -1 &&
-  //   this.assessmentTypes.indexOf('peer') > -1 && this.resubmit;
-  //   
+  return this.assessmentTypes.indexOf('self') === -1 &&
+    this.assessmentTypes.indexOf('peer') > -1 && this.resubmit;
+    
   // if (this.assessmentTypes.indexOf('self') === -1 && 
   //   this.assessmentTypes.indexOf('peer') > -1) {
-  //   return this.maxnumsubmissions
+  //   return this.maxNumSubmissions
   // }
 })
 

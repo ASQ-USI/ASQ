@@ -23,7 +23,7 @@ var statsPerSlideSchema = new Schema({
 }, { _id: false });
 
 var defaultConf = {
-  maxnumsubmissions : 1,
+  maxNumSubmissions : 1,
   slideflow         : 'follow',
   assessment        : 'self'
 };
