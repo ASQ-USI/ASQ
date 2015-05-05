@@ -468,6 +468,19 @@ var transform = coroutine(function* transform(slides) {
   return data.reverse();
 });
 
+var isSlideshowActiveByUser = coroutine(function* isSlideshowActiveByUser(slideshowId, userId) {
+  var query = {
+    'presenter': userId,
+    'slides': slideshowId,
+    'endDate': null
+  }
+  var sesstions = yield Session.find(query).exec();
+  if ( !sesstions || sesstions.length == 0 ) {
+    return { flag: false }
+  }
+  return { flag: true, sessions: sesstions }
+});
+
 var configurePresentation = coroutine(function* configurePresentation(req, res) {
   console.log('configurePresentation');
   var slideshowId = req.params.presentationId;
@@ -483,16 +496,26 @@ var configurePresentation = coroutine(function* configurePresentation(req, res) 
 
   var slideConf = yield getConf(slideshow.configuration);
   var data = yield transform(slideshow.exercisesPerSlide);
-
   var username = req.user.username;
 
-  res.render('presentationSettings', {
+  var param = {
     title: slideshow.title,
     username: username,
     slideshowId: slideshowId,
     slideConf: slideConf,
-    data : data
-  });
+    data: data
+  }
+
+  // Whether the slideshow is currently active(running) by this user
+  var result = yield isSlideshowActiveByUser(slideshowId, req.user._id);
+  if ( !result.flag ) {
+    res.render('presentationSettings', param);
+  } else {
+    var sessionId = result.sessions[0]._id;
+    var livelink = ['/', req.user.username,'/presentations/', slideshowId, '/live/', sessionId, '/?role=presenter&view=presentation'].join('');
+    param.livelink = livelink;
+    res.render('presentationSettingsRuntime', param);
+  }
    
 });
 
