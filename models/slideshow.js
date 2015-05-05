@@ -10,7 +10,9 @@ var mongoose = require('mongoose')
 , coroutine  = Promise.coroutine
 , appLogger  = require('../lib/logger').appLogger
 , Question   = db.model('Question')
-, User       = db.model('User');
+, User       = db.model('User')
+, assessmentTypes = require('./assessmentTypes.js')
+, slideflowTypes = require('./slideflowTypes.js') ;
 
 var questionsPerSlideSchema = new Schema({
   slideHtmlId : { type: String, required: true },
@@ -23,10 +25,16 @@ var statsPerSlideSchema = new Schema({
 }, { _id: false });
 
 var defaultConf = {
-  maxNumSubmissions : 1,
-  slideflow         : 'follow',
-  assessment        : 'self'
+  maxNumSubmissions : { type: Number, default: 1 },
+  slideflow         : { type: String, enum: slideflowTypes, default: 'follow'},
+  assessment        : { type: String, enum: assessmentTypes, default: 'self' }
 };
+
+var defaultConfType = {
+  maxNumSubmissions : { type: "Number" },
+  slideflow  : { type: "String", options: slideflowTypes },
+  assessment : { type: "String", options: assessmentTypes }
+}
 
 var slideshowSchema = new Schema({
   title             : { type: String, required: true },
