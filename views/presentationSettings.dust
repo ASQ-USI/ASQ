@@ -15,7 +15,7 @@
       <!-- Show notification fo user feedback based on query alert and type-->
       {?alert}
       <div class="alert alert-{type}">
-          {alert}
+          {message}
       </div>
       {/alert}
 
@@ -48,40 +48,46 @@
               {/slideConf}
             </div>  
             <button type="submit" class="btn btn-primary">Save</button>
-          <form>   
+          </form>   
         <section>         
 
       <section id="exercisesconf">
         <h3>Exercises' configurations</h3>
-        <form action="/{username}/presentations/{slideshowId}/settings/save" method="post">
+        
           <div>  
           {#data}
             <p>{index}
 
             <table class="table">
             {#exercises}
+              
               <tr>
                 <td>Exercise Uid</td>
                 {#names}<td>{.}</td>{/names}
+                <td></td>
               </tr>
+              
               <tr>
-                <td>{uid}</td>
+                <form action="/{username}/presentations/{slideshowId}/settings/save/exerciseconf" method="post">
+                <td>{uid} <input type="hidden" name="uid" class="form-control" value={uid}></td>
                 <td>
                   <div class="form-group">
-                    <input type="text" class="form-control" value={value0}>
+                    <input type="number" name="max" class="form-control" value={maxNumSubmissions}>
                   </div>
                 </td>
                 <td>
-                  <input type="checkbox" checked="{value1}">
+                <input type="checkbox" name="confidence" {?confidence}checked{/confidence} value="">
                 </td>
+                  <td><button type="submit" class="btn btn-primary">Save</button></td>
+                </form>
               </tr>
+              
             {/exercises}
             </table>
 
           {/data}
           </div>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+          
       </section>
 
     </div>

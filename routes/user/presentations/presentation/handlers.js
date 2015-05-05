@@ -452,8 +452,8 @@ var transform = coroutine(function* transform(slides) {
         var exercise = {};
         exercise.uid = slides[key][i]; 
         exercise.names = ['maxNumSubmissions', 'confidence'];
-        exercise.value0 = exObject.maxNumSubmissions;
-        exercise.value1 = true;
+        exercise.maxNumSubmissions = exObject.maxNumSubmissions;
+        exercise.confidence = exObject.confidence;
         slide.exercises.push(exercise);
       }
       data.push(slide)
@@ -490,9 +490,25 @@ var configurePresentation = coroutine(function* configurePresentation(req, res) 
    
 });
 
-var configurePresentationSave = coroutine(function* configurePresentationSave(req, res) {
-  console.log('configurePresentationSave');
-  res.send('Saved!');
+var configurePresentationSaveExercise = coroutine(function* configurePresentationSaveExercise(req, res) {
+  console.log('configurePresentationSave', req.body);
+  var exerciseId = req.body.uid;
+  var slideshowId = req.params.presentationId;
+  // TODO: not to hardcode
+  // 
+  var conf = {
+    maxNumSubmissions: Number(req.body.max) ? Number(req.body.max) : 0,
+    confidence: req.body.hasOwnProperty('confidence')
+  }
+
+  var state = yield Conf.updateExerciseConf(slideshowId, exerciseId, conf);
+
+  if ( state ) {
+    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
+    res.redirect(url);
+  } else {
+    res.send(req.body);
+  }
 });
 
 var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
@@ -500,7 +516,8 @@ var configurePresentationSaveSlideshow = coroutine(function* configurePresentati
   var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
 
   if ( state ) {
-    res.redirect('/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/');
+    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
+    res.redirect(url);
   } else {
     res.send(req.body);
   }
@@ -519,6 +536,6 @@ module.exports = {
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
   configurePresentation     : configurePresentation,
-  configurePresentationSave : configurePresentationSave,
+  configurePresentationSaveExercise : configurePresentationSaveExercise,
   configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
 }
