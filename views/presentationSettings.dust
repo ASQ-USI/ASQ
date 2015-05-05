@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {>htmlHead/}
+    <title>ASQ - Presentation Settings</title>
+  </head>
+  <body>
+
+    <!--   top menu -->
+    {>menu/}
+
+    <!--   Content area   -->
+    <div class="container" id="mainContainer">
+
+      <!-- Show notification fo user feedback based on query alert and type-->
+      {?alert}
+      <div class="alert alert-{type}">
+          {alert}
+      </div>
+      {/alert}
+
+      <h1>{title}</h1>
+
+      <div>
+        <section id="slideshowconf">
+          <h3 >Slideshow configurations</h3>
+          <form action="/{username}/presentations/{slideshowId}/settings/save/slideshowconf" method="post">              
+            <div class="table">
+              {#slideConf}
+              <div class="row">
+                <div class="col-md-3">{key}</div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    {?value}
+                      <input id="{id}" name={key} type={type} class="form-control" value={value}>
+                    {/value}
+                    {^value}
+                      <select id="{id}" name={key} class="form-control">
+                      {#options}
+                        <option {#selected}selected{/selected}>{option}</option>
+                      {/options}
+                      </select>
+                    {/value}
+                  </div>
+                </div>
+              </div>
+              {/slideConf}
+            </div>  
+            <button type="submit" class="btn btn-primary">Save</button>
+          <form>   
+        <section>         
+
+      <section id="exercisesconf">
+        <h3>Exercises' configurations</h3>
+        <form action="/{username}/presentations/{slideshowId}/settings/save" method="post">
+          <div>  
+          {#data}
+            <p>{index}
+
+            <table class="table">
+            {#exercises}
+              <tr>
+                <td>Exercise Uid</td>
+                {#names}<td>{.}</td>{/names}
+              </tr>
+              <tr>
+                <td>{uid}</td>
+                <td>
+                  <div class="form-group">
+                    <input type="text" class="form-control" value={value0}>
+                  </div>
+                </td>
+                <td>
+                  <input type="checkbox" checked="{value1}">
+                </td>
+              </tr>
+            {/exercises}
+            </table>
+
+          {/data}
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </section>
+
+    </div>
+  </body>
+</html>
