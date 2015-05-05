@@ -23,4 +23,13 @@ module.exports.setUp = function setUp(app, middleware) {
 
   app.get('/:user/presentations/:presentationId/stats', 
     middleware.isRouteOwner, handlers.getPresentationStats);
+
+  app.get('/:user/presentations/:presentationId/settings', 
+    middleware.isRouteOwner, handlers.configurePresentation);
+
+  app.post('/:user/presentations/:presentationId/settings/save', 
+    middleware.isRouteOwner, handlers.configurePresentationSave);
+
+  app.post('/:user/presentations/:presentationId/settings/save/slideshowconf', 
+    middleware.isRouteOwner, handlers.configurePresentationSaveSlideshow);
 }

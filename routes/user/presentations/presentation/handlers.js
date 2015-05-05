@@ -14,9 +14,16 @@ var cheerio     = require('cheerio')
   , gen         = require('when/generator')
   , nodefn      = require('when/node/function')
   , Slideshow   = db.model('Slideshow')
+  , Exercise    = db.model('Exercise')
   , User        = db.model('User', schemas.userSchema)
   , Session     = db.model('Session')
-  , stats       = require('../../../../lib/stats/stats');
+  , stats       = require('../../../../lib/stats/stats')
+  , Promise     = require("bluebird")  
+  , coroutine   = Promise.coroutine
+  , _           = require('lodash')
+  , assessmentTypes = require('../../../../models/assessmentTypes.js')
+  , slideflowTypes = require('../../../../models/slideflowTypes.js')
+  , Conf        = require('../../../../lib/configuration/conf.js');
 
 
 function editPresentation(req, res) {
@@ -385,13 +392,133 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
     next(err)
   }
   
-})
+});
+
+var getConf = coroutine(function* getConf(conf) {
+  var slideConf = [];
+  for (var key in conf) {
+    if (conf.hasOwnProperty(key)) {
+      // input: select
+      if ( key == "slideflow" || key == "assessment") {
+        var type = "select";
+        var options;
+        if ( key == "slideflow" ) options = slideflowTypes; 
+        if ( key == "assessment" ) options = assessmentTypes;         
+   
+        var newOptions = [];
+        for ( var i=0; i<options.length; i++ ) {
+          newOptions.push({
+            option   : options[i],
+            selected : options[i] == conf[key]
+          });
+        }
+       
+        slideConf.push({
+          id: key.toLowerCase(),
+          key: key,
+          type: type,
+          value: null,
+          options: newOptions
+        })
+      }
+      // input: number
+      if ( key == "maxNumSubmissions" ) {
+        var type = "number";
+        slideConf.push({
+          id: key.toLowerCase(),
+          key: key,
+          type: type,
+          value: conf[key]
+        })
+      }
+    }
+  }
+
+  return slideConf
+});
+
+
+var transform = coroutine(function* transform(slides) {
+  var data = [];
+  for (var key in slides) {
+    if (slides.hasOwnProperty(key)) {
+      var slide = {
+        index: key,
+        exercises: []
+      };
+      
+      for ( var i=0; i<slides[key].length; i++ ) {
+        var exObject = yield Exercise.findById(slides[key][i]).exec();
+        var exercise = {};
+        exercise.uid = slides[key][i]; 
+        exercise.names = ['maxNumSubmissions', 'confidence'];
+        exercise.value0 = exObject.maxNumSubmissions;
+        exercise.value1 = true;
+        slide.exercises.push(exercise);
+      }
+      data.push(slide)
+    }
+  }
+  return data.reverse();
+});
+
+var configurePresentation = coroutine(function* configurePresentation(req, res) {
+  console.log('configurePresentation');
+  var slideshowId = req.params.presentationId;
+  var slideshow;
+  try{
+    var slideshow = yield Slideshow.findById(slideshowId).exec();
+  }catch(err){
+    appLogger.error("Presentation %s not found", req.params.presentationId);
+    appLogger.error(err.message, { err: err.stack });
+    res.status(404);
+    return res.render('404', {'msg': 'Presentation not found'});
+  }
+
+  var slideConf = yield getConf(slideshow.configuration);
+  var data = yield transform(slideshow.exercisesPerSlide);
+
+  var username = req.user.username;
+
+  res.render('presentationSettings', {
+    title: slideshow.title,
+    username: username,
+    slideshowId: slideshowId,
+    slideConf: slideConf,
+    data : data
+  });
+   
+});
+
+var configurePresentationSave = coroutine(function* configurePresentationSave(req, res) {
+  console.log('configurePresentationSave');
+  res.send('Saved!');
+});
+
+var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
+  console.log('configurePresentationSaveSlideshow');
+  var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
+
+  if ( state ) {
+    res.redirect('/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/');
+  } else {
+    res.send(req.body);
+  }
+  
+});
+
+
+
+
 
 module.exports = {
-  editPresentation      : editPresentation,
-  livePresentation      : livePresentation,
-  livePresentationFiles : livePresentationFiles,
-  startPresentation     : startPresentation,
-  stopPresentation      : stopPresentation,
-  getPresentationStats  : getPresentationStats
+  editPresentation          : editPresentation,
+  livePresentation          : livePresentation,
+  livePresentationFiles     : livePresentationFiles,
+  startPresentation         : startPresentation,
+  stopPresentation          : stopPresentation,
+  getPresentationStats      : getPresentationStats,
+  configurePresentation     : configurePresentation,
+  configurePresentationSave : configurePresentationSave,
+  configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
 }
