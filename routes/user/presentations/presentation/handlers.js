@@ -27,7 +27,7 @@ var cheerio     = require('cheerio')
 
 
 function editPresentation(req, res) {
-
+  console.log(' -- editPresentation');
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
     if (err) {
       appLogger.error(err.toString());
@@ -81,6 +81,7 @@ function editPresentation(req, res) {
 }
 
 function livePresentation_orig(req, res) {
+  console.log(' -- livePresentation_orig');
   appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
@@ -149,6 +150,7 @@ function livePresentation_orig(req, res) {
 }
 
 function livePresentation(req, res) {
+  console.log(' -- livePresentation');
   appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
@@ -175,8 +177,8 @@ function livePresentation(req, res) {
 
         presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
-           // template: 'presenterControl',
-          template: '../client/presenterControlPolymer/app/asq.dust',
+          template: 'presenterControl',
+          // template: '../client/presenterControlPolymer/app/asq.dust',
           namespace: 'ctrl', //change to role
         };
       } else if (role === 'presenter' || role === 'assistant') {
@@ -213,7 +215,7 @@ function livePresentation(req, res) {
   })(role, view, presentation);
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
-  
+  console.log('\n\nhereh -- ', renderOpts.template, renderOpts);
   res.render(renderOpts.template, {
     username            : req.user? req.user.username :'',
     title               : presentation.title,
@@ -255,6 +257,7 @@ function livePresentation(req, res) {
 //   });
 
 function livePresentationFiles(req, res) {
+  console.log(' -- livePresentationFiles');
   var presentation = req.liveSession.slides;
   var file = req.params[0];
   if (presentation && file === presentation.originalFile) {
@@ -270,6 +273,7 @@ function livePresentationFiles(req, res) {
 
 
 function startPresentation(req, res, next) {
+  console.log(' -- startPresentation');
   appLogger.debug('New session from ' + req.user.username);
 
   var  slidesId = req.params.presentationId
@@ -325,7 +329,9 @@ function startPresentation(req, res, next) {
       appLogger.info('Starting new ' + newSession.authLevel + ' session');
       res.location(['/', req.user.username, '/presentations/', newSession.slides,
         '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
-      res.send(201);
+      console.log(' OOO  ', ['/', req.user.username, '/presentations/', newSession.slides,
+        '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
+      res.sendStatus(201);
     },
     function errorHandler(err){
       next(err)
