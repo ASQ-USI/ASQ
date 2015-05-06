@@ -183,8 +183,8 @@ function livePresentation(req, res) {
 
         presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
-          template: 'presenterControl',
-          // template: '../client/presenterControlPolymer/app/asq.dust',
+          // template: 'presenterControl',
+          template: '../client/presenterControlPolymer/app/asq.dust',
           namespace: 'ctrl', //change to role
         };
       } else if (role === 'presenter' || role === 'assistant') {
