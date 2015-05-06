@@ -121,7 +121,6 @@ this.subscribeToEvents= function (){
   //asq-elements events
   eventBus
   .on('asq-exercise:submit', function(evt){
-    console.log('eb', evt);
     connection.socket.emit('asq:exerciseSubmission', evt);
   })
 
