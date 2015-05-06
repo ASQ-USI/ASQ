@@ -215,7 +215,7 @@ function livePresentation(req, res) {
   })(role, view, presentation);
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
-  console.log('\n\nhereh -- ', renderOpts.template, renderOpts);
+  console.log( renderOpts.template, token);
   res.render(renderOpts.template, {
     username            : req.user? req.user.username :'',
     title               : presentation.title,
@@ -329,7 +329,7 @@ function startPresentation(req, res, next) {
       appLogger.info('Starting new ' + newSession.authLevel + ' session');
       res.location(['/', req.user.username, '/presentations/', newSession.slides,
         '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
-      console.log(' OOO  ', ['/', req.user.username, '/presentations/', newSession.slides,
+      console.log(['/', req.user.username, '/presentations/', newSession.slides,
         '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
       res.sendStatus(201);
     },
@@ -540,6 +540,27 @@ var configurePresentationSaveExercise = coroutine(function* configurePresentatio
   }
 });
 
+var configurePresentationSaveExerciseRuntime = coroutine(function* configurePresentationSaveExercise(req, res) {
+  console.log('configurePresentationSaveExerciseRuntime', req.body);
+  var exerciseId = req.body.uid;
+  var slideshowId = req.params.presentationId;
+  // TODO: not to hardcode
+  // 
+  var conf = {
+    maxNumSubmissions: Number(req.body.max) ? Number(req.body.max) : 0,
+    confidence: req.body.hasOwnProperty('confidence')
+  }
+
+  var state = yield Conf.updateExerciseConfRuntime(slideshowId, exerciseId, conf);
+  var state = false;
+  if ( state ) {
+    // var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
+    // res.redirect(url);
+  } else {
+    res.send(req.body);
+  }
+});
+
 var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
   console.log('configurePresentationSaveSlideshow');
   var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
@@ -553,10 +574,6 @@ var configurePresentationSaveSlideshow = coroutine(function* configurePresentati
   
 });
 
-
-
-
-
 module.exports = {
   editPresentation          : editPresentation,
   livePresentation          : livePresentation,
@@ -566,5 +583,6 @@ module.exports = {
   getPresentationStats      : getPresentationStats,
   configurePresentation     : configurePresentation,
   configurePresentationSaveExercise : configurePresentationSaveExercise,
+  configurePresentationSaveExerciseRuntime : configurePresentationSaveExerciseRuntime,
   configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
 }

@@ -30,6 +30,9 @@ module.exports.setUp = function setUp(app, middleware) {
   app.post('/:user/presentations/:presentationId/settings/save/exerciseconf', 
     middleware.isRouteOwner, handlers.configurePresentationSaveExercise);
 
+  app.post('/:user/presentations/:presentationId/settings/save/exerciseconfruntime', 
+    middleware.isRouteOwner, handlers.configurePresentationSaveExerciseRuntime);
+
   app.post('/:user/presentations/:presentationId/settings/save/slideshowconf', 
     middleware.isRouteOwner, handlers.configurePresentationSaveSlideshow);
 }

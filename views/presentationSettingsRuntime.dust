@@ -24,7 +24,7 @@
       <div>
         <section id="slideshowconf">
           <h3 >Slideshow configurations</h3>
-          <form action="/{username}/presentations/{slideshowId}/settings/save/slideshowconf" method="post">              
+          <form action="/{username}/presentations/{slideshowId}/settings/save/slideshowconfruntime" method="post">              
             <div class="table">
               {#slideConf}
               <div class="row">
@@ -68,7 +68,7 @@
               </tr>
               
               <tr>
-                <form action="/{username}/presentations/{slideshowId}/settings/save/exerciseconf" method="post">
+                <form action="/{username}/presentations/{slideshowId}/settings/save/exerciseconfruntime" method="post">
                 <td>{uid} <input type="hidden" name="uid" class="form-control" value={uid}></td>
                 <td>
                   <div class="form-group">
