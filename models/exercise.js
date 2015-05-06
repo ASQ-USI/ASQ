@@ -11,15 +11,21 @@ var mongoose         = require('mongoose')
 
 
 var exerciseSchema = new Schema({
-  questions       : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
-  assessmentTypes : { type: [{ type: String, enum: assessmentTypes }], default: [] },
-  resubmit        : { type: Boolean, default: true }
+  questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
+  assessmentTypes   : { type: [{ type: String, enum: assessmentTypes }], default: [] },
+  resubmit          : { type: Boolean, default: true },
+  maxNumSubmissions : { type: Number, default: 1}
 });
 
 
 exerciseSchema.virtual('allowResubmit').get(function allowResubmit() {
   return this.assessmentTypes.indexOf('self') === -1 &&
     this.assessmentTypes.indexOf('peer') > -1 && this.resubmit;
+    
+  // if (this.assessmentTypes.indexOf('self') === -1 && 
+  //   this.assessmentTypes.indexOf('peer') > -1) {
+  //   return this.maxNumSubmissions
+  // }
 })
 
 exerciseSchema.set('toObject', { virtuals: true });

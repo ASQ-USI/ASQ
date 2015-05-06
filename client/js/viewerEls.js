@@ -121,14 +121,13 @@ this.subscribeToEvents= function (){
   //asq-elements events
   eventBus
   .on('asq-exercise:submit', function(evt){
+    console.log('eb', evt);
     connection.socket.emit('asq:exerciseSubmission', evt);
   })
 
   document.addEventListener('asq-submit', function(evt){
     if (evt.target.tagName == "ASQ-EXERCISE"){
-      var submission = evt.detail.submission;
-      submission.exerciseUid = evt.target.uid
-      eventBus.emit('asq-exercise:submit', submission);
+      eventBus.emit('asq-exercise:submit', evt.detail);
     }
   })
 }
