@@ -74,6 +74,7 @@ Thumbs.db
 ######################
 .nodemonignore
 public/thumbs
+nodemon.json
 
 # ASQ Components #
 ##################
