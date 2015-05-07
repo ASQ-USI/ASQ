@@ -4,7 +4,8 @@
     {>htmlHead/}
     <title>ASQ - Presentation Settings</title>
   </head>
-  <body>
+  
+  <body data-view-name = "presentationSettings">
 
     <!--   top menu -->
     {>menu/}

@@ -27,6 +27,12 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/:user/presentations/:presentationId/settings/', 
     middleware.isRouteOwner, handlers.configurePresentation);
 
+
+  app.put('/:user/presentations/:presentationId/settings/', 
+    middleware.isRouteOwner, handlers.putPresentationSettings);
+
+
+  // ZHENFEI: clean this up
   app.post('/:user/presentations/:presentationId/settings/save/exerciseconf', 
     middleware.isRouteOwner, handlers.configurePresentationSaveExercise);
 

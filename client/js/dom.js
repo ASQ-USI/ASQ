@@ -21,6 +21,7 @@ binders['menu']   =  menuDOMBinder,
 binders['user']   =  userDOMBinder,
 binders['signup'] =  signupDOMBinder,
 binders['presentations']    =  psesentationsDOMBinder,
+binders['presentationSettings']  =  require('./presentationSettingsBindings'),
 binders['presenterControl'] =  function(){
   menuDOMBinder();
   presenterControl();

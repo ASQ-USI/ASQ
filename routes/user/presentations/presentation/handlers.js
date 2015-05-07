@@ -468,8 +468,16 @@ var isSlideshowActiveByUser = coroutine(function* isSlideshowActiveByUser(slides
   return { flag: true, sessions: sesstions }
 });
 
+
+var putPresentationSettings = coroutine(function* putPresentationSettingsGen(req, res) {
+  console.log('post Presentation');
+  console.log(req.params)
+  return res.json({msg: "Alles gut"});
+});
+
 var configurePresentation = coroutine(function* configurePresentation(req, res) {
   console.log('configurePresentation');
+
   var slideshowId = req.params.presentationId;
   var slideshow;
   try{
@@ -569,6 +577,7 @@ module.exports = {
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
   configurePresentation     : configurePresentation,
+  putPresentationSettings   : putPresentationSettings,
   configurePresentationSaveExercise : configurePresentationSaveExercise,
   configurePresentationSaveExerciseRuntime : configurePresentationSaveExerciseRuntime,
   configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
