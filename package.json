@@ -13,7 +13,7 @@
     "test": "test"
   },
   "dependencies": {
-    "asq-microformat": "ASQ-USI/asq-microformat",
+    "asq-microformat": "^0.3.8",
     "asq-plugin": "ASQ-USI/asq-plugin",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
@@ -82,8 +82,8 @@
   },
   "devDependencies": {
     "browserify": "~2.35.1",
-    "chai": "^1.10.0",
-    "chai-as-promised": "*",
+    "chai": "^2.2.0",
+    "chai-as-promised": "^5.0.0",
     "exports-loader": "^0.6.2",
     "grunt": "^0.4.5",
     "grunt-browserify": "~1.2.11",

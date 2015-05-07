@@ -168,6 +168,12 @@ function livePresentation(req, res) {
 
   //TMP until roles are defined more precisely
   appLogger.debug('Select template for ' + role + ' ' + view);
+
+  var shouldGenerateThumbs = 'true' //string because of dust templates
+  if(presentation.thumbnailsUpdated && (presentation.lastEdit - presentation.thumbnailsUpdated < 0 )){
+    shouldGenerateThumbs = 'false';
+  }
+
   var renderOpts = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
 
@@ -177,8 +183,8 @@ function livePresentation(req, res) {
 
         presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
-          template: 'presenterControl',
-          // template: '../client/presenterControlPolymer/app/asq.dust',
+          // template: 'presenterControl',
+          template: '../client/presenterControlPolymer/app/asq.dust',
           namespace: 'ctrl', //change to role
         };
       } else if (role === 'presenter' || role === 'assistant') {
@@ -217,44 +223,25 @@ function livePresentation(req, res) {
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
   console.log( renderOpts.template, token);
   res.render(renderOpts.template, {
-    username            : req.user? req.user.username :'',
-    title               : presentation.title,
-    host                : ASQ.urlHost,
-    port                : ASQ.urlPort,
-    namespace           : renderOpts.namespace,
-    asqScript           : renderOpts.asqScript,
-    role                : role,
-    presentation        : presentation._id,
-    hasThumbsGenerated  : !!(presentation.thumbnailsUpdated) + '',
-    slideTree           : JSON.stringify(presentation.slidesTree),
-    presentationId      : presentation._id,
-    id                  : req.liveSession.id,
-    token               : token,
-    userSessionId       : req.whitelistEntry.id,
-    date                : req.liveSession.startDate,
-    presentationViewUrl : presentationViewUrl,
-    presenterLiveUrl    : presenterLiveUrl
+    username              : req.user? req.user.username :'',
+    title                 : presentation.title,
+    host                  : ASQ.urlHost,
+    port                  : ASQ.urlPort,
+    namespace             : renderOpts.namespace,
+    asqScript             : renderOpts.asqScript,
+    role                  : role,
+    presentation          : presentation._id,
+    shouldGenerateThumbs  : shouldGenerateThumbs,
+    slideTree             : JSON.stringify(presentation.slidesTree),
+    presentationId        : presentation._id,
+    id                    : req.liveSession.id,
+    token                 : token,
+    userSessionId         : req.whitelistEntry.id,
+    date                  : req.liveSession.startDate,
+    presentationViewUrl   : presentationViewUrl,
+    presenterLiveUrl      : presenterLiveUrl
   });
 }
-
-// console.log("RAMQTH", !!(presentation.thumbnailsUpdated) + '')
-//   res.render(renderOpts.template, {
-//     username            : req.user? req.user.username :'',
-//     title               : presentation.title,
-//     host                : ASQ.urlHost,
-//     port                : ASQ.urlPort,
-//     mode                : renderOpts.mode,
-//     role                : role,
-//     presentation        : presentation._id,
-//     hasThumbsGenerated  : !!(presentation.thumbnailsUpdated) + '',
-//     slideTree           : JSON.stringify(presentation.slidesTree),
-//     id                  : req.liveSession.id,
-//     token               : token,
-//     userSessionId       : req.whitelistEntry.id,
-//     date                : req.liveSession.startDate,
-//     presentationViewUrl : presentationViewUrl,
-//     presenterLiveUrl    : presenterLiveUrl
-//   });
 
 function livePresentationFiles(req, res) {
   console.log(' -- livePresentationFiles');
