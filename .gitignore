@@ -74,6 +74,7 @@ nodemon.json
 
 
 public/thumbs
+nodemon.json
 
 # ASQ Components #
 ##################
