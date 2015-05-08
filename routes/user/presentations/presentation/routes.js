@@ -25,7 +25,7 @@ module.exports.setUp = function setUp(app, middleware) {
     middleware.isRouteOwner, handlers.getPresentationStats);
 
   app.get('/:user/presentations/:presentationId/settings/', 
-    middleware.isRouteOwner, handlers.configurePresentation);
+    middleware.isRouteOwner, handlers.getPresentationSettings);
 
   app.post('/:user/presentations/:presentationId/settings/save/exerciseconf', 
     middleware.isRouteOwner, handlers.configurePresentationSaveExercise);
