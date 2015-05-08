@@ -1,29 +1,30 @@
 /**
     @fileoverview user/presentations/presentation/handlers.js
     @description Handlers for a presentation resource
-*/;
-var cheerio     = require('cheerio');
-var path        = require('path') ;
-var pfs         = require('promised-io/fs');
-var lib         = require('../../../../lib');
-var sockAuth    = require('../../../../lib/socket/authentication');
-var logger     = require('logger-asq');
-var presUtils   = lib.utils.presentation;
-var config      = require('../../../../config');
-var when        = require('when');
-var gen         = require('when/generator');
-var nodefn      = require('when/node/function');
-var Slideshow   = db.model('Slideshow');
-var Exercise    = db.model('Exercise');
-var User        = db.model('User', schemas.userSchema);
-var Session     = db.model('Session');
-var stats       = require('../../../../lib/stats/stats');
-var Promise     = require("bluebird")  ;
-var coroutine   = Promise.coroutine;
-var _           = require('lodash');
-var assessmentTypes = require('../../../../models/assessmentTypes.js');
-var slideflowTypes = require('../../../../models/slideflowTypes.js');
-var Conf        = require('../../../../lib/configuration/conf.js');
+*/
+var cheerio     = require('cheerio')
+  , path        = require('path') 
+  , pfs         = require('promised-io/fs')
+  , lib         = require('../../../../lib')
+  , sockAuth    = require('../../../../lib/socket/authentication')
+  , appLogger   = lib.logger.appLogger
+  , presUtils   = lib.utils.presentation
+  , config      = require('../../../../config')
+  , when        = require('when')
+  , gen         = require('when/generator')
+  , nodefn      = require('when/node/function')
+  , Slideshow   = db.model('Slideshow')
+  , Exercise    = db.model('Exercise')
+  , User        = db.model('User', schemas.userSchema)
+  , Session     = db.model('Session')
+  , stats       = require('../../../../lib/stats/stats')
+  , Promise     = require("bluebird")  
+  , coroutine   = Promise.coroutine
+  , _           = require('lodash')
+  , assessmentTypes = require('../../../../models/assessmentTypes.js')
+  , slideflowTypes = require('../../../../models/slideflowTypes.js')
+  , Conf        = require('../../../../lib/configuration/conf.js')
+  , utils       = require('../../../../lib/utils/presentation.js');
 
 
 function editPresentation(req, res) {
@@ -184,7 +185,7 @@ function livePresentationFiles(req, res) {
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
-    res.sendFile( path.join(presentation.path, file));
+    res.sendFile( presentation.path + file, {root: app.get('rootDir')});
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }
@@ -386,39 +387,26 @@ var transform = coroutine(function* transform(slides) {
   return data.reverse();
 });
 
-var isSlideshowActiveByUser = coroutine(function* isSlideshowActiveByUser(slideshowId, userId) {
-  var query = {
-    'presenter': userId,
-    'slides': slideshowId,
-    'endDate': null
-  }
-  var sesstions = yield Session.find(query).exec();
-  if ( !sesstions || sesstions.length == 0 ) {
-    return { flag: false }
-  }
-  return { flag: true, sessions: sesstions }
-});
 
 
-var putPresentationSettings = coroutine(function* putPresentationSettingsGen(req, res) {
-  return res.json({msg: "Alles gut"});
-});
-
-var configurePresentation = coroutine(function* configurePresentation(req, res) {
+var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
+  console.log('getPresentationSettings');
+  var username = req.user.username;
+  var userId = req.user._id;
   var slideshowId = req.params.presentationId;
   var slideshow;
   try{
-    var slideshow = yield Slideshow.findById(slideshowId).exec();
-  }catch(err){
-    logger.error("Presentation %s not found", req.params.presentationId);
-    logger.error(err.message, { err: err.stack });
+    slideshow = yield Slideshow.findById(slideshowId).exec();
+  } catch(err){
+    appLogger.error("Presentation %s not found", req.params.presentationId);
+    appLogger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }
 
   var slideConf = yield getConf(slideshow.configuration);
   var data = yield transform(slideshow.exercisesPerSlide);
-  var username = req.user.username;
+  
 
   var param = {
     title: slideshow.title,
@@ -429,12 +417,11 @@ var configurePresentation = coroutine(function* configurePresentation(req, res) 
   }
 
   // Whether the slideshow is currently active(running) by this user
-  var result = yield isSlideshowActiveByUser(slideshowId, req.user._id);
-  if ( !result.flag ) {
+  var sessionId = yield utils.isLiveBy(slideshowId, userId);
+  if ( !sessionId ) {
     res.render('presentationSettings', param);
   } else {
-    var sessionId = result.sessions[0]._id;
-    var livelink = ['/', req.user.username,'/presentations/', slideshowId, '/live/', sessionId, '/?role=presenter&view=presentation'].join('');
+    var livelink = ['/', username,'/presentations/', slideshowId, '/live/', sessionId, '/?role=presenter&view=presentation'].join('');
     param.livelink = livelink;
     res.render('presentationSettingsRuntime', param);
   }
@@ -500,8 +487,7 @@ module.exports = {
   startPresentation         : startPresentation,
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
-  configurePresentation     : configurePresentation,
-  putPresentationSettings   : putPresentationSettings,
+  getPresentationSettings     : getPresentationSettings,
   configurePresentationSaveExercise : configurePresentationSaveExercise,
   configurePresentationSaveExerciseRuntime : configurePresentationSaveExerciseRuntime,
   configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
