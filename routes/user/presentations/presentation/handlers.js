@@ -2,29 +2,27 @@
     @fileoverview user/presentations/presentation/handlers.js
     @description Handlers for a presentation resource
 */
-var cheerio     = require('cheerio')
-  , path        = require('path') 
-  , pfs         = require('promised-io/fs')
-  , lib         = require('../../../../lib')
-  , sockAuth    = require('../../../../lib/socket/authentication')
-  , appLogger   = lib.logger.appLogger
-  , presUtils   = lib.utils.presentation
-  , config      = require('../../../../config')
-  , when        = require('when')
-  , gen         = require('when/generator')
-  , nodefn      = require('when/node/function')
-  , Slideshow   = db.model('Slideshow')
-  , Exercise    = db.model('Exercise')
-  , User        = db.model('User', schemas.userSchema)
-  , Session     = db.model('Session')
-  , stats       = require('../../../../lib/stats/stats')
-  , Promise     = require("bluebird")  
-  , coroutine   = Promise.coroutine
-  , _           = require('lodash')
-  , assessmentTypes = require('../../../../models/assessmentTypes.js')
-  , slideflowTypes = require('../../../../models/slideflowTypes.js')
-  , Conf        = require('../../../../lib/configuration/conf.js')
-  , utils       = require('../../../../lib/utils/presentation.js');
+var cheerio      = require('cheerio')
+  , path         = require('path') 
+  , pfs          = require('promised-io/fs')
+  , lib          = require('../../../../lib')
+  , sockAuth     = require('../../../../lib/socket/authentication')
+  , appLogger    = lib.logger.appLogger
+  , presUtils    = lib.utils.presentation
+  , config       = require('../../../../config')
+  , when         = require('when')
+  , gen          = require('when/generator')
+  , nodefn       = require('when/node/function')
+  , Slideshow    = db.model('Slideshow')
+  , Exercise     = db.model('Exercise')
+  , User         = db.model('User', schemas.userSchema)
+  , Session      = db.model('Session')
+  , stats        = require('../../../../lib/stats/stats')
+  , Promise      = require("bluebird")  
+  , coroutine    = Promise.coroutine
+  , Conf         = require('../../../../lib/configuration/conf')
+  , presSettings = lib.settings.settings;
+;
 
 
 function editPresentation(req, res) {
@@ -388,82 +386,14 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
   
 });
 
-var getConf = coroutine(function* getConf(conf) {
-  var slideConf = [];
-  for (var key in conf) {
-    if (conf.hasOwnProperty(key)) {
-      // input: select
-      if ( key == "slideflow" || key == "assessment") {
-        var type = "select";
-        var options;
-        if ( key == "slideflow" ) options = slideflowTypes; 
-        if ( key == "assessment" ) options = assessmentTypes;         
-   
-        var newOptions = [];
-        for ( var i=0; i<options.length; i++ ) {
-          newOptions.push({
-            option   : options[i],
-            selected : options[i] == conf[key]
-          });
-        }
-       
-        slideConf.push({
-          id: key.toLowerCase(),
-          key: key,
-          type: type,
-          value: null,
-          options: newOptions
-        })
-      }
-      // input: number
-      if ( key == "maxNumSubmissions" ) {
-        var type = "number";
-        slideConf.push({
-          id: key.toLowerCase(),
-          key: key,
-          type: type,
-          value: conf[key]
-        })
-      }
-    }
-  }
-
-  return slideConf
-});
-
-
-var transform = coroutine(function* transform(slides) {
-  var data = [];
-  for (var key in slides) {
-    if (slides.hasOwnProperty(key)) {
-      var slide = {
-        index: key,
-        exercises: []
-      };
-      
-      for ( var i=0; i<slides[key].length; i++ ) {
-        var exObject = yield Exercise.findById(slides[key][i]).exec();
-        var exercise = {};
-        exercise.uid = slides[key][i]; 
-        exercise.names = ['maxNumSubmissions', 'confidence'];
-        exercise.maxNumSubmissions = exObject.maxNumSubmissions;
-        exercise.confidence = exObject.confidence;
-        slide.exercises.push(exercise);
-      }
-      data.push(slide)
-    }
-  }
-  return data.reverse();
-});
-
-
 
 var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
   console.log('getPresentationSettings');
-  var username = req.user.username;
-  var userId = req.user._id;
+  var user        = req.user;
+  var userId      = user._id;
+  var username    = user.username;
   var slideshowId = req.params.presentationId;
-  var slideshow;
+
   try{
     slideshow = yield Slideshow.findById(slideshowId).exec();
   } catch(err){
@@ -473,28 +403,25 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
     return res.render('404', {'msg': 'Presentation not found'});
   }
 
-  var slideConf = yield getConf(slideshow.configuration);
-  var data = yield transform(slideshow.exercisesPerSlide);
-  
-
-  var param = {
-    title: slideshow.title,
-    username: username,
-    slideshowId: slideshowId,
-    slideConf: slideConf,
-    data: data
-  }
-
+  var presentationSettings = yield presSettings.getDustifySettings(slideshow);
+  var exerciseSettings     = yield presSettings.getDustifySettingsOfAllExercises(slideshow);
+ 
   // Whether the slideshow is currently active(running) by this user
-  var sessionId = yield utils.isLiveBy(slideshowId, userId);
-  if ( !sessionId ) {
-    res.render('presentationSettings', param);
-  } else {
-    var livelink = ['/', username,'/presentations/', slideshowId, '/live/', sessionId, '/?role=presenter&view=presentation'].join('');
-    param.livelink = livelink;
-    res.render('presentationSettingsRuntime', param);
+  var sessionId = yield presUtils.isLiveBy(userId, slideshowId);
+  var livelink  = presUtils.getLiveLink(username, slideshowId, sessionId);
+
+
+  var params = {
+    title                : slideshow.title,
+    username             : username,
+    slideshowId          : slideshowId,
+    livelink             : livelink,
+    presentationSettings : presentationSettings,
+    exerciseSettings     : exerciseSettings
   }
-   
+
+  res.render('presentationSettings', params);
+
 });
 
 var configurePresentationSaveExercise = coroutine(function* configurePresentationSaveExercise(req, res) {
