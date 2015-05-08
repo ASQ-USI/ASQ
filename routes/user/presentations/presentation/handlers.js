@@ -23,7 +23,6 @@ var Conf        = require('../../../../lib/configuration/conf.js');
 var settings     = lib.settings.presentationSettings
 
 
-
 function editPresentation(req, res) {
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
     if (err) {
@@ -182,7 +181,7 @@ function livePresentationFiles(req, res) {
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
-    res.sendFile( path.join(presentation.path, file));
+    res.sendFile( presentation.path + file, {root: app.get('rootDir')});
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }
@@ -335,6 +334,7 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   var user        = req.user;
   var userId      = user._id;
   var username    = user.username;
+
   var slideshowId = req.params.presentationId;
 
   try{
@@ -342,6 +342,7 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   } catch(err){
     logger.error("Presentation %s not found", req.params.presentationId);
     logger.error(err.message, { err: err.stack });
+
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }
@@ -394,3 +395,4 @@ module.exports = {
   getPresentationSettings   : getPresentationSettings,
   putPresentationSettings   : putPresentationSettings
 }
+
