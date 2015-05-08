@@ -21,13 +21,13 @@
       {/alert}
 
       <h1>{title}</h1>
-
+      {?livelink}<div><h3><i>This slideshow is currently active. Click <a href={livelink}>here</a> to go to live.</i></h3></div>{/livelink}
       <div>
         <section id="slideshowconf">
           <h3 >Slideshow configurations</h3>
           <form action="/{username}/presentations/{slideshowId}/settings/save/slideshowconf" method="post">              
             <div class="table">
-              {#slideConf}
+              {#presentationSettings}
               <div class="row">
                 <div class="col-md-3">{key}</div>
 
@@ -46,7 +46,7 @@
                   </div>
                 </div>
               </div>
-              {/slideConf}
+              {/presentationSettings}
             </div>  
             <button type="submit" class="btn btn-primary">Save</button>
           </form>   
@@ -56,7 +56,7 @@
         <h3>Exercises' configurations</h3>
         
           <div>  
-          {#data}
+          {#exerciseSettings}
             <p>{index}
 
             <table class="table">
@@ -86,7 +86,7 @@
             {/exercises}
             </table>
 
-          {/data}
+          {/exerciseSettings}
           </div>
           
       </section>
