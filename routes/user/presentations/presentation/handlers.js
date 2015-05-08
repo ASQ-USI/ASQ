@@ -23,7 +23,8 @@ var cheerio     = require('cheerio')
   , _           = require('lodash')
   , assessmentTypes = require('../../../../models/assessmentTypes.js')
   , slideflowTypes = require('../../../../models/slideflowTypes.js')
-  , Conf        = require('../../../../lib/configuration/conf.js');
+  , Conf        = require('../../../../lib/configuration/conf.js')
+  , utils       = require('../../../../lib/utils/presentation.js');
 
 
 function editPresentation(req, res) {
@@ -385,30 +386,17 @@ var transform = coroutine(function* transform(slides) {
   return data.reverse();
 });
 
-var isSlideshowActiveByUser = coroutine(function* isSlideshowActiveByUser(slideshowId, userId) {
-  var query = {
-    'presenter': userId,
-    'slides': slideshowId,
-    'endDate': null
-  }
-  var sesstions = yield Session.find(query).exec();
-  if ( !sesstions || sesstions.length == 0 ) {
-    return { flag: false }
-  }
-  return { flag: true, sessions: sesstions }
-});
 
 
-var putPresentationSettings = coroutine(function* putPresentationSettingsGen(req, res) {
-  return res.json({msg: "Alles gut"});
-});
-
-var configurePresentation = coroutine(function* configurePresentation(req, res) {
+var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
+  console.log('getPresentationSettings');
+  var username = req.user.username;
+  var userId = req.user._id;
   var slideshowId = req.params.presentationId;
   var slideshow;
   try{
-    var slideshow = yield Slideshow.findById(slideshowId).exec();
-  }catch(err){
+    slideshow = yield Slideshow.findById(slideshowId).exec();
+  } catch(err){
     appLogger.error("Presentation %s not found", req.params.presentationId);
     appLogger.error(err.message, { err: err.stack });
     res.status(404);
@@ -417,7 +405,7 @@ var configurePresentation = coroutine(function* configurePresentation(req, res) 
 
   var slideConf = yield getConf(slideshow.configuration);
   var data = yield transform(slideshow.exercisesPerSlide);
-  var username = req.user.username;
+  
 
   var param = {
     title: slideshow.title,
@@ -428,12 +416,11 @@ var configurePresentation = coroutine(function* configurePresentation(req, res) 
   }
 
   // Whether the slideshow is currently active(running) by this user
-  var result = yield isSlideshowActiveByUser(slideshowId, req.user._id);
-  if ( !result.flag ) {
+  var sessionId = yield utils.isLiveBy(slideshowId, userId);
+  if ( !sessionId ) {
     res.render('presentationSettings', param);
   } else {
-    var sessionId = result.sessions[0]._id;
-    var livelink = ['/', req.user.username,'/presentations/', slideshowId, '/live/', sessionId, '/?role=presenter&view=presentation'].join('');
+    var livelink = ['/', username,'/presentations/', slideshowId, '/live/', sessionId, '/?role=presenter&view=presentation'].join('');
     param.livelink = livelink;
     res.render('presentationSettingsRuntime', param);
   }
@@ -499,8 +486,7 @@ module.exports = {
   startPresentation         : startPresentation,
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
-  configurePresentation     : configurePresentation,
-  putPresentationSettings   : putPresentationSettings,
+  getPresentationSettings     : getPresentationSettings,
   configurePresentationSaveExercise : configurePresentationSaveExercise,
   configurePresentationSaveExerciseRuntime : configurePresentationSaveExerciseRuntime,
   configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
