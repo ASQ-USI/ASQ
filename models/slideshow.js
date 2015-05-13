@@ -2,17 +2,18 @@
     @description the Slideshow Model
 */
 
-var mongoose = require('mongoose')
-, Schema     = mongoose.Schema
-, ObjectId   = Schema.ObjectId
-, when       = require('when')
-, Promise    = require("bluebird")
-, coroutine  = Promise.coroutine
-, appLogger  = require('../lib/logger').appLogger
-, Question   = db.model('Question')
-, User       = db.model('User')
-, assessmentTypes = require('./assessmentTypes.js')
-, slideflowTypes = require('./slideflowTypes.js') ;
+var mongoose = require('mongoose');
+var Schema     = mongoose.Schema;
+var ObjectId   = Schema.ObjectId;
+var when       = require('when');
+var Promise    = require("bluebird");
+var coroutine  = Promise.coroutine;
+var appLogger  = require('../lib/logger').appLogger;
+var Question   = db.model('Question');
+var Exercises  = db.model('Exercise');
+var User       = db.model('User');
+var assessmentTypes = require('./assessmentTypes.js');
+var slideflowTypes = require('./slideflowTypes.js') ;
 
 var questionsPerSlideSchema = new Schema({
   slideHtmlId : { type: String, required: true },
@@ -48,9 +49,10 @@ var slideshowSchema = new Schema({
   thumbnails        : { type: [String], default:[] },
   thumbnailsUpdated : { type: Date }, 
   fontFaces         : { type: [String], default:[] },     
-  questions         : { type: [{ type: ObjectId, ref: 'Question' }] },
-  questionsPerSlide : { type: [questionsPerSlideSchema] },
-  exercisesPerSlide : { type: Schema.Types.Mixed },
+  questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
+  exercises         : { type: [{ type: ObjectId, ref: 'Exercise' }], default: [] },
+  questionsPerSlide : { type: Schema.Types.Mixed, default: {} },
+  exercisesPerSlide : { type: Schema.Types.Mixed, default: {} },
   statsPerSlide     : { type: [statsPerSlideSchema] },
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
@@ -86,6 +88,7 @@ slideshowSchema.pre('save', true, function checkQuestionsOnSave(next, done) {
   
   Question.find({_id : {$in: this.questions}}, function(err, questions) {
     if (err) { done(err); }
+
     else if (questions.length !== self.questions.length) {
       return done(new Error(
         'All question items should have a real Question _id'));
@@ -104,8 +107,8 @@ slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
 
   //maybe we have no questions
   if (questions.length === 0) {
-    if (questionsPerSlide.length === 0) {
-      //mo questions no questionsPerslide, we're ok
+    if (Object.keys(questionsPerSlide).length === 0) {
+      //mo questions no questionsPerSlide, we're ok
       return done();
     } else {
       return done(new Error(
@@ -114,7 +117,7 @@ slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
   }
 
   // or maybe we have questions but no questionsPerSlide
-  if (questionsPerSlide.length === 0) {
+  if (Object.keys(questionsPerSlide).length === 0) {
     return done(new Error(
       'There are questions: there must be at least a slide with a question.'));
   }
@@ -122,8 +125,9 @@ slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
 
   //check if all questionsPerSlide are  present in the questions array
   var totalQuestions = [];
-  questionsPerSlide.forEach(function (qps) {
-    qps.questions.forEach(function(q) {
+
+  Object.keys(questionsPerSlide).forEach(function (key) {
+    questionsPerSlide[key].forEach(function(q) {
 
       if (questions.indexOf(q) === -1) {
         return done(new Error(q +
@@ -217,27 +221,50 @@ slideshowSchema.pre('remove', true, function removeQuesOnRemove(next,done) {
     .catch(function(err){ return done(err);});
 });
 
-// removes all the question of a slideshow from the database
-slideshowSchema.methods.removeSessions = function(){
+// removes all the sessions of a slideshow from the database
+slideshowSchema.methods.removeSessions = coroutine(function *removeSessionsGen(){
   var Session = db.model('Session');
 
   // we do not call remove on the model but on
   // an instance so that the middleware will run
-  return Promise.resolve(Session.find({ slides : this._id}).exec())
-  .map(function(session){
-    return Promise.promisify(session.remove, session)(); 
+  yield Promise.map(
+    Session.find({ slides : this._id}).exec(), function(session){
+      return session.remove(); 
   });
-} 
 
-// removes all the question of a slideshow from the database
-slideshowSchema.methods.removeQuestions = function(){
+  this.lastSession = null;
+  return this.save();
+}); 
+
+// removes all the questions of a slideshow from the database
+slideshowSchema.methods.removeQuestions =  coroutine(function *removeQuestionsGen(){
   // we do not call remove on the model but on
   // an instance so that the middleware will run
-  return Promise.resolve(Question.find({_id : {$in : this.questions}}).exec())
-  .map(function(question){
-    return Promise.promisify(question.remove, question)(); 
+  yield Promise.map(
+    Question.find({_id : {$in : this.questions}}).exec(), function(question){
+      return question.remove(); 
   });
-} 
+
+  this.questions = [];
+  this.questionsPerSlide = {};
+  this.markModified("questionsPerSlide")
+  return this.save();
+});
+
+// removes all the exercises of a slideshow from the database
+slideshowSchema.methods.removeExercises =  coroutine(function *removeExercisesGen(){
+  // we do not call remove on the model but on
+  // an instance so that the middleware will run
+  yield Promise.map(
+    Exercises.find({_id : {$in : this.exercises}}).exec(), function(exercise){
+      return exercise.remove(); 
+  });
+
+  this.exercises = [];
+  this.exercisesPerSlide = {};
+  this.markModified("exercisesPerSlide")
+  return this.save();
+});
 
 // Adds an array of questionIDs to the slideshow
 // Array arr should be populated with questionIDs
