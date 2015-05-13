@@ -11,14 +11,19 @@ var _ = require("lodash");
 
 describe("hooks.js", function(){
   before(function(){
-
     this.asq = {
       registerHook: {}
     }
 
     this.hooks = SandboxedModule.require(modulePath, {
       requires: {
-        "lodash": _ 
+        "lodash": _ ,
+        '../logger' : {
+          appLogger: {
+            log: function(){},
+            debug: function(){}
+          }
+        }
       }
     });
   });
@@ -29,7 +34,7 @@ describe("hooks.js", function(){
       this.hooks.hookCbs = Object.create(null);
     });
 
-    it.skip("should log attempts to register a hook with no function", function(){}
+    it.skip("should log attempts to register a hook with no function", function(){});
 
     it("should register a function", function(){
       this.hooks.registerHook("hookName", function(){})

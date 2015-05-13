@@ -9,11 +9,26 @@ var modulePath = "../../../lib/upload/upload";
 
 describe("upload.js", function(){
   before(function(){
+    try{
+
+
     var uploadDir = this.uploadDir = "path/to/upload/dir";
     var presentationHtml = this.presentationHtml = "<html></html>"
     this.app = {
       get: function(){return uploadDir}
     }
+
+    //mock db
+    this.db = {model: function(){}};
+    sinon.stub(this.db, "model")
+    .withArgs("Slideshow").returns({
+      "findById" : function(){
+        return {
+          exec: function(){ return Promise.resolve(presentation);}
+        }
+      }
+    })
+
     this.upload = SandboxedModule.require(modulePath, {
       requires: {
         // careful here this is promisified in upload.js. This means
@@ -27,16 +42,27 @@ describe("upload.js", function(){
         '../parse/parse' : this.parse = {},
         '../presentationAdapter/adapters': this.adapters = {},
         '../presentation/presentationCreate' : this.presentationCreate = {},
+        '../presentation/presentationDelete' : this.presentationDelete = {},
         '../utils/fs' : this.fsUtils = {},
         '../logger' :  {appLogger : {debug:function(){}}}
       },
       globals : {
-        app : this.app
+        app : this.app,
+        db : this.db
       }
     });
+  }catch(err){
+    console.log(err.stack)
+  }
   });
 
-  describe.skip("createPresentationFromZipArchiveElems", function() {});
+  describe("createPresentationFromZipArchiveElems", function() {
+    it.skip("should test createPresentationFromZipArchiveElems()")
+  });
+
+  describe("updatePresentationFromZipArchive", function() {
+    it.skip("should test updatePresentationFromZipArchive()")
+  });
 
   describe("createPresentationFromZipArchive", function() {
     beforeEach(function(done) {
@@ -68,7 +94,7 @@ describe("upload.js", function(){
           done();
         })
         .catch(function(err){
-          done(err)
+          done(err);
         });
     });
 

@@ -10,7 +10,6 @@ var _ = require("lodash");
 
 describe("proxy.js", function(){
  before(function(){
-
     this.commands = Object.create(null);
     this.commands.goodCommand = sinon.stub();
     this.commands.assessmentComplete = sinon.stub();
@@ -20,11 +19,17 @@ describe("proxy.js", function(){
       registerHook : sinon.stub()
     }
 
+    //mock db
+    this.db = {model: function(){}};
+
     this.Proxy = SandboxedModule.require(modulePath, {
       requires: {
         "lodash": _ ,
         "./commands" : this.commands,
         "../hooks/hooks" : this.hooks,
+      },
+      globals : {
+        db : this.db
       }
     });
   });
@@ -71,6 +76,13 @@ describe("proxy.js", function(){
       this.hooks.registerHook.calledWith("hookName", this.fn);
     });
 
+  });
+
+  describe("prototype.socket()", function(){
+    it.skip("should test socket")
+  });
+  describe("prototype.db()", function(){
+    it.skip("should test db")
   });
   
 });

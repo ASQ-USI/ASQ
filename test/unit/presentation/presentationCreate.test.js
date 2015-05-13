@@ -31,7 +31,7 @@ describe("presentationCreate.js", function(){
 
     sinon.stub(db, "model")
     .withArgs("Slideshow").returns({
-      "create" : createStub
+      "create" : createStub,
     })
     .withArgs("User").returns({
       "findByIdAndUpdate" : findByIdAndUpdateStub
