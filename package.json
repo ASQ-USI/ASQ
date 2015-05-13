@@ -104,6 +104,7 @@
     "proxyquire": "~0.5.0",
     "sandboxed-module": "^2.0.0",
     "sinon": "^1.9.0",
+    "sinon-as-promised": "^3.0.0",
     "sinon-chai": "^2.5.0",
     "supertest": "~0.8.0",
     "webpack": "^1.4.4",
