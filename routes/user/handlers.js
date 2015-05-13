@@ -1,15 +1,17 @@
+/** @module routes/user/handlers
+    @description handlers for /user/:userid
+*/
 'use strict';
 
-var when        = require('when')
-  , moment      = require('moment')
-  , lib         = require('../../lib')
-  , appLogger   = lib.logger.appLogger
-  , dustHelpers = lib.dustHelpers
-  , Slideshow   = db.model('Slideshow')
-  , User        = db.model('User')
-  , Session     = db.model('Session')
-  , utils       = require('../../lib/utils/routes')
-  , getPresentationsByCourse = require('./presentations/utils').getPresentationsByCourse;
+var when        = require('when');
+var lib         = require('../../lib');
+var appLogger   = lib.logger.appLogger;
+var dustHelpers = lib.dustHelpers;
+var Slideshow   = db.model('Slideshow');
+var User        = db.model('User');
+var Session     = db.model('Session');
+var utils       = require('../../lib/utils/routes');
+var getPresentationsByCourse = require('../../lib/courses/listPresentations').getPresentationsByCourse;
 
 
 // GET /:user

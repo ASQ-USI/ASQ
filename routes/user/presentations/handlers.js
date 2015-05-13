@@ -14,10 +14,9 @@ var _             = require('lodash')
 , logger          = lib.logger.appLogger
 , utils           = lib.utils.routes
 , questionModel   = require('../../../models/question') //TODO fix and remove this require
-//, thumbUtils      = require('./utils') //TODO Fix thumbs
 , Slideshow       = db.model('Slideshow')
 , Session         = db.model('Session')
-, getPresentationsByCourse = require('./utils').getPresentationsByCourse
+, getPresentationsByCourse = require('../../../lib/courses/listPresentations').getPresentationsByCourse
 , upload = require('../../../lib/upload/upload');
 
 Promise.promisifyAll(fs);
