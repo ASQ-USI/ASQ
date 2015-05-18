@@ -3,6 +3,15 @@
 var $ = require('jquery')
   , request = require('superagent')
 
+
+  // proactive rendering: To make the experience for the user better,
+  //when you do an AJAX request, wherever possible, render the result immidiately 
+  //even if you don;t have a response from the server yet. When the get the response:
+  // if it's an error, revert things. 
+
+  // It donesn't work for logging in through ajax.
+  // It doesnt' work when you need the data of the response
+
 // GET read
 // POST create new resource
 // PUT replace resource (entirely), creates it if doesn't exist
