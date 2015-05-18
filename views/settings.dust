@@ -23,15 +23,6 @@
 				<div class="span12 headline">
 					<h3>Hello "{user.name}"</h3>
 				</div>
-				<div class="span12">
-					<p>Your cookie token is : <br>
-						<pre><code>{user.cookie}</code></pre>
-					</p>
-					</p> To zip all the files in the current directory and upload them with curl do:  <br>
-					<pre><code>zip -r - * | curl -i --cookie "{user.cookie}" -F upload=@- {rootUrl}/{user.name}/presentations</code></pre>
-					</p>
-					
-				</div>
 			</div>
 
 			<!-- Edit menu -->
