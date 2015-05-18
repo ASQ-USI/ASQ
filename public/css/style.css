@@ -302,6 +302,7 @@ body {
   height: 100%;
   color: #FFF;
   background-color: #333;
+  -webkit-font-smoothing: antialiased;
 }
 /* Typography  */
 .muted {
@@ -1258,6 +1259,40 @@ lesshat-selector {
   background: white;
   cursor: inherit;
   display: block;
+}
+.upload-code {
+  background: none;
+  font-size: 1.7em;
+  border: none;
+  color: #aeaeae;
+  margin: 10px auto;
+}
+.upload-fa-stack.fa-stack {
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+}
+.upload-fa-stack.fa-stack .fa-stack-2x {
+  font-size: 1.5em;
+}
+.upload-fa-stack.fa-stack .fa-stack-1x {
+  font-size: 0.85em;
+}
+.upload-fa-stack.fa-stack .fa-stack-1x,
+.upload-fa-stack.fa-stack .fa-stack-2x {
+  top: 0;
+}
+.upload-fa-stack.fa-stack .fa-circle {
+  color: #D08C8C;
+}
+.upload-fa-stack.fa-stack .fa.text {
+  font-weight: bold;
+  color: #642727;
+}
+.upload-inline-code {
+  color: #d08c8c;
+  background: none;
+  font-weight: bold;
 }
 /**********************************************
             Thumbs-bar
