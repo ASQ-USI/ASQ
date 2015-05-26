@@ -123,7 +123,7 @@
     margin-top: 10px;
   }
 
-/*www 2013 section*/
+/* www 2013 section*/
 #www2013 h2{
   color: #fff;
 }
@@ -135,6 +135,35 @@
 }
 
 #asq-www2013{
+width: 110px;
+height: auto;
+margin-top: -3px;
+margin-right: auto;
+}
+
+/* ICWE 2015 section*/
+#icwe2015 h2{
+  color: #fff;
+}
+
+#icwe2015-logo-container{
+  height : 300px;
+  margin-right: 30px;
+}
+
+#icwe2015-logo-wrapper{
+  padding: 5px;
+  border-radius: 3px;
+  background: #fff;
+  width: 150px;
+  margin-top: 6px;
+}
+
+#icwe2015-logo {
+
+}
+
+#asq-icwe2015{
 width: 110px;
 height: auto;
 margin-top: -3px;
