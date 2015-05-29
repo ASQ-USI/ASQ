@@ -1367,3 +1367,23 @@ lesshat-selector {
 #thumbs-bar .thumb.ui-sortable-helper {
   cursor: move;
 }
+/**********************************************
+            Live thumbs
+***********************************************/
+.livebox {
+  width: 280px;
+  background: #e7e7e7;
+  padding: 6px 6px 0;
+  margin: 0 20px;
+}
+.livebox .thumb-bg {
+  background-image: url('../img/presentation.jpg');
+  background-size: cover;
+  height: 250px;
+  width: ;
+}
+.livebox .thumb-info {
+  color: #040404;
+  font-size: 16px;
+  font-family: "HelveticaNeue-Light";
+}

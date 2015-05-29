@@ -53,6 +53,7 @@ this.readSessionInfo = function(){
   si.protocol  = this.protocol  = window.location.protocol;
   si.host      = this.host      = body.dataset.asqHost;
   si.port      = this.port      = parseInt(body.dataset.asqPort);
+  si.liveUrl   = this.liveUrl   = body.dataset.asqLiveUrl;
   si.sessionId = this.sessionId = body.dataset.asqSessionId;
   si.role      = this.role      = body.dataset.asqRole;
   si.namespace = this.namespace = body.dataset.asqSocketNamespace;
