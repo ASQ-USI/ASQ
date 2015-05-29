@@ -23,7 +23,6 @@ var chai           = require('chai')
 
 
 // support for promises
-require("mocha-as-promised")();
 chai.use(chaiAsPromised);
 
 

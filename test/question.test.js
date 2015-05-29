@@ -17,10 +17,6 @@ require('../models'); //Load db models.
 
 var questionModel = require("../models/question");
 
-// support for promises
-// require("mocha-as-promised")();
-// chai.use(chaiAsPromised);
-
 var Question = db.model("Question");
 
 

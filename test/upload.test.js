@@ -26,7 +26,6 @@ var _              = require('lodash')
 , configStub       = {};
 
 // support for promises
-require('mocha-as-promised')();
 chai.use(chaiAsPromised);
 
 
