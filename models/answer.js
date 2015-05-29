@@ -24,6 +24,8 @@ var answerSchema = new Schema({
   question   : { type: ObjectId, ref: 'Question', required: true },
   answeree   : { type: ObjectId, ref: 'WhitelistEntry', required: true },
   session    : { type: ObjectId, ref: 'Session', required: true },
+  // TODO: enum answerTypes
+  type : { type: String, required: true },
   submitDate : { type: Date, required: true, default: Date.now },
   // submission : [],
   submission : {},
