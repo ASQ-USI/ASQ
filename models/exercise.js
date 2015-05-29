@@ -9,17 +9,11 @@ var mongoose         = require('mongoose')
   , assessmentTypes = require('./assessmentTypes')
   , appLogger        = require('../lib/logger').appLogger;
 
-var defaultExerciseConf = {
-  maxNumSubmissions : 1,
-  confidence        : false
-}
-
 var exerciseSchema = new Schema({
   questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
   assessmentTypes   : { type: [{ type: String, enum: assessmentTypes }], default: [] },
   maxNumSubmissions : { type: Number, default: 1 },
-  confidence        : { type: Boolean, default: false },
-  configuration     : { type: Schema.Types.Mixed, default: defaultExerciseConf }
+  confidence        : { type: Boolean, default: false }
 });
 
 

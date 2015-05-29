@@ -26,10 +26,10 @@ var statsPerSlideSchema = new Schema({
 }, { _id: false });
 
 var defaultConf = {
-  maxNumSubmissions : { type: Number, default: 1 },
-  slideflow         : { type: String, enum: slideflowTypes, default: 'follow'},
-  assessment        : { type: String, enum: assessmentTypes, default: 'self' }
-};
+  maxNumSubmissions : 1,
+  slideflow         : 'follow',
+  assessment        : 'self'
+}
 
 var defaultConfType = {
   maxNumSubmissions : { type: "Number" },
