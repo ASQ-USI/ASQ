@@ -295,7 +295,7 @@ describe("parse.js", function(){
     });
   });
 
-  describe("parseAndPersistElems", function(){
+  describe("parseAndPersist", function(){
 
     beforeEach(function(){
       this.AsqElementsParser.prototype.parsePresentation.reset();
@@ -309,7 +309,7 @@ describe("parse.js", function(){
     });
 
     it("should open the right file", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
         this.fs.readFile.calledWith(this.asqFilePath, 'utf-8').should.equal(true);
         done();
@@ -320,7 +320,7 @@ describe("parse.js", function(){
     });
     
     it("should call parser.parsePresentation", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
         this.AsqElementsParser.prototype.parsePresentation.calledWith("<html></html>").should.equal(true);
         done();
@@ -331,7 +331,7 @@ describe("parse.js", function(){
     });
 
     it("should write to file the results from the parsePresentation", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
         this.fs.writeFile.calledWith(this.asqFilePath, "<html></html>").should.equal(true);
         done();
@@ -342,7 +342,7 @@ describe("parse.js", function(){
     });
     
     it("should call parser.getExercisesPerSlide with the right arguments", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.AsqElementsParser.prototype.getExercisesPerSlide.calledWith("<html></html>", ".step", 'asq-exercise').should.equal(true);
         done();
@@ -353,7 +353,7 @@ describe("parse.js", function(){
     });
 
     it("should mark `questionsPerSlide` as modified", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.presentation.markModified.firstCall.calledWith("exercisesPerSlide").should.equal(true);
         done();
@@ -364,7 +364,7 @@ describe("parse.js", function(){
     });
 
     it("should call parser.getExercises with the right arguments", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.AsqElementsParser.prototype.getExercises.calledWith("<html></html>", 'asq-exercise').should.equal(true);
         done();
@@ -375,7 +375,7 @@ describe("parse.js", function(){
     });
 
     it("should check if the exercises exist in the DB", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.exerciseModel.find.calledOnce.should.equal(true);
         done();
@@ -386,7 +386,7 @@ describe("parse.js", function(){
     });
 
     it("should call parser.getQuestionsPerSlide with the right arguments", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.AsqElementsParser.prototype.getQuestionsPerSlide.calledWith("<html></html>", ".step").should.equal(true);
         done();
@@ -397,7 +397,7 @@ describe("parse.js", function(){
     });
 
     it("should mark `questionsPerSlide` as modified", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.presentation.markModified.secondCall.calledWith("questionsPerSlide").should.equal(true);
         done();
@@ -408,7 +408,7 @@ describe("parse.js", function(){
     });
 
     it("should call parser.getQuestions with the right arguments", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.AsqElementsParser.prototype.getQuestions.calledWith("<html></html>").should.equal(true);
         done();
@@ -419,7 +419,7 @@ describe("parse.js", function(){
     });
 
      it("should check if the questions exist in the DB", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.questionModel.find.calledOnce.should.equal(true);
         done();
@@ -430,7 +430,7 @@ describe("parse.js", function(){
     });
 
     it("should save the presentation", function(done){
-      this.parse.parseAndPersistElems(this.presentation._id)
+      this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.presentation.save.calledOnce.should.equal(true);
         done();
@@ -440,114 +440,6 @@ describe("parse.js", function(){
       });
     });
 
-  });
-
-  describe("parseAndPersist", function(){
-    before(function(){
-      sinon.stub(this.parse, "generateMainFileForRoles").returns(Promise.resolve(true));
-    });
-
-    beforeEach(function(){
-      this.fs.writeFile.reset();
-      this.parse.generateMainFileForRoles.reset();
-    });
-
-    after(function(){
-      this.parse.generateMainFileForRoles.restore();
-    });
-
-    it("should open the right file", function(done){
-      this.parse.parseAndPersist(this.presentation._id)
-      .then(function(){
-        this.fs.readFile.calledWith(this.originalFilePath, 'utf-8').should.equal(true);
-        done();
-      }.bind(this))
-      .catch(function(err){
-        done(err);
-      });
-    });
-    
-    it("should call the parser", function(done){
-      this.parse.parseAndPersist(this.presentation._id)
-      .then(function(){
-        this.asqMParser.prototype.parse.calledWith("<html></html>").should.equal(true);
-        done();
-      }.bind(this))
-      .catch(function(err){
-        done(err);
-      });
-    });
-    
-    it("when there is a parser error it should throw an error", function(done){
-      this.asqMParser.prototype.parse.restore();
-      sinon.stub(this.asqMParser.prototype, "parse", function(){
-        //deep copy of parsed data
-        return {errors: [new Error('parser error')]}
-      });
-      this.parse.parseAndPersist(this.presentation._id)
-      .then(function(){
-        done(new Error("it shouldn't call the resolve callback"));
-      },
-      function(err){
-          should.exist(err);
-          err.message.should.contain('Parsing failed');
-          done();
-      });
-    });
-    
-    it("should not write the presentation file when there's no html output from the parser", function(done){
-      this.asqMParser.prototype.parse.restore();
-      sinon.stub(this.asqMParser.prototype, "parse", this.parserStubFn);
-      this.parse.parseAndPersist(this.presentation._id)
-      .then(function(){
-        this.fs.writeFile.called.should.equal(false);
-        done();
-      }.bind(this))
-      .catch(function(err){
-        done(err);
-      });
-    });
-
-    it("should write the presentation file when there's html output from the parser", function(done){
-      this.asqMParser.prototype.parse.restore();
-      sinon.stub(this.asqMParser.prototype, "parse", function parserWithHtmlStubFn(){
-        //deep copy of parsed data
-        var data = JSON.parse(JSON.stringify(parsed));
-        data.html = "<html>corrected html</html>";
-        return data;
-      });
-      this.parse.parseAndPersist(this.presentation._id)
-      .then(function(){
-        this.fs.writeFile.called.should.equal(true);
-        done();
-      }.bind(this))
-      .catch(function(err){
-        done(err);
-      });
-    });
-
-    it("should call persistParsedData", function(done){
-      sinon.spy(this.parse, "persistParsedData");
-      this.parse.parseAndPersist(this.presentation._id)
-      .then(function(){
-        this.parse.persistParsedData.called.should.equal(true);
-        done();
-      }.bind(this))
-      .catch(function(err){
-        done(err);
-      });
-    });
-
-    it("should generate the main file for the different roles", function(done){
-      this.parse.parseAndPersist(this.presentation._id)
-      .then(function(){
-        this.parse.generateMainFileForRoles.called.should.equal(true);
-        done();
-      }.bind(this))
-      .catch(function(err){
-        done(err);
-      });
-    });
   });
 
   describe("generateMainFileForRoles", function(){

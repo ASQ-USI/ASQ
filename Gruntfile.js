@@ -35,48 +35,8 @@ module.exports = function(grunt) {
           jquery: 'jQuery'
         }]
       },
-      presenterEls: {
-        entry: "./client/js/presenterEls.js",
-        output: {
-          path: "./public/js/",
-          filename: "asq-presenter.js"
-        },
-        node: {
-          crypto: false
-        },
-        devtool: "sourcemap",
-        debug: true,
-        module:{
-          loaders: [
-              { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
-          ]
-        },
-        externals:[{
-          jquery: 'jQuery'
-        }]
-      },
       viewer: {
         entry: "./client/js/viewer.js",
-        output: {
-          path: "./public/js/",
-          filename: "asq-viewer.js"
-        },
-        node: {
-          crypto: false
-        },
-        devtool: "sourcemap",
-        debug: true,
-        module:{
-          loaders: [
-              { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
-          ]
-        },
-        externals:[{
-          jquery: 'jQuery'
-        }]
-      },
-      viewerEls: {
-        entry: "./client/js/viewerEls.js",
         output: {
           path: "./public/js/",
           filename: "asq-viewer.js"
@@ -246,7 +206,7 @@ module.exports = function(grunt) {
       },
       client: {
         files: ['client/js/*.js'],
-        tasks: ['webpack:client', 'webpack:viewerEls', 'webpack:presenterEls'],
+        tasks: ['webpack:client', 'webpack:viewer', 'webpack:presenter'],
         options: {
           spawn: false
           // interrupt: true

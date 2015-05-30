@@ -166,7 +166,7 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
       , name = req.body.title || req.files.upload.name
       , zipPath = req.files.upload.path;
 
-    var slideshow = yield upload.createPresentationFromZipArchiveElems( owner_id, name, zipPath);
+    var slideshow = yield upload.createPresentationFromZipArchive( owner_id, name, zipPath);
 
     //remove zip file
     yield fs.unlinkAsync(zipPath);

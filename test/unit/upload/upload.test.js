@@ -56,10 +56,6 @@ describe("upload.js", function(){
   }
   });
 
-  describe("createPresentationFromZipArchiveElems", function() {
-    it.skip("should test createPresentationFromZipArchiveElems()")
-  });
-
   describe("updatePresentationFromZipArchive", function() {
     it.skip("should test updatePresentationFromZipArchive()")
   });
@@ -76,13 +72,14 @@ describe("upload.js", function(){
         "course": "General",
         save: sinon.stub().returns(Promise.resolve(this))
       };
-      this.destination = this.uploadDir + '/' + this.presentation._id;
+      this.destination = this.uploadDir + '/' + this.presentation._id + '/';
 
       this.fs.readFile.reset();
       this.fs.writeFile.reset();
       this.presentationCreate.createBlankSlideshow = sinon.stub().returns(Promise.resolve(this.presentation));
       this.archive.extractZipArchive = sinon.stub().callsArg(2);
-      this.htmlPath ="path/to/upload/dir/presentation-id-123/samplePresentationRubrics.html'";
+      this.htmlPath ="path/to/upload/dir/presentation-id-123/samplePresentationRubrics.html";
+      this.asqFilePath ="path/to/upload/dir/presentation-id-123/samplePresentationRubrics.asq.dust";
       this.adapters.impressAsqFork = { getSlidesTree: sinon.stub()};
       this.fsUtils.getFirstHtmlFile = sinon.stub().returns(Promise.resolve(this.htmlPath));
       this.parse.escapeDustBrackets = sinon.stub().returns(this.presentationHtml);
@@ -114,13 +111,8 @@ describe("upload.js", function(){
       this.fsUtils.getFirstHtmlFile.calledWith(this.destination).should.equal(true);
     });
 
-    it("should escape brackets for dust", function() {
-      this.parse.escapeDustBrackets.calledWith(this.presentationHtml).should.equal(true);
-    });
-
-    it("should store the html file after escaping", function() {
-      this.fs.writeFile.calledAfter( this.parse.escapeDustBrackets).should.equal(true);
-      this.fs.writeFile.calledWith(this.htmlPath).should.equal(true);
+    it("should generate the ASQ file", function() {
+      this.fs.writeFile.calledWith(this.asqFilePath).should.equal(true);
     });
 
     it("should generate the slidesTree", function() {
