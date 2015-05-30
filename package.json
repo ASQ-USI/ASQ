@@ -38,7 +38,7 @@
     "hammerjs": "^2.0.4",
     "imports-loader": "^0.6.3",
     "impress-asq-adapter": "ASQ-USI/impress-asq-adapter",
-    "impress-asq-fork-asq-adapter": "ASQ-USI/impress-asq-fork-asq-adapter",
+    "impress-asq-fork-asq-adapter": "ASQ-USI/impress-asq-fork-asq-adapter#master",
     "jquery": "^2.1.0",
     "jsonwebtoken": "^5.0.0",
     "ldapauth-fork": "^2.2.12",
