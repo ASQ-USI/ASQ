@@ -103,7 +103,6 @@ require('./lib/passport')(passport);
 app.set('port', config.port);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'dust');
-app.enable('view cache');
 app.engine('dust', cons.dust);
 //Setup Dust.js helpers and options
 lib.dustHelpers(dust);
@@ -125,7 +124,7 @@ app.use(multer({ dest: app.get('uploadDir')}))
 
 //static files
 app.use(serveStatic(path.join(__dirname, '/public/'), {'index': 'false'}));
-app.use(serveStatic(path.join(__dirname, '/bower_components/'), {'index': 'false'}));
+app.use(serveStatic(path.join(__dirname, '/public/bower_components/'), {'index': 'false'}));
 app.use(serveStatic(path.join(__dirname, '/client/presenterControlPolymer/public/'), {'index': 'false'}));
 app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
 
@@ -178,6 +177,7 @@ if ('development' == app.get('env')) {
 };
 
 if ('production' == app.get('env')) {
+  app.enable('view cache');
   app.use(errorMiddleware.errorHandler());
 };
 

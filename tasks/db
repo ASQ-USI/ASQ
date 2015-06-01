@@ -1,0 +1,62 @@
+#!/usr/bin/env node --harmony
+
+/**
+  @fileoverview db tsks
+**/
+
+'use strict';
+
+var Promise = require('bluebird');
+var mongoose = require('mongoose');
+var conf = require('../config');
+var mongoUrl = 'mongodb://' + conf.mongoDBServer + ':' + conf.mongoDBPort + '/' + conf.dbName;
+
+
+//process args
+var args = process.argv.splice(2);
+var command = args[0];
+
+if(command == "dropDb"){
+
+  mongoose.connect(mongoUrl, function(err) {
+    if (err) {
+      throw err;
+    }
+    console.log('Dropping database: '+ conf.dbName +' ...');
+    mongoose.connection.db.dropDatabase(function(err) {
+      if (err) {
+        throw err;
+      } else {
+        console.log("Done!")
+        process.exit(0);
+      }
+    });
+  });
+}
+
+if(command == "emptyModel"){
+
+  //models require a global db instance
+  global.db = mongoose.createConnection(mongoUrl);
+  var schemas = require('../models');
+
+  var modelNames = args.splice(1);
+  if(!modelNames.length){
+    console.log('No model names speficied. Exiting..');
+    process.exit(0);
+  }
+
+  console.log("Notice: no middleware (hooks) are executed when removing documents...");
+
+  Promise.reduce(modelNames, function(result, name){
+    console.log('Emptying model: '+ conf.dbName +'.' + name + ' ...');
+    var m = db.model(name);
+
+    return m.remove({}).exec();
+  },'').then(function(){
+    console.log('Done!')
+    process.exit(0);
+  }).catch(function(err){
+    throw err;
+  })
+}

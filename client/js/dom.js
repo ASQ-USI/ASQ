@@ -10,7 +10,7 @@
 var debug = require('bows')("dom")
   , request = require('superagent')
   , dust = require('dustjs-linkedin')
-  , templates = require('./templates')
+  , templates = require('imports?dust=dustjs-linkedin!./templates')
   , form = require('./form.js')
   , presenterControl = require('./presenterControl.js')
   , sessionStats = require('./sessionStats.js');

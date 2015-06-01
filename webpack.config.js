@@ -1,22 +1,31 @@
-module.exports = {
-  // presenter: {
-    entry: "./client/js/presenter.js",
+'use strict';
+
+var env = process.env.NODE_ENV || "development"
+var devtool ="cheap-module-eval-source-map";
+
+var webpack = require('webpack');
+
+var commonsPlugin =
+  new webpack.optimize.CommonsChunkPlugin('asq-common.js');
+
+module.exports = {  
+    entry: {
+      presenter: "./client/js/presenter.js",
+      viewer: "./client/js/viewer.js",
+      client: "./client/js/dom.js"
+    },
     output: {
       path: "./public/js/",
-      filename: "asq-presenter.js"
+      filename: "asq-[name].js"
     },
-    devtool: "sourcemap",
-    debug: true,
+    devtool: devtool,
     module:{
       loaders: [
           { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
       ]
     },
-    // resolve : {
-    //   packageAlias: "browser"
-    // },
     externals:[{
       jquery: 'jQuery'
-    }]
+    }],
+    plugins: [commonsPlugin]
   }
-// }

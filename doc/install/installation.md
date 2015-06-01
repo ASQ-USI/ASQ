@@ -53,10 +53,6 @@ Finally, install globally the [grunt-cli](http://gruntjs.com/getting-started) to
 
 ### Mac OS X
 Download and install version [0.11.13](http://nodejs.org/dist/v0.11.13/node-v0.11.13.pkg) from  the node.js website.
-Finally, install globally the [grunt-cli](http://gruntjs.com/getting-started) tool
-    
-    npm install -g grunt-cli
-
 
 ##ASQ
 First, clone the repository
@@ -73,21 +69,27 @@ Then configure it
     #
     # If you are using a reverse proxy (like nginx) make sure `usingReverseProxy` is set to `true` and configure the 'reverseProxyOptions' object.
     editor config/config.defaults.js
-Install npm packages
+Install npm packages and bower components
     
     npm install
 Build assets
 
-    grunt build-concurrent
+    npm run build
 
 At this point you can start ASQ. Run __one__ of the following
 
     # start using npm
     npm start
     # start using node
-    node --harmony app.j
+    node --harmony app.js
     # start at specific port which will override the configuration
     PORT=<port-number> node --harmony app.js
+
+### Developer
+To run ASQ with all the developer goodies (watchers to recompile assets upon changes and restart ASQ) run
+
+    # npm run dev
+
 
 ##Nginx
 ### Ubuntu

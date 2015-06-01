@@ -127,7 +127,7 @@ function livePresentation(req, res) {
         return {
           template: presentationFile,
           namespace: 'ctrl',
-          asqScript : '/js/asq-presenter.js'
+          roleScript : '/js/asq-presenter.js'
         };
       } else if (role === 'ghost') {
        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
@@ -136,7 +136,7 @@ function livePresentation(req, res) {
       return {
           template: presentationFile,
           namespace: 'ghost',
-          asqScript : '/js/asq-viewer.js'
+          roleScript : '/js/asq-viewer.js'
         };
       } else { //viewer
        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
@@ -145,11 +145,13 @@ function livePresentation(req, res) {
       return {
           template: presentationFile,
           namespace: 'folo',
-          asqScript : '/js/asq-viewer.js'
+          roleScript : '/js/asq-viewer.js'
         };
       }
 
   })(role, view, presentation);
+
+  renderOpts.commonScript = '/js/asq-common.js';
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
   console.log( renderOpts.template, token);
@@ -159,7 +161,8 @@ function livePresentation(req, res) {
     host                  : ASQ.urlHost,
     port                  : ASQ.urlPort,
     namespace             : renderOpts.namespace,
-    asqScript             : renderOpts.asqScript,
+    commonScript          : renderOpts.commonScript,
+    roleScript            : renderOpts.roleScript,
     role                  : role,
     presentation          : presentation._id,
     shouldGenerateThumbs  : shouldGenerateThumbs,

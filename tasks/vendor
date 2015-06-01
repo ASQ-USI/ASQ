@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var UglifyJS = require("uglify-js");
+var fs = require('fs')
+
+var scripts = [
+"node_modules/jquery/dist/jquery.js",
+"client/js/vendor/bootstrap.js",
+"client/js/vendor/jquery.hammer.js",
+"client/js/vendor/isotope.pkgd.js"
+]
+
+var destinationFolder =  "public/js"
+var destination = destinationFolder + "/vendor.js"
+
+var result = ''
+if(process.env.NODE_ENV == "production"){
+  console.log("minifying vendor scripts..")
+  var minified = UglifyJS.minify(scripts);
+  result = minified.code;
+}else{
+  result = scripts.reduce(function(prev, scriptPath){
+    var contents = fs.readFileSync(scriptPath, 'utf-8');
+    return prev + ';' + contents;
+  }, '');
+}
+
+
+console.log("writing to %s ..", destination)
+require('mkdirp').sync(destinationFolder);
+fs.writeFileSync(destination, result);
+console.log("done!")
+process.exit();
