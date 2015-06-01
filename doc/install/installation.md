@@ -38,17 +38,14 @@ First install [nvm](https://github.com/creationix/nvm) to manage Node.js version
     curl https://raw.githubusercontent.com/creationix/nvm/v0.13.1/install.sh | bash
 Reload your shell and then install Node.js
 
-    nvm install 0.11.13
-    nvm use 0.11.13
+    nvm install 0.12
+    nvm use 0.12
 If you wish this version to be your default one, you can type:
 
-    nvm alias default 0.11.13
+    nvm alias default 0.12
 and to use it
 
     nvm use default
-Finally, install globally the [grunt-cli](http://gruntjs.com/getting-started) tool
-    
-    npm install -g grunt-cli
 
 
 ### Mac OS X
