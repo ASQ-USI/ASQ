@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {>htmlHead/}
-    <link rel="stylesheet" href="">
     <script src="/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="/asq-elements/asq-elements.html">
-      
+    <link rel="import" href="/asq-mashup-challenge-scoreboard/asq-mashup-challenge-scoreboard.html">
+    {>htmlHead/}
+   
     <title>ASQ - My Presentations</title>
 
       {?slidesByCourses}
@@ -23,6 +23,9 @@
 
     <!---   top menu -->
     {>menu/}
+
+    {! dialog !}
+    <div id="main-dialog"></div>
 
     <!---   Content area   -->
     <div class="container-fluid" id="mainContainer">
@@ -62,7 +65,7 @@
           </div>
         </div>
       {:else}
-        {@JSONIter:slidesByCourses username=username}
+        {@JSONIter:slidesByCourses username=username cookie=cookie}
             <div class="row accordion-heading">
               <div class="col-md-12 clearfix headline">
                 <h2 class="pull-left">{key}</h2>

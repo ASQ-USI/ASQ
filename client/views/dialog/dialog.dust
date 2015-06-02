@@ -1,0 +1,9 @@
+<div class="dialog__overlay"></div>
+<div class="dialog__content">
+  <div class="dialog__user-content">
+  {content|s}
+  </div>
+  <div class="dialog__controls">
+      <button class="dialog__action" data-dialog-close>Close</button>
+  </div>
+</div>

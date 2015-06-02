@@ -21,7 +21,9 @@ module.exports = {
     devtool: devtool,
     module:{
       loaders: [
-          { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
+        { test: /\.less$/, loader: "style!css!less" },
+        { test: /\.dust$/, loader: "imports?dust=dustjs-linkedin!dust-loader" },
+        { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
       ]
     },
     externals:[{

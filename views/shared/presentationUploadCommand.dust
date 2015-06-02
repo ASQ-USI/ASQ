@@ -1,0 +1,2 @@
+</p> To replace this presentation with a presentation on your current directory run:</p>  
+<pre class="upload-code-snippet-modal"><code>zip -r - * | curl -X PUT -i --cookie "{cookie}" -F "title={title}" -F upload=@- {rootUrl}/{username}/presentations/{presentationId}?preserverSession=true</code></pre>

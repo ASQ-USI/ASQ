@@ -24,20 +24,34 @@
   
   </div>
 
-  <div class="thumb-controls layout horizontal center">
+  <div class="thumb-controls layout vertical">
+    <div class="thumb-controls-first-row layout horizontal justified">
     {?live}
-    <div class="flex">
-      <a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=ctrl"  data-toggle="tooltip" data-placement="top" title="go to presenter control"><i class="fa fa-dashboard"></i></a><a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation"  data-toggle="tooltip" data-placement="top" title="Join as presenter"><i class="fa fa-graduation-cap"></i></a><a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/live/{live}/?role=viewer&view=presentation"  data-toggle="tooltip" data-placement="top" title="Join as viewer"><i class="fa fa-group"></i></a>
-    </div>
-    <a class="btn-thumb btn-stop btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Stop presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-stop"></i></a>
+      <a class="btn-thumb btn-stop btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Stop presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-stop"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=ctrl"  data-toggle="tooltip" data-placement="top" title="go to presenter control"><i class="fa fa-dashboard"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation"  data-toggle="tooltip" data-placement="top" title="Join as presenter"><i class="fa fa-graduation-cap"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=viewer&view=presentation"  data-toggle="tooltip" data-placement="top" title="Join as viewer"><i class="fa fa-group"></i></a>
     {:else}
-    <div class="flex layout horizontal justified">
-      <a class="btn-thumb show-on-thumb-hover" href="#"  data-toggle="tooltip" data-placement="top" title="Public Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-group"></i></a><a class="btn-thumb show-on-thumb-hover" href="#"  data-toggle="tooltip" data-placement="top" title="Anonymous Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous"><i class="fa fa-user"></i></a><a class="btn-thumb show-on-thumb-hover" href="#"  data-toggle="tooltip" data-placement="top" title="Private Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="private"><i class="fa fa-user-secret"></i></a>
-    </div>
-    <a class="btn-thumb btn-start btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Start presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-play"></i></a>
+      <a class="btn-thumb btn-start btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Start presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-play"></i></a>
+      
+      <a class="btn-thumb show-on-thumb-hover1" href="#"  data-toggle="tooltip" data-placement="top" title="Public Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-group"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover1" href="#"  data-toggle="tooltip" data-placement="top" title="Anonymous Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous"><i class="fa fa-user"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover1" href="#"  data-toggle="tooltip" data-placement="top" title="Private Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="private"><i class="fa fa-user-secret"></i></a>
     {/live}
-    <div class="flex layout horizontal justified">
-      <a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/settings"  data-toggle="tooltip" data-placement="top" title="Settings"><i class="fa fa-cog"></i></a><a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/edit/"  data-toggle="tooltip" data-placement="top" title="Edit presentation"><i class="fa fa-pencil"></i></a><a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/stats"  data-toggle="tooltip" data-placement="top" title="Show statistics"><i class="fa fa-signal"> </i></a>
+    </div>
+    <div class="thumb-controls-second-row layout horizontal justified">
+      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/settings"  data-toggle="tooltip" data-placement="top" title="Settings"><i class="fa fa-cog"></i></a>
+
+      <a class="btn-thumb btn-upload-command show-on-thumb-hover1" href="#" data-username="{params.username}" data-presentation-id="{_id}" data-cookie="{params.cookie}" data-title="{title}" data-toggle="tooltip" data-placement="top" title="command to replace this presentation with a new one"><i class="fa fa-cloud-upload"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/edit/"  data-toggle="tooltip" data-placement="top" title="Edit presentation"><i class="fa fa-pencil"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/stats"  data-toggle="tooltip" data-placement="top" title="Show statistics"><i class="fa fa-signal"> </i></a>
     </div>
   </div>
   

@@ -86,6 +86,11 @@ function psesentationsDOMBinder(){
     container: 'body',
     delay: { "show": 600 }
   };
+
+  //init dialog 
+  var dialogEl = document.getElementById('main-dialog');
+  var Dialog = require('../views/dialog/dialog');
+  var dlg = new Dialog(dialogEl);
   
   //iphone/ipad install as web-app pop up
   $(function(){
@@ -330,6 +335,23 @@ function psesentationsDOMBinder(){
               });              
             }
           });
+        }
+        //upload link
+        else if($this.hasClass("btn-upload-command")){
+          var data = {
+              cookie: this.dataset.cookie,
+              title: this.dataset.title,
+              rootUrl: document.location.origin,
+              username: this.dataset.username,
+              presentationId : this.dataset.presentationId
+          }
+          dust.render("views/shared/presentationUploadCommand", data, function(err, out){
+            if(err) throw err;
+            dlg.setContent(out);
+            var utils = require('./utils');
+            utils.selectText(dlg.el.querySelector(".upload-code-snippet-modal"));
+            dlg.toggle();
+          });          
         }
     });
   })

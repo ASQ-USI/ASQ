@@ -48,20 +48,15 @@ body{
   }
 }
 
-
-
-#mainContainer{
-
-}
-::-webkit-scrollbar {
-  height: 12px;
-  width: 12px;
-  background: #333;
-  }
-::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255, 0.5);
-    -webkit-border-radius: 1ex;
-}
+// ::-webkit-scrollbar {
+//   height: 12px;
+//   width: 12px;
+//   background: #333;
+//   }
+// ::-webkit-scrollbar-thumb {
+//     background: rgba(255,255,255, 0.5);
+//     -webkit-border-radius: 1ex;
+// }
 
 .modal, .popover{
   color: black;
@@ -381,19 +376,37 @@ h4{
   -webkit-font-smoothing: antialiased;
 }
 
+.thumb-controls{
+  padding: 0 5px;
+}
+
+.thumb-controls-first-row{
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+.thumb-controls-second-row{
+  padding-top: 2px;
+}
+
+.thumb-controls-first-row{
+  border-bottom: 1px solid #f0f0f0;
+}
+
 .btn-thumb{
   display: inline-block;
   .box-sizing(border-box);
   .user-select(none);
   border-radius: 2px;
-  padding: 7px;
+  width: 44px;
+  height: 44px;
   margin: 2px;
   vertical-align: middle;
-  font-size: 18px;
-  line-height: 1;
+  font-size: 24px;
+  line-height: 44px;
   text-align: center;
   cursor: pointer;
-  color: #888;
+  color: #E7E7E7;
 }
 
 .btn-thumb.btn-thumb-playback{
@@ -1037,12 +1050,17 @@ clear: both;
   }
 }
 
-.upload-code{
+.upload-code-snippet{
   background: none;
   font-size: 1.7em;
   border: none;
   color: rgb(174, 174, 174);
   margin: 10px auto;
+  overflow: hidden;
+}
+
+.upload-code-snippet-modal{
+  font-size: 1.2em;
 }
 
 .upload-fa-stack.fa-stack {
