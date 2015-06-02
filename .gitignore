@@ -23,6 +23,7 @@
 # Hidden Files and Folders #
 ############################
 .*
+!/.bowerrc
 !/.gitignore
 !/.gitattributes
 
