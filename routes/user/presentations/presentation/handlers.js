@@ -27,7 +27,6 @@ var cheerio     = require('cheerio')
 
 
 function editPresentation(req, res) {
-  console.log(' -- editPresentation');
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
     if (err) {
       appLogger.error(err.toString());
@@ -81,7 +80,6 @@ function editPresentation(req, res) {
 }
 
 function livePresentation(req, res) {
-  console.log(' -- livePresentation');
   appLogger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
@@ -178,7 +176,6 @@ function livePresentation(req, res) {
 }
 
 function livePresentationFiles(req, res) {
-  console.log(' -- livePresentationFiles');
   var presentation = req.liveSession.slides;
   var file = req.params[0];
   if (presentation && file === presentation.originalFile) {
@@ -194,7 +191,6 @@ function livePresentationFiles(req, res) {
 
 
 function startPresentation(req, res, next) {
-  console.log(' -- startPresentation');
   appLogger.debug('New session from ' + req.user.username);
 
   var  slidesId = req.params.presentationId
@@ -262,7 +258,7 @@ function startPresentation(req, res, next) {
 
 function stopPresentation(req, res, next) {
   appLogger.debug('Stopping session from ' + req.user.username);
-
+  return res.sendStatus(204)
   //start with when to have the catch method at the end;
   when.resolve(true)
   .then(function(){
@@ -285,10 +281,10 @@ function stopPresentation(req, res, next) {
 
        //JSON
     if(req.accepts('application/json')){
-      return res.send(204);
+      return res.sendStatus(204);
     }
     //HTML
-      res.send(204);
+      res.sendStatus(204);
   }).catch(function onError(err){
     next(err)
   });
@@ -404,14 +400,10 @@ var isSlideshowActiveByUser = coroutine(function* isSlideshowActiveByUser(slides
 
 
 var putPresentationSettings = coroutine(function* putPresentationSettingsGen(req, res) {
-  console.log('post Presentation');
-  console.log(req.params)
   return res.json({msg: "Alles gut"});
 });
 
 var configurePresentation = coroutine(function* configurePresentation(req, res) {
-  console.log('configurePresentation');
-
   var slideshowId = req.params.presentationId;
   var slideshow;
   try{
@@ -449,7 +441,6 @@ var configurePresentation = coroutine(function* configurePresentation(req, res) 
 });
 
 var configurePresentationSaveExercise = coroutine(function* configurePresentationSaveExercise(req, res) {
-  console.log('configurePresentationSave', req.body);
   var exerciseId = req.body.uid;
   var slideshowId = req.params.presentationId;
   // TODO: not to hardcode
@@ -470,7 +461,6 @@ var configurePresentationSaveExercise = coroutine(function* configurePresentatio
 });
 
 var configurePresentationSaveExerciseRuntime = coroutine(function* configurePresentationSaveExercise(req, res) {
-  console.log('configurePresentationSaveExerciseRuntime', req.body);
   var exerciseId = req.body.uid;
   var slideshowId = req.params.presentationId;
   // TODO: not to hardcode
@@ -491,7 +481,6 @@ var configurePresentationSaveExerciseRuntime = coroutine(function* configurePres
 });
 
 var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
-  console.log('configurePresentationSaveSlideshow');
   var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
 
   if ( state ) {
