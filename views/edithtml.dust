@@ -32,7 +32,7 @@
 		
 		
 		<!---   Content area   -->  
-    	<div class="container" id="mainContainer">
+    	<div class="container" id="main-container">
     		
     		<!-- Show notification fo user feedback based on query alert and type-->
 			{?alert}

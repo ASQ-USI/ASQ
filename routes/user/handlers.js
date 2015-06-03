@@ -1,5 +1,5 @@
 /** @module routes/user/handlers
-    @description handlers for /user/:userid
+    @description handlers for /:userid
 */
 'use strict';
 

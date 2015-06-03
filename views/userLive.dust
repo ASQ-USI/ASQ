@@ -11,7 +11,7 @@
     {>menu/}
 
     <!---   Content area   -->
-    <div class="container" id="mainContainer">
+    <div class="container" id="main-container">
 
       <!--- Alert -->
       <!-- Show notification fo user feedback based on query alert and type-->

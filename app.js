@@ -168,7 +168,7 @@ if ('development' == app.get('env')) {
 
   }
   validation.getErrorPassword = function devGetErrorPassword(candidate) {
-    if (validator.isNull(candidate)) {
+    if (require('validator').isNull(candidate)) {
       return 'blank';
     }
     appLogger.debug('[devel mode] No password constraint');

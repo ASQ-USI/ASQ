@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{>htmlHead/}
+		<title>ASQ - Account Settings</title>
+	</head>
+	<body data-view-name="usersSettings">
+
+		<!--   top menu -->
+		{>menu/}
+
+		<div id="wrapper">
+
+			<!--   top menu -->
+			{>settingsMenu/}
+
+			<!--   Content area   -->
+			<div class="container-fluid" id="main-container">
+
+				<!-- Show notification fo user feedback based on query alert and type-->
+				{?alert}
+				<div class="alert alert-{type}">
+					{alert}
+				</div>
+				{/alert}
+
+
+				<!-- Edit menu -->
+				<div class="row" >
+					<div class="col-md-12 headline">
+						<h3>Edit your account settings</h3>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<p> Please fill out all fields to update. </p>
+						<br />
+						<form id="user-settings-form" class="form-horizontal" action="/{user.username}/settings/users" method="post" data-user-id="{user._id}">
+
+							<fieldset>
+
+								<div class="form-group" id="groupFirstname">
+									<label class="control-label col-sm-2" for="inputFirstname" >First name</label>
+									<div class="col-sm-6 col-md-4">
+										{?tipMessages.firstname}
+										{>sidetip:tipMessages.firstname field="firstname" activate=activate.firstname/}
+										{/tipMessages.firstname}
+										<input type="text" class="form-control" id="inputFirstname" autocomplete="off" arias-required="true" placeholder="Rodney" name="newfirstname"
+										
+										{?formData.firstname}
+											value="{formData.firstname}" 
+										{:else}
+											value="{user.firstname}" 
+										{/formData.firstname}>
+									</div>
+								</div>
+
+								<div class="form-group" id="groupLastname">
+									<label class="control-label col-sm-2" for="inputLastname" >Last name</label>
+									<div class="col-sm-6 col-md-4">
+										{?tipMessages.lastname}
+										{>sidetip:tipMessages.lastname field="lastname" activate=activate.lastname/}
+										{/tipMessages.lastname}
+										<input type="text" class="form-control" id="inputLastname" autocomplete="off" arias-required="true" placeholder="Mullen" name="newlastname"
+										{?formData.lastname}
+											value="{formData.lastname}"
+										{:else}
+											value="{user.lastname}" 
+										{/formData.lastname}>
+									</div>
+								</div>
+
+								<div class="form-group" id="groupEmail">
+									<label class="control-label col-sm-2" for="inputEmail">Email</label>
+									<div class="col-sm-6 col-md-4">
+										{?tipMessages.email}
+										{>sidetip:tipMessages.email field="email" activate=activate.email/}
+										{/tipMessages.email}
+										<input type="email" class="form-control" id="inputEmail" autocomplete="off" arias-required="true" placeholder="rodney.mullen@usi.ch" name="newemail" 
+										{?formData.email}
+											value="{formData.email}"
+										{:else}
+											value="{user.email}" 
+										{/formData.email}>
+									</div>
+								</div>
+
+								<div class="form-group" id="groupUsername">
+									<label class="control-label col-sm-2" for="inputUsername"> Select your username</label>
+									<div class="col-sm-6 col-md-4">
+										{?tipMessages.username}
+										{>sidetip:tipMessages.username field="username" activate=activate.username/}
+										{/tipMessages.username}
+										<input type="text" class="form-control" id="inputUsername" autocomplete="off" arias-required="true" placeholder="rodney" name="newusername" 
+										{?formData.username}
+											value="{formData.username}"
+										{:else}
+											value="{user.username}" 
+										{/formData.username}>
+									</div>
+								</div>
+
+								<div class="form-group" id="groupPassword1">
+									<label class="control-label col-sm-2" for="inputCurrentPassword">Current password</label>
+									<div class="col-sm-6 col-md-4">
+										{?tipMessages.currentPassword}
+										{>sidetip:tipMessages.currentPassword field="currentPassword" activate=activate.currentPassword/}
+										{/tipMessages.currentPassword}
+										<input type="password" class="form-control" id="inputCurrentPassword" autocomplete="off" arias-required="true" placeholder="supersecret" name="currentpassword">
+									</div>
+								</div>
+
+								<div class="form-group" id="groupPassword1">
+									<label class="control-label col-sm-2" for="inputPassword">New password</label>
+									<div class="col-sm-6 col-md-4">
+										{?tipMessages.password}
+										{>sidetip:tipMessages.password field="password" activate=activate.password/}
+										{/tipMessages.password}
+										<input type="password" class="form-control" id="inputPassword" autocomplete="off" arias-required="true" placeholder="supersecret" name="newpassword">
+									</div>
+								</div>
+
+								<div class="form-group" id="groupPassword2">
+									<label class="control-label col-sm-2" for="inputRepeatPassword">Repeat password</label>
+									<div class="col-sm-6 col-md-4">
+										{?tipMessages.passwordRepeat}
+										{>sidetip:tipMessages.passwordRepeat field="passwordRepeat"
+											activate=activate.passwordRepeat/}
+										{/tipMessages.passwordRepeat}
+										<input type="password" class="form-control" id="inputRepeatPassword" autocomplete="off" arias-required="true" placeholder="supersecret" name="newpasswordconfirm">
+									</div>
+
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+											<input class="btn btn-primary" id="saveChangesBtn" type="submit" value="Save changes"/>
+									</div>
+								</div>
+							</fieldset>
+
+{! 							<div class="form-group">
+								<label class="control-label col-sm-2" for="inputUsername">Username</label>
+								<div class="col-sm-6 col-md-4">
+									<input type="text" id="inputUsername" name="inputUsername" class="form-control" placeholder="{user.name}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="inputEmail">Email</label>
+								<div class="col-sm-6 col-md-4">
+									<input type="text" id="inputEmail" name="inputEmail" class="form-control" placeholder="{user.email}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="inputPassword">Password</label>
+								<div class="col-sm-6 col-md-4">
+									<input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="inputRePassword">Repeat password</label>
+								<div class="col-sm-6 col-md-4">
+									<input type="password" id="inputRePassword" name="inputRePassword" class="form-control" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-primary">
+										Save changes
+									</button>
+								</div>
+							</div> !}
+						</form>
+					</div>
+				</div>
+
+			</div>
+
+		</div> {! #wrapper !}
+	</body>
+</html>

@@ -20,6 +20,7 @@ binders['completeRegistration'] = completeRegistrationDOMBinder,
 binders['menu']   =  menuDOMBinder,
 binders['user']   =  userDOMBinder,
 binders['signup'] =  signupDOMBinder,
+binders['usersSettings'] =  usersSettingsDOMBinder,
 binders['presentations']    =  psesentationsDOMBinder,
 binders['presentationSettings']  =  require('./presentationSettingsBindings'),
 binders['presenterControl'] =  function(){
@@ -71,6 +72,15 @@ function signupDOMBinder(){
     fromsignup = typeof fromsignup == 'undefined' ? false : Boolean(fromsignup);
     if(fromsignup)$('#signup-modal').modal('show');
   });
+}
+
+// usersSettings.dust
+function usersSettingsDOMBinder(){
+  menuDOMBinder();
+
+  // the singular user is not a typo. Right now the users settings page
+  // display info for the current user
+  form.setup('userSettings');
 }
 
 
@@ -330,7 +340,7 @@ function psesentationsDOMBinder(){
                   if(err){
                     debug(err)
                   }else{
-                    $("#mainContainer").prepend(out);
+                    $("#main-container").prepend(out);
                   }
               });              
             }

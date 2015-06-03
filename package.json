@@ -32,7 +32,6 @@
     "dust-prod": "dustc views/shared/**/*.dust -o client/js/templates.js",
     "clean": "rimraf slides/* test/slides/*",
     "db": "tasks/db",
-    "livereload": "livereload public/",
     "watch": "parallelshell 'npm run webpack-dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack-prod && npm run js-vendor-dev && npm run static && npm run less-prod && npm run dust-prod",
     "dev": "npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'nodemon'"

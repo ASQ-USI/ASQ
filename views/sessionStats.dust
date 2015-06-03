@@ -22,7 +22,7 @@
     {>menu/}
 
     <!--   Content area   -->
-    <div class="container" style="width: 100%;" id="mainContainer">
+    <div class="container" style="width: 100%;" id="main-container">
 
       <div class="row" style="margin: 0 40px;">
         <div class="headline">

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{>htmlHead/}
+		<title>ASQ - General Settings</title>
+	</head>
+	<body>
+
+		<!--   top menu -->
+		{>menu/}
+
+		<div id="wrapper">
+
+			<!--   top menu -->
+			{>settingsMenu/}
+
+			<!--   Content area   -->
+			<div class="container-fluid" id="main-container">
+
+				<!-- Show notification fo user feedback based on query alert and type-->
+				{?alert}
+				<div class="alert alert-{type}">
+					{alert}
+				</div>
+				{/alert}
+
+				<div class="row" >
+					<div class="col-md-12 headline">
+						<h3>General Settings</h3>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<p>nothing here at the moment :-)</p>
+					</div>
+				</div>
+
+			</div>
+
+		</div> {! #wrapper !}
+	</body>
+</html>

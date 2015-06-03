@@ -285,7 +285,13 @@ function emailAvailable(req, res, next) {
     res.json(response); // Invalid email
     return;
   }
-  User.count({ email : email, _type: 'User' }).exec()
+
+  var mongoQuery = { email : email, _type: 'User' };
+  if(req.query.excludeUser){
+    mongoQuery._id = {$ne : req.query.excludeUser}
+  }
+
+  User.count(mongoQuery).exec()
   .then(
     function onEmail(count) {
       if (count !== 0) {
@@ -336,7 +342,13 @@ function usernameAvailable(req, res) {
     res.json(response); // Blank or Invalid username (or taken for reserved routes)
     return;
   }
-  User.count({ username : username, _type : 'User' }).exec()
+
+  var mongoQuery = { username : username, _type: 'User' };
+  if(req.query.excludeUser){
+    mongoQuery._id = {$ne : req.query.excludeUser}
+  }
+
+  User.count(mongoQuery).exec()
   .then(
     function onUser(count) {
       if (count !== 0) {

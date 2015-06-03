@@ -64,6 +64,10 @@ body{
 
 
 /* --- Menu --- */
+.navbar-default{
+  margin-bottom: 0;
+}
+
 @media (min-width: 768px){
   .navbar {
     border-radius: 0px;
@@ -983,43 +987,44 @@ clear: both;
       display:inline-block;
       width: 382px;
     }
+  }
+}
 
-    div.sidetip {
-      margin-top: 8px;
-      position: absolute;
-      left: 402px;
-      width: 250px;
+form{
+  div.sidetip {
+    margin-top: 8px;
+    position: absolute;
+    left: 402px;
+    width: 250px;
 
-      p {
-        font-size: 13px;
-        line-height: 16px;
-        color: gray;
-        display: none;
+    p {
+      font-size: 13px;
+      line-height: 16px;
+      color: gray;
+      display: none;
 
-        &.active {
-          display: block
-        }
-        &.checking {
-          background-repeat: no-repeat;
-          background-position: center left;
-          background-image: url(/img/spinner-small.gif);
-          padding-left: 18px;
-        }
-        &.checking {
-          background-repeat: no-repeat;
-          background-position: center left;
-          background-image: url(/img/spinner-small.gif);
-          padding-left: 18px;
-        }
-        &.error {
-            color: #c33
-        }
-        &.isaok {
-            color: #390
-        }
+      &.active {
+        display: block
+      }
+      &.checking {
+        background-repeat: no-repeat;
+        background-position: center left;
+        background-image: url(/img/spinner-small.gif);
+        padding-left: 18px;
+      }
+      &.checking {
+        background-repeat: no-repeat;
+        background-position: center left;
+        background-image: url(/img/spinner-small.gif);
+        padding-left: 18px;
+      }
+      &.error {
+          color: #c33
+      }
+      &.isaok {
+          color: #390
       }
     }
-
   }
 }
 
