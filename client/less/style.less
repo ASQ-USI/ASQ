@@ -146,6 +146,10 @@ border-left-color: #111111;
  -webkit-perspective: 800px;
 }
 
+#main-container{
+  padding-top: 20px;
+}
+
 .group{
   margin-top: 20px;
   margin-bottom: 80px;
@@ -309,7 +313,7 @@ h4{
 .thumb-wrapper{
   position:relative;
   height: 210px;
- 
+  overflow: hidden;
 }
 
 .thumb.no-steps .thumb-wrapper{
@@ -320,8 +324,8 @@ h4{
 .thumb-nav{
   position:absolute;
   top:0;
-  left:0;
-  width: 270px;
+  left:30px;
+  width: 210px;
   height:30px;
   z-index: 2;
 }
@@ -1065,6 +1069,7 @@ form{
 }
 
 .upload-code-snippet-modal{
+  text-align: left;
   font-size: 1.2em;
 }
 

@@ -89,7 +89,7 @@
     //user is already in the list
     if($list.find('.al-entry#'+ evt.user.id).length){ return;}
 
-    dust.render('alEntry', evt, function(err, out){
+    dust.render('views/shared/alEntry', evt, function(err, out){
       if(err){ return debug(err.msg + ' ' + err.stack);}
       $list.append(out);
     });
