@@ -1,8 +1,26 @@
 <div class="dialog__overlay"></div>
 <div class="dialog__content">
-  <div class="dialog__user-content">
+
+  <div class="dialog__user-content hidden">
   {content|s}
   </div>
+
+  <div class="dialog__success-content alert alert-success hidden">
+  {successContent|s}
+  </div>
+
+  <div class="dialog__info-content alert alert-info hidden">
+  {infoContent|s}
+  </div>
+
+  <div class="dialog__warning-content alert alert-warning hidden">
+  {warningContent|s}
+  </div>
+
+  <div class="dialog__error-content alert alert-danger hidden">
+  {errorContent|s}
+  </div>
+
   <div class="dialog__controls">
       <button class="dialog__action" data-dialog-close>Close</button>
   </div>

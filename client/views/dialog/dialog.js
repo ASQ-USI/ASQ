@@ -62,6 +62,13 @@
       if(err) throw err;
 
       el.innerHTML = out;
+
+      this.userContentEl = this.el.querySelector('.dialog__user-content');
+      this.successContentEl = this.el.querySelector('.dialog__success-content');
+      this.infoContentEl = this.el.querySelector('.dialog__info-content');
+      this.warningContentEl = this.el.querySelector('.dialog__warning-content');
+      this.errorContentEl = this.el.querySelector('.dialog__error-content');
+
       this.ctrlClose = this.el.querySelector( '[data-dialog-close]' );
       this.isOpen = false;
       this._initEvents();
@@ -69,8 +76,57 @@
     }.bind(this));
   }
 
+  Dialog.prototype.clearContent = function(){
+   
+    this.userContentEl.classList.add('hidden');
+    this.userContentEl.innerHTML = '';
+
+    this.successContentEl.classList.add('hidden');
+    this.successContentEl.innerHTML = '';
+
+    this.infoContentEl.classList.add('hidden');
+    this.infoContentEl.innerHTML = '';
+
+    this.warningContentEl.classList.add('hidden');
+    this.warningContentEl.innerHTML = '';
+
+    this.errorContentEl.classList.add('hidden');
+    this.errorContentEl.innerHTML = '';
+  }
+
   Dialog.prototype.setContent = function(content) {
-    this.el.querySelector('.dialog__user-content').innerHTML = content;
+    this.clearContent();
+    this.userContentEl.classList.remove('hidden');
+    this.userContentEl.innerHTML = content;
+    return this;
+  }
+
+  Dialog.prototype.setSuccessContent = function(content) {
+    this.clearContent();
+    this.successContentEl.classList.remove('hidden');
+    this.successContentEl.innerHTML = content;
+    return this;
+  }
+
+  Dialog.prototype.setInfoContent = function(content) {
+    this.clearContent();
+    this.infoContentEl.classList.remove('hidden');
+    this.infoContentEl.innerHTML = content;
+    return this;
+  }
+
+  Dialog.prototype.setWarningContent = function(content) {
+    this.clearContent();
+    this.warningContentEl.classList.remove('hidden');
+    this.warningContentEl.innerHTML = content;
+    return this;
+  }
+
+  Dialog.prototype.setErrorContent = function(content) {
+    this.clearContent();
+    this.errorContentEl.classList.remove('hidden');
+    this.errorContentEl.innerHTML = content;
+    return this;
   }
 
   Dialog.prototype.options = {
@@ -116,6 +172,7 @@
       this.options.onOpenDialog( this );
     }
     this.isOpen = !this.isOpen;
+    return this;
   };
 
   module.exports = Dialog;
