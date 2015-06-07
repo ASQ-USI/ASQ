@@ -31,7 +31,7 @@
 #################
 node_modules/
 slides/
-plugins/
+/plugins/
 public/
 config/config.*
 !config/config.defaults.js.example
