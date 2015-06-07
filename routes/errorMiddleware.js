@@ -21,7 +21,7 @@ function errorHandler(options){
   return function errorHandler(err, req, res, next){
 
     if(err.message =='Could not authenticate'){
-      res.render('404')
+      return res.render('404');
     }
 
     // http://www.senchalabs.org/connect/errorHandler.html

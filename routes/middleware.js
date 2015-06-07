@@ -86,7 +86,6 @@ function isNotRegistrationComplete(req, res, next) {
  *  authenticated user whose name matches the user parameter.
  */
 function isRouteOwner(req, res, next) {
-
   if (!req.params.user) {
     next(new Error('Invalid route: missing user parameter.'));
   } else if (req.params.user != req.user.username) {
