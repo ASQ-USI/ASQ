@@ -28,7 +28,7 @@ var answerSchema = new Schema({
   type : { type: String, required: true },
   submitDate : { type: Date, required: true, default: Date.now },
   // submission : [],
-  submission : {},
+  submission : { type: Schema.Types.Mixed },
   confidence : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
   logData    : [answerLogSchema]
 });
