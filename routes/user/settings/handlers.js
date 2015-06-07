@@ -31,6 +31,8 @@ module.exports = {
     try{
       var renderData = usersSettings.getUserSettings(req.user);
 
+      renderData.username = req.user.username;
+
       logger.log({
         user_id: req.user._id,
       }, "got user settings");
@@ -49,6 +51,8 @@ module.exports = {
   getPluginsSettings: coroutine(function *getPluginsSettingsGen(req, res, next) {
     try{
       var renderData = yield pluginsSettings.getPluginsSettings();
+
+      renderData.username = req.username;
 
       logger.log({
         user_id: req.user._id,
