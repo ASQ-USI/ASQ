@@ -52,7 +52,7 @@ module.exports = {
     try{
       var renderData = yield pluginsSettings.getPluginsSettings();
 
-      renderData.username = req.username;
+      renderData.username = req.user.username;
 
       logger.log({
         user_id: req.user._id,
