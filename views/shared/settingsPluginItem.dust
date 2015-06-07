@@ -1,0 +1,20 @@
+<div class="settings-plugin-item" id="settings-plugin-item-{name}">
+  <div class="horizontal layout">
+    <div class="settings-plugin-item__name">{name}</div>
+    <div class="settings-plugin-item__version">{version}</div>
+  </div>
+  <div class="settings-plugin-item__description flex">
+    <p>{description}</p>
+  </div>
+  {?isInstalled}
+    <span class="muted">installed <i class="fa fa-check"></i></span>&nbsp;
+  {:else}
+    <button class="js-settings-plugin-item__btn js-settings-plugin-item__btn-install btn btn-default" data-plugin-name="{name}">install <i class="fa fa-spinner fa-pulse settings-plugin-item__spinner settings-plugin-item__spinner-install"></i></button>
+  {/isInstalled}
+
+  {?isActive}
+    <button class="js-settings-plugin-item__btn js-settings-plugin-item__btn-deactivate btn btn-warning" data-plugin-name="{name}">deactivate <i class="fa fa-spinner fa-pulse settings-plugin-item__spinner settings-plugin-item__spinner-deactivate"></i></button>
+  {:else}
+    <button class="js-settings-plugin-item__btn js-settings-plugin-item__btn-activate btn btn-success" data-plugin-name="{name}">activate <i class="fa fa-spinner fa-pulse settings-plugin-item__spinner settings-plugin-item__spinner-activate"></i></button>
+  {/isActive}
+</div>

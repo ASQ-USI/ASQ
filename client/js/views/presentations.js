@@ -172,7 +172,7 @@ module.exports = {
             .setErrorContent("Uknown error occured while starting presentation")
             .toggle();
         }
-        if(res.ok){
+        else if(res.ok){
           window.location = res.headers.location
         }else{
           debug(res.text);
@@ -201,7 +201,7 @@ module.exports = {
             .setErrorContent("Uknown error occured while stoping the presentation")
             .toggle();
         }
-        if(res.ok){
+        else if(res.ok){
           //re-render thumb
           this.reRenderThumb(presentationId, username);
           // show alert

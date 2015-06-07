@@ -6,7 +6,6 @@
 var handlers       = require('./handlers')
   , presentations = require('./presentations')
   , sessions = require('./sessions')
-  , settings = require('./settings')
   , appLogger     = require('../../lib/logger').appLogger;
 
 module.exports.setUp = function setUp(app, middleware) {
@@ -19,5 +18,4 @@ module.exports.setUp = function setUp(app, middleware) {
 
   presentations.setUp(app, middleware);
   sessions.setUp(app, middleware);
-  settings.setUp(app, middleware);
 }

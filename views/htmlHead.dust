@@ -3,9 +3,9 @@
 
 <!-- Le styles -->
 <link href="/css/bootstrap.min.css" rel="stylesheet">
+<link k rel="stylesheet" type="text/css"  href="/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css"  href="/css/isotope.css" />
 <link rel="stylesheet" type="text/css"  href="/css/style.css" />
-<link k rel="stylesheet" type="text/css"  href="/css/font-awesome.min.css">
 
 <!-- <link rel="stylesheet" type="text/css" media="screen and (min-width: 979px)" href="/css/style.css" /> -->
 <!-- <link rel="stylesheet" type="text/css" media="screen and (max-width: 978px)" href="/css/phone.css' /> -->

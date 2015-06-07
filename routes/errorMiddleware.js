@@ -19,6 +19,11 @@ function errorHandler(options){
     , dumpExceptions = options.dumpExceptions
  
   return function errorHandler(err, req, res, next){
+
+    if(err.message =='Could not authenticate'){
+      res.render('404')
+    }
+
     // http://www.senchalabs.org/connect/errorHandler.html
     if (err.status) res.statusCode = err.status;
     if (res.statusCode < 400) res.statusCode = 500;

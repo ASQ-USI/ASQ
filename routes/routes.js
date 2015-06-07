@@ -1,10 +1,18 @@
+/** 
+  * @module routes/routes
+  * @description routes logic entry point
+*/
+'use strict';
+
 var handlers = require('./handlers')
-, user       = require('./user')
-, appLogger  = require('../lib/logger').appLogger
-, config     = require('../config');
+var user = require('./user');
+var settingsRouter  = require('./user/settings');
+var pluginsRouter  = require('./plugins');
+var logger = require('../lib/logger').appLogger;
+var config = require('../config');
 
 module.exports.setUp = function setUp(app, middleware) {
-  appLogger.debug('Setting root routes');
+  logger.debug('Setting root routes');
   // Get the home page
   app.get('/', handlers.getHomePage);
 
@@ -51,4 +59,10 @@ module.exports.setUp = function setUp(app, middleware) {
 
   //Set up routes starting with /:user/*
   user.setUp(app, middleware);
+
+  //settings router
+  app.use('/:user/settings', middleware.isRouteOwner, settingsRouter)
+
+  //plugins router
+  app.use('/plugins', pluginsRouter)
 }

@@ -41,11 +41,11 @@ function isExistingUser(req, res, next, username) {
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function isAuthenticated(req, res, next) {
-  req.isAuthenticated() ? next(null) : next(new Error('Could not authenticate'));
+  req.isAuthenticated() ? next() : next(new Error('Could not authenticate'));
 }
 
 function isNotAuthenticated(req, res, next) {
-  !req.isAuthenticated() ? next(null) : next(new Error('Already authenticated'));
+  !req.isAuthenticated() ? next() : next(new Error('Already authenticated'));
 }
 
 function isNotAuthenticatedOrGoHome(req, res, next) {
@@ -86,6 +86,7 @@ function isNotRegistrationComplete(req, res, next) {
  *  authenticated user whose name matches the user parameter.
  */
 function isRouteOwner(req, res, next) {
+
   if (!req.params.user) {
     next(new Error('Invalid route: missing user parameter.'));
   } else if (req.params.user != req.user.username) {

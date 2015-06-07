@@ -2,9 +2,17 @@
 <html lang="en">
 	<head>
 		{>htmlHead/}
-		<title>ASQ - Plugin Settings</title>
+		<title>ASQ - Plugins</title>
 	</head>
-	<body>
+	<body class="no-touch" data-view-name="pluginsSettings">
+
+	{! dialog !}
+	<div id="main-dialog"></div>
+
+
+	<style>
+
+	</style>
 
 		<!--   top menu -->
 		{>menu/}
@@ -24,10 +32,17 @@
 				</div>
 				{/alert}
 
-				<div class="row" >
+				<div class="layout vertical" >
 					<div class="col-md-12 headline">
 						<h3>Plugin Settings</h3>
 					</div>
+				</div>
+				
+
+				<div class="layout vertical" >
+				{#plugins}
+					{>"shared/settingsPluginItem"/}
+				{/plugins}
 				</div>
 
 			</div>

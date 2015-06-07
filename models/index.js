@@ -13,5 +13,7 @@ module.exports = {
   userModel               : require('./user'),
   slideshowModel          : require('./slideshow'),
   sessionModel            : require('./session'),
-  whitelistModel          : require('./whitelist')
+  SettingModel            : require('./setting'),
+  whitelistModel          : require('./whitelist'),
+  pluginModel             : require('./Plugin')
 };

@@ -14,9 +14,11 @@ var presenterControl = require('./presenterControl.js');
 var sessionStats = require('./sessionStats.js');
 var menuDOMBinder = require('./views/menu');
 var presentations = require('./views/presentations');
+var pluginsSettings = require('./views/pluginsSettings');
 
 //binding the init function to the module to preserve the correct 'this'
 var presentationsDOMBinder =  presentations.init.bind(presentations);
+var pluginsSettingsDOMBinder =  pluginsSettings.init.bind(pluginsSettings);
 
 var binders = Object.create(null);
 binders['completeRegistration'] = completeRegistrationDOMBinder,
@@ -24,8 +26,9 @@ binders['menu']   =  menuDOMBinder;
 binders['user']   =  userDOMBinder;
 binders['signup'] =  signupDOMBinder;
 binders['usersSettings'] =  usersSettingsDOMBinder;
-binders['presentations']    = presentationsDOMBinder;
-binders['presentationSettings']  =  require('./presentationSettingsBindings');
+binders['presentations']  = presentationsDOMBinder;
+binders['pluginsSettings']  = pluginsSettingsDOMBinder;
+binders['presentationSettings'] =  require('./presentationSettingsBindings');
 binders['presenterControl'] =  function(){
   menuDOMBinder();
   presenterControl();

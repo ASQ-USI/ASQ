@@ -20,6 +20,15 @@ module.exports.setUp = function setUp(app, middleware) {
   //Render the plugins settings
   app.get('/:user/settings/plugins', middleware.isRouteOwner, handlers.getPluginsSettings);
 
+  app.post('/:user/settings/plugins/:pluginName/activate',
+    middleware.isRouteOwner, handlers.postPluginActivate);
+
+  // app.delete('/:user/settings/plugins/:pluginName/activate',
+  //   middleware.isRouteOwner, handlers.deactivatePlugin);
+
+  app.post('/:user/settings/plugins/:pluginName/install',
+    middleware.isRouteOwner, handlers.postPluginInstall);
+
   //Update the user settings
   app.post('/:user/settings/users', middleware.isRouteOwner,
     handlers.postUserSettings);

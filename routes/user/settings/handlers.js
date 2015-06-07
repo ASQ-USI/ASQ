@@ -8,14 +8,15 @@ var coroutine = Promise.coroutine;
 var lib = require('../../../lib');
 var logger = lib.logger.appLogger;
 var usersSettings = require('../../../lib/settings/usersSettings');
+var pluginsSettings = require('../../../lib/settings/pluginsSettings');
 
 module.exports = {
 
-  getSettings: function(req, res){
+  getSettings: function (req, res, next){
     res.redirect('settings/general')
   },
 
-  getGeneralSettings: function(req, res) {
+  getGeneralSettings: function (req, res, next) {
     res.render('generalSettings', {
       activeMenu: "general",
       username : req.user.username,
@@ -26,7 +27,7 @@ module.exports = {
     });
   },
 
-  getUsersSettings: function(req, res, next) {
+  getUsersSettings: function (req, res, next) {
     try{
       var renderData = usersSettings.getUserSettings(req.user);
 
@@ -39,22 +40,30 @@ module.exports = {
       logger.error({
         err: err,
         user_id: req.user._id,
-      }, "error getting user settings");
+      }, "error getting users settings");
 
       next(err);
     }
   },
 
-  getPluginsSettings: function(req, res, next) {
-    res.render('pluginsSettings', {
-      activeMenu: "plugins",
-      username : req.user.username,
-      user : {
-        name : req.user.username,
-        email : req.user.email
-      }
-    });
-  },
+  getPluginsSettings: coroutine(function *getPluginsSettingsGen(req, res, next) {
+    try{
+      var renderData = yield pluginsSettings.getPluginsSettings();
+
+      logger.log({
+        user_id: req.user._id,
+      }, "got user settings");
+
+      res.render('pluginsSettings', renderData);
+    }catch(err){
+      logger.error({
+        err: err,
+        user_id: req.user._id,
+      }, "error getting plugins settings");
+
+      next(err);
+    }
+  }),
 
   postUserSettings: coroutine(function *postUserSettingsGen(req, res) {
     try{
