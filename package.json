@@ -106,6 +106,7 @@
   },
   "devDependencies": {
     "autoless": "^0.1.7",
+    "bower": "^1.4.1",
     "browserify": "~2.35.1",
     "chai": "^2.2.0",
     "chai-as-promised": "^5.0.0",
