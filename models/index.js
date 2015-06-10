@@ -15,5 +15,5 @@ module.exports = {
   sessionModel            : require('./session'),
   SettingModel            : require('./setting'),
   whitelistModel          : require('./whitelist'),
-  pluginModel             : require('./Plugin')
+  pluginModel             : require('./plugin')
 };
