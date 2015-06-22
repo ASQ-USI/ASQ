@@ -12,6 +12,7 @@ module.exports = {
     entry: {
       presenter: "./client/js/presenter.js",
       viewer: "./client/js/viewer.js",
+      ghost: "./client/js/ghost.js",
       client: "./client/js/dom.js"
     },
     output: {
