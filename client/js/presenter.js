@@ -11,7 +11,7 @@ var debug = require('bows')("presenter")
   , manager = require('asq-visualization').Manager()
   , connection = require('./connection.js')
   , elements = require('./elements.js')
-  , eventBus = new EventEmitter2({delimiter: ':'})
+  , eventBus = new EventEmitter2({delimiter: ':', maxListeners: 100})
   , ASQ = {}; //object that will be passed to components
 
 function assert(expected, actual, errorMsg){

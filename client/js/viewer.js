@@ -13,7 +13,7 @@ var debug = require('bows')("viewer")
   , connection = require('./connection.js')
   , EventEmitter2 = require('eventemitter2')
   , elements = require('./elements.js')
-  , eventBus = new EventEmitter2({delimiter: ':'})
+  , eventBus = new EventEmitter2({delimiter: ':',  maxListeners: 100})
   , $body, userId;
 
 function assert(expected, actual, errorMsg){
