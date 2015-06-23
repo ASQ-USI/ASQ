@@ -493,6 +493,14 @@ var configurePresentationSaveSlideshow = coroutine(function* configurePresentati
 });
 
 var getScoreboard = coroutine(function* getScoreboardGen(req, res, next) {
+  appLogger.debug(require('util').inspect(req.whitelistEntry));
+  var role = req.query.role || 'ghost'; //Check user is allowed to have this role
+  if (req.whitelistEntry !== undefined) {
+    role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
+  } else {
+    appLogger.debug('Public session');
+    role = 'ghost'; //Public session and not whitelisted only allows viewers.
+  }
   var scoreBoardTemplatePath = path.join(app.get('uploadDir'), req.params.presentationId, "scoreboard.asq.dust");
   var presentation        = req.liveSession.slides
   var presentationViewUrl = ''
@@ -500,6 +508,7 @@ var getScoreboard = coroutine(function* getScoreboardGen(req, res, next) {
   var presentationFile = presentationDir + presentation.asqFile
   var presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
+  console.log(req.user, req.sessionID, token)
 
   res.render(scoreBoardTemplatePath,{
     username              : req.user? req.user.username :'',
