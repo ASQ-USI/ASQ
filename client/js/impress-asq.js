@@ -839,7 +839,8 @@
                 //
                 // To avoid this we store last entered hash and compare.
                 if (window.location.hash !== lastHash) {
-                    goto( getElementFromHash() );
+                   // TODO: (TRIGLIAN) this is evil 
+                   // goto( getElementFromHash() );
                 }
             }, false);
             
