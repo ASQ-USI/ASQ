@@ -58,6 +58,7 @@ this.readSessionInfo = function(){
   si.role      = this.role      = body.dataset.asqRole;
   si.namespace = this.namespace = body.dataset.asqSocketNamespace;
   si.token     = this.token     = body.dataset.asqSocketToken;
+  si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
 
   assert(true, (isString(si.protocol) && !!si.protocol)
     , 'protocol is required');
