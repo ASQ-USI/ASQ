@@ -112,21 +112,6 @@ conf = {
       level: "info",
       file: "log/app.log",
       json: false
-    },
-
-    //db logging (Note: only warn and error make sense for db logging)
-    db: {
-      level: "info",
-      file: "log/db.log",
-      json: false
-    },
-
-    // sockets logging
-    // (Note: sockets only support error, warn, info and debug levels.)
-    sockets: {
-      level: "info",
-      file: "log/soc.log",
-      json: false
     }
   }
 };
