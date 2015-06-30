@@ -46,15 +46,25 @@ function getDefaultSettings() {
     return defaultSettings;
 }
 
+var types = [ 'String',
+              'Number',
+              'Date',
+              'Boolean' ];
+
 var settingSchema = new Schema({
-    key        : { type : String , unique : true, required : true, dropDups: true },
+    key        : { type : String, required : true},
     value      : { type : {}},
+    enumerate  : { type : Boolean, default: false},
+    options    : { type : Array, default: [] },
+    type       : { type :  String, required: true, enum: types},
+    // TODO: ranged numbers
     category   : { type : String , required : true, default: 'core' },
-    createdAt  : { type: Date, default: Date.now },
+    createdAt  : { type : Date, default: Date.now },
     createdBy  : { type : ObjectId, ref: 'User' },
-    updatedAt  : { type: Date, default: Date.now },
+    updatedAt  : { type : Date, default: Date.now },
     updatedBy  : { type : ObjectId, ref: 'User' }
 });
+
 
 // adopted from https://github.com/TryGhost/Ghost/
 settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen() {
