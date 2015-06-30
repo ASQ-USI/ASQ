@@ -6,6 +6,7 @@ module.exports = {
   assessmentModel         : require('./assessment'),
   answerProgressModel     : require('./answerProgress'),
   answerModel             : require('./answer'),
+  settingModel            : require('./setting'),
   exerciseModel           : require('./exercise'),
   exerciseSubmissionModel : require('./exerciseSubmission'),
   questionModel           : require('./question'),
@@ -13,7 +14,6 @@ module.exports = {
   userModel               : require('./user'),
   slideshowModel          : require('./slideshow'),
   sessionModel            : require('./session'),
-  SettingModel            : require('./setting'),
   whitelistModel          : require('./whitelist'),
-  pluginModel             : require('./plugin')
+  pluginModel             : require('./Plugin'),
 };
