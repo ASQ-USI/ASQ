@@ -1,16 +1,16 @@
 require('when/monitor/console');
-
-var _         = require('lodash')
-, gen         = require('when/generator')
-, moment      = require('moment')
-, errorTypes  = require('../../errorTypes')
-, lib         = require('../../../lib')
-, sockAuth    = require('../../../lib/socket/authentication')
-, appLogger   = lib.logger.appLogger
-, stats       = require('../../../lib/stats/stats')
-, Rubric      = db.model('Rubric')
-, Session     = db.model('Session')
-, User        = db.model('User');
+;
+var _         = require('lodash');
+var gen         = require('when/generator');
+var moment      = require('moment');
+var errorTypes  = require('../../errorTypes');
+var lib         = require('../../../lib');
+var sockAuth    = require('../../../lib/socket/authentication');
+var logger      = require('logger-asq');
+var stats       = require('../../../lib/stats/stats');
+var Rubric      = db.model('Rubric');
+var Session     = db.model('Session');
+var User        = db.model('User');
 
 
 
@@ -20,8 +20,8 @@ exports.getSessionStats = gen.lift(function *getSessionStatsGen(req, res, next) 
   try{
     var session = yield Session.findById(req.params.sessionId).exec();
   }catch(err){
-    appLogger.error("Session %s not found", req.params.sessionId);
-    appLogger.error(err.message, { err: err.stack });
+    logger.error("Session %s not found", req.params.sessionId);
+    logger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }
@@ -48,8 +48,8 @@ exports.getSessionStats = gen.lift(function *getSessionStatsGen(req, res, next) 
     }
     return res.render('sessionStats', statsObj);
   }catch(err){
-    appLogger.error("Session %s not found", req.params.sessionId);
-    appLogger.error(err.message, { err: err.stack });
+    logger.error("Session %s not found", req.params.sessionId);
+    logger.error(err.message, { err: err.stack });
     next(err)
   }
 });

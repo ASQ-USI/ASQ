@@ -1,8 +1,8 @@
-var mongoose = require('mongoose')
-, Schema     = mongoose.Schema
-, ObjectId   = Schema.ObjectId
-, when       = require('when')
-, appLogger  = require('../lib/logger').appLogger;
+var mongoose = require('mongoose');
+var Schema   = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
+var when     = require('when');
+var logger   = require('logger-asq');
 
 var answerProgressSchema = new Schema({
   session      : { type: ObjectId, ref: 'Session', required: true },
@@ -166,7 +166,7 @@ answerProgressSchema.statics.getUpdateQuery = function(session, exercise, update
   }, obj, ops);
 }
 
-appLogger.debug('Loading AnswerProgress model');
+logger.debug('Loading AnswerProgress model');
 mongoose.model('AnswerProgress', answerProgressSchema, 'answerprogresses');
 
 module.exports =  mongoose.model('AnswerProgress');

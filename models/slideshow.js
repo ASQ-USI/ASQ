@@ -2,13 +2,13 @@
     @description the Slideshow Model
 */
 
-var mongoose = require('mongoose');
+var mongoose   = require('mongoose');
 var Schema     = mongoose.Schema;
 var ObjectId   = Schema.ObjectId;
 var when       = require('when');
 var Promise    = require("bluebird");
 var coroutine  = Promise.coroutine;
-var appLogger  = require('../lib/logger').appLogger;
+var logger     = require('logger-asq');
 var Question   = db.model('Question');
 var Exercises  = db.model('Exercise');
 var User       = db.model('User');
@@ -353,7 +353,7 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   this.statsPerSlide = sPerSlidesArray;
 }
 
-appLogger.debug('Loading Slideshow model');
+logger.debug('Loading Slideshow model');
 mongoose.model('Slideshow', slideshowSchema);
 
 module.exports = mongoose.model('Slideshow');

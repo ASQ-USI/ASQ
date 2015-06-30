@@ -8,7 +8,7 @@ var handlers = require('./handlers')
 var user = require('./user');
 var settingsRouter  = require('./user/settings');
 var pluginsRouter  = require('./plugins');
-var logger = require('../lib/logger').appLogger;
+var logger = require('logger-asq');
 var config = require('../config');
 
 module.exports.setUp = function setUp(app, middleware) {

@@ -3,13 +3,13 @@
 */
 'use strict';
 
-var handlers       = require('./handlers')
-  , presentations = require('./presentations')
-  , sessions = require('./sessions')
-  , appLogger     = require('../../lib/logger').appLogger;
+var handlers      = require('./handlers');
+var presentations = require('./presentations');
+var sessions      = require('./sessions');
+var logger        = require('logger-asq');
 
 module.exports.setUp = function setUp(app, middleware) {
-  appLogger.debug('Setting user routes');
+  logger.debug('Setting user routes');
   //Render the user page
   app.get('/:user/', handlers.getUserPage);
 

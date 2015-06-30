@@ -3,13 +3,13 @@
  @description Functions related to the direct interaction with slideshows and
  sessions.
  */
-var cheerio  = require('cheerio')
-, fs         = require("fs")
-, path       = require('path')
-, schemas    = require('../models')
-// , asyncblock = require('asyncblock')
-, lib 		   = require('../lib')
-, appLogger  = lib.logger.appLogger;
+var cheerio  = require('cheerio');
+var fs         = require("fs");
+var path       = require('path');
+var schemas    = require('../models');
+// var asyncblock = require('asyncblock');
+var lib 		   = require('../lib')
+var logger     = require('logger-asq');
 
 /** Renders the slideshow for admins */
 module.exports.admin = function(req, res) {
@@ -250,7 +250,7 @@ module.exports.start = function(req, res) {
 
 		//Error Handling
 		flow.errorCallback = function errorCallback(err) {
-			appLogger.error("Presentation Start\n" + err);
+			logger.error("Presentation Start\n" + err);
 			res.redirect(302, '/user/' + req.user.username
 				+ '/?alert=Something went wrong. The Great ASQ Server said: '
 				+ err + '&type=error');
@@ -286,7 +286,7 @@ module.exports.start = function(req, res) {
 
 		//Wait to finish and redirect
 		flow.wait();
-		appLogger.info("Starting new " + newSession.authLevel + " session");
+		logger.info("Starting new " + newSession.authLevel + " session");
 		res.redirect(302, '/adminControll');
 	});
 }

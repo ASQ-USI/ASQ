@@ -43,8 +43,7 @@ describe("upload.js", function(){
         '../presentationAdapter/adapters': this.adapters = {},
         '../presentation/presentationCreate' : this.presentationCreate = {},
         '../presentation/presentationDelete' : this.presentationDelete = {},
-        '../utils/fs' : this.fsUtils = {},
-        '../logger' :  {appLogger : {debug:function(){}}}
+        '../utils/fs' : this.fsUtils = {}
       },
       globals : {
         app : this.app,

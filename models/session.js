@@ -2,13 +2,13 @@
     @description the Session Model
 */
 
-var mongoose = require('mongoose')
-, Schema     = mongoose.Schema
-, ObjectId   = Schema.ObjectId
-, when       = require('when')
-, appLogger  = require('../lib/logger').appLogger
-, User       = db.model('User')
-, Slideshow  = db.model('Slideshow');
+var mongoose   = require('mongoose')
+var Schema     = mongoose.Schema;
+var ObjectId   = Schema.ObjectId;
+var when       = require('when');
+var logger     = require('logger-asq');
+var User       = db.model('User');
+var Slideshow  = db.model('Slideshow');
 
 var sessionSchema = new Schema({
   presenter            : { type: ObjectId, ref: 'User', required: true },
@@ -143,7 +143,7 @@ sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
 sessionSchema.set('toObject', { virtuals: true });
 sessionSchema.set('toJSON', { virtuals: true });
 
-appLogger.debug('Loading Session model');
+logger.debug('Loading Session model');
 mongoose.model('Session', sessionSchema);
 
 module.exports = mongoose.model('Session');

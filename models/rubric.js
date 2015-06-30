@@ -3,15 +3,15 @@
  * @description the Rubric Model
  **/
 
-var mongoose             = require('mongoose')
-, Schema                 = mongoose.Schema
-, ObjectId               = Schema.ObjectId
-, when                   = require('when')
-, wkeys                  = require('when/keys')
-, Answer                 = db.model('Answer')
-, abstractQuestionSchema = require('./abstractQuestionSchema')
-, stats                  = require('../lib/stats')
-, appLogger              = require('../lib/logger').appLogger;
+var mongoose               = require('mongoose');
+var Schema                 = mongoose.Schema;
+var ObjectId               = Schema.ObjectId;
+var when                   = require('when');
+var wkeys                  = require('when/keys');
+var Answer                 = db.model('Answer');
+var abstractQuestionSchema = require('./abstractQuestionSchema');
+var stats                  = require('../lib/stats');
+var logger                 = require('logger-asq');
 
 var criterionSchema = new Schema({
   desc   : { type: String, required: true },
@@ -26,7 +26,7 @@ var rubricSchema = abstractQuestionSchema.extend({
   deductPoints: { type: Boolean, default: false }
 });
 
-appLogger.debug('Loading Rubric model');
+logger.debug('Loading Rubric model');
 mongoose.model('Rubric', rubricSchema, 'rubrics');
 
 module.exports = mongoose.model('Rubric');

@@ -2,14 +2,14 @@
     @description the Answers Model
 */
 
-var mongoose      = require('mongoose')
+var mongoose      = require('mongoose');
  // , questionModel = require('./question') // Can't call question from answer because question call answers...
-  , Schema        = mongoose.Schema
-  , ObjectId      = Schema.ObjectId
-  , when          = require('when')
-  , arrayEqual    = require('../lib/utils/stats').arrayEqual
-  , appLogger     = require('../lib/logger').appLogger
-  , Assessment    = db.model('Assessment');
+var Schema        = mongoose.Schema;
+var ObjectId      = Schema.ObjectId;
+var when          = require('when');
+var arrayEqual    = require('../lib/utils/stats').arrayEqual;
+var logger        = require('logger-asq');
+var Assessment    = db.model('Assessment');
 
 var answerLogSchema = new Schema({
   startTime:{},
@@ -100,7 +100,7 @@ answerSchema.index({ session: 1, answeree: 1, exercise: 1, submitDate: 1 });
 //     return deferred.promise;
 // };
 
-appLogger.debug('Loading Answer model');
+logger.debug('Loading Answer model');
 mongoose.model('Answer', answerSchema);
 
 module.exports = mongoose.model('Answer');

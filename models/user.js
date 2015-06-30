@@ -2,14 +2,14 @@
     @description the User Model
 */
 
-var mongoose       = require('mongoose')
-, generateName     = require('sillyname')
-, Schema           = mongoose.Schema
-, ObjectId         = Schema.ObjectId
-, extend           = require('mongoose-schema-extend')
-, bcrypt           = require('bcrypt')
-, SALT_WORK_FACTOR = 10
-, appLogger        = require('../lib/logger').appLogger;
+var mongoose         = require('mongoose');
+var generateName     = require('sillyname');
+var Schema           = mongoose.Schema;
+var ObjectId         = Schema.ObjectId;
+var extend           = require('mongoose-schema-extend');
+var bcrypt           = require('bcrypt');
+var SALT_WORK_FACTOR = 10;
+var logger           = require('logger-asq');
 
 
 var baseUserSchema = new Schema({
@@ -116,9 +116,9 @@ var guestUserSchema = baseUserSchema.extend({
   createdAt: {type: Date, default: Date.now, expires: 2592000000 } //TTL of 30 days for guest users
 });
 
-appLogger.debug('Loading User model');
+logger.debug('Loading User model');
 mongoose.model('User', registeredUserSchema);
-appLogger.debug('Loading GuestUser model');
+logger.debug('Loading GuestUser model');
 mongoose.model('GuestUser', guestUserSchema);
 
 module.exports = {

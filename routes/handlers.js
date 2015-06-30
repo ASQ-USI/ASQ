@@ -1,12 +1,11 @@
-var _                = require('lodash')
-, when               = require('when')
-// , lib                = require('../lib')
-, signupMessages = require('../lib/forms/signup/messages')
-, completeRegistrationMessages = require('../lib/forms/completeRegistration/messages')
-, validation         = require('../shared/validation')
-, appLogger          = require('../lib/logger').appLogger
-, User               = db.model('User')
-, utils              = require('../lib/utils/routes');
+var _               = require('lodash');
+var when            = require('when');
+var signupMessages = require('../lib/forms/signup/messages');
+var completeRegistrationMessages = require('../lib/forms/completeRegistration/messages');
+var validation = require('../shared/validation');
+var logger     = require('logger-asq');
+var User       = db.model('User');
+var utils      = require('../lib/utils/routes');
 
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
@@ -89,13 +88,13 @@ function postCompleteRegistration(req, res) {
       return deferred.promise;
   }).then(
     function onNewUser(user) {
-      appLogger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.sAMAccountName);
+      logger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.sAMAccountName);
       res.redirect(utils.getPreviousURLOrHome(req));
 
   }).then(null,
     function onError(err) {
       if (err instanceof Error) {
-        appLogger.error('On complete registration: ' + err.toString(), { err: err.stack });
+        logger.error('On complete registration: ' + err.toString(), { err: err.stack });
         next(err);
       } else {
 
@@ -170,7 +169,7 @@ function postSignup(req, res, next) {
       return deferred.promise;
   }).then(
     function onNewUser(user) {
-      appLogger.info('New user registered: %s (%s)', user.username, user.email);
+      logger.info('New user registered: %s (%s)', user.username, user.email);
       req.login(user, function onLogin(err) {
         if (err) {
           var error = new Error('User created but login failed with: ' +
@@ -183,7 +182,7 @@ function postSignup(req, res, next) {
   }).then(null,
     function onError(err) {
       if (err instanceof Error) {
-        appLogger.error('During sign up: ' + err.toString(), { err: err.stack });
+        logger.error('During sign up: ' + err.toString(), { err: err.stack });
         next(err);
       } else {
         for (var key in err) {
@@ -245,7 +244,7 @@ function postLoginCampus(req, res) {
 }
 
 function logout(req, res) {
-  appLogger.debug('logout');
+  logger.debug('logout');
   req.logout();
   res.redirect('/');
 }
@@ -318,7 +317,7 @@ function emailAvailable(req, res, next) {
       }
   }).then(null,
     function onError(err) {
-      appLogger.error('Error during email availability check: ' +
+      logger.error('Error during email availability check: ' +
         err.toString(), { err: err.stack });
       response.msg = 'Error during email availability check: ' + err.toString();
       res.json(500, response);
@@ -361,7 +360,7 @@ function usernameAvailable(req, res) {
       }
   }).then(null,
     function onError(err) {
-      appLogger.error('Error during user availability check: ' +
+      logger.error('Error during user availability check: ' +
         err.toString(), { err: err.stack });
       response.msg = 'Error during user availability check: ' + err.toString();
       res.json(500, response);

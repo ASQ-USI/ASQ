@@ -3,15 +3,15 @@
  * @description the Questions Model
  **/
 
-var mongoose             = require('mongoose')
-, Schema                 = mongoose.Schema
-, when                   = require('when')
-, wkeys                  = require('when/keys')
-, Answer                 = db.model('Answer')
-, abstractQuestionSchema = require('./abstractQuestionSchema')
-, assessmentTypes        = require('./assessmentTypes')
-, stats                  = require('../lib/stats')
-, appLogger              = require('../lib/logger').appLogger;
+var mongoose               = require('mongoose');
+var Schema                 = mongoose.Schema;
+var when                   = require('when');
+var wkeys                  = require('when/keys');
+var Answer                 = db.model('Answer');
+var abstractQuestionSchema = require('./abstractQuestionSchema');
+var assessmentTypes        = require('./assessmentTypes');
+var stats                  = require('../lib/stats');
+var logger                 = require('logger-asq');
 
 var questionOptionSchema = new Schema({
   text      : { type: String, required: true },
@@ -61,8 +61,8 @@ questionSchema.methods.getSolution = function(){
     //FIXME: is this ok?
     result = null;
   }
-  // appLogger.debug('Solution for question ' + this.stem);
-  // appLogger.debug(result);
+  // logger.debug('Solution for question ' + this.stem);
+  // logger.debug(result);
 	return result;
 }
 
@@ -74,7 +74,7 @@ questionSchema.methods.getStats = function getStats(sessionId) {
   return wkeys.all(o);
 }
 
-appLogger.debug('Loading Question model');
+logger.debug('Loading Question model');
 mongoose.model('Question', questionSchema, 'questions');
 
 module.exports =  mongoose.model('Question');

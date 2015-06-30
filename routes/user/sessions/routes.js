@@ -1,8 +1,8 @@
-var handlers      = require('./handlers')
-  , appLogger    = require('../../../lib/logger').appLogger;
+var handlers   = require('./handlers');
+var logger     = require('logger-asq');
 
 module.exports.setUp = function setUp(app, middleware) {
-  appLogger.debug('Setting session routes');
+  logger.debug('Setting session routes');
 
   // Stats for specific session.
   app.get('/:user/sessions/:sessionId/stats', middleware.isRouteOwner,

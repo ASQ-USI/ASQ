@@ -6,8 +6,7 @@
 var router = require('express').Router();
 var middleware = require('../middleware');
 var handlers = require('./handlers');
-var lib = require('../../lib');
-var logger = lib.logger.appLogger;
+var logger   = require('logger-asq');
 
 logger.debug('Setting plugin routes');
 

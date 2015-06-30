@@ -11,7 +11,7 @@ var ObjectId   = Schema.ObjectId;
 var Promise    = require('bluebird');
 var coroutine  = Promise.coroutine;
 var _          = require('lodash');
-var logger     = require('../lib/logger').appLogger;
+var logger     = require('logger-asq');
 var defaultSettings;
 
 // adopted from https://github.com/TryGhost/Ghost

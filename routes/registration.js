@@ -1,10 +1,9 @@
 var schemas   = require("../models")
-, Slideshow   = require("../models/slideshow")
-, fs          = require("fs")
-, moment      = require('moment')
-, check       = require('validator').check
-, appLogger   = require('../lib/logger').appLogger
-, utils			  = require('../lib/utils/routes');
+var Slideshow   = require("../models/slideshow")
+var fs          = require("fs")
+var moment      = require('moment')
+var check       = require('validator').check
+var utils			  = require('../lib/utils/routes');
 
 exports.isValidUserName = function(candidateUser) {
 	// Match string between 3 and 12 chars starting with a letter, lower or upper case 

@@ -17,13 +17,7 @@ describe("hooks.js", function(){
 
     this.hooks = SandboxedModule.require(modulePath, {
       requires: {
-        "lodash": _ ,
-        '../logger' : {
-          appLogger: {
-            log: function(){},
-            debug: function(){}
-          }
-        }
+        "lodash": _ 
       }
     });
   });

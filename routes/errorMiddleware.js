@@ -2,11 +2,11 @@
     @fileoverview routes/errorMiddleware.js
     @description error handling middleware
 */
-var appLogger       = require('../lib/logger').appLogger
-  , errorTypes = require('./errorTypes');
+var logger     = require('logger-asq');
+var errorTypes = require('./errorTypes');
 
 function logErrors(err, req, res, next) {
-  appLogger.error(err.stack);
+  logger.error(err.stack);
   next(err);
 }
 

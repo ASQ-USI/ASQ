@@ -26,8 +26,8 @@ describe("archive.js", function() {
 
     this.ArchiveManager = SandboxedModule.require(modulePath, {
       requires: {
-        "child_process": this.child,
-        "../logger": {appLogger: this.logger},
+        'logger-asq': this.logger,
+        "child_process": this.child
       }
     });
   });

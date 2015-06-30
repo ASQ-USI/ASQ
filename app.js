@@ -6,6 +6,23 @@
 require('simple-errors');
 
 var config = require('./config');
+var appConfig = config.log.application;
+var logger          = require('logger-asq');
+logger.initialize('app', {
+  console: {
+    level: appConfig.level,
+    colorize: true,
+    label: 'app'
+  },
+  // transports: [
+  //   new winston.transports.File({
+  //     level: appConfig.level,
+  //     filename: appConfig.file,
+  //     json: appConfig.json 
+  //   })
+  // ]
+})
+
 // Globals : mongoose, db, and schemas
 mongoose   = require('mongoose');
 db         = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
@@ -38,7 +55,7 @@ var credentials     = config.enableHTTPS ? {
     rejectUnauthorized : config.rejectUnauthorized,
   } : {};
 var lib             = require('./lib');
-var appLogger       = lib.logger.appLogger;
+
 var authentication  = lib.authentication;
 var passport        = require('passport');
 var editFunctions   = require('./routes/edit');
@@ -75,7 +92,7 @@ function ensureAuthenticated(req, res, next) {
 }
 
 app = express();
-appLogger.log('ASQ initializing with host ' + config.host + ' on port ' + config.port);
+logger.log('ASQ initializing with host ' + config.host + ' on port ' + config.port);
 
 // Global namespace
 var ASQ = global.ASQ = {};
@@ -91,7 +108,7 @@ app.locals.rootUrl = ASQ.rootUrl;
 //hostname which we want to advertise for connection.
 ASQ.appHost = config.host;
 clientsLimit = config.clientsLimit || 50;
-appLogger.log('Clients limit: ' + clientsLimit);
+logger.log('Clients limit: ' + clientsLimit);
 
 
 //Reidrection to secure url when HTTPS is used.
@@ -118,7 +135,7 @@ if (config.enableHTTPS) {
 //make sure upload directory exists
 var uploadDir =  path.resolve(__dirname, config.uploadDir);
 if( ! fs.existsSync(uploadDir)){
-  appLogger.debug("Creating uploadDir at ", uploadDir)
+  logger.debug("Creating uploadDir at ", uploadDir)
   mkdirp.sync(uploadDir);
 }
 app.set('uploadDir', uploadDir);
@@ -190,7 +207,7 @@ if ('development' == app.get('env')) {
     if (require('validator').isNull(candidate)) {
       return 'blank';
     }
-    appLogger.debug('[devel mode] No password constraint');
+    logger.debug('[devel mode] No password constraint');
     return null;
   }
 };
@@ -240,14 +257,14 @@ var init = coroutine(function *initGen () {
   /** HTTP(S) Server */
   if (config.enableHTTPS && !config.usingReverseProxy) {
     var server = require('https').createServer(credentials, app).listen(app.get('port'), function(){
-        appLogger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
+        logger.log("ASQ HTTPS server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
     var serverHTTP = http.createServer(app).listen(config.HTTPPort, function() {
-        appLogger.log("HTTP redirection ready, listening on port " + config.HTTPPort);
+        logger.log("HTTP redirection ready, listening on port " + config.HTTPPort);
     });
   } else {
     var server = http.createServer(app).listen(app.get('port'), '0.0.0.0', function(){
-      appLogger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
+      logger.info("ASQ HTTP server listening on port " + app.get('port') + " in " + app.get('env') + " mode");
     });
   }
 

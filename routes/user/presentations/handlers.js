@@ -1,23 +1,23 @@
 require('when/monitor/console');
-var _             = require('lodash')
-, moment          = require('moment')
-, validator       = require('validator')
-, nodefn          = require('when/node/function')
-, path            = require('path')
-, fs              = require('fs')
-, when            = require('when')
-, Promise         = require('bluebird')
-, coroutine       = Promise.coroutine
-, errorTypes      = require('../../errorTypes')
-, lib             = require('../../../lib')
-, dustHelpers     = lib.dustHelpers
-, logger          = lib.logger.appLogger
-, utils           = lib.utils.routes
-, questionModel   = require('../../../models/question') //TODO fix and remove this require
-, Slideshow       = db.model('Slideshow')
-, Session         = db.model('Session')
-, getPresentationsByCourse = require('../../../lib/courses/listPresentations').getPresentationsByCourse
-, upload = require('../../../lib/upload/upload');
+var _             = require('lodash');
+var moment          = require('moment');
+var validator       = require('validator');
+var nodefn          = require('when/node/function');
+var path            = require('path');
+var fs              = require('fs');
+var when            = require('when');
+var Promise         = require('bluebird');
+var coroutine       = Promise.coroutine;
+var errorTypes      = require('../../errorTypes');
+var lib             = require('../../../lib');
+var dustHelpers     = lib.dustHelpers;
+var logger     = require('logger-asq');
+var utils           = lib.utils.routes;
+var questionModel   = require('../../../models/question'); //TODO fix and remove this require
+var Slideshow       = db.model('Slideshow');
+var Session         = db.model('Session');
+var getPresentationsByCourse = require('../../../lib/courses/listPresentations').getPresentationsByCourse;
+var upload = require('../../../lib/upload/upload');
 
 Promise.promisifyAll(fs);
 

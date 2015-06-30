@@ -3,9 +3,9 @@
 */
 
 var mongoose      = require('mongoose')
-  , Schema        = mongoose.Schema
-  , ObjectId      = Schema.ObjectId
-  , appLogger     = require('../lib/logger').appLogger;
+var Schema        = mongoose.Schema
+var ObjectId      = Schema.ObjectId
+var logger        = require('logger-asq');
 
 var exerciseSubmissionSchema = new Schema({
   exercise   : { type: ObjectId, ref: 'Exercise', required: true },
@@ -18,7 +18,7 @@ var exerciseSubmissionSchema = new Schema({
 
 exerciseSubmissionSchema.index({ session: 1, answeree: 1, exercise: 1, submitDate: 1 });
 
-appLogger.debug('Loading ExerciseSubmission model');
+logger.debug('Loading ExerciseSubmission model');
 mongoose.model('ExerciseSubmission', exerciseSubmissionSchema);
 
 module.exports = mongoose.model('ExerciseSubmission');

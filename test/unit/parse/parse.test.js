@@ -171,13 +171,7 @@ describe("parse.js", function(){
           generator: this.markupGenerator
         },
         './AsqElementsParser' : this.AsqElementsParser,
-        '../configuration/conf.js' : this.configuration,
-        '../logger' : {
-          appLogger: {
-            log: function(){},
-            debug: function(){}
-          }
-        }
+        '../configuration/conf.js' : this.configuration
       },
       globals : {
         app :{

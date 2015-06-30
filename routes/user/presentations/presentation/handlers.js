@@ -1,35 +1,35 @@
 /**
     @fileoverview user/presentations/presentation/handlers.js
     @description Handlers for a presentation resource
-*/
-var cheerio     = require('cheerio')
-  , path        = require('path') 
-  , pfs         = require('promised-io/fs')
-  , lib         = require('../../../../lib')
-  , sockAuth    = require('../../../../lib/socket/authentication')
-  , appLogger   = lib.logger.appLogger
-  , presUtils   = lib.utils.presentation
-  , config      = require('../../../../config')
-  , when        = require('when')
-  , gen         = require('when/generator')
-  , nodefn      = require('when/node/function')
-  , Slideshow   = db.model('Slideshow')
-  , Exercise    = db.model('Exercise')
-  , User        = db.model('User', schemas.userSchema)
-  , Session     = db.model('Session')
-  , stats       = require('../../../../lib/stats/stats')
-  , Promise     = require("bluebird")  
-  , coroutine   = Promise.coroutine
-  , _           = require('lodash')
-  , assessmentTypes = require('../../../../models/assessmentTypes.js')
-  , slideflowTypes = require('../../../../models/slideflowTypes.js')
-  , Conf        = require('../../../../lib/configuration/conf.js');
+*/;
+var cheerio     = require('cheerio');
+var path        = require('path') ;
+var pfs         = require('promised-io/fs');
+var lib         = require('../../../../lib');
+var sockAuth    = require('../../../../lib/socket/authentication');
+var logger     = require('logger-asq');
+var presUtils   = lib.utils.presentation;
+var config      = require('../../../../config');
+var when        = require('when');
+var gen         = require('when/generator');
+var nodefn      = require('when/node/function');
+var Slideshow   = db.model('Slideshow');
+var Exercise    = db.model('Exercise');
+var User        = db.model('User', schemas.userSchema);
+var Session     = db.model('Session');
+var stats       = require('../../../../lib/stats/stats');
+var Promise     = require("bluebird")  ;
+var coroutine   = Promise.coroutine;
+var _           = require('lodash');
+var assessmentTypes = require('../../../../models/assessmentTypes.js');
+var slideflowTypes = require('../../../../models/slideflowTypes.js');
+var Conf        = require('../../../../lib/configuration/conf.js');
 
 
 function editPresentation(req, res) {
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
     if (err) {
-      appLogger.error(err.toString());
+      logger.error(err.toString());
     } else {
       /* Load presentation html file */
       pfs.readFile(slideshow.presenterFile, 'utf-8').then(function(data) {
@@ -72,20 +72,20 @@ function editPresentation(req, res) {
         });
       }, function(error){
         //TODO How about handling the error?
-        appLogger.error('This is an error left unhandeled...');
-        appLogger.error(error.toStirng());
+        logger.error('This is an error left unhandeled...');
+        logger.error(error.toStirng());
       });
     }
   });
 }
 
 function livePresentation(req, res) {
-  appLogger.debug(require('util').inspect(req.whitelistEntry));
+  logger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
     role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
   } else {
-    appLogger.debug('Public session');
+    logger.debug('Public session');
     role = 'viewer'; //Public session and not whitelisted only allows viewers.
   }
   var view                = req.query.view || 'presentation'
@@ -96,7 +96,7 @@ function livePresentation(req, res) {
     , presenterLiveUrl    = '';
 
   //TMP until roles are defined more precisely
-  appLogger.debug('Select template for ' + role + ' ' + view);
+  logger.debug('Select template for ' + role + ' ' + view);
 
   var shouldGenerateThumbs = 'true' //string because of dust templates
   if(presentation.thumbnailsUpdated && (presentation.lastEdit - presentation.thumbnailsUpdated < 0 )){
@@ -191,7 +191,7 @@ function livePresentationFiles(req, res) {
 
 
 function startPresentation(req, res, next) {
-  appLogger.debug('New session from ' + req.user.username);
+  logger.debug('New session from ' + req.user.username);
 
   var  slidesId = req.params.presentationId
     , newSession;
@@ -243,7 +243,7 @@ function startPresentation(req, res, next) {
     }
   ).then(
     function sendReponse(){
-      appLogger.info('Starting new ' + newSession.authLevel + ' session');
+      logger.info('Starting new ' + newSession.authLevel + ' session');
       res.location(['/', req.user.username, '/presentations/', newSession.slides,
         '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
       console.log(['/', req.user.username, '/presentations/', newSession.slides,
@@ -257,7 +257,7 @@ function startPresentation(req, res, next) {
 }
 
 function stopPresentation(req, res, next) {
-  appLogger.debug('Stopping session from ' + req.user.username);
+  logger.debug('Stopping session from ' + req.user.username);
   return res.sendStatus(204)
   //start with when to have the catch method at the end;
   when.resolve(true)
@@ -277,7 +277,7 @@ function stopPresentation(req, res, next) {
     })
   }).then(
     function onStopped(){
-      appLogger.info('Session stopped');
+      logger.info('Session stopped');
 
        //JSON
     if(req.accepts('application/json')){
@@ -296,8 +296,8 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
   try{
     var slideshow = yield Slideshow.findById(req.params.presentationId).exec();
   }catch(err){
-    appLogger.error("Presentation %s not found", req.params.presentationId);
-    appLogger.error(err.message, { err: err.stack });
+    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }
@@ -310,8 +310,8 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
     statsObj.port = app.get('port');
     return res.render('presentationStats', statsObj);
   }catch(err){
-    appLogger.error("Presentation %s not found", req.params.presentationId);
-    appLogger.error(err.message, { err: err.stack });
+    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(err.message, { err: err.stack });
     next(err)
   }
   
@@ -409,8 +409,8 @@ var configurePresentation = coroutine(function* configurePresentation(req, res) 
   try{
     var slideshow = yield Slideshow.findById(slideshowId).exec();
   }catch(err){
-    appLogger.error("Presentation %s not found", req.params.presentationId);
-    appLogger.error(err.message, { err: err.stack });
+    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }

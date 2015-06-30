@@ -1,14 +1,14 @@
-var passport     = require('passport')
-, appLogger      = require('../lib/logger').appLogger
-, authentication = require('../lib/authentication')
-, errorTypes     = require('./errorTypes')
-, utils          = require('../lib/utils/routes');
+var passport       = require('passport');
+var logger         = require('logger-asq');
+var authentication = require('../lib/authentication');
+var errorTypes     = require('./errorTypes');
+var utils          = require('../lib/utils/routes');
 
 var authorizeLiveSession = authentication.authorizeLiveSession;
 
 function forceSSL(req, res, next) {
   if (!req.secure) {
-    appLogger.log('HTTPS Redirection');
+    logger.log('HTTPS Redirection');
     return res.redirect(['https://', process.env.HOST,
         (app.get('port') === '443' ? '' : (':' + app.get('port'))),
         req.url].join(''));

@@ -1,7 +1,7 @@
-var mongoose  = require('mongoose')
-, Schema    = mongoose.Schema
-, ObjectId  = Schema.ObjectId
-, appLogger     = require('../lib/logger').appLogger;
+var mongoose  = require('mongoose');
+var Schema    = mongoose.Schema;
+var ObjectId  = Schema.ObjectId;
+var logger    = require('logger-asq');
 
 var assessmentSchema = new Schema({
   session    : { type: ObjectId, ref: 'Session', required: '{PATH} is required.' },
@@ -46,7 +46,7 @@ assessmentSchema.pre('save', function validateRubric(next) {
   next();
 });
 
-appLogger.debug('Loading Assessment model');
+logger.debug('Loading Assessment model');
 mongoose.model('Assessment', assessmentSchema);
 
 var assessmentJobSchema = new Schema({
@@ -83,7 +83,7 @@ assessmentJobSchema.index({
 });
 
 
-appLogger.debug('Loading AssessmentJob model');
+logger.debug('Loading AssessmentJob model');
 mongoose.model('AssessmentJob', assessmentJobSchema);
 
 

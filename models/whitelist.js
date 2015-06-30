@@ -1,15 +1,15 @@
-var check   = require('validator').check
-, mongoose  = require('mongoose')
-, Schema    = mongoose.Schema
-, ObjectId  = Schema.ObjectId
-, appLogger = require('../lib/logger').appLogger;
+var check   = require('validator').check;
+var mongoose  = require('mongoose');
+var Schema    = mongoose.Schema;
+var ObjectId  = Schema.ObjectId;
+var logger     = require('logger-asq');
 
 var roles = {};
 roles.banned    = 0;
 roles.viewer    = 1;
 roles.assistant = 2;
 roles.presenter = 3;
-roles.ghost = 4;
+roles.ghost     = 4;
 
 
 var whitelistEntrySchema = new Schema({
@@ -29,16 +29,16 @@ whitelistEntrySchema.index({ session: 1, user: 1 });
  * @param role the role the user wants to use.
  */
 whitelistEntrySchema.methods.validateRole = function validateRole(role) {
-  appLogger.debug('Check role');
+  logger.debug('Check role');
   if (!roles.hasOwnProperty(role)) {
     return 'viewer';
   } else {
-    appLogger.debug('Comparing roles: ' + roles[role] + ' ' + roles[this.role]);
+    logger.debug('Comparing roles: ' + roles[role] + ' ' + roles[this.role]);
     return roles[role] > roles[this.role] ? this.role : role;
   }
 };
 
-appLogger.debug('Loading WhitelistEntry');
+logger.debug('Loading WhitelistEntry');
 mongoose.model('WhitelistEntry', whitelistEntrySchema);
 
 module.exports = mongoose.model('WhitelistEntry');

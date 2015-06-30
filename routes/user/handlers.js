@@ -5,7 +5,7 @@
 
 var when        = require('when');
 var lib         = require('../../lib');
-var appLogger   = lib.logger.appLogger;
+var logger      = require('logger-asq');
 var dustHelpers = lib.dustHelpers;
 var Slideshow   = db.model('Slideshow');
 var User        = db.model('User');
@@ -16,7 +16,7 @@ var getPresentationsByCourse = require('../../lib/courses/listPresentations').ge
 
 // GET /:user
 function getUserPage(req, res) {
-  appLogger.debug('user page');
+  logger.debug('user page');
   if (!req.isAuthenticated()) {
     res.send(200, 'Public user page of ' + req.routeOwner.username + '.');
   }
@@ -38,7 +38,7 @@ function getUserPage(req, res) {
        });
     })
     .catch(function onError(err) {
-      appLogger.error( err.toString(), { err: err.stack });
+      logger.error( err.toString(), { err: err.stack });
     });
 
   } else {
@@ -148,7 +148,7 @@ function getLivePresentations(req, res) {
     function(err){
       var where = "@ getLivePresentations";
       err = err instanceof Error ? err : new Error(err);
-      appLogger.error(where + ': ', { error: err.stack });
+      logger.error(where + ': ', { error: err.stack });
       res.render('500', { where: where , error: err, stack: err.stack });
     });
 }

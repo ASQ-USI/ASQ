@@ -1,9 +1,9 @@
-var handlers      = require('./handlers')
-  , presentation = require('./presentation')
-  , appLogger    = require('../../../lib/logger').appLogger;
+var handlers     = require('./handlers');
+var presentation = require('./presentation');
+var logger       = require('logger-asq');
 
 module.exports.setUp = function setUp(app, middleware) {
-  appLogger.debug('Setting presentations routes');
+  logger.debug('Setting presentations routes');
 
   // List all the user's presentations.
   app.get('/:user/presentations/', middleware.isRouteOwner,

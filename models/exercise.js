@@ -3,11 +3,11 @@
  * @description the Exercise Model
  **/
 
-var mongoose         = require('mongoose')
-  , Schema           = mongoose.Schema
-  , ObjectId         = Schema.ObjectId
-  , assessmentTypes = require('./assessmentTypes')
-  , appLogger        = require('../lib/logger').appLogger;
+var mongoose         = require('mongoose');
+var Schema           = mongoose.Schema;
+var ObjectId         = Schema.ObjectId;
+var assessmentTypes = require('./assessmentTypes');
+var logger        = require('logger-asq');
 
 var exerciseSchema = new Schema({
   questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
@@ -30,6 +30,6 @@ exerciseSchema.virtual('allowResubmit').get(function allowResubmit() {
 exerciseSchema.set('toObject', { virtuals: true });
 exerciseSchema.set('toJSON', { virtuals: true });
 
-appLogger.debug('Loading Exercise model');
+logger.debug('Loading Exercise model');
 mongoose.model('Exercise', exerciseSchema);
 module.exports = mongoose.model('Exercise');

@@ -58,7 +58,6 @@ app.configure(function() {
   // error handler that route is going to 'next' to, if
   // there's an error
   app.use(function(err, req, res, next){
-    console.log('edwwwwwwww')
     throw err;
   });
 });

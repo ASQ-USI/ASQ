@@ -6,7 +6,7 @@
 var Promise = require('bluebird');
 var coroutine = Promise.coroutine;
 var lib = require('../../../lib');
-var logger = lib.logger.appLogger;
+var logger = require('logger-asq');
 var usersSettings = require('../../../lib/settings/usersSettings');
 var pluginsSettings = require('../../../lib/settings/pluginsSettings');
 

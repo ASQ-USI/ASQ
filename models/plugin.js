@@ -8,7 +8,7 @@
 var mongoose   = require('mongoose')
 var Schema     = mongoose.Schema;
 var ObjectId   = Schema.ObjectId;
-var logger     = require('../lib/logger').appLogger;
+var logger     = require('logger-asq');
 var defaultSettings;
 
 var pluginSchema = new Schema({
