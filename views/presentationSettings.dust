@@ -21,75 +21,36 @@
       {/alert}
 
       <h1>{title}</h1>
-      {?livelink}<div><h3><i>This slideshow is currently active. Click <a href={livelink}>here</a> to go to live.</i></h3></div>{/livelink}
+      {?livelink}<div><h3><i>This slideshow is currently active. Click <a href={livelink}>here</a> to live.</i></h3></div>{/livelink}
       <div>
-        <section id="slideshowconf">
-          <h3 >Slideshow configurations</h3>
-          <form action="/{username}/presentations/{slideshowId}/settings/save/slideshowconf" method="post">              
-            <div class="table">
-              {#presentationSettings}
-              <div class="row">
-                <div class="col-md-3">{key}</div>
-
-                <div class="col-md-3">
-                  <div class="form-group">
-                    {?value}
-                      <input id="{id}" name={key} type={type} class="form-control" value={value}>
-                    {/value}
-                    {^value}
-                      <select id="{id}" name={key} class="form-control">
-                      {#options}
-                        <option {#selected}selected{/selected}>{option}</option>
-                      {/options}
-                      </select>
-                    {/value}
+        <section id="slideshowsettings">
+          <h3 >Slideshow settings</h3>
+            <form method="POST" action="settings?_method=PUT" >
+              <div class="table">
+                {#presentationSettings}
+                <div class="row">
+                  <div class="col-md-3">{key}</div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      {^enumerate}
+                        <input id="{id}" name={key} type={type} class="slideshow-setting form-control" value={value}>
+                      {/enumerate}
+                      {?enumerate}
+                        <select id="{id}" name={key} class="slideshow-setting form-control">
+                        {#options}
+                          <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
+                        {/options}
+                        </select>
+                      {/enumerate}
+                    </div>
                   </div>
                 </div>
-              </div>
-              {/presentationSettings}
-            </div>  
-            <button type="submit" class="btn btn-primary">Save</button>
-          </form>   
+                {/presentationSettings}
+              </div> 
+              <button id="slideshowSettingsSave" type="submit" class="btn btn-primary">Save</button>
+            </form> 
         <section>         
 
-      <section id="exercisesconf">
-        <h3>Exercises' configurations</h3>
-        
-          <div>  
-          {#exerciseSettings}
-            <p>{index}
-
-            <table class="table">
-            {#exercises}
-              
-              <tr>
-                <td>Exercise Uid</td>
-                {#names}<td>{.}</td>{/names}
-                <td></td>
-              </tr>
-              
-              <tr>
-                <form action="/{username}/presentations/{slideshowId}/settings/save/exerciseconf" method="post">
-                <td>{uid} <input type="hidden" name="uid" class="form-control" value={uid}></td>
-                <td>
-                  <div class="form-group">
-                    <input type="number" name="max" class="form-control" value={maxNumSubmissions}>
-                  </div>
-                </td>
-                <td>
-                <input type="checkbox" name="confidence" {?confidence}checked{/confidence} value="">
-                </td>
-                  <td><button type="submit" class="btn btn-primary">Save</button></td>
-                </form>
-              </tr>
-              
-            {/exercises}
-            </table>
-
-          {/exerciseSettings}
-          </div>
-          
-      </section>
 
     </div>
   </body>

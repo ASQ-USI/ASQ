@@ -318,7 +318,7 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
 
 
 var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
-  console.log('getPresentationSettings');
+  appLogger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
   var user        = req.user;
   var userId      = user._id;
   var username    = user.username;
@@ -334,24 +334,29 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   }
 
   var presentationSettings = yield presSettings.getDustifySettings(slideshow);
-  var exerciseSettings     = yield presSettings.getDustifySettingsOfAllExercises(slideshow);
- 
+  var exerciseSettings = [];
+
   // Whether the slideshow is currently active(running) by this user
   var sessionId = yield presUtils.isLiveBy(userId, slideshowId);
-  var livelink  = presUtils.getLiveLink(username, slideshowId, sessionId);
-
+  var livelink  = !sessionId ? null : presUtils.getLiveLink(username, slideshowId, sessionId);
 
   var params = {
-    title                : slideshow.title,
-    username             : username,
-    slideshowId          : slideshowId,
-    livelink             : livelink,
-    presentationSettings : presentationSettings,
-    exerciseSettings     : exerciseSettings
-  }
+      title                : slideshow.title,
+      username             : username,
+      slideshowId          : slideshowId,
+      livelink             : livelink,
+      presentationSettings : presentationSettings,
+      exerciseSettings     : exerciseSettings
+  };
 
   res.render('presentationSettings', params);
 
+});
+
+var putPresentationSettings = coroutine(function* putPresentationSettings(req, res) {
+  console.log(req.body);
+  var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
+  res.send(state);
 });
 
 var configurePresentationSaveExercise = coroutine(function* configurePresentationSaveExercise(req, res) {
@@ -374,6 +379,20 @@ var configurePresentationSaveExercise = coroutine(function* configurePresentatio
   }
 });
 
+
+var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
+  var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
+
+  if ( state ) {
+    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
+    res.redirect(url);
+  } else {
+    res.send(req.body);
+  }
+  
+});
+
+// DELETE
 var configurePresentationSaveExerciseRuntime = coroutine(function* configurePresentationSaveExercise(req, res) {
   var exerciseId = req.body.uid;
   var slideshowId = req.params.presentationId;
@@ -394,17 +413,6 @@ var configurePresentationSaveExerciseRuntime = coroutine(function* configurePres
   }
 });
 
-var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
-  var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
-
-  if ( state ) {
-    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
-    res.redirect(url);
-  } else {
-    res.send(req.body);
-  }
-  
-});
 
 module.exports = {
   editPresentation          : editPresentation,
@@ -413,7 +421,8 @@ module.exports = {
   startPresentation         : startPresentation,
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
-  getPresentationSettings     : getPresentationSettings,
+  getPresentationSettings   : getPresentationSettings,
+  putPresentationSettings   : putPresentationSettings,
   configurePresentationSaveExercise : configurePresentationSaveExercise,
   configurePresentationSaveExerciseRuntime : configurePresentationSaveExerciseRuntime,
   configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
