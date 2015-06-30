@@ -318,7 +318,9 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
 
 
 var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
+
   appLogger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
+
   var user        = req.user;
   var userId      = user._id;
   var username    = user.username;
@@ -334,6 +336,7 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   }
 
   var presentationSettings = yield presSettings.getDustifySettings(slideshow);
+
   var exerciseSettings = [];
 
   // Whether the slideshow is currently active(running) by this user
@@ -357,6 +360,7 @@ var putPresentationSettings = coroutine(function* putPresentationSettings(req, r
   console.log(req.body);
   var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
   res.send(state);
+
 });
 
 var configurePresentationSaveExercise = coroutine(function* configurePresentationSaveExercise(req, res) {
@@ -421,6 +425,7 @@ module.exports = {
   startPresentation         : startPresentation,
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
+
   getPresentationSettings   : getPresentationSettings,
   putPresentationSettings   : putPresentationSettings,
   configurePresentationSaveExercise : configurePresentationSaveExercise,
