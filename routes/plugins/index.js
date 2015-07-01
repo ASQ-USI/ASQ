@@ -4,7 +4,7 @@
 'use strict';
 
 var router = require('express').Router();
-var middleware = require('../middleware');
+var middleware = require('../../lib/middleware/middleware');
 var handlers = require('./handlers');
 var logger   = require('logger-asq');
 

@@ -61,7 +61,7 @@ module.exports.setUp = function setUp(app, middleware) {
   user.setUp(app, middleware);
 
   //settings router
- app.use('/:user/settings', middleware.isRouteOwner, settingsRouter)
+  app.use('/:user/settings', middleware.isRouteOwner, settingsRouter)
 
   //plugins router
   app.use('/plugins', pluginsRouter)

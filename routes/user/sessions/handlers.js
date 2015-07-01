@@ -3,7 +3,7 @@ require('when/monitor/console');
 var _         = require('lodash');
 var gen         = require('when/generator');
 var moment      = require('moment');
-var errorTypes  = require('../../errorTypes');
+var errorTypes  = require('../../../errors/errorTypes');
 var lib         = require('../../../lib');
 var sockAuth    = require('../../../lib/socket/authentication');
 var logger      = require('logger-asq');
@@ -40,8 +40,8 @@ exports.getSessionStats = gen.lift(function *getSessionStatsGen(req, res, next) 
     statsObj.questionWidth = (100/statsObj.questions.length);
     if(session.endData === null || session.endData === undefined){
       var token = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID})
-      statsObj.host = ASQ.appHost;
-      statsObj.port = app.get('port');
+      statsObj.host = req.app.locals.urlHost;
+      statsObj.port = req.app.locals.urlPort;
       statsObj.live = true;
       statsObj.mode = 'ctrl';
       statsObj.token = token;

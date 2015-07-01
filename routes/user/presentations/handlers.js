@@ -8,7 +8,7 @@ var fs              = require('fs');
 var when            = require('when');
 var Promise         = require('bluebird');
 var coroutine       = Promise.coroutine;
-var errorTypes      = require('../../errorTypes');
+var errorTypes      = require('../../../errors/errorTypes');
 var lib             = require('../../../lib');
 var dustHelpers     = lib.dustHelpers;
 var logger     = require('logger-asq');
@@ -98,8 +98,8 @@ function listPresentations(req, res, next) {
        cookie          : 'asq.sid=' + req.cookies['asq.sid'],
        slidesByCourses : slidesByCourse,
        JSONIter        : dustHelpers.JSONIter,
-       host            : ASQ.appHost,
-       port            : app.get('port'),
+       host            : res.app.locals.urlHost,
+       port            : res.app.locals.urlPort,
        //id              : req.user.current,
        alert           : req.query.alert,
        type            : type,

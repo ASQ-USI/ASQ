@@ -3,19 +3,20 @@
 */
 'use strict';
 
-//we import winston instead of the dedicated loggers because they are not setup yet
+//we import bunyan instead of the dedicated loggers because they are not setup yet
 
-var
-winston     = require('winston'),
-_           = require('lodash'),
-fs          = require('fs'),
-defaultConf = {},
-env         = process.env.NODE_ENV || 'development',
-envConf     ={},
+var bunyan      = require('bunyan');
+var _           = require('lodash');
+var path        = require('path')
+var fs          = require('fs');
+var defaultConf = {};
+var env         = process.env.NODE_ENV || 'development';
+var envConf     = {};
+var rootDir     = path.resolve(__dirname, '../')
 
 
 // Base configuration
-conf = {
+var conf = {
   //Server hostname to which clients have to connect (default: '127.0.0.1')
   //Note this is overwritten by the environment HOST value if it exists.
   host: "127.0.0.1",
@@ -100,9 +101,8 @@ conf = {
 
   //Logging
   //  Available log level options:
-  //    "silly"
+  //    "trace"
   //    "debug"
-  //    "verbose"
   //    "info"
   //    "warn"
   //    "error"
@@ -121,14 +121,14 @@ conf = {
 if (fs.existsSync(__dirname + '/config.defaults.js')){
   defaultConf = require(__dirname + '/config.defaults.js');
 }else{
-  winston.info('Default configuration file not found(don\'t worry I have default defaults :-)');
+  bunyan.info('Default configuration file not found(don\'t worry I have default defaults :-)');
 }
 
 // check for env configuration
 if (fs.existsSync(__dirname + '/config.'+ env + '.js')){
   envConf = require('./config.'+ env);
 }else{
-  winston.info('There is no configuration file for environment: '+env);
+  bunyan.info('There is no configuration file for environment: '+env);
 }
 
 //overwrite default configuration with env configuration
@@ -165,6 +165,9 @@ var portFragment =  (conf.urlPort === 80 || conf.urlPort === 443)
   ? ''
   : ':' + conf.urlPort;
 
-conf.rootUrl = conf.urlProtocol +"://" + conf.urlHost + portFragment
+conf.rootUrl = conf.urlProtocol +"://" + conf.urlHost + portFragment;
+conf.rootDir = rootDir;
+
+conf.pluginDir = path.resolve(path.join(conf.rootDir, conf.pluginDir));
 
 module.exports = conf;

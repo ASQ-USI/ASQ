@@ -33,23 +33,38 @@ Now let's install the dependencies
 
 ## Node.js
 ### Ubuntu
-First install [nvm](https://github.com/creationix/nvm) to manage Node.js versions
+First install [nvm](https://github.com/creationix/nvm) to install manage Node.js versions
 
-    curl https://raw.githubusercontent.com/creationix/nvm/v0.13.1/install.sh | bash
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
 Reload your shell and then install Node.js
 
-    nvm install 0.12
-    nvm use 0.12
+    nvm install 0.12.5
+    nvm use 0.12.5
 If you wish this version to be your default one, you can type:
 
-    nvm alias default 0.12
+    nvm alias default 0.12.5
 and to use it
 
     nvm use default
 
 
 ### Mac OS X
-Download and install version [0.11.13](http://nodejs.org/dist/v0.11.13/node-v0.11.13.pkg) from  the node.js website.
+Download and install version [0.12.5](http://nodejs.org/dist/v0.12.5/node-v0.12.5.pkg) from  the node.js website.
+
+Alternatively, you can install [nvm](https://github.com/creationix/nvm) to install and manage more than one Node.js versions
+
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
+Reload your shell and then install Node.js
+
+    nvm install 0.12.5
+    nvm use 0.12.5
+If you wish this version to be your default one, you can type:
+
+    nvm alias default 0.12.5
+and to use it
+
+    nvm use default
+
 
 ##ASQ
 First, clone the repository
@@ -83,9 +98,28 @@ At this point you can start ASQ. Run __one__ of the following
     PORT=<port-number> node --harmony app.js
 
 ### Developer
-To run ASQ with all the developer goodies (watchers to recompile assets upon changes and restart ASQ) run
+To run ASQ with all the developer goodies (watchers to recompile assets upon changes and restart ASQ) first create a `nodemon.json` file at the root DIR of ASQ to configure [nodemon](https://github.com/remy/nodemon):
 
-    # npm run dev
+    {
+      "ignore": [
+        ".git",
+        "node_modules/**/node_modules",
+        "test/*","client/*",
+        "config/*",
+        "slides/*",
+        "log/*",
+        "plugins/*/node_modules/*"
+      ],
+      "watch": [ "app.js", "lib/*", "models/*", "shared/*", "views/*", "routes/*", "plugins/*"],
+      "execMap": {
+        "js": "node --harmony --stack-trace-limit=1000 --stack-size=1024"
+      }
+    }
+
+
+then run
+
+    npm run dev
 
 
 ##Nginx

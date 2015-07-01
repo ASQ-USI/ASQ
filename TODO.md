@@ -1,10 +1,13 @@
 * loggers: have a look at the option of morgan. Currently just using dev.
+* 
 
+
+##Presentation Adapters
+Serverside presentation adapters should be responsible for saving and retrieving the last known state of the presentation (Active slide, substeps etc), ioConnect (lib/socket/handlers) should use the presentation adapter (maybe through a hook) to retrieve the presentation info and send it back to the server
 
 ##Plugin
 * Log error messages per plugin
 * put shared code for plugins like `getBooleanValueOfBooleanAttribute` to a utilities package
-* load registered question type names from db
 * make all functions have a name
 * presentations/presentation/handler: remove old `livePresentation`
 * slideshow: remove `questionsPerSlide` if not used
@@ -16,20 +19,19 @@
 * client handling of socket errors
 
 
-- Process errors at different levels of the stack to make them more meaningful. For example a mongoose validation error in the upload is getting caught at presentation/handlers.js:uploadPresentation(). It's very hard to understand where the error came from.
+- Process errors at different levels of the stack to make them more meaningful. For example a mongoose validation error in the upload is getting caught at presentation/handlers.js:uploadPresentation(). It's very hard to understand where the error came from. 
+- simple-errors package or custom errors? decide
+- user either config paths or ASQ paths
 _ 'PROTECT' against this: https://thecodebarbarian.wordpress.com/2014/09/04/defending-against-query-selector-injection-attacks/
 - rename `resubmit` in models/exercise.js to `allowResubmit`
 - create a mongoose function for the slideshow model to return the paths for the files and remove path calls from the rest of the codebase
 - check what happens if the someone goes for a Url of a presentation that doesn't exist
 - Make stats more customizable
 - Reset stats.dust
-- getLivepresentation has hardcoded stuff fixed
 - IO bug
 - auth bug
 - test sockets
 - socket reconnect
-- FIX: progress bar going back bug
-- FIX: "you have a live session" logic and dialog
 - FIX: remember me
 - ADD" delete presentations
 - write mongo script to check consistency of database

@@ -88,12 +88,14 @@ function livePresentation(req, res) {
     logger.debug('Public session');
     role = 'viewer'; //Public session and not whitelisted only allows viewers.
   }
-  var view                = req.query.view || 'presentation'
-    , presentation        = req.liveSession.slides
-    , presentationViewUrl = ''
-    , presentationDir = app.get('uploadDir') + '/' + presentation._id + '/'
-    , presentationFile = presentationDir + presentation.asqFile
-    , presenterLiveUrl    = '';
+
+  var view = req.query.view || 'presentation'
+  var rootUrl = req.app.locals.rootUrl;
+  var presentation = req.liveSession.slides;
+  var presentationViewUrl = '';
+  var presentationDir = app.get('uploadDir') + '/' + presentation._id + '/';
+  var presentationFile = presentationDir + presentation.asqFile;
+  var presenterLiveUrl = '';
 
   //TMP until roles are defined more precisely
   logger.debug('Select template for ' + role + ' ' + view);
@@ -106,29 +108,29 @@ function livePresentation(req, res) {
   var renderOpts = (function getTemplate(role, view, presentation) {
       if (view === 'ctrl' && role !== 'viewer') {
 
-        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+        presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
+        presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
           // template: 'presenterControl',
           template: '../client/presenterControlPolymer/app/asq.dust',
           namespace: 'ctrl', //change to role
         };
       } else if (role === 'presenter' || role === 'assistant') {
-        presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+        presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/live/';
+        presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
           template: presentationFile,
           namespace: 'ctrl',
           roleScript : '/js/asq-presenter.js'
         };
       } else if (role === 'ghost') {
-       presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+       presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role + '&view=presentation';
       return {
@@ -137,7 +139,7 @@ function livePresentation(req, res) {
           roleScript : '/js/asq-viewer.js'
         };
       } else { //viewer
-       presentationViewUrl = ASQ.rootUrl + '/' + req.routeOwner.username + '/presentations/'
+       presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role + '&view=presentation';
       return {
@@ -152,12 +154,12 @@ function livePresentation(req, res) {
   renderOpts.commonScript = '/js/asq-common.js';
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
-  console.log( renderOpts.template, token);
+  
   res.render(renderOpts.template, {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
-    host                  : ASQ.urlHost,
-    port                  : ASQ.urlPort,
+    host                  : req.app.locals.urlHost,
+    port                  : req.app.locals.urlPort,
     namespace             : renderOpts.namespace,
     commonScript          : renderOpts.commonScript,
     roleScript            : renderOpts.roleScript,
@@ -183,7 +185,7 @@ function livePresentationFiles(req, res) {
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
-    res.sendFile( presentation.path + file, {root: app.get('rootDir')});
+    res.sendFile( presentation.path + file, {root: config.rootDir});
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }
@@ -306,8 +308,8 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
     var statsObj = yield stats.getPresentationStats(slideshow);
     statsObj.presentationId = req.params.presentationId;
     statsObj.username = req.user.username;
-    statsObj.host = ASQ.appHost;
-    statsObj.port = app.get('port');
+    statsObj.host = req.app.locals.urlHost;
+    statsObj.port = req.app.locals.urlPort;
     return res.render('presentationStats', statsObj);
   }catch(err){
     logger.error("Presentation %s not found", req.params.presentationId);

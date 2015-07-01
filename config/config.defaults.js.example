@@ -85,9 +85,8 @@ module.exports = {
 
   //Logging
   //  Available log level options:
-  //    "silly"
+  //    "trace"
   //    "debug"
-  //    "verbose"
   //    "info"
   //    "warn"
   //    "error"

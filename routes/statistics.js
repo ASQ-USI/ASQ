@@ -523,8 +523,8 @@ exports.getSessionStats = function(req, res) {
                   session : sessionArray,
                   title : slideshow.title,
                   questions : questions,
-                  host : ASQ.appHost,
-                  port : app.get('port'),
+                  host : req.app.locals.urlHost,
+                  port : req.app.locals.urlPort,
                   id : session.id,
                   liveData: liveData
                 });

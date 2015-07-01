@@ -29,8 +29,8 @@ function getUserPage(req, res) {
          username        : req.user.username,
          slidesByCourses : slidesByCourse,
          JSONIter        : dustHelpers.JSONIter,
-         host            : ASQ.appHost,
-         port            : app.get('port'),
+         host            : req.app.locals.urlHost,
+         port            : req.app.locals.urlPort,
          //id              : req.user.current,
          alert           : req.query.alert,
          type            : type,
@@ -131,7 +131,7 @@ function getLivePresentations(req, res) {
   .then(
     function(slideshows){
       slideshows.forEach(function(slideshow){
-        slideshow.liveUrl = ASQ.rootUrl + '/' + req.routeOwner.username
+        slideshow.liveUrl = req.app.locals.rootUrl + '/' + req.routeOwner.username
                       + '/presentations/' + slideshow._id + '/live/'
                       + slideshowSessionMap[slideshow._id]
                       + '/?role=viewer&view=presentation';
