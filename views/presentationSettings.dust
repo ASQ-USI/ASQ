@@ -52,14 +52,8 @@
                 <form method="POST" action="settings?_method=PUT" >
                   <p>Exercise {id}</p>
                   {#settings}
-                  {> "inputs/{kind}Input" class="exercise-setting"/}
-<!--                     <label for={id}>{key}</label>
-                    {^select}
-                      {> "inputs/standardInput" /}
-                    {/select}
-                    {?select}
-                      {> "inputs/selectInput" /}
-                    {/select} -->
+                    <label for={id}>{key}</label>
+                    {> "inputs/{kind}Input" class="exercise-setting"/}
                   {/settings}
                   <button id={key} type="submit" class="btn btn-primary">Save</button>
                 </form>
