@@ -46,20 +46,20 @@ function getDefaultSettings() {
     return defaultSettings;
 }
 
-var kinds = [ 'String',   //text
-              'Number',   //number
-              'Date',     //date
-              'Boolean',   //checkbox
-              'Select',
-              'Range'
+var kinds = [ 'string',   
+              'number',   
+              'date',     
+              'boolean',  
+              'select',
+              'range'
             ];
 
 var settingSchema = new Schema({
     key       : { type : String, required : true},
-    value     : { type : {}},
-    select    : { type : Boolean, default: false},
-    options   : { type : Array, default: [] },
+    value     : { type : {} },
     kind      : { type : String, required: true, enum: kinds},
+
+    params    : { type: {} },
 
     category  : { type : String , required : true, default: 'core' },
     createdAt : { type : Date, default: Date.now },

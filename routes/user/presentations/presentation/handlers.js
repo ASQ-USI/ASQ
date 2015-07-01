@@ -335,7 +335,8 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   }
 
   var presentationSettings = yield presSettings.getDustifySettings(slideshow);
-  var exerciseSettings = yield presSettings.getDustifySettingsOfExercisesAll(slideshow);
+  // var exerciseSettings = yield presSettings.getDustifySettingsOfExercisesAll(slideshow);
+  var exerciseSettings = [];
 
   // Whether the slideshow is currently active(running) by this user
   var sessionId = yield presUtils.isLiveBy(userId, slideshowId);
