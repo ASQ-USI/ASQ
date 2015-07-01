@@ -356,65 +356,21 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
 });
 
 var putPresentationSettings = coroutine(function* putPresentationSettings(req, res) {
-  console.log(req.body, 3);
-  var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
-  res.send(state);
 
-});
-
-var configurePresentationSaveExercise = coroutine(function* configurePresentationSaveExercise(req, res) {
-  var exerciseId = req.body.uid;
-  var slideshowId = req.params.presentationId;
-  // TODO: not to hardcode
-  // 
-  var conf = {
-    maxNumSubmissions: Number(req.body.max) ? Number(req.body.max) : 0,
-    confidence: req.body.hasOwnProperty('confidence')
-  }
-
-  var state = yield Conf.updateExerciseConf(slideshowId, exerciseId, conf);
-
-  if ( state ) {
-    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
-    res.redirect(url);
+  console.log('putPresentationSettings', req.body);
+  if ( req.body.scope === 'slideshow' ) {
+    var state = yield Conf.updateSlideshowConf(req.body.data, req.params.presentationId);
+    res.send(state);
+  } else if ( req.body.scope === 'exercise' ) {
+    var state = yield Conf.updateExerciseConf(req.body.data, req.params.presentationId, req.body.exerciseId);
+    res.send(state);
   } else {
-    res.send(req.body);
+    res.send(false);
   }
+
 });
 
 
-var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
-  var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
-
-  if ( state ) {
-    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
-    res.redirect(url);
-  } else {
-    res.send(req.body);
-  }
-  
-});
-
-// DELETE
-var configurePresentationSaveExerciseRuntime = coroutine(function* configurePresentationSaveExercise(req, res) {
-  var exerciseId = req.body.uid;
-  var slideshowId = req.params.presentationId;
-  // TODO: not to hardcode
-  // 
-  var conf = {
-    maxNumSubmissions: Number(req.body.max) ? Number(req.body.max) : 0,
-    confidence: req.body.hasOwnProperty('confidence')
-  }
-
-  var state = yield Conf.updateExerciseConfRuntime(slideshowId, exerciseId, conf);
-  var state = false;
-  if ( state ) {
-    // var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
-    // res.redirect(url);
-  } else {
-    res.send(req.body);
-  }
-});
 
 
 module.exports = {
@@ -426,8 +382,5 @@ module.exports = {
   getPresentationStats      : getPresentationStats,
 
   getPresentationSettings   : getPresentationSettings,
-  putPresentationSettings   : putPresentationSettings,
-  configurePresentationSaveExercise : configurePresentationSaveExercise,
-  configurePresentationSaveExerciseRuntime : configurePresentationSaveExerciseRuntime,
-  configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
+  putPresentationSettings   : putPresentationSettings
 }
