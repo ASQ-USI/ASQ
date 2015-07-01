@@ -1,0 +1,1 @@
+<input id="{id}" name={key} type="number" class="{class} form-control" value={value}>

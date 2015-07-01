@@ -1,0 +1,6 @@
+
+<select id="{id}" name={key} class="{class} form-control">
+  {#options}
+    <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
+  {/options}
+</select>
