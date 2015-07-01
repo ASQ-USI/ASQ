@@ -10,7 +10,12 @@ var getSlideshowSettings = function() {
   [].slice.call(document.querySelectorAll('.slideshow-setting'))
     .forEach(function(setting, index){
 
-    settings[setting.name] = setting.value;
+    if ( setting.type === 'checkbox' ) {
+      settings[setting.name] = setting.checked;
+    } else {
+      settings[setting.name] = setting.value;
+    } 
+    
   });
   return settings;
 }
