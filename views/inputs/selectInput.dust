@@ -1,6 +1,6 @@
 
 <select id="{id}" name={key} class="{class} form-control">
-  {#options}
+  {#params.options}
     <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
-  {/options}
+  {/params.options}
 </select>
