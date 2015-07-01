@@ -22,36 +22,63 @@
 
       <h1>{title}</h1>
       {?livelink}<div><h3><i>This slideshow is currently active. Click <a href={livelink}>here</a> to live.</i></h3></div>{/livelink}
-      <div>
-        <section id="slideshowsettings">
-          <h3 >Slideshow settings</h3>
-            <form method="POST" action="settings?_method=PUT" >
-              <div class="table">
-                {#presentationSettings}
-                <div class="row">
-                  <div class="col-md-3">{key}</div>
-                  <div class="col-md-3">
-                    <div class="form-group">
-                      {^enumerate}
-                        <input id="{id}" name={key} type={type} class="slideshow-setting form-control" value={value}>
-                      {/enumerate}
-                      {?enumerate}
-                        <select id="{id}" name={key} class="slideshow-setting form-control">
-                        {#options}
-                          <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
-                        {/options}
-                        </select>
-                      {/enumerate}
-                    </div>
+      <section id="slideshowsettings">
+        <h3 >Slideshow settings</h3>
+          <form method="POST" action="settings?_method=PUT" >
+            <div class="table">
+              {#presentationSettings}
+              <div class="row">
+                <div class="col-md-3">{key}</div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    {^enumerate}
+                      <input id="{id}" name={key} type={type} class="slideshow-setting form-control" value={value}>
+                    {/enumerate}
+                    {?enumerate}
+                      <select id="{id}" name={key} class="slideshow-setting form-control">
+                      {#options}
+                        <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
+                      {/options}
+                      </select>
+                    {/enumerate}
                   </div>
                 </div>
-                {/presentationSettings}
-              </div> 
-              <button id="slideshowSettingsSave" type="submit" class="btn btn-primary">Save</button>
-            </form> 
-        <section>         
+              </div>
+              {/presentationSettings}
+            </div> 
+            <button id="slideshowSettingsSave" type="submit" class="btn btn-primary">Save</button>
+          </form> 
+      <section>         
 
-
+      <section id="exercisesettings">
+        <h3>Exercise settings</h3>
+        {#exerciseSettings}
+          <div>
+            <p>Slide {index}</p>
+            {#exercises}
+              <div>
+                <form method="POST" action="settings?_method=PUT" >
+                  <p>Exercise {id}</p>
+                  {#settings}
+                    <label for={id}>{key}</label>
+                    {^enumerate}
+                      <input id="{id}" name={key} type={type} {?value}checked{/value} class="exercise-setting form-control" value={value}>
+                    {/enumerate}
+                    {?enumerate}
+                      <select id="{id}" name={key} class="exercise-setting form-control">
+                      {#options}
+                        <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
+                      {/options}
+                      </select>
+                    {/enumerate}
+                  {/settings}
+                  <button id={key} type="submit" class="btn btn-primary">Save</button>
+                </form>
+              </div>
+            {/exercises}
+          </div>
+        {/exerciseSettings}
+      </section>
 
     </div>
   </body>
