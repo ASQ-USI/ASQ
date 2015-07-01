@@ -50,12 +50,12 @@
             {#exercises}
               <div>
                 <form method="POST" action="settings?_method=PUT" >
-                  <p>Exercise {id}</p>
+                  <p>Exercise {exerciseId}</p>
                   {#settings}
                     <label for={id}>{key}</label>
-                    {> "inputs/{kind}Input" class="exercise-setting"/}
+                    {> "inputs/{kind}Input" class="exercise-setting-{exerciseId}"/}
                   {/settings}
-                  <button id={key} type="submit" class="btn btn-primary">Save</button>
+                  <button id="{exerciseId}" type="submit" class="exerciseSettingsBtn btn btn-primary">Save</button>
                 </form>
               </div>
             {/exercises}
