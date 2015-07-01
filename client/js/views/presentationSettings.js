@@ -13,7 +13,19 @@ var getSlideshowSettings = function() {
     if ( setting.type === 'checkbox' ) {
       settings[setting.name] = setting.checked;
     } else {
-      settings[setting.name] = setting.value;
+      var value = setting.value;
+      switch(setting.type){
+         case 'number':
+         case 'range':
+           value = Number(value);
+           break;
+          case 'date':
+            value = Date.parse(value);
+            break;
+         default:
+           break;
+      }
+      settings[setting.name] = value;
     } 
     
   });
