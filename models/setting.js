@@ -93,6 +93,131 @@ settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen
   return Promise.all(insertOperations);
 });
 
+settingSchema.pre('save', true, function checkParams(next, done){
+  next();
+
+  if(validatorFn.hasOwnProperty(this.kind)){
+    var r = validatorFn[this.kind].bind(this)();
+    if ( !r.valid ) {
+      var message = '@' + this.kind + ': ' + r.message;
+      return done(new Error(message));
+    }
+  } else {
+    var message = '`Kind` ' + this.kind + ' is not valid.';
+    return done(new Error(message));
+  }
+
+  done();
+})
+
+var validatorFn = {
+  'string' : function stringValidator(){ 
+    var valid = _.isString(this.value);
+    var message = valid ? 'OK' : 'Field `value` should be a string.'
+    return {
+      valid: valid,
+      message: message
+    };
+  },   
+  'number' : function numberValidator(){ 
+    var valid = _.isNumber(this.value);
+    var message = '';
+    if (!valid) return {
+      valid: valid,
+      message : 'Field `value` should be a number.'
+    };
+
+    return {
+      valid: true,
+      message: 'OK'
+    }
+  },   
+  'date'   : function dateValidator(){ 
+    var valid = _.isDate(this.value);
+    var message = valid ? 'OK' : 'Field `value` should be a Date object.'
+    return {
+      valid: valid,
+      message: message
+    };
+  },     
+  'boolean': function booleanValidator(){ 
+    var valid = _.isBoolean(this.value);
+    var message = valid ? 'OK' : 'Field `value` should be a boolean.'
+    return {
+      valid: valid,
+      message: message
+    };
+  },  
+  'select' : function selectValidator(){ 
+    var valid = _.isString(this.value);
+    var message = '';
+    if (!valid) return {
+      valid: valid,
+      message : 'Field `value` should be a string.'
+    };
+
+    if ( ! (this.params.hasOwnProperty('options') && _.isArray(this.params['options']) ) ) {
+      valid = false;
+      message = 'Parameter `options` not found or `options` is not an array.';
+    }
+    if (!valid) return {
+      valid: valid,
+      message: message
+    };
+    for ( var i in this.params.options) {
+      if ( !_.isString(this.params.options[i]) ) {
+        return {
+          valid: false,
+          message: 'Parameter `options` can only conatin strings.'
+        }
+      }
+    }
+    return {
+      valid: true,
+      message: 'OK'
+    }
+
+  },
+  'range'  : function rangeValidator(){ 
+    var valid = _.isNumber(this.value);
+    var message = '';
+    if (!valid) return {
+      valid: valid,
+      message : 'Field `value` should be a number.'
+    };
+
+    if ( ! (this.params.hasOwnProperty('min') && _.isNumber(this.params['min']) ) ) {
+      valid = false;
+      message = 'Parameter `min` not found or `min` is not a number.';
+    }
+
+    if ( ! (this.params.hasOwnProperty('max') && _.isNumber(this.params['max']) ) ) {
+      valid = false;
+      message = 'Parameter `max` not found or `min` is not a number.';
+    }
+
+    if ( ! (this.params.hasOwnProperty('step') && _.isNumber(this.params['step']) ) ) {
+      valid = false;
+      message = 'Parameter `step` not found or `min` is not a number.';
+    }
+
+    if (!valid) return {
+      valid: valid,
+      message: message
+    };
+
+    if ( this.params.max < this.params.min ) return {
+      valid: false,
+      message: 'Parameter `max` should bigger or equal than `min`.'
+    }
+    return {
+      valid: true,
+      message: 'OK'
+    }
+
+  }
+}
+
 logger.debug('Loading settings model');
 mongoose.model('Setting', settingSchema);
 
