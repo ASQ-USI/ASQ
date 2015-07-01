@@ -120,7 +120,7 @@ var validatorFn = {
     };
   },   
   'number' : function numberValidator(){ 
-    var valid = _.isNumber(this.value);
+    var valid = ! isNaN(this.value);
     var message = '';
     if (!valid) return {
       valid: valid,
@@ -141,7 +141,9 @@ var validatorFn = {
     };
   },     
   'boolean': function booleanValidator(){ 
-    var valid = _.isBoolean(this.value);
+    var regexTrue = /^true$/i;
+    var regexFalse = /^false$/i;
+    var valid = _.isBoolean(this.value) || regexTrue.test(this.value) || regexFalse.test(this.value); 
     var message = valid ? 'OK' : 'Field `value` should be a boolean.'
     return {
       valid: valid,
@@ -179,24 +181,24 @@ var validatorFn = {
 
   },
   'range'  : function rangeValidator(){ 
-    var valid = _.isNumber(this.value);
+    var valid = ! isNaN(this.value);
     var message = '';
     if (!valid) return {
       valid: valid,
       message : 'Field `value` should be a number.'
     };
 
-    if ( ! (this.params.hasOwnProperty('min') && _.isNumber(this.params['min']) ) ) {
+    if ( ! (this.params.hasOwnProperty('min') && ! isNaN(this.params['min']) ) ) {
       valid = false;
       message = 'Parameter `min` not found or `min` is not a number.';
     }
 
-    if ( ! (this.params.hasOwnProperty('max') && _.isNumber(this.params['max']) ) ) {
+    if ( ! (this.params.hasOwnProperty('max') && ! isNaN(this.params['max']) ) ) {
       valid = false;
       message = 'Parameter `max` not found or `min` is not a number.';
     }
 
-    if ( ! (this.params.hasOwnProperty('step') && _.isNumber(this.params['step']) ) ) {
+    if ( ! (this.params.hasOwnProperty('step') && ! isNaN(this.params['step']) ) ) {
       valid = false;
       message = 'Parameter `step` not found or `min` is not a number.';
     }
