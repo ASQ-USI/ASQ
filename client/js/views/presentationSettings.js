@@ -4,10 +4,10 @@ var $ = require('jquery')
   , request = require('superagent')
 
 
-var getSlideshowSettings = function() {
-
+var getSettings = function(query) {
+  console.log('getSettings', query);
   var settings = {};
-  [].slice.call(document.querySelectorAll('.slideshow-setting'))
+  [].slice.call(document.querySelectorAll(query))
     .forEach(function(setting, index){
 
     if ( setting.type === 'checkbox' ) {
@@ -48,9 +48,37 @@ module.exports = {
     document.querySelector('#slideshowSettingsSave')
       .addEventListener('click', function() {
 
+      var query = '.slideshow-setting';
       request
         .put('settings')
-        .send(getSlideshowSettings())
+        .send({
+          scope: 'slideshow',
+          data: getSettings(query)
+        })
+        .set('Accept', 'application/json')
+        .end(function(err, res){
+          // handle error
+          if(err || res.statusType!=2){
+            alert('Something went wrong with removing your presentation: ' + 
+              (err!=null ? err.message : JSON.stringify(res.body)));
+            return;
+          }
+          console.log(res);
+        });
+    });
+
+
+    document.querySelector('.exerciseSettingsBtn')
+      .addEventListener('click', function(event) {
+
+      var query = '.exercise-setting-' + event.target.id;
+      request
+        .put('settings')
+        .send({
+          scope: 'exercise',
+          exerciseId: event.target.id,
+          data: getSettings(query)
+        })
         .set('Accept', 'application/json')
         .end(function(err, res){
           // handle error
