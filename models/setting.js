@@ -46,23 +46,26 @@ function getDefaultSettings() {
     return defaultSettings;
 }
 
-var types = [ 'String',
-              'Number',
-              'Date',
-              'Boolean' ];
+var kinds = [ 'String',   //text
+              'Number',   //number
+              'Date',     //date
+              'Boolean',   //checkbox
+              'Select',
+              'Range'
+            ];
 
 var settingSchema = new Schema({
-    key        : { type : String, required : true},
-    value      : { type : {}},
-    enumerate  : { type : Boolean, default: false},
-    options    : { type : Array, default: [] },
-    type       : { type :  String, required: true, enum: types},
-    // TODO: ranged numbers
-    category   : { type : String , required : true, default: 'core' },
-    createdAt  : { type : Date, default: Date.now },
-    createdBy  : { type : ObjectId, ref: 'User' },
-    updatedAt  : { type : Date, default: Date.now },
-    updatedBy  : { type : ObjectId, ref: 'User' }
+    key       : { type : String, required : true},
+    value     : { type : {}},
+    select    : { type : Boolean, default: false},
+    options   : { type : Array, default: [] },
+    kind      : { type : String, required: true, enum: kinds},
+
+    category  : { type : String , required : true, default: 'core' },
+    createdAt : { type : Date, default: Date.now },
+    createdBy : { type : ObjectId, ref: 'User' },
+    updatedAt : { type : Date, default: Date.now },
+    updatedBy : { type : ObjectId, ref: 'User' }
 });
 
 

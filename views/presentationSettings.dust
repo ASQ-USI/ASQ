@@ -31,16 +31,16 @@
                 <div class="col-md-3">{key}</div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    {^enumerate}
-                      <input id="{id}" name={key} type={type} class="slideshow-setting form-control" value={value}>
-                    {/enumerate}
-                    {?enumerate}
+                    {^select}
+                      <input id="{id}" name={key} type={kind} class="slideshow-setting form-control" value={value}>
+                    {/select}
+                    {?select}
                       <select id="{id}" name={key} class="slideshow-setting form-control">
                       {#options}
                         <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
                       {/options}
                       </select>
-                    {/enumerate}
+                    {/select}
                   </div>
                 </div>
               </div>
@@ -62,16 +62,16 @@
                   <p>Exercise {id}</p>
                   {#settings}
                     <label for={id}>{key}</label>
-                    {^enumerate}
-                      <input id="{id}" name={key} type={type} {?value}checked{/value} class="exercise-setting form-control" value={value}>
-                    {/enumerate}
-                    {?enumerate}
+                    {^select}
+                      <input id="{id}" name={key} type={kind} {?value}checked{/value} class="exercise-setting form-control" value={value}>
+                    {/select}
+                    {?select}
                       <select id="{id}" name={key} class="exercise-setting form-control">
                       {#options}
                         <option {@eq key="{value}" value="{.}"}selected{/eq}>{.}</option>
                       {/options}
                       </select>
-                    {/enumerate}
+                    {/select}
                   {/settings}
                   <button id={key} type="submit" class="btn btn-primary">Save</button>
                 </form>
