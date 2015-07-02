@@ -43,24 +43,30 @@
 
 
       <section id="exercisesettings">
-        <h3>Exercise settings</h3>
-        {#exerciseSettings}
-          <div>
-            <p>Slide {index}</p>
-            {#exercises}
-              <div>
-                <form method="POST" action="settings?_method=PUT" >
-                  <p>Exercise {exerciseId}</p>
-                  {#settings}
-                    <label for={id}>{key}</label>
-                    {> "inputs/{kind}Input" class="exercise-setting-{exerciseId}"/}
-                  {/settings}
-                  <button id="{exerciseId}" type="submit" class="exerciseSettingsBtn btn btn-primary">Save</button>
-                </form>
+        <div class="row">
+          <div class="col-md-12">
+            <h3>Exercise settings</h3>
+            {#exerciseSettings}
+              <div class="row">
+                <div class="col-md-6">
+                  <p>Slide {index}</p>
+                  {#exercises}
+                    <div>
+                      <form method="POST" action="settings?_method=PUT" >
+                        <p>Exercise {exerciseId}</p>
+                        {#settings}
+                          <label for={id}>{key}</label>
+                          {> "inputs/{kind}Input" class="exercise-setting-{exerciseId}"/}
+                        {/settings}
+                        <button id="{exerciseId}" type="submit" class="exerciseSettingsBtn btn btn-primary">Save</button>
+                      </form>
+                    </div>
+                  {/exercises}
+                </div>
               </div>
-            {/exercises}
+            {/exerciseSettings}
           </div>
-        {/exerciseSettings}
+        </div>
       </section>
 
     </div>
