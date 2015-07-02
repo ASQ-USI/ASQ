@@ -10,6 +10,9 @@
  * ADD: hooks system
  * ADD: Polymer web components
  * DROP: asq-microformat (replaced with Polymer Web Components) 
+ * REMOVE: dead routes
+ * ADD: use npm for building
+ * DROP: grunt
 
 ## v 0.2
  * Needs node v0.11.x
