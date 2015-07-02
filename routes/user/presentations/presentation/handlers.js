@@ -20,7 +20,7 @@ var cheerio      = require('cheerio')
   , stats        = require('../../../../lib/stats/stats')
   , Promise      = require("bluebird")  
   , coroutine    = Promise.coroutine
-  , settings     = lib.settings.slidesSettings
+  , settings     = lib.settings.presentationSettings
 ;
 
 
