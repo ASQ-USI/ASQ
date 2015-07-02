@@ -20,7 +20,8 @@ var _           = require('lodash');
 var assessmentTypes = require('../../../../models/assessmentTypes.js');
 var slideflowTypes = require('../../../../models/slideflowTypes.js');
 var Conf        = require('../../../../lib/configuration/conf.js');
-var settings     = lib.settings.slidesSettings
+var settings     = lib.settings.presentationSettings
+
 
 
 function editPresentation(req, res) {
