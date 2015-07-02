@@ -20,7 +20,8 @@ var _           = require('lodash');
 var assessmentTypes = require('../../../../models/assessmentTypes.js');
 var slideflowTypes = require('../../../../models/slideflowTypes.js');
 var Conf        = require('../../../../lib/configuration/conf.js');
-var presSettings = lib.settings.settings;
+var settings     = lib.settings.slidesSettings
+
 
 function editPresentation(req, res) {
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
@@ -345,7 +346,7 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   }
 
   var presentationSettings = yield slideshow.getSettings();
-  var exerciseSettings = yield presSettings.getDustifySettingsOfExercisesAll(slideshow);
+  var exerciseSettings = yield settings.getDustifySettingsOfExercisesAll(slideshow);
 
   // Whether the slideshow is currently active(running) by this user
   var sessionId = yield presUtils.isLiveBy(userId, slideshowId);
@@ -368,10 +369,10 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
 var putPresentationSettings = coroutine(function* putPresentationSettings(req, res) {
   console.log('putPresentationSettings', req.body);
   if ( req.body.scope === 'slideshow' ) {
-    var state = yield Conf.updateSlideshowConf(req.body.data, req.params.presentationId);
+    var state = yield settings.updateSlideshowSettings(req.body.data, req.params.presentationId);
     res.send(state);
   } else if ( req.body.scope === 'exercise' ) {
-    var state = yield Conf.updateExerciseConf(req.body.data, req.params.presentationId, req.body.exerciseId);
+    var state = yield settings.updateExerciseSettings(req.body.data, req.params.presentationId, req.body.exerciseId);
     res.send(state);
   } else {
     res.send(false);
