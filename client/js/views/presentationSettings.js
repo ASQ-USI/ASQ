@@ -68,27 +68,32 @@ module.exports = {
     });
 
 
-    document.querySelector('.exerciseSettingsBtn')
-      .addEventListener('click', function(event) {
+    [].slice.call(document.querySelectorAll('.exerciseSettingsBtn'))
+      .forEach(function(button, index){
 
-      var query = '.exercise-setting-' + event.target.id;
-      request
-        .put('settings')
-        .send({
-          scope: 'exercise',
-          exerciseId: event.target.id,
-          data: getSettings(query)
-        })
-        .set('Accept', 'application/json')
-        .end(function(err, res){
-          // handle error
-          if(err || res.statusType!=2){
-            alert('Something went wrong with removing your presentation: ' + 
-              (err!=null ? err.message : JSON.stringify(res.body)));
-            return;
-          }
-          console.log(res);
-        });
+      button.addEventListener('click', function(event) {
+
+        console.log('.exerciseSettingsBtn', event.target.id);
+
+        var query = '.exercise-setting-' + event.target.id;
+        request
+          .put('settings')
+          .send({
+            scope: 'exercise',
+            exerciseId: event.target.id,
+            data: getSettings(query)
+          })
+          .set('Accept', 'application/json')
+          .end(function(err, res){
+            // handle error
+            if(err || res.statusType!=2){
+              alert('Something went wrong with removing your presentation: ' + 
+                (err!=null ? err.message : JSON.stringify(res.body)));
+              return;
+            }
+            console.log(res);
+          });
+      });
     });
   }
 }
