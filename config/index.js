@@ -5,7 +5,7 @@
 
 //we import bunyan instead of the dedicated loggers because they are not setup yet
 
-var bunyan      = require('bunyan');
+var logger      = require('logger-asq');
 var _           = require('lodash');
 var path        = require('path')
 var fs          = require('fs');
@@ -121,14 +121,14 @@ var conf = {
 if (fs.existsSync(__dirname + '/config.defaults.js')){
   defaultConf = require(__dirname + '/config.defaults.js');
 }else{
-  bunyan.info('Default configuration file not found(don\'t worry I have default defaults :-)');
+  logger.info('Default configuration file not found(don\'t worry I have default defaults :-)');
 }
 
 // check for env configuration
 if (fs.existsSync(__dirname + '/config.'+ env + '.js')){
   envConf = require('./config.'+ env);
 }else{
-  bunyan.info('There is no configuration file for environment: '+env);
+  logger.info('There is no configuration file for environment: '+env);
 }
 
 //overwrite default configuration with env configuration
