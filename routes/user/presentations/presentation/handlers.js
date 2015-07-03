@@ -93,8 +93,6 @@ function livePresentation(req, res) {
   var rootUrl = req.app.locals.rootUrl;
   var presentation = req.liveSession.slides;
   var presentationViewUrl = '';
-  var presentationDir = app.get('uploadDir') + '/' + presentation._id + '/';
-  var presentationFile = presentationDir + presentation.asqFile;
   var presenterLiveUrl = '';
 
   //TMP until roles are defined more precisely
@@ -125,7 +123,7 @@ function livePresentation(req, res) {
 
         presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
-          template: presentationFile,
+          template:  presentation.asqFilePath,
           namespace: 'ctrl',
           roleScript : '/js/asq-presenter.js'
         };
@@ -134,7 +132,7 @@ function livePresentation(req, res) {
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role + '&view=presentation';
       return {
-          template: presentationFile,
+          template:  presentation.asqFilePath,
           namespace: 'ghost',
           roleScript : '/js/asq-viewer.js'
         };
@@ -143,7 +141,7 @@ function livePresentation(req, res) {
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role + '&view=presentation';
       return {
-          template: presentationFile,
+          template:  presentation.asqFilePath,
           namespace: 'folo',
           roleScript : '/js/asq-viewer.js'
         };
@@ -180,12 +178,13 @@ function livePresentation(req, res) {
 function livePresentationFiles(req, res) {
   var presentation = req.liveSession.slides;
   var file = req.params[0];
-  if (presentation && file === presentation.originalFile) {
+
+  if (presentation && file === presentation.originalFile) { 
     res.redirect(301, ['/', req.user.username, '/presentations/',
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
-    res.sendFile( presentation.path + file, {root: config.rootDir});
+    res.sendFile( path.join(presentation.path, file));
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }

@@ -6,12 +6,14 @@ var mongoose   = require('mongoose');
 var Schema     = mongoose.Schema;
 var ObjectId   = Schema.ObjectId;
 var when       = require('when');
+var path       = require('path');
 var Promise    = require("bluebird");
 var coroutine  = Promise.coroutine;
 var logger     = require('logger-asq');
 var Question   = db.model('Question');
 var Exercises  = db.model('Exercise');
 var User       = db.model('User');
+var config = require('../config');
 var assessmentTypes = require('./assessmentTypes.js');
 var slideflowTypes = require('./slideflowTypes.js') ;
 
@@ -63,7 +65,12 @@ var slideshowSchema = new Schema({
 
 //get the path of the slideshow. Usefull to server static files
 slideshowSchema.virtual('path').get(function() {
-  return './slides/' + this._id + '/';
+  return path.join(config.uploadDir, this._id.toString());
+});
+
+//get the path of the slideshow. Usefull to server static files
+slideshowSchema.virtual('asqFilePath').get(function() {
+  return path.join(config.uploadDir, this._id.toString(), this.asqFile);
 });
 
 //check if owner exists

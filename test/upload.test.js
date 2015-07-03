@@ -44,7 +44,6 @@ var mockUser = new User({
 // setup a small app for the upload test
 app = express();
 app.configure(function() {
-  app.set('uploadDir', path.resolve(__dirname, config.uploadDir));
   app.use(express.bodyParser({uploadDir: './test/slides/'}));
   app.use(express.bodyParser());
   app.use(express.cookieParser());
@@ -86,7 +85,7 @@ describe('upload', function() {
       Slideshow.find({}).exec()
         .then(
           function(docs){
-            var uploadPath = app.set('uploadDir');
+            var uploadPath = app.get('uploadDir');
             var totalDocs = docs.length;
             if(totalDocs == 0){
               //return done(new Error('totalDocs shouldn't be 0'));

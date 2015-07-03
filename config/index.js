@@ -168,6 +168,7 @@ var portFragment =  (conf.urlPort === 80 || conf.urlPort === 443)
 conf.rootUrl = conf.urlProtocol +"://" + conf.urlHost + portFragment;
 conf.rootDir = rootDir;
 
+conf.uploadDir = path.resolve(path.join(conf.rootDir, conf.uploadDir));
 conf.pluginDir = path.resolve(path.join(conf.rootDir, conf.pluginDir));
 
 module.exports = conf;
