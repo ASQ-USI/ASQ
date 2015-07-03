@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "make test-unit",
-    "start-dev": "NODE_ENV=development nodemon --harmony app.js",
+    "start-dev": "NODE_ENV=development nodemon | bunyan",
     "start": "NODE_ENV=production node --harmony app.js",
     "install": "bower install",
     "webpack-dev": "NODE_ENV=development webpack -d --watch",
@@ -34,7 +34,7 @@
     "db": "tasks/db",
     "watch": "parallelshell 'npm run webpack-dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack-prod && npm run js-vendor-dev && npm run static && npm run less-prod && npm run dust-prod",
-    "dev": "npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'nodemon | bunyan'"
+    "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'"
   },
   "dependencies": {
     "asq-microformat": "^0.3.8",
