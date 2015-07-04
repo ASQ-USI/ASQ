@@ -45,9 +45,6 @@ var credentials     = config.enableHTTPS ? {
     rejectUnauthorized : config.rejectUnauthorized,
   } : {};
 
-// var editFunctions   = require('./routes/edit');
-// var statistics      = require('./routes/statistics');
-
 var app = express();
 
 var init = coroutine(function *initGen () {
@@ -87,6 +84,11 @@ try{
   throw err;
 }
 
+//TODO: THIS CODE NEEDS TO BE PORTED FOR 3.0.0
+
+// var editFunctions   = require('./routes/edit');
+// var statistics      = require('./routes/statistics');
+
 // /** Control your current session (if any) */
 // app.get('/user/editquestions/:id', ensureAuthenticated, editFunctions.editquestions);
 
@@ -99,16 +101,5 @@ try{
 // app.post('/user/editstyle/:id', ensureAuthenticated, editFunctions.savestyle);
 // app.post('/user/savedetails/:id', ensureAuthenticated, editFunctions.saveDetails);
 
-// //Render presentations in iframe for thumbnails
-// app.get('/slidesInFrame/:id/', function(req,res){
-//   res.render('slidesIFrame', {user: req.user.name, id: req.params.id, url: req.query.url});
-// });
-
-// //Test call to create sample stats data
-// app.get('/stats/createSampleData', statistics.createSampleData)
-
 // //Request statistical data for Google Chart
 // app.get('/stats/getStats', statistics.getStats)
-
-// //Render test page
-// app.get('/test/perQuestion',function(req, res){ res.render('test', {questionId: req.query.questionId})});
