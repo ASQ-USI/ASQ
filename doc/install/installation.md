@@ -105,12 +105,11 @@ To run ASQ with all the developer goodies (watchers to recompile assets upon cha
         ".git",
         "node_modules/**/node_modules",
         "test/*","client/*",
-        "config/*",
         "slides/*",
         "log/*",
         "plugins/*/node_modules/*"
       ],
-      "watch": [ "app.js", "lib/*", "models/*", "shared/*", "views/*", "routes/*", "plugins/*"],
+      "watch": [ "app.js", "lib/*", "config/*", "models/*", "shared/*", "views/*", "routes/*", "plugins/*"],
       "execMap": {
         "js": "node --harmony --stack-trace-limit=1000 --stack-size=1024"
       }
