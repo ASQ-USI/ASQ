@@ -1,14 +1,16 @@
 'use strict';
 
-var debug = require('bows')('presentationSettings')
+var debug = require('bows')('js/views/presentationSettings')
 , io      = require('socket.io-client');
 // , dust    = require('dustjs-linkedin');
 
 
+  // "setting:update-presentation-settings",
+  // "setting:update-presentation-settings-live",
 
-var getSettings = function(query) {
+var getSettings = function(selector) {
   var settings = {};
-  [].slice.call(document.querySelectorAll(query))
+  [].slice.call(document.querySelectorAll(selector))
     .forEach(function(setting, index){
 
     if ( setting.type === 'checkbox' ) {
@@ -33,7 +35,7 @@ var getSettings = function(query) {
   return settings;
 }
 
-// TODO: use dust to render
+// TODO: use dust to render ? YES
 var applySettingsForAllExercises = function(settings) {
   // var element = document.querySelector('#exercisesettings');
   // var compiled = dust.compile(element.innerHTML, 'exercise.tl');
@@ -90,6 +92,7 @@ module.exports = {
       , token     = $body.getAttribute('data-asq-socket-token')
       , namespace = $body.getAttribute('data-asq-socket-namespace');
 
+      //use connection.js
       var socketUrl =  window.location.protocol + '//' + host + ':' + port + namespace;
       this.socket = io.connect(socketUrl, { 
         'query': 'token=' + token+'&asq_sid=' + session 
@@ -103,13 +106,11 @@ module.exports = {
 
   init: function() {
 
-    [].slice.call(document.querySelectorAll('form'))
-      .forEach(function(form, index){
-      form.addEventListener('submit', function(event) {
+    document.addEventListener('submit', function(){
+      if (event.target.tagName.toLowerCase() =='form'){
         event.preventDefault();
-      })  
+      }     
     });
-
 
     this.initSocket.bind(this)();
 
@@ -118,12 +119,12 @@ module.exports = {
       .forEach(function(button, index){
 
       button.addEventListener('click', function() {
-        var query = button.getAttribute('setting-query');
+        var query = button.dataset.settingQuery;
         var evt = {
           method: 'PUT',
-          scope: button.getAttribute('setting-scope'),
-          presentationId: button.getAttribute('setting-presentation-id'),
-          exerciseId: button.getAttribute('setting-exercise-id'),
+          scope: button.dataset.settingScope,
+          presentationId: button.dataset.settingPresentationId,
+          exerciseId: button.dataset.settingExerciseId,
           data: getSettings(query)
         }
         this.socket.emit('setting:update-presentation-scope', evt);
