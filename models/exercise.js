@@ -3,14 +3,14 @@
  * @description the Exercise Model
  **/
 
-var mongoose         = require('mongoose')
-  , Schema           = mongoose.Schema
-  , ObjectId         = Schema.ObjectId
-  , Promise    = require("bluebird")
-  , coroutine  = Promise.coroutine
-  , assessmentTypes  = require('./assessmentTypes')
-  , appLogger        = require('../lib/logger').appLogger;
-  Setting            = db.model('Setting');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
+var Promise = require("bluebird");
+var coroutine  = Promise.coroutine;
+var assessmentTypes  = require('./assessmentTypes');
+var logger = require('logger-asq');
+var Setting = db.model('Setting');
 
 var exerciseSchema = new Schema({
   questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
@@ -36,6 +36,6 @@ exerciseSchema.methods.getSettings = coroutine(function* getSettingsGen() {
   return settings;
 });
 
-appLogger.debug('Loading Exercise model');
+logger.debug('Loading Exercise model');
 mongoose.model('Exercise', exerciseSchema);
 module.exports = mongoose.model('Exercise');

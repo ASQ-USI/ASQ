@@ -359,7 +359,7 @@ slideshowSchema.methods.getSettings = coroutine(function* getSettingsGen() {
 });
 
 
-appLogger.debug('Loading Slideshow model');
+logger.debug('Loading Slideshow model');
 mongoose.model('Slideshow', slideshowSchema);
 
 module.exports = mongoose.model('Slideshow');

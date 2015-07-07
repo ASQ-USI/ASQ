@@ -1,27 +1,27 @@
 /**
     @fileoverview user/presentations/presentation/handlers.js
     @description Handlers for a presentation resource
-*/
-var cheerio      = require('cheerio')
-  , path         = require('path') 
-  , pfs          = require('promised-io/fs')
-  , lib          = require('../../../../lib')
-  , sockAuth     = require('../../../../lib/socket/authentication')
-  , appLogger    = lib.logger.appLogger
-  , presUtils    = lib.utils.presentation
-  , config       = require('../../../../config')
-  , when         = require('when')
-  , gen          = require('when/generator')
-  , nodefn       = require('when/node/function')
-  , Slideshow    = db.model('Slideshow')
-  , Exercise     = db.model('Exercise')
-  , User         = db.model('User', schemas.userSchema)
-  , Session      = db.model('Session')
-  , stats        = require('../../../../lib/stats/stats')
-  , Promise      = require("bluebird")  
-  , coroutine    = Promise.coroutine
-  , settings     = lib.settings.presentationSettings
-;
+*/;
+var cheerio     = require('cheerio');
+var path        = require('path') ;
+var pfs         = require('promised-io/fs');
+var lib         = require('../../../../lib');
+var sockAuth    = require('../../../../lib/socket/authentication');
+var logger      = require('logger-asq');
+var presUtils   = lib.utils.presentation;
+var config      = require('../../../../config');
+var when        = require('when');
+var gen         = require('when/generator');
+var nodefn      = require('when/node/function');
+var Slideshow   = db.model('Slideshow');
+var Exercise    = db.model('Exercise');
+var User        = db.model('User', schemas.userSchema);
+var Session     = db.model('Session');
+var stats       = require('../../../../lib/stats/stats');
+var Promise     = require("bluebird")  ;
+var coroutine   = Promise.coroutine;
+var _           = require('lodash');
+var settings    = lib.settings.presentationSettings;
 
 
 function editPresentation(req, res) {
@@ -182,7 +182,7 @@ function livePresentationFiles(req, res) {
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
-    res.sendFile( presentation.path + file, {root: app.get('rootDir')});
+    res.sendFile( path.join(presentation.path, file));
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }
@@ -316,9 +316,10 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
   
 });
 
-
 var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
+
   appLogger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
+
   var user        = req.user;
   var userId      = user._id;
   var username    = user.username;
@@ -378,6 +379,7 @@ module.exports = {
   startPresentation         : startPresentation,
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
+
   getPresentationSettings   : getPresentationSettings,
   putPresentationSettings   : putPresentationSettings
 }
