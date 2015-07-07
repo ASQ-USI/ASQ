@@ -4,7 +4,8 @@
 
 /** Connect back to the server with a websocket */
 var debug = require('bows')("viewer")
-  , io = require('socket.io-client');
+var _ = require('lodash');
+var io = require('socket.io-client');
 
 
 var socketEvents = [
@@ -16,31 +17,20 @@ var socketEvents = [
   "error"
 ];
 
-var events2Forward = [
-  "asq:sessionFlow",
-  "asq:folo-connected",
-  "asq:ctrl-connected",
-  "asq:ghost-connected",
-  "asq:connected-clients",
-  "asq:answered-all",
-  "asq:user-session-stats",
-  "asq:rankings",
-  "asq:goto",
-  "asq:submitted",
-  "asq:assessment",
-  "asq:assess",
-  "asq:stat",
-  "asq:question_type",
-  "asq:session-terminated",
-
-  "setting:update-presentation-settings",
-  "setting:update-presentation-settings-live",
-];
+var events2Forward = [];
 
 this.socket = null;
 
 this.emit = function() {
   this.socket.emit.apply(this.socket, arguments);
+}
+
+this.addEvents2Forward = function(events){
+  if (_.isString(events)){
+    events = [events]
+  }
+
+  events2Forward = _.union(events2Forward, events);
 }
 
 // TODO: add asserts for the arguments
