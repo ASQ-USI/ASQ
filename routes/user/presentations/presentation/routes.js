@@ -27,7 +27,4 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/:user/presentations/:presentationId/settings/', 
     middleware.isRouteOwner, handlers.getPresentationSettings);
 
-  app.put('/:user/presentations/:presentationId/settings/', 
-    middleware.isRouteOwner, handlers.putPresentationSettings);
-
 }

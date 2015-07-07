@@ -361,22 +361,6 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
 
 });
 
-var putPresentationSettings = coroutine(function* putPresentationSettings(req, res) {
-
-  console.log('putPresentationSettings', req.body);
-  if ( req.body.scope === 'slideshow' ) {
-    var state = yield settings.updateSlideshowSettings(req.body.data, req.params.presentationId);
-    res.send(state);
-  } else if ( req.body.scope === 'exercise' ) {
-    var state = yield settings.updateExerciseSettings(req.body.data, req.params.presentationId, req.body.exerciseId);
-    res.send(state);
-  } else {
-    res.send(false);
-  }
-
-});
-
-
 
 
 module.exports = {
@@ -388,5 +372,4 @@ module.exports = {
   getPresentationStats      : getPresentationStats,
 
   getPresentationSettings   : getPresentationSettings,
-  putPresentationSettings   : putPresentationSettings
 }
