@@ -31,7 +31,10 @@ var events2Forward = [
   "asq:assess",
   "asq:stat",
   "asq:question_type",
-  "asq:session-terminated"
+  "asq:session-terminated",
+
+  "setting:update-presentation-settings",
+  "setting:update-presentation-settings-live",
 ];
 
 this.socket = null;

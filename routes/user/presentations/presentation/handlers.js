@@ -318,7 +318,7 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
 
 var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
 
-  appLogger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
+  logger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
 
   var user        = req.user;
   var userId      = user._id;
@@ -328,20 +328,27 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   try{
     slideshow = yield Slideshow.findById(slideshowId).exec();
   } catch(err){
-    appLogger.error("Presentation %s not found", req.params.presentationId);
-    appLogger.error(err.message, { err: err.stack });
+    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }
 
   var presentationSettings = yield slideshow.getSettings();
-  var exerciseSettings = yield settings.getDustifySettingsOfExercisesAll(slideshow);
+  var exerciseSettings = yield settings.getDustifySettingsOfExercisesAll(slideshowId);
 
   // Whether the slideshow is currently active(running) by this user
   var sessionId = yield presUtils.isLiveBy(userId, slideshowId);
   var livelink  = !sessionId ? null : presUtils.getLiveLink(username, slideshowId, sessionId);
 
+  var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
   var params = {
+      host                 : req.app.locals.urlHost,
+      port                 : req.app.locals.urlPort,
+      namespace            : '/',
+      token                : token,
+      browserSesstionId    : req.sessionID,
+      
       title                : slideshow.title,
       username             : username,
       slideshowId          : slideshowId,

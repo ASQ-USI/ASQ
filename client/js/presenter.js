@@ -117,7 +117,12 @@ this.subscribeToEvents= function (){
   .on('asq:question_type', function(evt){
     console.log(evt);
     debug.log(evt)
-  });
+  })
+  .on('setting:update-presentation-settings-live', updatePresentationSettingsLive);
+}
+
+function updatePresentationSettingsLive(evt) {
+  debug.log('updatePresentationSettingsLive', evt);
 }
 
 // querySelectorAll2Array :-)

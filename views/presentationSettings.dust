@@ -5,8 +5,13 @@
     <title>ASQ - Presentation Settings</title>
   </head>
   
-  <body data-view-name = "presentationSettings">
 
+  <body data-view-name = "presentationSettings" 
+        data-asq-host = {host}
+        data-asq-port = {port}
+        data-asq-socket-namespace = {namespace}
+        data-asq-session-id = {browserSesstionId}
+        data-asq-socket-token = {token} >
     <!--   top menu -->
     {>menu/}
 
@@ -20,7 +25,7 @@
       </div>
       {/alert}
 
-      <h1>{title}</h1>
+      <h1>{title} <small>{slideshowId}</small></h1>
       {?livelink}<div><h3><i>This slideshow is currently active. Click <a href={livelink}>here</a> to live.</i></h3></div>{/livelink}
       <section id="slideshowsettings">
         <h3 >Slideshow settings</h3>
@@ -37,36 +42,38 @@
               </div>
               {/presentationSettings}
             </div> 
-            <button id="slideshowSettingsSave" type="submit" class="btn btn-primary">Save</button>
+            <button id="{slideshowId}" setting-presentation-id={slideshowId} setting-scope="presentation" setting-query='.slideshow-setting' type="submit" class="btn btn-primary slideshowSettingsBtn settingsBtn">Save</button>
           </form> 
       <section>         
+
 
       <section id="exercisesettings">
         <div class="row">
           <div class="col-md-12">
             <h3>Exercise settings</h3>
             {#exerciseSettings}
-              <div class="row">
-                <div class="col-md-6">
-                  <p>Slide {index}</p>
-                  {#exercises}
-                    <div>
-                      <form method="POST" action="settings?_method=PUT" >
-                        <p>Exercise {exerciseId}</p>
-                        {#settings}
-                          <label for={id}>{key}</label>
-                          {> "settingsInputs/{kind}Input" class="exercise-setting-{exerciseId}"/}
-                        {/settings}
-                        <button id="{exerciseId}" type="submit" class="exerciseSettingsBtn btn btn-primary">Save</button>
-                      </form>
-                    </div>
-                  {/exercises}
-                </div>
+            <div class="row">
+              <div class="col-md-6">
+                <p>Slide {index}</p>
+                {#exercises}
+                  <div>
+                    <form method="POST" action="settings?_method=PUT" >
+                      <p>Exercise <small>{exerciseId}</small></p>
+                      {#settings}
+                        <label for={id}>{key}</label>
+                        {> "settingsInputs/{kind}Input" class="exercise-setting-{exerciseId}"/}
+                      {/settings}
+                      <button id="{exerciseId}" setting-exercise-id={exerciseId} setting-presentation-id={slideshowId} setting-scope="exercise" setting-query='.exercise-setting-{exerciseId}' type="submit" class="exerciseSettingsBtn btn btn-primary settingsBtn">Save</button>
+                    </form>
+                  </div>
+                {/exercises}
               </div>
+            </div>
             {/exerciseSettings}
           </div>
         </div>
       </section>
+          
 
     </div>
   </body>
