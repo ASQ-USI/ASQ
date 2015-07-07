@@ -132,6 +132,17 @@ this.subscribeToEvents= function (){
       eventBus.emit('asq-exercise:submit', evt.detail);
     }
   })
+
+  eventBus
+  .on('setting:update-presentation-settings-live', updatePresentationSettingsLive);
+
+}
+
+function updatePresentationSettingsLive(evt) {
+  debug.log('updatePresentationSettingsLive', evt);
+  var x = document.querySelector('asq-exercise');
+  console.log('x', x);
+  
 }
 
 // querySelectorAll2Array :-)

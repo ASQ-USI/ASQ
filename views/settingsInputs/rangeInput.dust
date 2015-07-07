@@ -1,1 +1,1 @@
-<input id="{id}" name={key} type="range" min={params.min} max={params.max} step={params.step} class="{class}" value={value}>
+<input id="id{id}" name={key} type="range" min={params.min} max={params.max} step={params.step} class="{class}" value={value}>
