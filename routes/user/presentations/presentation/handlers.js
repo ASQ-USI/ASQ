@@ -1,3 +1,7 @@
+/**
+    @fileoverview user/presentations/presentation/handlers.js
+    @description Handlers for a presentation resource
+*/;
 var cheerio     = require('cheerio');
 var path        = require('path') ;
 var pfs         = require('promised-io/fs');
@@ -17,10 +21,7 @@ var stats       = require('../../../../lib/stats/stats');
 var Promise     = require("bluebird")  ;
 var coroutine   = Promise.coroutine;
 var _           = require('lodash');
-var assessmentTypes = require('../../../../models/assessmentTypes.js');
-var slideflowTypes = require('../../../../models/slideflowTypes.js');
-var Conf        = require('../../../../lib/configuration/conf.js');
-var settings     = lib.settings.presentationSettings
+var settings    = lib.settings.presentationSettings;
 
 
 function editPresentation(req, res) {
@@ -181,7 +182,7 @@ function livePresentationFiles(req, res) {
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
   } else if(presentation) {
-    res.sendFile( presentation.path + file, {root: app.get('rootDir')});
+    res.sendFile( path.join(presentation.path, file));
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }
@@ -330,7 +331,9 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
 });
 
 var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
+
   appLogger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
+
   var user        = req.user;
   var userId      = user._id;
   var username    = user.username;
@@ -392,6 +395,7 @@ module.exports = {
   startPresentation         : startPresentation,
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
+
   getPresentationSettings   : getPresentationSettings,
   putPresentationSettings   : putPresentationSettings
 }
