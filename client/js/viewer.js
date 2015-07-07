@@ -104,6 +104,7 @@ this.connect = function(){
     "asq:stat",
     "asq:question_type",
     "asq:session-terminated",
+    'setting:update-live-presentation-settings'
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
@@ -152,15 +153,33 @@ this.subscribeToEvents= function (){
   })
 
   eventBus
-  .on('setting:update-presentation-settings-live', updatePresentationSettingsLive);
+  .on('setting:update-live-presentation-settings', updateLivePresentationSettings);
 
 }
 
-function updatePresentationSettingsLive(evt) {
-  debug.log('updatePresentationSettingsLive', evt);
-  var x = document.querySelector('asq-exercise');
-  console.log('x', x);
-  
+function updateExerciseSettings(exercise, settings) {
+  Object.keys(settings).forEach(function(key, index){
+    exercise.setAttribute(key.toLowerCase(), settings[key]);
+    exercise[key] = settings[key];
+  });
+}
+
+function updateLivePresentationSettings(evt) {
+  debug.log('updateLivePresentationSettings', evt);
+
+  if ( evt.scope == 'exercise' ) {
+    var selector = 'asq-exercise[uid="' + evt.exerciseId + '"]';
+    var exercise = document.querySelector(selector);
+    if ( !exercise ) return;
+    updateExerciseSettings(exercise, evt.settings);
+  } 
+  else if ( evt.scope == 'presentation' ) {
+    [].slice.call(document.querySelectorAll('asq-exercise'))
+      .forEach(function(exercise, index){
+        
+      updateExerciseSettings(exercise, evt.settings);
+    });
+  }
 }
 
 // querySelectorAll2Array :-)

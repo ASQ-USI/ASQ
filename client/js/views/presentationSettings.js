@@ -1,12 +1,27 @@
 'use strict';
 
-var debug = require('bows')('js/views/presentationSettings')
-, io      = require('socket.io-client');
+var debug = require('bows')('js/views/presentationSettings');
+var connection = require('../connection.js');
+var EventEmitter2 = require('eventemitter2');
+var eventBus = new EventEmitter2({delimiter: ':', maxListeners: 100});
+var _ = require('lodash');
 // , dust    = require('dustjs-linkedin');
 
+function assert(expected, actual, errorMsg){
+  if(expected !== actual ){
+    throw new Error(errorMsg || 'error');
+  }
+  return true;
+}
 
-  // "setting:update-presentation-settings",
-  // "setting:update-presentation-settings-live",
+function isString(val){
+  return typeof val === 'string';
+}
+
+function isEmpty(val){
+  return !val;
+}
+
 
 var getSettings = function(selector) {
   var settings = {};
@@ -51,10 +66,8 @@ var applySettingsForAllExercises = function(settings) {
   // });
 
   settings.forEach(function(slide, index){
-    var exercises = slide.exercises;
-    exercises.forEach(function(exercise, index){
-      var settings = exercise.settings;
-      settings.forEach(function(setting, index){
+    slide.exercises.forEach(function(exercise, index){
+      exercise.settings.forEach(function(setting, index){
         var x = document.querySelector('#id' + setting._id);
         if (x.type === 'checkbox') {
           x.checked = setting.value;
@@ -70,41 +83,84 @@ var applySettingsForAllExercises = function(settings) {
 
 module.exports = {
 
-  socket: null,
+  readSessionInfo: function(){
+    var body = document.body;
+    var si = {};
+    si.protocol    = this.protocol  = window.location.protocol;
+    si.body        = this.body       = document.querySelector('body');
+    si.host        = this.host       = body.dataset.asqHost;
+    si.port        = this.port       = parseInt(body.dataset.asqPort);
+    si.sessionId   = this.sessionId  = body.dataset.asqSessionId;
+    si.token       = this.token      = body.dataset.asqSocketToken;
+    si.namespace   = this.namespace  = body.dataset.asqSocketNamespace == '/' ? '' : body.dataset.asqSocketNamespace;
+
+    assert(true, (_.isString(si.protocol) && !!si.protocol)
+      , 'protocol is required');
+    assert(true, (_.isString(si.host) && !!si.host)
+      , 'host is required');
+    assert(true, (si.port > 0)
+      , 'port is required');
+    assert(true, (_.isString(si.sessionId) && !!si.sessionId)
+      , 'sessionId is required');
+    assert(true, (_.isString(si.namespace))
+      , 'namespace is required');
+    assert(true, (_.isString(si.token) && !!si.token)
+      , 'token is required');
+
+    return si;
+  },
+
 
   ACK: function(evt) {
     if ( evt.state ) {
       debug('Settings updated. (' + evt.scope + ' scope)');
       if ( evt.scope === 'presentation' ) {
-        applySettingsForAllExercises(evt.data);
+        applySettingsForAllExercises(evt.settings);
       }
     } else {
       debug('Error: failed to update settings.(' + evt.scope + ' scope)');
     }
   },
 
-  initSocket: function() {
-    if (! this.socket) {
-      var $body   = document.querySelector('body')
-      , host      = $body.getAttribute('data-asq-host')
-      , port      = parseInt($body.getAttribute('data-asq-port'))
-      , session   = $body.getAttribute('data-asq-session-id')
-      , token     = $body.getAttribute('data-asq-socket-token')
-      , namespace = $body.getAttribute('data-asq-socket-namespace');
 
-      //use connection.js
-      var socketUrl =  window.location.protocol + '//' + host + ':' + port + namespace;
-      this.socket = io.connect(socketUrl, { 
-        'query': 'token=' + token+'&asq_sid=' + session 
+
+  connect: function() {
+    var events2Forward = [
+      'setting:update-presentation-settings-ack',
+    ];
+
+    connection.addEvents2Forward(events2Forward);
+    connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
+  },
+
+  subscribeToEvents: function() {
+    eventBus
+      .on('setting:update-presentation-settings-ack', this.ACK)
+      .on('socket:connect', function(evt){
+        debug.log('connected to ASQ server')
+        // TODO: update connected viewers text
+      })
+      .on('socket:connect_error', function(evt){
+        console.log('error connecting to server');
+        debug.log(evt)
+      })
+      .on('socket:error', function(evt){
+        console.log('socket error');
+        debug.log(evt)
       });
-      debug('Connected to server.');
-
-      this.socket.on('setting:update-presentation-settings-ack', this.ACK.bind(this));
-      
-    }
   },
 
   init: function() {
+
+    this.subscribeToEvents = this.subscribeToEvents.bind(this);
+    this.readSessionInfo = this.readSessionInfo.bind(this);
+    this.ACK = this.ACK.bind(this);
+    this.connect = this.connect;
+    
+
+    this.readSessionInfo();
+    this.connect();
+    this.subscribeToEvents();
 
     document.addEventListener('submit', function(){
       if (event.target.tagName.toLowerCase() =='form'){
@@ -112,22 +168,20 @@ module.exports = {
       }     
     });
 
-    this.initSocket.bind(this)();
-
 
     [].slice.call(document.querySelectorAll('.settingsBtn'))
       .forEach(function(button, index){
 
       button.addEventListener('click', function() {
-        var query = button.dataset.settingQuery;
+        var selector = button.dataset.settingQuery;
         var evt = {
-          method: 'PUT',
+          method: 'UPDATE',
           scope: button.dataset.settingScope,
           presentationId: button.dataset.settingPresentationId,
           exerciseId: button.dataset.settingExerciseId,
-          data: getSettings(query)
+          settings: getSettings(selector)
         }
-        this.socket.emit('setting:update-presentation-scope', evt);
+        connection.emit('setting:update-presentation-scope', evt);
       }.bind(this));
     }, this);
   }
