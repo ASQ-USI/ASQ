@@ -42,7 +42,7 @@
               </div>
               {/presentationSettings}
             </div> 
-            <button id="{slideshowId}" setting-presentation-id={slideshowId} setting-scope="presentation" setting-query='.slideshow-setting' type="submit" class="btn btn-primary slideshowSettingsBtn settingsBtn">Save</button>
+            <button id="{slideshowId}" data-setting-presentation-id={slideshowId} data-setting-scope="presentation" data-setting-query='.slideshow-setting' type="submit" class="btn btn-primary slideshowSettingsBtn settingsBtn">Save</button>
           </form> 
       <section>         
 
@@ -63,7 +63,7 @@
                         <label for={id}>{key}</label>
                         {> "settingsInputs/{kind}Input" class="exercise-setting-{exerciseId}"/}
                       {/settings}
-                      <button id="{exerciseId}" setting-exercise-id={exerciseId} setting-presentation-id={slideshowId} setting-scope="exercise" setting-query='.exercise-setting-{exerciseId}' type="submit" class="exerciseSettingsBtn btn btn-primary settingsBtn">Save</button>
+                      <button id="{exerciseId}" data-setting-exercise-id={exerciseId} data-setting-presentation-id={slideshowId} data-setting-scope="exercise" data-setting-query='.exercise-setting-{exerciseId}' type="submit" class="exerciseSettingsBtn btn btn-primary settingsBtn">Save</button>
                     </form>
                   </div>
                 {/exercises}
