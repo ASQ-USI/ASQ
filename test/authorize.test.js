@@ -14,11 +14,7 @@ var chai      = require('chai')
   , mongoose  = require('mongoose')
   , config    = require('../config');
 
-db = mongoose.createConnection(
-  config.mongoDBServer,
-  config.dbName,
-  config.mongoDBPort
-);
+db = mongoose.createConnection(config.mongo.mongoUri);
 
 require('../models'); //Load db models.
 

@@ -23,11 +23,7 @@ var chai    = require('chai')
 , rimraf    = require('rimraf')
 , when      = require('when');
 
-db = mongoose.createConnection(
-  config.mongoDBServer,
-  config.dbName,
-  config.mongoDBPort
-);
+db = mongoose.createConnection(config.mongo.mongoUri);
 
 chai.use(sinonChai);
 

@@ -5,7 +5,7 @@ var config    = require('../config')
   , mongoose  = require('mongoose')
 
 // mongodb connection (Global)
-db = mongoose.createConnection(config.host, config.dbName);
+db = mongoose.createConnection(config.mongo.mongoUri);
 
 
 var chai          = require('chai')

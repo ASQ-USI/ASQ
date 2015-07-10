@@ -5,11 +5,7 @@ var chai      = require('chai')
   , mongoose  = require('mongoose')
   , config    = require('../config');
 
-db = mongoose.createConnection(
-  config.mongoDBServer,
-  config.dbName,
-  config.mongoDBPort
-);
+db = mongoose.createConnection(config.mongo.mongoUri);
 
   var mongooseFixtures = require('./util/mongoose-fixtures')
   , answerFixtures     = require('./fixtures/answers.fixtures')

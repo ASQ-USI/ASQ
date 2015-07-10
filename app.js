@@ -25,7 +25,7 @@ logger.initialize({
 
 // Globals : mongoose, db, and schemas
 global.mongoose   = require('mongoose');
-global.db         = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
+global.db         = mongoose.createConnection(config.mongo.mongoUri);
 global.schemas    = require('./models');
 
 var Promise         = require('bluebird');
