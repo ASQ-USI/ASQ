@@ -14,7 +14,6 @@ var Setting = db.model('Setting');
 
 var exerciseSchema = new Schema({
   questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
-  assessmentTypes   : { type: [{ type: String, enum: assessmentTypes }], default: [] },
   settings          : { type: [{ type: ObjectId, ref: 'Setting' }], default: [] },
 });
 
