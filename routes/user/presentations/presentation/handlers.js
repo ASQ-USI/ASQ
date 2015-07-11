@@ -7,7 +7,7 @@ var path        = require('path') ;
 var pfs         = require('promised-io/fs');
 var lib         = require('../../../../lib');
 var sockAuth    = require('../../../../lib/socket/authentication');
-var logger     = require('logger-asq');
+var logger      = require('logger-asq');
 var presUtils   = lib.utils.presentation;
 var config      = require('../../../../config');
 var when        = require('when');
@@ -21,9 +21,7 @@ var stats       = require('../../../../lib/stats/stats');
 var Promise     = require("bluebird")  ;
 var coroutine   = Promise.coroutine;
 var _           = require('lodash');
-var assessmentTypes = require('../../../../models/assessmentTypes.js');
-var slideflowTypes = require('../../../../models/slideflowTypes.js');
-var Conf        = require('../../../../lib/configuration/conf.js');
+var settings    = lib.settings.presentationSettings;
 
 
 function editPresentation(req, res) {
@@ -318,180 +316,52 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
   
 });
 
-var getConf = coroutine(function* getConf(conf) {
-  var slideConf = [];
-  for (var key in conf) {
-    if (conf.hasOwnProperty(key)) {
-      // input: select
-      if ( key == "slideflow" || key == "assessment") {
-        var type = "select";
-        var options;
-        if ( key == "slideflow" ) options = slideflowTypes; 
-        if ( key == "assessment" ) options = assessmentTypes;         
-   
-        var newOptions = [];
-        for ( var i=0; i<options.length; i++ ) {
-          newOptions.push({
-            option   : options[i],
-            selected : options[i] == conf[key]
-          });
-        }
-       
-        slideConf.push({
-          id: key.toLowerCase(),
-          key: key,
-          type: type,
-          value: null,
-          options: newOptions
-        })
-      }
-      // input: number
-      if ( key == "maxNumSubmissions" ) {
-        var type = "number";
-        slideConf.push({
-          id: key.toLowerCase(),
-          key: key,
-          type: type,
-          value: conf[key]
-        })
-      }
-    }
-  }
+var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
 
-  return slideConf
-});
+  logger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
 
-
-var transform = coroutine(function* transform(slides) {
-  var data = [];
-  for (var key in slides) {
-    if (slides.hasOwnProperty(key)) {
-      var slide = {
-        index: key,
-        exercises: []
-      };
-      
-      for ( var i=0; i<slides[key].length; i++ ) {
-        var exObject = yield Exercise.findById(slides[key][i]).exec();
-        var exercise = {};
-        exercise.uid = slides[key][i]; 
-        exercise.names = ['maxNumSubmissions', 'confidence'];
-        exercise.maxNumSubmissions = exObject.maxNumSubmissions;
-        exercise.confidence = exObject.confidence;
-        slide.exercises.push(exercise);
-      }
-      data.push(slide)
-    }
-  }
-  return data.reverse();
-});
-
-var isSlideshowActiveByUser = coroutine(function* isSlideshowActiveByUser(slideshowId, userId) {
-  var query = {
-    'presenter': userId,
-    'slides': slideshowId,
-    'endDate': null
-  }
-  var sesstions = yield Session.find(query).exec();
-  if ( !sesstions || sesstions.length == 0 ) {
-    return { flag: false }
-  }
-  return { flag: true, sessions: sesstions }
-});
-
-
-var putPresentationSettings = coroutine(function* putPresentationSettingsGen(req, res) {
-  return res.json({msg: "Alles gut"});
-});
-
-var configurePresentation = coroutine(function* configurePresentation(req, res) {
+  var user        = req.user;
+  var userId      = user._id;
+  var username    = user.username;
   var slideshowId = req.params.presentationId;
-  var slideshow;
+
   try{
-    var slideshow = yield Slideshow.findById(slideshowId).exec();
-  }catch(err){
+    slideshow = yield Slideshow.findById(slideshowId).exec();
+  } catch(err){
     logger.error("Presentation %s not found", req.params.presentationId);
     logger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }
 
-  var slideConf = yield getConf(slideshow.configuration);
-  var data = yield transform(slideshow.exercisesPerSlide);
-  var username = req.user.username;
-
-  var param = {
-    title: slideshow.title,
-    username: username,
-    slideshowId: slideshowId,
-    slideConf: slideConf,
-    data: data
-  }
+  var presentationSettings = yield slideshow.getSettings();
+  var exerciseSettings = yield settings.getDustifySettingsOfExercisesAll(slideshowId);
 
   // Whether the slideshow is currently active(running) by this user
-  var result = yield isSlideshowActiveByUser(slideshowId, req.user._id);
-  if ( !result.flag ) {
-    res.render('presentationSettings', param);
-  } else {
-    var sessionId = result.sessions[0]._id;
-    var livelink = ['/', req.user.username,'/presentations/', slideshowId, '/live/', sessionId, '/?role=presenter&view=presentation'].join('');
-    param.livelink = livelink;
-    res.render('presentationSettingsRuntime', param);
-  }
-   
+  var sessionId = yield presUtils.isLiveBy(userId, slideshowId);
+  var livelink  = !sessionId ? null : presUtils.getLiveLink(username, slideshowId, sessionId);
+
+  var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
+  var params = {
+      host                 : req.app.locals.urlHost,
+      port                 : req.app.locals.urlPort,
+      namespace            : '/',
+      token                : token,
+      browserSesstionId    : req.sessionID,
+      
+      title                : slideshow.title,
+      username             : username,
+      slideshowId          : slideshowId,
+      livelink             : livelink,
+      presentationSettings : presentationSettings,
+      exerciseSettings     : exerciseSettings
+  };
+
+  res.render('presentationSettings', params);
+
 });
 
-var configurePresentationSaveExercise = coroutine(function* configurePresentationSaveExercise(req, res) {
-  var exerciseId = req.body.uid;
-  var slideshowId = req.params.presentationId;
-  // TODO: not to hardcode
-  // 
-  var conf = {
-    maxNumSubmissions: Number(req.body.max) ? Number(req.body.max) : 0,
-    confidence: req.body.hasOwnProperty('confidence')
-  }
 
-  var state = yield Conf.updateExerciseConf(slideshowId, exerciseId, conf);
-
-  if ( state ) {
-    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
-    res.redirect(url);
-  } else {
-    res.send(req.body);
-  }
-});
-
-var configurePresentationSaveExerciseRuntime = coroutine(function* configurePresentationSaveExercise(req, res) {
-  var exerciseId = req.body.uid;
-  var slideshowId = req.params.presentationId;
-  // TODO: not to hardcode
-  // 
-  var conf = {
-    maxNumSubmissions: Number(req.body.max) ? Number(req.body.max) : 0,
-    confidence: req.body.hasOwnProperty('confidence')
-  }
-
-  var state = yield Conf.updateExerciseConfRuntime(slideshowId, exerciseId, conf);
-  var state = false;
-  if ( state ) {
-    // var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
-    // res.redirect(url);
-  } else {
-    res.send(req.body);
-  }
-});
-
-var configurePresentationSaveSlideshow = coroutine(function* configurePresentationSaveSlideshow(req, res) {
-  var state = yield Conf.updateSlideshowConf(req.body, req.params.presentationId);
-
-  if ( state ) {
-    var url = '/' + req.user.username + '/presentations/' + req.params.presentationId + '/settings/';
-    res.redirect(url);
-  } else {
-    res.send(req.body);
-  }
-  
-});
 
 module.exports = {
   editPresentation          : editPresentation,
@@ -500,9 +370,6 @@ module.exports = {
   startPresentation         : startPresentation,
   stopPresentation          : stopPresentation,
   getPresentationStats      : getPresentationStats,
-  configurePresentation     : configurePresentation,
-  putPresentationSettings   : putPresentationSettings,
-  configurePresentationSaveExercise : configurePresentationSaveExercise,
-  configurePresentationSaveExerciseRuntime : configurePresentationSaveExerciseRuntime,
-  configurePresentationSaveSlideshow: configurePresentationSaveSlideshow
+
+  getPresentationSettings   : getPresentationSettings,
 }

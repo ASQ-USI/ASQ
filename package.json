@@ -34,7 +34,7 @@
     "db": "tasks/db",
     "watch": "parallelshell 'npm run webpack-dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack-prod && npm run js-vendor-dev && npm run static && npm run less-prod && npm run dust-prod",
-    "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'"
+    "dev": "npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'nodemon --harmony'"
   },
   "dependencies": {
     "asq-microformat": "^0.3.8",
