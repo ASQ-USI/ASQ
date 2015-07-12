@@ -20,45 +20,13 @@ var exerciseSchema = new Schema({
 });
 
 
-// exerciseSchema.virtual('allowResubmit').get(coroutine(function* allowResubmitGen() {
-//   var max = yield this.getSetting('maxNumSubmissions');
-
-//   // max < 0 means infinite submissions allowed
-//   if( max < 0) return Promise.resolve(true);
-
-//   var count = yield ExerciseSubmission.where({
-//     'exercise': submission.exerciseUid,
-//     'answeree': submission.answeree,
-//     'session' : submission.session,
-//   }).count();
-
-//   return Promise.resolve(count < max);
-// }));
-// 
-exerciseSchema.virtual('allowResubmit').get(function allowResubmit(){
-  return true;
-});
 
 exerciseSchema.set('toObject', { virtuals: true });
 exerciseSchema.set('toJSON', { virtuals: true });
 
 
 exerciseSchema.methods.getSettings = coroutine(function* getSettingsGen() {
-  var settings = [];
-  for ( var i=0; i<this.settings.length; i++ ) {
-    var tmp = yield Setting.findById(this.settings[i]).exec();
-    settings.push(tmp);
-  }
-  return settings;
-});
-
-exerciseSchema.methods.getSetting = coroutine(function* getSetttingGen(key) {
-  for ( var i=0; i<this.settings.length; i++ ) {
-    var setting = yield Setting.findById(this.settings[i]).exec();
-    if ( setting.key === key ) {
-      return setting.value;
-    }
-  }
+  return yield Setting.find({_id: {$in: this.settings}}).exec();
 });
 
 logger.debug('Loading Exercise model');

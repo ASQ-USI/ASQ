@@ -352,12 +352,7 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
 }
 
 slideshowSchema.methods.getSettings = coroutine(function* getSettingsGen() {
-  var settings = [];
-  for ( var i=0; i<this.settings.length; i++ ) {
-    var tmp = yield Setting.findById(this.settings[i]).exec();
-    settings.push(tmp);
-  }
-  return settings;
+  return yield Setting.find({_id: {$in: this.settings}}).exec();
 });
 
 
