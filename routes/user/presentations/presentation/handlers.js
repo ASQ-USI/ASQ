@@ -353,7 +353,7 @@ var getPresentationSettings = coroutine(function* getPresentationSettings(req, r
   var exerciseSettings = yield settings.getDustSettingsOfExercisesAll(slideshowId);
 
   // Whether the slideshow is currently active(running) by this user
-  var sessionId = yield presUtils.isLiveBy(userId, slideshowId);
+  var sessionId = yield presUtils.getSessionIfLiveBy(userId, slideshowId);
   var livelink  = !sessionId ? null : presUtils.getLiveLink(username, slideshowId, sessionId);
 
   var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
