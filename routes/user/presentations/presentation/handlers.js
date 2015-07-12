@@ -330,7 +330,7 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
   
 });
 
-var getPresentationSettings = coroutine(function* getPresentationSettings(req, res) {
+var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req, res) {
 
   logger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
 
