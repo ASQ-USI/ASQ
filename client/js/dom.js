@@ -17,8 +17,10 @@ var presentations = require('./views/presentations');
 var pluginsSettings = require('./views/pluginsSettings');
 var upload = require('./views/upload');
 var presentationSettings = require('./views/presentationSettings');
+var upload = require('./views/upload');
 
 //binding the init function to the module to preserve the correct 'this'
+var uploadDOMBinder =  upload.init.bind(upload);
 var presentationsDOMBinder =  presentations.init.bind(presentations);
 var pluginsSettingsDOMBinder =  pluginsSettings.init.bind(pluginsSettings);
 
