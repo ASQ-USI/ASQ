@@ -5,22 +5,8 @@ var connection = require('../connection.js');
 var EventEmitter2 = require('eventemitter2');
 var eventBus = new EventEmitter2({delimiter: ':', maxListeners: 100});
 var _ = require('lodash');
-// , dust    = require('dustjs-linkedin');
+var assert = require('assert');
 
-function assert(expected, actual, errorMsg){
-  if(expected !== actual ){
-    throw new Error(errorMsg || 'error');
-  }
-  return true;
-}
-
-function isString(val){
-  return typeof val === 'string';
-}
-
-function isEmpty(val){
-  return !val;
-}
 
 
 var getSettings = function(selector) {
@@ -52,19 +38,6 @@ var getSettings = function(selector) {
 
 // TODO: use dust to render ? YES
 var applySettingsForAllExercises = function(settings) {
-  // var element = document.querySelector('#exercisesettings');
-  // var compiled = dust.compile(element.innerHTML, 'exercise.tl');
-  // dust.loadSource(compiled);
-
-  // dust.render("exercise.tl", settings, function(err, output) {
-  //   if ( err ) {
-  //     debug('Error: failed to render settings.');
-  //     return
-  //   }
-  //   console.log('> ', output);
-  //   element.innerHTML = output;
-  // });
-
   settings.forEach(function(slide, index){
     slide.exercises.forEach(function(exercise, index){
       exercise.settings.forEach(function(setting, index){
@@ -111,7 +84,7 @@ module.exports = {
   },
 
 
-  ACK: function(evt) {
+  ack: function(evt) {
     if ( evt.state ) {
       debug('Settings updated. (' + evt.scope + ' scope)');
       if ( evt.scope === 'presentation' ) {
@@ -126,7 +99,7 @@ module.exports = {
 
   connect: function() {
     var events2Forward = [
-      'setting:update-presentation-settings-ack',
+      'asq:update_presentation_settings_ack',
     ];
 
     connection.addEvents2Forward(events2Forward);
@@ -135,10 +108,9 @@ module.exports = {
 
   subscribeToEvents: function() {
     eventBus
-      .on('setting:update-presentation-settings-ack', this.ACK)
+      .on('asq:update_presentation_settings_ack', this.ack)
       .on('socket:connect', function(evt){
         debug.log('connected to ASQ server')
-        // TODO: update connected viewers text
       })
       .on('socket:connect_error', function(evt){
         console.log('error connecting to server');
@@ -154,7 +126,7 @@ module.exports = {
 
     this.subscribeToEvents = this.subscribeToEvents.bind(this);
     this.readSessionInfo = this.readSessionInfo.bind(this);
-    this.ACK = this.ACK.bind(this);
+    this.ack = this.ack.bind(this);
     this.connect = this.connect;
     
 
@@ -181,7 +153,7 @@ module.exports = {
           exerciseId: button.dataset.settingExerciseId,
           settings: getSettings(selector)
         }
-        connection.emit('setting:update-presentation-scope', evt);
+        connection.emit('asq:update_presentation_settings', evt);
       }.bind(this));
     }, this);
   }
