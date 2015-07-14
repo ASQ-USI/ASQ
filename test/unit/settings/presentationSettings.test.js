@@ -60,7 +60,15 @@ describe("presentationSettings.js", function(){
         settings: ['s_id_1', 's_id_3'],
         getSettings: function(){} 
       }
+    };
+
+    var allExercises = this.allExercises = function() {
+      return Object.getOwnPropertyNames(exercisesData).map(function(key){
+        return exercisesData[key];
+      });
     }
+
+
 
     var keys = Object.keys(exercisesData);
     for ( var i in keys ) {
@@ -80,6 +88,7 @@ describe("presentationSettings.js", function(){
       "owner": "owner-id-123",
       "originalFile": "samplePresentationRubrics.html",
       "asqFile": "samplePresentationRubrics.asq.dust",
+      "asqFilePath": "f",
       "course": "General",
       setQuestionsPerSlide: function(){},
       setStatsPerSlide: function(){},
@@ -88,6 +97,8 @@ describe("presentationSettings.js", function(){
       exercisesPerSlide: exercisesPerSlideData,
       'exercises': Object.keys(exercisesData)
     } 
+
+    var presentation_id = this.presentation_id = 'presentation-id-123';
 
     var then =  this.then = function(cb){
       return cb();
@@ -132,28 +143,30 @@ describe("presentationSettings.js", function(){
           return Promise.resolve(exercisesData[x]);
         }
       }
-    })
+    });
+
+    sinon.stub(this.exerciseModel, "find", function(x){
+
+      return {
+        exec: function(){
+          return Promise.resolve(allExercises());
+        }
+      }
+    });
 
     sinon.stub(this.slideshowModel, "findById", function(x){
 
       return {
         exec: function(){
-          return Promise.resolve(this.presentation);
+          return Promise.resolve(presentation);
         }
       }
     });
 
       
 
-
     sinon.stub(this.db, "model")
-    .withArgs("Slideshow").returns({
-      "findById" : function(){
-        return {
-          exec: function(){ return Promise.resolve(presentation);}
-        }
-      }
-    })
+    .withArgs("Slideshow").returns(this.slideshowModel)
     .withArgs("Exercise").returns(this.exerciseModel)
     .withArgs("Setting").returns(this.settingModel);
 
@@ -188,9 +201,10 @@ describe("presentationSettings.js", function(){
 
 //---------------------------------------------------------
   
-  describe("getDustifySettingsOfExercisesAll", function(){
+  describe("getDustSettingsOfExercisesAll", function(){
 
     beforeEach(function(){
+      this.slideshowModel.findById.reset();
       this.exerciseModel.findById.reset();
 
       var keys = Object.keys(this.exercisesData);
@@ -247,7 +261,7 @@ describe("presentationSettings.js", function(){
           ]  
         } 
       ];
-      this.presentationSettings.getDustifySettingsOfExercisesAll(this.presentation)
+      this.presentationSettings.getDustSettingsOfExercisesAll(this.presentation)
       .then(function(r) {
         sinon.assert.pass(r===correctReturnValue);
         done();
@@ -258,11 +272,10 @@ describe("presentationSettings.js", function(){
       });
     });
 
-    it('should return call Exercise.findById', function(done) {
-      this.presentationSettings.getDustifySettingsOfExercisesAll(this.presentation)
+    it('should should call Slideshow.findById', function(done) {
+      this.presentationSettings.getDustSettingsOfExercisesAll(this.presentation_id)
       .then(function() {
-        this.exerciseModel.findById.called.should.equal(true);
-        this.exerciseModel.findById.callCount.should.equal(this.presentation.exercises.length);
+        this.slideshowModel.findById.calledOnce.should.equal(true);
         done();
       }
       .bind(this))
@@ -272,7 +285,7 @@ describe("presentationSettings.js", function(){
     });
 
     it('should return call getSettings', function(done) {
-      this.presentationSettings.getDustifySettingsOfExercisesAll(this.presentation)
+      this.presentationSettings.getDustSettingsOfExercisesAll(this.presentation_id)
       .then(function() {
 
         var keys = Object.keys(this.exercisesData);
@@ -291,7 +304,7 @@ describe("presentationSettings.js", function(){
   });
 
 
-  describe("updateExerciseSettingsGivenId", function(){
+  describe("updateExerciseSettingsById", function(){
 
     beforeEach(function(){
       this.hooks.doHook.reset();
@@ -301,7 +314,7 @@ describe("presentationSettings.js", function(){
       var html = '<html></html>';
       var settings = '{}';
       var exercise_id = '1';
-      this.presentationSettings.updateExerciseSettingsGivenId(html, settings, exercise_id)
+      this.presentationSettings.updateExerciseSettingsById(html, settings, exercise_id)
       .then(function(r) {
         this.hooks.doHook.calledOnce.should.equal(true);
 
@@ -327,23 +340,23 @@ describe("presentationSettings.js", function(){
   describe("updateExerciseSettings", function(){
 
     before(function() {
-      sinon.stub(this.presentationSettings, "updateExerciseSettingsGivenId", function() {
+      sinon.stub(this.presentationSettings, "updateExerciseSettingsById", function() {
         return Promise.resolve('<html></html>');
       });
     });
 
     beforeEach(function(){
-      this.presentationSettings.updateExerciseSettingsGivenId.reset();
+      this.presentationSettings.updateExerciseSettingsById.reset();
       this.fs.readFile.reset();
       this.fs.writeFile.reset();
     });
 
-    it('should call updateExerciseSettingsGivenId() once ', function(done) {
+    it('should call updateExerciseSettingsById() once ', function(done) {
       var settings = '{}';
       this.presentationSettings.updateExerciseSettings(settings, 1, 2)
       .then(function() {
-        this.presentationSettings.updateExerciseSettingsGivenId.calledOnce.should.equal(true);
-        this.presentationSettings.updateExerciseSettingsGivenId.calledWith('<html></html>', settings, 2).should.equal(true);
+        this.presentationSettings.updateExerciseSettingsById.calledOnce.should.equal(true);
+        this.presentationSettings.updateExerciseSettingsById.calledWith('<html></html>', settings, 2).should.equal(true);
         done();
       }
       .bind(this))
@@ -384,7 +397,7 @@ describe("presentationSettings.js", function(){
   describe("updateSlideshowSettings", function(){
 
     beforeEach(function(){
-      this.presentationSettings.updateExerciseSettingsGivenId.reset();
+      this.presentationSettings.updateExerciseSettingsById.reset();
       this.fs.readFile.reset();
       this.fs.writeFile.reset();
       this.hooks.doHook.reset();
@@ -435,12 +448,12 @@ describe("presentationSettings.js", function(){
       });
     });
 
-    it('should call updateExerciseSettingsGivenId ', function(done) {
+    it('should call updateExerciseSettingsById ', function(done) {
 
       this.presentationSettings.updateSlideshowSettings([], 1)
       .then(function() {
-        this.presentationSettings.updateExerciseSettingsGivenId.called.should.equal(true);
-        this.presentationSettings.updateExerciseSettingsGivenId.callCount.should.equal(this.presentation.exercises.length);
+        this.presentationSettings.updateExerciseSettingsById.called.should.equal(true);
+        this.presentationSettings.updateExerciseSettingsById.callCount.should.equal(this.presentation.exercises.length);
         done();
       }.bind(this))
       .catch(function(err) {
