@@ -257,39 +257,52 @@ function startPresentation(req, res, next) {
   );
 }
 
-function stopPresentation(req, res, next) {
-  logger.debug('Stopping session from ' + req.user.username);
-  return res.sendStatus(204)
-  //start with when to have the catch method at the end;
-  when.resolve(true)
-  .then(function(){
-    return Session.find({
-      presenter: req.user._id,
-      slides: req.params.presentationId,
-      endDate: null
-    }).exec()
-  })
-  .then(function(sessions){ 
-    //DELETE is idempotent so even id we don't have a live session
-    // we can still return success
-    return when.map(sessions, function(session){
-      session.endDate = Date.now();
-      return session.save();
-    })
-  }).then(
-    function onStopped(){
-      logger.info('Session stopped');
+var stopPresentation = coroutine(function *stopPresentationGen(req, res, next) {
 
-       //JSON
-    if(req.accepts('application/json')){
-      return res.sendStatus(204);
+  try{
+    logger.debug({
+      owner_id: req.user._id,
+      slideshow: req.params.presentationId
+    }, 'Stopping session');
+
+    var sessionIds = [];
+    var sessions = Session.find({
+        presenter: req.user._id,
+        slides: req.params.presentationId,
+        endDate: null
+      }).exec();
+
+    yield Promise.map(sessions, function(session){
+      session.endDate = Date.now();
+      sessionIds.push(session._id.toString());
+      return session.save();
+    }); 
+
+    // if sessionIds has zero length there was no session
+    if (! sessionIds.length) {
+      var err404 = Error.http(404, 'No session found', {type:'invalid_request_error'});
+      throw err404;
     }
-    //HTML
-      res.sendStatus(204);
-  }).catch(function onError(err){
-    next(err)
-  });
-}
+    
+    res.sendStatus(204);
+    
+    logger.log({
+      owner_id: req.user._id,
+      slideshow: req.params.presentationId,
+      sessions: sessionIds,
+    }, "stopped session");
+
+  }catch(err){
+    logger.error({
+      err: err,
+      owner_id: req.user._id,
+      sessions: sessionIds,
+    }, "error stopping session");
+
+    //let error middleware take care of it
+    next(err);
+  }
+});
 
 /* Stats */
 var getPresentationStats = gen.lift(function *getPresentationStats(req, res, next) {
