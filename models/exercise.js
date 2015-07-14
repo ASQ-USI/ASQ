@@ -29,6 +29,17 @@ exerciseSchema.methods.getSettings = coroutine(function* getSettingsGen() {
   return yield Setting.find({_id: {$in: this.settings}}).exec();
 });
 
+exerciseSchema.methods.getSettingByKey = coroutine(function* getSettingByKeyGen(key) {
+  var query = {
+    $and: [ 
+      {_id: {$in: this.settings}},
+      {key: key}
+    ]
+  };
+  var settings = yield Setting.find(query).exec();
+  return settings[0] ? settings[0].value : undefined;
+});
+
 logger.debug('Loading Exercise model');
 
 mongoose.model('Exercise', exerciseSchema);
