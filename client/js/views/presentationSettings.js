@@ -84,7 +84,7 @@ module.exports = {
   },
 
 
-  ack: function(evt) {
+  onResponse: function(evt) {
     if ( evt.state ) {
       debug('Settings updated. (' + evt.scope + ' scope)');
       if ( evt.scope === 'presentation' ) {
@@ -99,7 +99,7 @@ module.exports = {
 
   connect: function() {
     var events2Forward = [
-      'asq:update_presentation_settings_ack',
+      'asq:update_presentation_settings_res',
     ];
 
     connection.addEvents2Forward(events2Forward);
@@ -108,7 +108,7 @@ module.exports = {
 
   subscribeToEvents: function() {
     eventBus
-      .on('asq:update_presentation_settings_ack', this.ack)
+      .on('asq:update_presentation_settings_res', this.onResponse)
       .on('socket:connect', function(evt){
         debug.log('connected to ASQ server')
       })
@@ -126,7 +126,7 @@ module.exports = {
 
     this.subscribeToEvents = this.subscribeToEvents.bind(this);
     this.readSessionInfo = this.readSessionInfo.bind(this);
-    this.ack = this.ack.bind(this);
+    this.onResponse = this.onResponse.bind(this);
     this.connect = this.connect;
     
 
