@@ -20,11 +20,6 @@ var exerciseSchema = new Schema({
 });
 
 
-
-exerciseSchema.set('toObject', { virtuals: true });
-exerciseSchema.set('toJSON', { virtuals: true });
-
-
 exerciseSchema.methods.getSettings = coroutine(function* getSettingsGen() {
   return yield Setting.find({_id: {$in: this.settings}}).exec();
 });

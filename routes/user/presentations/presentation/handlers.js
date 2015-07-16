@@ -332,7 +332,10 @@ var getPresentationStats = gen.lift(function *getPresentationStats(req, res, nex
 
 var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req, res) {
 
-  logger.debug('Get presentation settings from ' + req.user.username + ' with presentationId: ' + req.params.presentationId);
+  logger.debug({
+    owner_id: req.user._id,
+    slideshow: req.params.presentationId
+  }, 'get settings of presentation');
 
   var user        = req.user;
   var userId      = user._id;
@@ -340,11 +343,9 @@ var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req
 
   var slideshowId = req.params.presentationId;
 
-  try{
-    slideshow = yield Slideshow.findById(slideshowId).exec();
-  } catch(err){
-    logger.error("Presentation %s not found", req.params.presentationId);
-    logger.error(err.message, { err: err.stack });
+  var slideshow = yield Slideshow.findById(slideshowId).exec();
+
+  if ( ! slideshow ) {
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
   }
