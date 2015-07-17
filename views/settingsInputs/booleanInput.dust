@@ -1,0 +1,1 @@
+<input id="id{id}" name={key} type="checkbox" {?value}checked{/value} class="{class} form-control">

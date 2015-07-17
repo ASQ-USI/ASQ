@@ -3,33 +3,39 @@
  * @description the Exercise Model
  **/
 
+
 var mongoose         = require('mongoose');
 var Schema           = mongoose.Schema;
 var ObjectId         = Schema.ObjectId;
-var assessmentTypes = require('./assessmentTypes');
-var logger        = require('logger-asq');
+var Promise          = require("bluebird");
+var coroutine        = Promise.coroutine;
+var assessmentTypes  = require('./assessmentTypes');
+var logger           = require('logger-asq');
+var Setting          = db.model('Setting');
+
 
 var exerciseSchema = new Schema({
   questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
-  assessmentTypes   : { type: [{ type: String, enum: assessmentTypes }], default: [] },
-  maxNumSubmissions : { type: Number, default: 1 },
-  confidence        : { type: Boolean, default: false }
+  settings          : { type: [{ type: ObjectId, ref: 'Setting' }], default: [] },
 });
 
 
-exerciseSchema.virtual('allowResubmit').get(function allowResubmit() {
-  return this.assessmentTypes.indexOf('self') === -1 &&
-    this.assessmentTypes.indexOf('peer') > -1 && this.resubmit;
-    
-  // if (this.assessmentTypes.indexOf('self') === -1 && 
-  //   this.assessmentTypes.indexOf('peer') > -1) {
-  //   return this.maxNumSubmissions
-  // }
-})
+exerciseSchema.methods.getSettings = coroutine(function* getSettingsGen() {
+  return yield Setting.find({_id: {$in: this.settings}}).exec();
+});
 
-exerciseSchema.set('toObject', { virtuals: true });
-exerciseSchema.set('toJSON', { virtuals: true });
+exerciseSchema.methods.getSettingByKey = coroutine(function* getSettingByKeyGen(key) {
+  var query = {
+    $and: [ 
+      {_id: {$in: this.settings}},
+      {key: key}
+    ]
+  };
+  var settings = yield Setting.find(query).exec();
+  return settings[0] ? settings[0].value : undefined;
+});
 
 logger.debug('Loading Exercise model');
+
 mongoose.model('Exercise', exerciseSchema);
 module.exports = mongoose.model('Exercise');
