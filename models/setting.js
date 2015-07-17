@@ -26,9 +26,10 @@ function parseDefaultSettings() {
         _.each(settings, function (setting, settingName) {
 
             var info = {
-              value: setting,
+              value: setting.defaultValue,
               category: categoryName,
               key: settingName,
+              kind: setting.kind
             };
 
             defaultSettingsFlattened[settingName] = info;
@@ -51,7 +52,8 @@ var kinds = [ 'string',
               'date',     
               'boolean',  
               'select',
-              'range'
+              'range',
+              'ObjectId'
             ];
 
 var settingSchema = new Schema({
@@ -84,7 +86,8 @@ settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen
       var newSetting = {
         key: defaultSettingKey,
         value: defaultSetting.value,
-        category: defaultSetting.category
+        category: defaultSetting.category,
+        kind: defaultSetting.kind
       }
       insertOperations.push(this.create(newSetting));
     }
@@ -95,6 +98,11 @@ settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen
 
 settingSchema.pre('save', true, function checkParams(next, done){
   next();
+
+  // if it's null no need to validate
+  if(_.isNull(this.value)) {
+    return done();
+  }
 
   if(validatorFn.hasOwnProperty(this.kind)){
     var r = validatorFn[this.kind].bind(this)();
@@ -170,7 +178,7 @@ var validatorFn = {
       if ( !_.isString(this.params.options[i]) ) {
         return {
           valid: false,
-          message: 'Parameter `options` can only conatin strings.'
+          message: 'Parameter `options` can only contain strings.'
         }
       }
     }
@@ -217,6 +225,14 @@ var validatorFn = {
       message: 'OK'
     }
 
+  },
+  'ObjectId' : function objectIdValidator(){
+    var valid = mongoose.Types.ObjectId.isValid(this.value);
+    var message = valid ? 'OK' : 'Field `value` should be a valid ObjectId.'
+    return {
+      valid: valid,
+      message: message
+    };
   }
 }
 
