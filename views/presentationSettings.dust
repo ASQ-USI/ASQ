@@ -31,7 +31,8 @@
         <div class="panel panel-default">
           <div class="panel-heading"><h3>Presentation level settings</h3></div>
           <div class="presentation-settings-item ">
-            <form method="POST" action="settings?_method=PUT" >
+            <div class="list-group-item">
+            <form method="POST" class="presentation-settings" action="settings?_method=PUT" >
               <div class="table">
                 {#presentationSettings}
                 <div class="row">
@@ -46,6 +47,7 @@
               </div>
               <button id="{slideshowId}" data-setting-presentation-id={slideshowId} data-setting-scope="presentation" data-setting-query='.slideshow-setting' type="submit" class="btn btn-primary slideshowSettingsBtn settingsBtn">Save</button>
             </form> 
+            </div>
           </div>
         </div>
       </section>         
@@ -55,14 +57,13 @@
         <div class="panel-default">
           <div class="panel-heading"><h3>Exercise level settings</h3></div>
           <ul class="list-group">
-
             {#exerciseSettings}
-              <li class="list-group-item">
-                <p>{index}</p>
+              <li class="list-group-item presentation-list-item">
+                <div class="slide-index"><h5>{index}</h5></div>
                 <ul class="list-group presentation-settings-item">
                   {#exercises}
                     <li class="list-group-item" data-toggle="tooltip" title="Exercise {exerciseId}">
-                      <form method="POST" action="settings?_method=PUT">
+                      <form method="POST" class="presentation-settings" action="settings?_method=PUT">
                         <div class="table">
                         {#settings}
                           <div class="row">
