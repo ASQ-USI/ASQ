@@ -14,6 +14,54 @@ var _          = require('lodash');
 var logger     = require('logger-asq');
 var defaultSettings;
 
+function getDefaultPresentationSettings() {
+  var settings = {
+    maxNumSubmissions: {
+      key: 'maxNumSubmissions',
+      value: 0,
+      kind: 'number',
+    },
+    slideflow: {
+      key: 'slideflow',
+      value: 'follow',
+      kind: 'select',
+      params: {
+        options: ['self', 'follow', 'ghost']
+      }, 
+    },
+    assessment: {
+      key: 'assessment',
+      value: 'self',
+      kind: 'select',
+      params: {
+        options: ['peer', 'auto', 'self']
+      }, 
+    },
+    example: {
+      key: 'example',
+      value: 2,
+      kind: 'range',
+      params: {
+        min: 1,
+        max: 5,
+        step: 1
+      }
+    },
+    flag: {
+      key: 'flag',
+      value: false,
+      kind: 'boolean',
+    },
+    confidence: {
+      key: 'confidence',
+      value: false,
+      kind: 'boolean',
+    }
+  };
+
+  return settings;
+}
+
 // adopted from https://github.com/TryGhost/Ghost
 // For neatness, the defaults file is split into categories.
 // It's much easier for us to work with it as a single level
@@ -98,7 +146,6 @@ settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen
 
 settingSchema.pre('save', true, function checkParams(next, done){
   next();
-
   // if it's null no need to validate
   if(_.isNull(this.value)) {
     return done();
@@ -118,6 +165,25 @@ settingSchema.pre('save', true, function checkParams(next, done){
   done();
 })
 
+
+var isValidNumber = function(value) {
+  var valid = false;
+  if ( _.isNumber(value) ) 
+    valid = true;
+  else {
+    value = Number(value);
+    valid = _.isNumber(value) && ! isNaN(value);
+  }
+  return valid
+}
+
+var contains = function(array, value) {
+  for (var x of array) {
+    if ( x === value ) return true
+  }
+  return false
+}
+
 var validatorFn = {
   'string' : function stringValidator(){ 
     var valid = _.isString(this.value);
@@ -128,11 +194,12 @@ var validatorFn = {
     };
   },   
   'number' : function numberValidator(){ 
-    var valid = ! isNaN(this.value);
+    var valid = isValidNumber(this.value);
+
     var message = '';
     if (!valid) return {
       valid: valid,
-      message : 'Field `value` should be a number.'
+      message : 'Field `value(' + this.value +'`) should be a number.' 
     };
 
     return {
@@ -158,7 +225,9 @@ var validatorFn = {
       message: message
     };
   },  
-  'select' : function selectValidator(){ 
+  'select' : function selectValidator(){
+    var defaultPresentationSettings = getDefaultPresentationSettings();
+
     var valid = _.isString(this.value);
     var message = '';
     if (!valid) return {
@@ -180,8 +249,25 @@ var validatorFn = {
           valid: false,
           message: 'Parameter `options` can only contain strings.'
         }
+      } 
+    }
+
+    if (!_.isEqual(defaultPresentationSettings[this.key].params, this.params) ) {
+      return {
+        valid: false,
+        message: 'Parameters are not valid.'
       }
     }
+    // zhenfei: Why `[].contains` is undefined ? 
+    
+    
+    if ( ! contains(this.params.options, this.value) ) {
+      return {
+        valid: false,
+        message: 'Invalid value: ' + this.value
+      }
+    }
+
     return {
       valid: true,
       message: 'OK'
@@ -189,24 +275,25 @@ var validatorFn = {
 
   },
   'range'  : function rangeValidator(){ 
-    var valid = ! isNaN(this.value);
+    var valid = isValidNumber(this.value);
+
     var message = '';
     if (!valid) return {
       valid: valid,
       message : 'Field `value` should be a number.'
     };
 
-    if ( ! (this.params.hasOwnProperty('min') && ! isNaN(this.params['min']) ) ) {
+    if ( ! (this.params.hasOwnProperty('min') && isValidNumber(this.params['min']) ) ) {
       valid = false;
       message = 'Parameter `min` not found or `min` is not a number.';
     }
 
-    if ( ! (this.params.hasOwnProperty('max') && ! isNaN(this.params['max']) ) ) {
+    if ( ! (this.params.hasOwnProperty('max') && isValidNumber(this.params['max']) ) ) {
       valid = false;
       message = 'Parameter `max` not found or `min` is not a number.';
     }
 
-    if ( ! (this.params.hasOwnProperty('step') && ! isNaN(this.params['step']) ) ) {
+    if ( ! (this.params.hasOwnProperty('step') && isValidNumber(this.params['step']) ) ) {
       valid = false;
       message = 'Parameter `step` not found or `min` is not a number.';
     }

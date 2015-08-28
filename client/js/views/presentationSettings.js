@@ -7,7 +7,19 @@ var eventBus = new EventEmitter2({delimiter: ':', maxListeners: 100});
 var _ = require('lodash');
 var assert = require('assert');
 
+function showAlert(flag) {
+  var type = flag ? 'alert-success' : 'alert-danger';
+  var message = flag ? 'Updated!' : 'Failed to update!';
 
+  var content = document.querySelector('#status-template').content;
+  var div = content.querySelector('div');
+  div.classList.add(type);
+
+  var text = content.querySelector('strong');
+  text.textContent = message;
+
+  document.querySelector('#p-alert-list').appendChild(document.importNode(content, true));
+}
 
 var getSettings = function(selector) {
   var settings = {};
@@ -93,6 +105,7 @@ module.exports = {
     } else {
       debug('Error: failed to update settings.(' + evt.scope + ' scope)');
     }
+    showAlert(evt.state);
   },
 
 
@@ -167,5 +180,7 @@ module.exports = {
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
 });
+
+
 
 

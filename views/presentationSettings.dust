@@ -18,12 +18,18 @@
     <!--   Content area   -->
     <div class="container" id="main-container">
 
-      <!-- Show notification fo user feedback based on query alert and type-->
-      {?alert}
-      <div class="alert alert-{type}">
-          {message}
+
+      <template id="status-template">
+        <div class="alert alert-dismissible fade in presentation-settings-alert" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <strong></strong>
+        </div>
+      </template>
+
+      <div id="p-alert-list" class="presentation-alert-list">
       </div>
-      {/alert}
 
       <h1>{title} <small>{slideshowId}</small></h1>
       {?livelink}<div><h3><i>This slideshow is currently active. Click <a href={livelink}>here</a> to live.</i></h3></div>{/livelink}
