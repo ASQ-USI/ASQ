@@ -1,0 +1,25 @@
+{
+  "name": "presenterControl",
+  "version": "0.0.0",
+  "authors": [
+    "Vasileios Triglianos <triglian@gmail.com>"
+  ],
+  "description": "PresenterControl for ASQ",
+  "keywords": [
+    "ASQ"
+  ],
+  "license": "MIT",
+  "homepage": "http://asq.inf.usi.ch/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.5",
+    "more-routing": "Polymore/more-routing#~0.5.0",
+    "web-animations-js": "web-animations/web-animations-js#~2.0.0"
+  }
+}
