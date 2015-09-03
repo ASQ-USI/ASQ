@@ -79,10 +79,3 @@ public/thumbs
 ##################
 /bower_components
 /components
-
-
-# Experiments
-# ASQ Components #
-##################
-client/presenterControlReact
-client/presenterControlPolymer
