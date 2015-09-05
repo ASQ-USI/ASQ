@@ -3,7 +3,7 @@
 'use strict';
 
 var UglifyJS = require("uglify-js");
-var fs = require('fs')
+var fs = require('fs');
 
 var scripts = [
 "node_modules/jquery/dist/jquery.js",

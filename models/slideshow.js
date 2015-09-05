@@ -11,11 +11,14 @@ var Promise    = require("bluebird");
 var coroutine  = Promise.coroutine;
 var logger     = require('logger-asq');
 var Question   = db.model('Question');
+var Setting    = db.model('Setting');
 var Exercises  = db.model('Exercise');
 var User       = db.model('User');
 var config = require('../config');
 var assessmentTypes = require('./assessmentTypes.js');
 var slideflowTypes = require('./slideflowTypes.js') ;
+
+
 
 var questionsPerSlideSchema = new Schema({
   slideHtmlId : { type: String, required: true },
@@ -26,18 +29,6 @@ var statsPerSlideSchema = new Schema({
   slideHtmlId   : { type: String, required: true },
   statQuestions : { type: [{ type: ObjectId, ref: 'Question'}], required: true }
 }, { _id: false });
-
-var defaultConf = {
-  maxNumSubmissions : 1,
-  slideflow         : 'follow',
-  assessment        : 'self'
-}
-
-var defaultConfType = {
-  maxNumSubmissions : { type: "Number" },
-  slideflow  : { type: "String", options: slideflowTypes },
-  assessment : { type: "String", options: assessmentTypes }
-}
 
 var slideshowSchema = new Schema({
   title             : { type: String, required: true },
@@ -59,7 +50,7 @@ var slideshowSchema = new Schema({
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
   lastEdit          : { type: Date, default: Date.now },
-  configuration     : { type: Schema.Types.Mixed, default: defaultConf }
+  settings          : { type: [{ type: ObjectId, ref: 'Setting' }], default: [] },
 });
 
 
@@ -360,7 +351,13 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   this.statsPerSlide = sPerSlidesArray;
 }
 
+slideshowSchema.methods.getSettings = coroutine(function* getSettingsGen() {
+  return yield Setting.find({_id: {$in: this.settings}}).exec();
+});
+
+
 logger.debug('Loading Slideshow model');
+
 mongoose.model('Slideshow', slideshowSchema);
 
 module.exports = mongoose.model('Slideshow');

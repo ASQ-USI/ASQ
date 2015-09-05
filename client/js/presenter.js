@@ -79,6 +79,25 @@ this.readSessionInfo = function(){
 }
 
 this.connect = function(){
+  var events2Forward = [
+    "asq:sessionFlow",
+    "asq:folo-connected",
+    "asq:ctrl-connected",
+    "asq:ghost-connected",
+    "asq:connected-clients",
+    "asq:answered-all",
+    "asq:user-session-stats",
+    "asq:rankings",
+    "asq:goto",
+    "asq:submitted",
+    "asq:assessment",
+    "asq:assess",
+    "asq:stat",
+    "asq:question_type",
+    "asq:session-terminated",
+    'asq:update_live_presentation_settings'
+  ];
+  connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
 }
 
@@ -119,6 +138,8 @@ this.subscribeToEvents= function (){
     debug.log(evt)
   });
 }
+
+
 
 // querySelectorAll2Array :-)
 function qSA2Ar(s){

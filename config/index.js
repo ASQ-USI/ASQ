@@ -12,7 +12,8 @@ var fs          = require('fs');
 var defaultConf = {};
 var env         = process.env.NODE_ENV || 'development';
 var envConf     = {};
-var rootDir     = path.resolve(__dirname, '../')
+var rootDir     = path.resolve(__dirname, '../');
+var helpers     = require('./helpers'); 
 
 
 // Base configuration
@@ -45,13 +46,19 @@ var conf = {
   //Reject unauthorized requests for HTTPS (default: false)
   rejectUnauthorized: false,
 
-  //MongoDB
-  //Hostname of the mongoDB server (default: '127.0.0.1')
-  mongoDBServer: "127.0.0.1",
-  //Port used by the mongoDB server (default: 27017)
-  mongoDBPort: 27017,
-  //Database name (default: 'asq')
-  dbName: "asq",
+  // MongoDB
+  mongo:{
+    // Hostname of the mongoDB server (default: '127.0.0.1')
+    host: "127.0.0.1",
+    // Port used by the mongoDB server (default: 27017)
+    port: 27017,
+    //username disabled by default Uncomment to enable
+    //username: '',
+    //password disabled by default. Uncomment to enable
+    //password: '',
+    // Database name (default: 'asq')
+    dbName: "asq",
+  },
 
   // Reverse Proxy Settings
   // if usingReverseProxy is true, ASQ will the proxy host option for the url 
@@ -119,7 +126,7 @@ var conf = {
 
 // check for default configuration
 if (fs.existsSync(__dirname + '/config.defaults.js')){
-  defaultConf = require(__dirname + '/config.defaults.js');
+  defaultConf = require('./config.defaults.js');
 }else{
   logger.info('Default configuration file not found(don\'t worry I have default defaults :-)');
 }
@@ -132,11 +139,16 @@ if (fs.existsSync(__dirname + '/config.'+ env + '.js')){
 }
 
 //overwrite default configuration with env configuration
-_.extend(conf, defaultConf, envConf);
+_.merge(conf, defaultConf, envConf);
 
 //Set the process host and port if undefined.
 process.env.HOST = conf.host = process.env.HOST || conf.host;
 process.env.PORT = conf.port = process.env.PORT || (conf.enableHTTPS ? conf.HTTPSPort : conf.HTTPPort);
+
+
+//mongo stuff
+conf.mongo.mongoUri = helpers.createMongoUri(conf.mongo);
+
 
 // to generate urls from the rest of the app we need the following info
 // urlProtocol, urlPort and urlHost MAY NOT be this process's protocol
