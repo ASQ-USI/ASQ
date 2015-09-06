@@ -1,0 +1,37 @@
+{
+  "shared": [
+    {
+      "key": "maxNumSubmissions",
+      "value": 0,
+      "kind": "number"
+    },
+
+    {
+      "key": "assessment",
+      "value": "none",
+      "kind": "select",
+      "params": {
+        "options": ["peer", "auto", "self", "none"]
+      }
+    }
+  ],
+
+  "presentationLevel": [
+    {
+      "key": "slideflow",
+      "value": "ctrl",
+      "kind": "select",
+      "params": {
+        "options": ["ctrl", "self"]
+      }
+    }
+  ],
+
+  "exerciseLevel": [
+    {
+      "key": "confidence",
+      "value": false,
+      "kind": "boolean"
+    }
+  ]
+}

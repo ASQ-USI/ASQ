@@ -12,54 +12,11 @@ var Promise    = require('bluebird');
 var coroutine  = Promise.coroutine;
 var _          = require('lodash');
 var logger     = require('logger-asq');
+var defaultPresentationSettings        = require('../lib/settings/defaultPresentationSettings');
 var defaultSettings;
 
 function getDefaultPresentationSettings() {
-  var settings = {
-    maxNumSubmissions: {
-      key: 'maxNumSubmissions',
-      value: 0,
-      kind: 'number',
-    },
-    slideflow: {
-      key: 'slideflow',
-      value: 'follow',
-      kind: 'select',
-      params: {
-        options: ['self', 'follow', 'ghost']
-      }, 
-    },
-    assessment: {
-      key: 'assessment',
-      value: 'self',
-      kind: 'select',
-      params: {
-        options: ['peer', 'auto', 'self']
-      }, 
-    },
-    example: {
-      key: 'example',
-      value: 2,
-      kind: 'range',
-      params: {
-        min: 1,
-        max: 5,
-        step: 1
-      }
-    },
-    flag: {
-      key: 'flag',
-      value: false,
-      kind: 'boolean',
-    },
-    confidence: {
-      key: 'confidence',
-      value: false,
-      kind: 'boolean',
-    }
-  };
-
-  return settings;
+  return defaultPresentationSettings.getDefaultSettingsOfLevelAsObject('all');
 }
 
 // adopted from https://github.com/TryGhost/Ghost
@@ -91,7 +48,6 @@ function getDefaultSettings() {
     if (!defaultSettings) {
         defaultSettings = parseDefaultSettings();
     }
-
     return defaultSettings;
 }
 
