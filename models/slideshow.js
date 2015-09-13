@@ -11,14 +11,14 @@ var Promise             = require("bluebird");
 var coroutine           = Promise.coroutine;
 var logger              = require('logger-asq');
 var Question            = db.model('Question');
-var PresentationSetting = db.model('PresentationSetting');
+
 var Exercises           = db.model('Exercise');
 var User                = db.model('User');
 var config              = require('../config');
 var assessmentTypes     = require('./assessmentTypes.js');
 var slideflowTypes      = require('./slideflowTypes.js') ;
 
-
+var presentationSettingSchema = require('./presentationSetting.js');
 
 var questionsPerSlideSchema = new Schema({
   slideHtmlId : { type: String, required: true },
@@ -50,7 +50,7 @@ var slideshowSchema = new Schema({
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
   lastEdit          : { type: Date, default: Date.now },
-  settings          : { type: [{ type: ObjectId, ref: 'PresentationSetting' }], default: [] },
+  settings          : [ presentationSettingSchema ]
 });
 
 
@@ -351,9 +351,6 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   this.statsPerSlide = sPerSlidesArray;
 }
 
-slideshowSchema.methods.listSettings = coroutine(function* listSettingsGen() {
-  return yield PresentationSetting.find({_id: {$in: this.settings}}).exec();
-});
 
 
 logger.debug('Loading Slideshow model');
