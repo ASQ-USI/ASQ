@@ -11,28 +11,32 @@ var Promise          = require("bluebird");
 var coroutine        = Promise.coroutine;
 var assessmentTypes  = require('./assessmentTypes');
 var logger           = require('logger-asq');
-var Setting          = db.model('Setting');
+var PresentationSetting          = db.model('PresentationSetting');
 
 
 var exerciseSchema = new Schema({
   questions         : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
-  settings          : { type: [{ type: ObjectId, ref: 'Setting' }], default: [] },
+  settings          : { type: [{ type: ObjectId, ref: 'PresentationSetting' }], default: [] },
 });
 
 
-exerciseSchema.methods.getSettings = coroutine(function* getSettingsGen() {
-  return yield Setting.find({_id: {$in: this.settings}}).exec();
+exerciseSchema.methods.listSettings = coroutine(function* listSettingsGen() {
+  return yield PresentationSetting.find({_id: {$in: this.settings}}).exec();
 });
 
-exerciseSchema.methods.getSettingByKey = coroutine(function* getSettingByKeyGen(key) {
+exerciseSchema.methods.readSetting = coroutine(function* readSettingGen(key) {
   var query = {
     $and: [ 
       {_id: {$in: this.settings}},
       {key: key}
     ]
   };
-  var settings = yield Setting.find(query).exec();
-  return settings[0] ? settings[0].value : undefined;
+  var settings = yield PresentationSetting.find(query).exec();
+  if ( settings[0] ) {
+    return settings[0].value
+  }
+
+  return Promise.reject(new errors.NotFoundError('Setting not found.'));
 });
 
 logger.debug('Loading Exercise model');

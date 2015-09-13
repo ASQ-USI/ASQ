@@ -2,21 +2,21 @@
     @description the Slideshow Model
 */
 
-var mongoose   = require('mongoose');
-var Schema     = mongoose.Schema;
-var ObjectId   = Schema.ObjectId;
-var when       = require('when');
-var path       = require('path');
-var Promise    = require("bluebird");
-var coroutine  = Promise.coroutine;
-var logger     = require('logger-asq');
-var Question   = db.model('Question');
-var Setting    = db.model('Setting');
-var Exercises  = db.model('Exercise');
-var User       = db.model('User');
-var config = require('../config');
-var assessmentTypes = require('./assessmentTypes.js');
-var slideflowTypes = require('./slideflowTypes.js') ;
+var mongoose            = require('mongoose');
+var Schema              = mongoose.Schema;
+var ObjectId            = Schema.ObjectId;
+var when                = require('when');
+var path                = require('path');
+var Promise             = require("bluebird");
+var coroutine           = Promise.coroutine;
+var logger              = require('logger-asq');
+var Question            = db.model('Question');
+var PresentationSetting = db.model('PresentationSetting');
+var Exercises           = db.model('Exercise');
+var User                = db.model('User');
+var config              = require('../config');
+var assessmentTypes     = require('./assessmentTypes.js');
+var slideflowTypes      = require('./slideflowTypes.js') ;
 
 
 
@@ -50,7 +50,7 @@ var slideshowSchema = new Schema({
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
   lastEdit          : { type: Date, default: Date.now },
-  settings          : { type: [{ type: ObjectId, ref: 'Setting' }], default: [] },
+  settings          : { type: [{ type: ObjectId, ref: 'PresentationSetting' }], default: [] },
 });
 
 
@@ -351,8 +351,8 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   this.statsPerSlide = sPerSlidesArray;
 }
 
-slideshowSchema.methods.getSettings = coroutine(function* getSettingsGen() {
-  return yield Setting.find({_id: {$in: this.settings}}).exec();
+slideshowSchema.methods.listSettings = coroutine(function* listSettingsGen() {
+  return yield PresentationSetting.find({_id: {$in: this.settings}}).exec();
 });
 
 

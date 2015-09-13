@@ -5,6 +5,7 @@
 
 var mongoose               = require('mongoose');
 var Schema                 = mongoose.Schema;
+var ObjectId               = Schema.ObjectId;
 var when                   = require('when');
 var wkeys                  = require('when/keys');
 var Answer                 = db.model('Answer');
@@ -12,6 +13,10 @@ var abstractQuestionSchema = require('./abstractQuestionSchema');
 var assessmentTypes        = require('./assessmentTypes');
 var stats                  = require('../lib/stats');
 var logger                 = require('logger-asq');
+var Promise                = require("bluebird");
+var coroutine              = Promise.coroutine;
+
+var PresentationSetting          = db.model('PresentationSetting');
 
 var questionOptionSchema = new Schema({
   text      : { type: String, required: true },
@@ -32,7 +37,9 @@ var questionSchema = new Schema({
   type : { type: String, required: true },
   data : {type: Schema.Types.Mixed},
   date_created : {type: Date, default: Date.now()},
-  date_modified : {type: Date, default: Date.now()}
+  date_modified : {type: Date, default: Date.now()},
+
+  settings : { type: [{ type: ObjectId, ref: 'PresentationSetting' }], default: [] }
 });
 
 //remove answers before removing a question
@@ -73,6 +80,25 @@ questionSchema.methods.getStats = function getStats(sessionId) {
   }
   return wkeys.all(o);
 }
+
+questionSchema.methods.listSettings = coroutine(function* listSettingsGen() {
+  return yield PresentationSetting.find({_id: {$in: this.settings}}).exec();
+});
+
+questionSchema.methods.readSetting = coroutine(function* readSettingGen(key) {
+  var query = {
+    $and: [ 
+      {_id: {$in: this.settings}},
+      {key: key}
+    ]
+  };
+  var settings = yield PresentationSetting.find(query).exec();
+  if ( settings[0] ) {
+    return settings[0].value
+  }
+
+  return Promise.reject(new errors.NotFoundError('Setting not found.'));
+});
 
 logger.debug('Loading Question model');
 mongoose.model('Question', questionSchema, 'questions');
