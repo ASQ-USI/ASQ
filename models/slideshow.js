@@ -18,6 +18,8 @@ var config              = require('../config');
 var assessmentTypes     = require('./assessmentTypes.js');
 var slideflowTypes      = require('./slideflowTypes.js') ;
 
+var _ = require('lodash');
+
 var presentationSettingSchema = require('./presentationSetting.js');
 
 var questionsPerSlideSchema = new Schema({
@@ -351,7 +353,47 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   this.statsPerSlide = sPerSlidesArray;
 }
 
+slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(settings) {
+  var flatten = {}
+  if ( _.isArray(settings) ) {
+    settings.forEach(function(setting) {
+      flatten[setting.key] = setting.value;
+    });
+  } else {
+    flatten = settings;
+  }
 
+  var old = _.clone(this.settings);
+
+  if ( this.settings.length > 0) {
+    for ( var i in this.settings ) {
+      var key = this.settings[i].key;
+      if ( flatten.hasOwnProperty(key) ) {
+        if ( this.settings[i].value !== flatten[key] ) {
+          this.settings[i].value = flatten[key];
+        }
+      }
+    }
+  } else {
+    this.settings = settings;
+  }
+
+  try{
+    yield this.save();
+    return true
+  } catch(e){
+    console.log('Warning: failed to update settings. Rollback.');
+
+    for ( var i in this.settings ) {
+      var key = this.settings[i].key;
+      this.settings[i].value = old[key];
+    }
+
+    yield this.save();
+    return false
+  }
+  
+})
 
 logger.debug('Loading Slideshow model');
 
