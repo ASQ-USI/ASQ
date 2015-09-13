@@ -19,6 +19,39 @@ var exerciseSchema = new Schema({
   settings          : [ presentationSettingSchema ],
 });
 
+exerciseSchema.methods.listSettings = function() {
+  return this.settings
+}
+
+exerciseSchema.methods.readSetting = function(key) {
+  for ( var i in this.settings ) {
+    if ( this.settings[i].key === key ) {
+      return this.settings[i].value
+    }
+  }
+
+  throw 'Key not found';
+}
+
+exerciseSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
+  for ( var i in this.settings ) {
+    var key = this.settings[i].key;
+    if ( flatten.hasOwnProperty(key) ) {
+      if ( this.settings[i].value !== setting.key ) {
+        var old = this.settings[i].value;
+        this.settings[i].value = setting.value;
+
+        try{
+          yield this.save();
+        } catch(e){
+          console.log('Warning: failed to update settings. Rollback.');
+          this.settings[i].value = old;
+          yield this.save();
+        }
+      }
+    }
+  }
+}),
 
 exerciseSchema.methods.updateSettings = coroutine(function* updateSettingsGen(settings) {
   var flatten = {}

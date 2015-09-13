@@ -353,6 +353,40 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   this.statsPerSlide = sPerSlidesArray;
 }
 
+slideshowSchema.methods.listSettings = function() {
+  return this.settings
+}
+
+slideshowSchema.methods.readSetting = function(key) {
+  for ( var i in this.settings ) {
+    if ( this.settings[i].key === key ) {
+      return this.settings[i].value
+    }
+  }
+
+  throw 'Key not found';
+}
+
+slideshowSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
+  for ( var i in this.settings ) {
+    var key = this.settings[i].key;
+    if ( flatten.hasOwnProperty(key) ) {
+      if ( this.settings[i].value !== setting.key ) {
+        var old = this.settings[i].value;
+        this.settings[i].value = setting.value;
+
+        try{
+          yield this.save();
+        } catch(e){
+          console.log('Warning: failed to update settings. Rollback.');
+          this.settings[i].value = old;
+          yield this.save();
+        }
+      }
+    }
+  }
+}),
+
 slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(settings) {
   var flatten = {}
   if ( _.isArray(settings) ) {
