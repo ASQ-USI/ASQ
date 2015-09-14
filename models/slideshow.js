@@ -400,10 +400,6 @@ slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(s
     flatten = settings;
   }
 
-  var old = {}
-  _.clone(this.settings.toObject()).forEach(function(setting) {
-    old[setting.key] = setting.value;
-  });
 
   if ( this.settings.toObject().length > 0) {
     for ( var i in this.settings.toObject() ) {

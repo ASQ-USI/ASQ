@@ -129,12 +129,8 @@ questionSchema.methods.updateSettings = coroutine(function* updateSettingsGen(se
     flatten = settings;
   }
 
-  var old = {}
-  _.clone(this.settings.toObject()).forEach(function(setting) {
-    old[setting.key] = setting.value;
-  });
 
-  if ( this.settings.length > 0) {
+  if ( this.settings.toObject().length > 0) {
     for ( var i in this.settings.toObject() ) {
       var key = this.settings[i].key;
       if ( flatten.hasOwnProperty(key) ) {
