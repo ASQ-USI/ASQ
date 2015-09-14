@@ -1,0 +1,208 @@
+<!-- can remove when https://code.google.com/p/chromium/issues/detail?id=336698
+  is addressed. -->
+<meta charset="UTF-8">
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../bower_components/more-routing/more-route.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
+
+<link rel="import" href="./presenter-control-dashboard-styles.html">
+<link rel="import" href="../presenter-control-activity-item/presenter-control-activity-item.html">
+<script src="./eventData.js"></script>
+
+<dom-module id="presenter-control-dashboard">
+  <template>
+    <style include="presenter-control-dashboard-styles"></style>
+
+    <more-route context name="dashboard"></more-route>
+    <div id="discussion-container">
+      <span class="section-label">Stage for Discussion</span>
+     <!-- col 1 -->
+    </div>
+
+   <div id="exercises-container">
+      <span class="section-label">Exercises</span>
+      <p>No exercises in Current Slide</p>
+   </div>
+
+    <div id="activity-container">
+      <span class="section-label">Activity log</span>
+       <!-- col 3 -->
+      <div id="filters-toggle-container">
+        <paper-button id="filterToggleButton" on-tap="_toggleFilters" opened?={{this.$.collapse.opened}}>
+        Filters
+          <iron-icon icon="hardware:keyboard-arrow-down"></iron-icon>
+        </paper-button>
+      </div>
+      <iron-collapse id="collapse">
+        <div id="filters-container">
+          <div class="filter-column">
+            <span class="filter-name">Level</span>
+            <paper-checkbox for label="net"></paper-checkbox>
+            <paper-checkbox for label="flow"></paper-checkbox>
+          </div>
+          <div class="filter-column">
+            <span class="filter-name">Flow</span>
+            <paper-checkbox for label="question"></paper-checkbox>
+            <paper-checkbox for label="answer"></paper-checkbox>
+            <paper-checkbox for label="assessment"></paper-checkbox>
+            <paper-checkbox for label="discussion"></paper-checkbox>
+          </div>
+          <div class="filter-column">
+            <span class="filter-name">Users</span>
+            <paper-checkbox for label="self"></paper-checkbox>
+            <paper-checkbox for label="viewers"></paper-checkbox>
+            <paper-checkbox for label="ghosts"></paper-checkbox>
+            <paper-checkbox for label="presenters"></paper-checkbox>
+          </div>
+        </div>
+      </iron-collapse>
+
+       <iron-list id="event-list" items="{{eventData}}" as="item">
+          <template>
+            <presenter-control-activity-item $class="{{_computeClass(selected)}}" type="{{item.tags.0}}" role="{{item.data.user.role}}" username="{{item.data.user.nickname}}" message="{{item.data.msg}}" timestamp="{{item.timestamp}}"></presenter-control-activity-item>
+         </template>
+       </iron-list>
+   </div>
+   
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'presenter-control-dashboard',
+
+      behaviors: [
+        Polymer.NeonAnimatableBehavior
+      ],
+
+      properties: {
+
+        eventBus: {
+          type: Object, 
+          value: function(){ return null;},
+          observer: '_eventBusChanged'
+        },
+
+        eventData : {
+          type: Array,
+          value: function(){ return [];},
+          notify: true
+        }
+      },
+
+      _eventBusChanged: function(newBus, oldBus){
+        if(oldBus){
+          oldBus.removeAllListeners();
+        }
+        if(newBus){
+          newBus.on("asq:folo-connected",
+            this._onUserConnected.bind(this, "viewer"));
+          newBus.on("asq:ctrl-connected",
+            this._onUserConnected.bind(this, "presenter"));
+          newBus.on("asq:ghost-connected",
+            this._onUserConnected.bind(this, "ghost"));
+          newBus.on("asq:folo-disconnected",
+            this._onUserDisconnected.bind(this, "viewer"));
+          newBus.on("asq:ctrl-disconnected",
+            this._onUserDisconnected.bind(this, "presenter"));
+          newBus.on("asq:ghost-disconnected",
+            this._onUserDisconnected.bind(this, "ghost"));
+        }
+      },
+
+      _onUserConnected: function(role, event){
+        this.unshift('eventData', {
+          data: {
+            user :{
+              role: role,
+              nickname: event.screenName,
+              token : event.token
+              },
+            msg : "Connected"
+          },
+          type: "newConnection",
+          tags : ["net", role],
+          timestamp: (new Date()).toLocaleTimeString()
+        });
+      },
+
+      _onUserDisconnected: function(role, event){
+        this.unshift('eventData', {
+          data: {
+            user :{
+              role: role,
+              nickname: event.screenName,
+              token : event.token
+              },
+            msg : "Disconnected"
+          },
+          type: "Disconnection",
+          tags : ["net", role],
+          timestamp: (new Date()).toLocaleTimeString()
+        })
+      },
+
+      ready: function(){
+        // this.eventData = [];
+        window.daList = this.$['event-list']  
+      },
+
+      _toggleFilters: function() {
+        this.$.collapse.toggle();
+      },
+
+      attached: function(){
+        this.eventData = window.eventData;
+        this.eventTemplates = []; 
+
+        this.eventData.forEach(function(eventDatum){
+          this.eventTemplates.push(this._copyData(eventDatum));
+          var dt = new Date(parseInt(eventDatum.timestamp))
+          eventDatum.timestamp = dt.toLocaleTimeString();
+        }.bind(this))
+        
+        this._createEventRandomly();
+      },
+
+      _copyData: function(datum){
+        var newDatum = {data : {}};
+        if(datum.data.user){
+          newDatum.data.user = {
+            nickname : datum.data.user.nickname,
+            id: datum.data.user.id
+          }
+        }
+        newDatum.data.msg = datum.data.msg;
+        newDatum.type = datum.type.slice(0);
+        newDatum.tags = datum.tags.slice(0);
+        newDatum.timestamp = datum.timestamp;
+        return newDatum;
+      },
+
+      _createEventRandomly: function(){
+        var idx = Math.floor(Math.random() * this.eventTemplates.length);
+        var newData = this._copyData(this.eventTemplates[idx])
+        var dt = new Date(parseInt(newData.timestamp))
+        newData.timestamp = dt.toLocaleTimeString();
+
+        this.unshift('eventData', newData)
+        setTimeout(function(){
+          this._createEventRandomly()
+        }.bind(this), Math.floor(Math.random() * 10000))
+      },
+
+      _computeClass: function (selected) {
+        var classList = 'row';
+        if (selected) classList += ' selected';
+        return classList;
+      }
+    });
+  </script>
+</dom-module>
