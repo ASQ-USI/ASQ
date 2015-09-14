@@ -354,13 +354,14 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
 }
 
 slideshowSchema.methods.listSettings = function() {
-  return this.settings
+  return this.settings.toObject()
 }
 
 slideshowSchema.methods.readSetting = function(key) {
-  for ( var i in this.settings ) {
-    if ( this.settings[i].key === key ) {
-      return this.settings[i].value
+  var settings = this.settings.toObject();
+  for ( var i in settings ) {
+    if ( settings[i].key === key ) {
+      return settings[i].value
     }
   }
 
@@ -368,7 +369,7 @@ slideshowSchema.methods.readSetting = function(key) {
 }
 
 slideshowSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
-  for ( var i in this.settings ) {
+  for ( var i in this.settings.toObject() ) {
     var key = this.settings[i].key;
     if ( setting.key === key ) {
       if ( this.settings[i].value !== setting.value ) {
@@ -378,9 +379,11 @@ slideshowSchema.methods.updateSetting = coroutine(function* updateSettingsGen(se
         try{
           yield this.save();
         } catch(e){
-          console.log('Warning: failed to update settings. Rollback.');
+          console.log('Warning: failed to update settings. Rollback.', e.message);
           this.settings[i].value = old;
           yield this.save();
+
+          throw e;
         }
       }
     }
@@ -397,10 +400,13 @@ slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(s
     flatten = settings;
   }
 
-  var old = _.clone(this.settings);
+  var old = {}
+  _.clone(this.settings.toObject()).forEach(function(setting) {
+    old[setting.key] = setting.value;
+  });
 
-  if ( this.settings.length > 0) {
-    for ( var i in this.settings ) {
+  if ( this.settings.toObject().length > 0) {
+    for ( var i in this.settings.toObject() ) {
       var key = this.settings[i].key;
       if ( flatten.hasOwnProperty(key) ) {
         if ( this.settings[i].value !== flatten[key] ) {
@@ -414,19 +420,18 @@ slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(s
 
   try{
     yield this.save();
-    return true
   } catch(e){
-    console.log('Warning: failed to update settings. Rollback.');
+    console.log('Warning: failed to update settings. Rollback.', e.message);
 
-    for ( var i in this.settings ) {
+    // Revert then throw the exception
+    for ( var i in this.settings.toObject() ) {
       var key = this.settings[i].key;
       this.settings[i].value = old[key];
     }
-
     yield this.save();
-    return false
+
+    throw e
   }
-  
 })
 
 logger.debug('Loading Slideshow model');

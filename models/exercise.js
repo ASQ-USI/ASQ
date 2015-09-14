@@ -20,21 +20,23 @@ var exerciseSchema = new Schema({
 });
 
 exerciseSchema.methods.listSettings = function() {
-  return this.settings
+  return this.settings.toObject()
 }
 
 exerciseSchema.methods.readSetting = function(key) {
-  for ( var i in this.settings ) {
-    if ( this.settings[i].key === key ) {
-      return this.settings[i].value
+  var settings = this.settings.toObject();
+  for ( var i in settings ) {
+    if ( settings[i].key === key ) {
+      return settings[i].value
     }
   }
 
   throw 'Key not found';
 }
 
+
 exerciseSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
-  for ( var i in this.settings ) {
+  for ( var i in this.settings.toObject() ) {
     var key = this.settings[i].key;
     if ( setting.key === key ) {
       if ( this.settings[i].value !== setting.value ) {
@@ -44,9 +46,11 @@ exerciseSchema.methods.updateSetting = coroutine(function* updateSettingsGen(set
         try{
           yield this.save();
         } catch(e){
-          console.log('Warning: failed to update settings. Rollback.');
+          console.log('Warning: failed to update settings. Rollback.', e.message);
           this.settings[i].value = old;
           yield this.save();
+
+          throw e;
         }
       }
     }
@@ -60,10 +64,16 @@ exerciseSchema.methods.updateSettings = coroutine(function* updateSettingsGen(se
       flatten[setting.key] = setting.value;
     });
   } else {
-    Promise.reject(new errors.NotFoundError('Wrong format. Except an array.'));
+    flatten = settings;
   }
-  if ( this.settings.length > 0) {
-    for ( var i in this.settings ) {
+
+  var old = {}
+  _.clone(this.settings.toObject()).forEach(function(setting) {
+    old[setting.key] = setting.value;
+  });
+
+  if ( this.settings.toObject().length > 0) {
+    for ( var i in this.settings.toObject() ) {
       var key = this.settings[i].key;
       if ( flatten.hasOwnProperty(key) ) {
         if ( this.settings[i].value !== flatten[key] ) {
@@ -74,20 +84,20 @@ exerciseSchema.methods.updateSettings = coroutine(function* updateSettingsGen(se
   } else {
     this.settings = settings;
   }
-  
+
   try{
     yield this.save();
-    return true
   } catch(e){
-    console.log('Warning: failed to update settings. Rollback.');
+    console.log('Warning: failed to update settings. Rollback.', e.message);
 
-    for ( var i in this.settings ) {
+    // Revert then throw the exception
+    for ( var i in this.settings.toObject() ) {
       var key = this.settings[i].key;
       this.settings[i].value = old[key];
     }
-
     yield this.save();
-    return false
+
+    throw e
   }
 })
 
