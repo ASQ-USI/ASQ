@@ -13,6 +13,9 @@ var coroutine  = Promise.coroutine;
 var _          = require('lodash');
 var logger     = require('logger-asq');
 
+var InvalidSettingError  = require('../errors').InvalidSettingError;
+
+
 var kinds = [ 'string',   
               'number',   
               'date',     
@@ -56,8 +59,7 @@ presentationSettingSchema.pre('save', true, function checkParams(next, done){
   if(validatorFn.hasOwnProperty(this.kind)){
     var r = validatorFn[this.kind].bind(this)();
     if ( !r.valid ) {
-      var message = '@' + this.kind + ': ' + r.message;
-      return done(new Error(message));
+      return done(new InvalidSettingError(this.key));
     }
   } else {
     var message = '`Kind` ' + this.kind + ' is not valid.';

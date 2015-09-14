@@ -9,7 +9,9 @@
 var BadRequestError     = require('./BadRequestError');
 var InternalServerError = require('./InternalServerError');
 var NotFoundError       = require('./NotFoundError');
+var InvalidSettingError = require('./InvalidSettingError');
 
 module.exports.BadRequestError      = BadRequestError;
 module.exports.InternalServerError  = InternalServerError;
 module.exports.NotFoundError        = NotFoundError;
+module.exports.InvalidSettingError  = InvalidSettingError;
