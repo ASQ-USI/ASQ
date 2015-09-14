@@ -1,7 +1,7 @@
 [
   {
     "key": "maxNumSubmissions",
-    "value": 0,
+    "value": 1,
     "kind": "number",
     "levels": ["presentation", "exercise"]
   },
