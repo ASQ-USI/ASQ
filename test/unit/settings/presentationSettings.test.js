@@ -98,6 +98,8 @@ describe("presentationSettings.js", function(){
       'exercises': Object.keys(exercisesData)
     } 
 
+    var status = this.status = true;
+
     var presentation_id = this.presentation_id = 'presentation-id-123';
 
     var then =  this.then = function(cb){
@@ -106,7 +108,8 @@ describe("presentationSettings.js", function(){
     this.hooks = {doHook: sinon.stub().returns(Promise.resolve({
       html: '<html></html>',
       settings: '',
-      id: ''
+      id: '',
+      status: true
     }))}
 
 
@@ -284,23 +287,7 @@ describe("presentationSettings.js", function(){
       });
     });
 
-    it('should return call getSettings', function(done) {
-      this.presentationSettings.getDustSettingsOfExercisesAll(this.presentation_id)
-      .then(function() {
-
-        var keys = Object.keys(this.exercisesData);
-        for ( var i in keys ) {
-          var ex = this.exercisesData[keys[i]];
-          ex.getSettings.called.should.equal(true);
-          ex.getSettings.calledOnce.should.equal(true);
-        }
-        done();
-      }
-      .bind(this))
-      .catch(function(err) {
-        done(err);
-      });
-    });
+    
   });
 
 
@@ -322,6 +309,7 @@ describe("presentationSettings.js", function(){
           exercise_id: exercise_id,
           settings: settings,
           html: html,
+          status: false
         }).should.equal(true);
 
         done();
@@ -335,13 +323,16 @@ describe("presentationSettings.js", function(){
     });
   });
 
-  
-
+  var status = true;
   describe("updateExerciseSettings", function(){
 
     before(function() {
+      
       sinon.stub(this.presentationSettings, "updateExerciseSettingsById", function() {
-        return Promise.resolve('<html></html>');
+        return Promise.resolve({
+          status: status,
+          html: '<html></html>'
+        });
       });
     });
 
@@ -379,10 +370,25 @@ describe("presentationSettings.js", function(){
     });
 
     it('should call writeFile once ', function(done) {
+      status = true;
       var settings = '{}';
       this.presentationSettings.updateExerciseSettings(settings, 1, 2)
       .then(function() {
         this.fs.writeFile.calledOnce.should.equal(true);
+        done();
+      }
+      .bind(this))
+      .catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('should not call writeFile ', function(done) {
+      status = false;
+      var settings = '{}';
+      this.presentationSettings.updateExerciseSettings(settings, 1, 2)
+      .then(function() {
+        this.fs.writeFile.called.should.equal(false);
         done();
       }
       .bind(this))
@@ -412,7 +418,8 @@ describe("presentationSettings.js", function(){
         this.hooks.doHook.calledWith('update_slideshow_settings', {
           slideshow_id: slideshow_id,
           settings: settings,
-          html: '<html></html>'
+          html: '<html></html>',
+          status: false
         }).should.equal(true);
         done();
       }
@@ -437,6 +444,7 @@ describe("presentationSettings.js", function(){
     });
 
     it('should call writeFile once ', function(done) {
+      status = true;
       this.presentationSettings.updateSlideshowSettings([], 1)
       .then(function() {
         this.fs.writeFile.calledOnce.should.equal(true);

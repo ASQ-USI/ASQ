@@ -1,0 +1,35 @@
+[
+  {
+    "key": "maxNumSubmissions",
+    "value": 0,
+    "kind": "number",
+    "levels": ["presentation", "exercise"]
+  },
+
+  {
+    "key": "assessment",
+    "value": "none",
+    "kind": "select",
+    "params": {
+      "options": ["peer", "auto", "self", "none"]
+    },
+    "levels": ["presentation", "exercise", "question"]
+  },
+
+  {
+    "key": "slideflow",
+    "value": "ctrl",
+    "kind": "select",
+    "params": {
+      "options": ["ctrl", "self"]
+    },
+    "levels": ["presentation"]
+  },
+
+  {
+    "key": "confidence",
+    "value": false,
+    "kind": "boolean",
+    "levels": ["exercise"]
+  }
+]

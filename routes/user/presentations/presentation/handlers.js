@@ -350,7 +350,7 @@ var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req
     return res.render('404', {'msg': 'Presentation not found'});
   }
 
-  var presentationSettings = yield slideshow.getSettings();
+  var presentationSettings = slideshow.settings;
   var exerciseSettings = yield settings.getDustSettingsOfExercisesAll(slideshowId);
 
   // Whether the slideshow is currently active(running) by this user

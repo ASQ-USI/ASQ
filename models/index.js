@@ -7,6 +7,7 @@ module.exports = {
   answerProgressModel     : require('./answerProgress'),
   answerModel             : require('./answer'),
   settingModel            : require('./setting'),
+  presentationSettingModel            : require('./presentationSetting'),
   exerciseModel           : require('./exercise'),
   exerciseSubmissionModel : require('./exerciseSubmission'),
   questionModel           : require('./question'),
