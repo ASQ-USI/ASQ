@@ -370,8 +370,8 @@ slideshowSchema.methods.readSetting = function(key) {
 slideshowSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
   for ( var i in this.settings ) {
     var key = this.settings[i].key;
-    if ( flatten.hasOwnProperty(key) ) {
-      if ( this.settings[i].value !== setting.key ) {
+    if ( setting.key === key ) {
+      if ( this.settings[i].value !== setting.value ) {
         var old = this.settings[i].value;
         this.settings[i].value = setting.value;
 
