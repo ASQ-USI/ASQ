@@ -1,0 +1,19 @@
+<link rel="import" href="../bower_components/more-routing/more-routing-config.html">
+<link rel="import" href="../bower_components/more-routing/more-route.html">
+  
+  <more-routing-config driver="hash"></more-routing-config>
+
+  <more-route name="users" path="/users"></more-route>
+  <more-route name="slides" path="/slides"></more-route>
+  <more-route name="dashboard" path="/dashboard"></more-route>
+  <more-route name="stats" path="/stats"></more-route>
+
+<script>
+  //set urlPrefix dynamically
+  var username = document.body.dataset.asqUsername; 
+  var presentationId = document.body.dataset.asqPresentationId; 
+  var liveSessionId = document.body.dataset.asqSessionId; 
+  var urlPrefix = "/" + username + "/presentations/" + presentationId + "/live/" + liveSessionId +"/";
+  // var el = document.currentScript.ownerDocument.querySelector('more-routing-config');
+  // el.urlPrefix = urlPrefix;
+</script>

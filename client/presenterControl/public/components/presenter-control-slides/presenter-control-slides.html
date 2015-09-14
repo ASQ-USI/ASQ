@@ -1,0 +1,232 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/device-icons.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/more-routing/more-route.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="./presenter-control-slides-styles.html">
+<link rel="import" href="./presenter-control-timer.html">
+<link rel="import" href="../adapter-socket-interface/adapter-socket-interface.html">
+<link rel="import" href="../impress-asq-fork-asq-adapter/impress-asq-fork-asq-adapter.html">
+<link rel="import" href="../thumbnail-manager/thumbnail-manager.html">
+<link rel="import" href="../app-config/app-config.html">
+
+<dom-module id="presenter-control-slides">
+  <template>
+    <style include="presenter-control-slides-styles"></style>
+
+    <app-config id="config"></app-config>
+    <more-route context name="slides"></more-route>
+    
+    <adapter-socket-interface id="socketInterface" socket="{{connection.socket}}"></adapter-socket-interface>
+    <impress-asq-fork-asq-adapter id="adapter" activeStep="{{activeStep}}" standalone></impress-asq-fork-asq-adapter>
+
+    <div id="slides-container">
+      <div class="slide-preview" id="slide-preview-prev">
+        <h4>Active slide</h4>
+        <!--  TODO: security for invisible user  -->
+        <div class="iframe-wrapper" style="max-width: 800px;">
+          <paper-spinner id="currentSlideFrameSpinner" class="spinner-centered" active></paper-spinner>
+          <iframe id="currentSlideFrame" scrolling="no"></iframe>
+        </div>
+      </div>
+      <div class="slide-preview" id="slide-preview-next">
+        <h4>Next slide</h4>
+        <div class="iframe-wrapper" style="max-width: 500px;">
+          <paper-spinner id="nextSlideFrameSpinner" class="spinner-centered" active></paper-spinner>
+          <iframe id="nextSlideFrame" scrolling="no"></iframe>
+        </div>
+        <div id="timer-container">
+          <a class="paper-icon-button-anchor" href="#" style="color:#d9534f;">
+            <iron-ajax id="stopRequest"
+              method="DELETE"
+              url="/{{this.$.config.values.username}}/presentations/{{this.$.config.values.presentationId}}/live"
+              on-response="_stopCompleted"></iron-ajax>
+            <paper-icon-button class="x2" icon="av:stop" title="stop presentation" role="button" tabindex="0" aria-label="stop" on-tap="_sendStopRequest"></paper-icon-button>
+          </a>
+          <presenter-control-timer id="timer" sessionStart="{{this.$.config.values.lastSession}}"></presenter-control-timer>
+          <paper-icon-button  class="" icon="refresh" title="reset timer" role="button" tabindex="0" id="resetTimer" aria-label="refresh" on-tap="_resetTimer"></paper-icon-button>
+        </div>
+      </div>
+    </div>
+
+    <div id="presentation-controls">
+      <div id="presentation-controls-arrows-container">
+        <div style="padding-right:10px;">
+           <paper-icon-button class="lg round" style="background:#1E88E5;" icon="hardware:keyboard-arrow-left" title="previous slide" role="button" tabindex="0" aria-label="previous slide" on-tap="_prev">keyboard-arrow-left</paper-icon-button>
+        </div>
+        <div style="padding-left:10px;">
+          <paper-icon-button class="x2 round" style="background:#3949AB;" icon="hardware:keyboard-arrow-right" title="next slide" role="button" tabindex="0" aria-label="next slide" on-tap="_next">keyboard-arrow-right</paper-icon-button>
+        </div>
+     </div>
+     <div id="presentation-controls-viewers-container">
+        <div>
+         <p class="connected-viewers-number">
+           Waiting for viewers.
+         </p>
+        </div>
+     </div>
+
+   </div>
+
+
+     <div id="thumb-bar">
+       <div id="thumbbarToggle" opened="{{thumbsOpened}}">
+         <a href="#" on-tap="_toggleThumbBar">
+          <iron-icon icon="hardware:keyboard-arrow-up"></iron-icon>
+          <span hidden="{{!thumbsOpened}}">Hide</span> 
+          <span hidden="{{thumbsOpened}}">Show</span>
+          <span class="glyphicon glyphicon-chevron-down"> 
+          <iron-icon icon="hardware:keyboard-arrow-up"></iron-icon>
+          </a>
+       </div>
+      <iron-collapse id="collapse" opened={{thumbsOpened}}>
+        <thumbnail-manager id="thumbManager" event-bus="{{eventBus}}"></thumbnail-manager>
+        <iron-selector id="thumbsWrapper" class="thumbsWrapper" valueattr="ref" selected="{{activeStep}}" on-iron-activate="_thumbTapped" on-iron-select="_thumbSelected">
+          <paper-spinner id="thumbsWrapperSpinner" class="spinner-centered" active></paper-spinner>
+        </iron-selector>
+      </iron-collapse>
+
+     </div>
+  </template>
+  <script>
+
+    Polymer({
+
+      id: 'presenter-control-slides',
+
+      behaviors: [
+        Polymer.NeonAnimatableBehavior
+      ],
+
+      properties: {
+
+        connection: {
+          type: Object,
+          value: function() { return null;},
+          notify: true,
+          observer: '_connectionChanged'
+        },
+
+        eventBus: {
+          type: Object,
+          value: function() { return null;},
+          notify: true
+        },
+
+        thumbsOpened: {
+          type: Boolean,
+          value: true
+        },
+
+        activeStep: {
+          type: String,
+          value: '',
+          notify: true
+        }
+
+      },  
+
+      _connectionChanged: function(newC, oldC){
+        if(newC){
+          this.$.adapter.asqSocket = this.$.socketInterface;
+        }
+      },
+
+      ready: function(){
+        this.config = this.$.config.values;
+
+        //setup impress adapter
+        this.$.adapter.slidesTree = this.config.slidesTree;
+
+        //load iframes
+        this.$.currentSlideFrame.onload= this._iframeLoaded.bind(this);
+        var cSrc= this._computeCurrentIFrameSrc(this.config)
+        this.$.currentSlideFrame.setAttribute('src', cSrc);
+        var nSrc= this._computeNextIFrameSrc(this.config)
+        this.$.nextSlideFrame.setAttribute('src', nSrc);
+
+        //setup thumbmanager
+        this.$.thumbManager.target = this.$.thumbsWrapper;
+      },
+
+      _computeCurrentIFrameSrc: function(c){
+
+        return '//' + c.host + ':' + c.port + '/' + c.username + '/presentations/' + c.presentationId + '/live/' + c.liveSessionId + '/?role=ghost';
+      },
+
+      _computeNextIFrameSrc: function(c){
+
+        return '//' + c.host + ':' + c.port + '/' + c.username + '/presentations/' + c.presentationId + '/live/' + c.liveSessionId + '/?role=ghost&offset=1';
+      },
+
+
+      _iframeLoaded: function(event, detail){
+
+        //check when the presentation on the iframe is ready
+        event.target.contentDocument.addEventListener('impress:init', function(event){
+          try{
+            this.$.currentSlideFrameSpinner.parentNode.removeChild(this.$.currentSlideFrameSpinner);
+            this.$.nextSlideFrameSpinner.parentNode.removeChild(this.$.nextSlideFrameSpinner);
+            this.$.thumbsWrapper.removeChild(this.$.thumbsWrapperSpinner);
+          }catch(err){
+            console.log('Error removing spiners');
+          }
+
+          //generate Thumbnails
+          this.$.thumbManager.impressEl = event.currentTarget;
+          this.$.thumbManager.init();
+        }.bind(this));
+      },
+
+      _prev: function(){
+        this.$.adapter.prev();
+      },
+
+      _next: function(){
+        this.$.adapter.next();
+      },
+
+      _resetTimer: function(){
+        this.$.timer.reset();
+      },
+
+      _sendStopRequest: function(){
+        this.$.stopRequest.go();
+      },
+
+      _stopCompleted: function(event, detail){
+        if(detail.response == 204){
+          document.location.href = this.$.config.values.rootUrl + '/' + this.$.config.values.username + '/';
+        }
+      },
+
+      _thumbSelected: function(event, detail){
+        if(detail.isSelected){
+          detail.item.scrollIntoView();
+        }
+      },
+
+      _thumbTapped: function(event, detail){
+        this.$.adapter.goto(detail.item.ref);
+      },
+
+      _toggleThumbBar: function(event) {
+        event.preventDefault();
+        this.$.collapse.toggle();
+      }
+    });
+
+  </script>
+</dom-module>
