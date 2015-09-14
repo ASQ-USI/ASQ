@@ -147,32 +147,7 @@ questionSchema.methods.updateSettings = coroutine(function* updateSettingsGen(se
     this.settings = settings;
   }
 
-  try{
-    yield this.save();
-  } catch(e){
-    console.log('Warning: failed to update settings. Rollback.', e.message);
-
-    // When it was failed to update settings,
-    // it is necessary to revert the original
-    // valid settings.
-    for ( var i in this.settings.toObject() ) {
-      var key = this.settings[i].key;
-      this.settings[i].value = old[key];
-    }
-    
-    try {
-      yield this.save();
-    } catch (e) {
-      console.error('Error: failed to revert original settings.', e.message);
-      throw 'Error: failed to revert original settings.'
-      return
-    }
-
-    // After reverting, throw the exception 
-    // so that the caller is able to know 
-    // there was an exception when saving.
-    throw e
-  }
+  yield this.save();
 })
 
 
