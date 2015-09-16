@@ -60,6 +60,14 @@ var conf = {
     dbName: "asq",
   },
 
+  // Redis
+  redis:{
+    // Hostname of the redis server (default: '127.0.0.1')
+    host: "127.0.0.1",
+    // Port used by the redis server (default: 6379)
+    port: 6379,
+  },
+
   // Reverse Proxy Settings
   // if usingReverseProxy is true, ASQ will the proxy host option for the url 
   // (default: false).  The reverse proxy communicates with ASQ through http
