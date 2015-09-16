@@ -117,6 +117,7 @@ this.initImpress = function(){
 this.setupASQElements = function(role) {
   assert(true, (isString(role) && !!role), 'role should be a non empty string');
   elements.setRole(role);
+  Polymer && Polymer.dom().flush()
 }
 
 this.subscribeToEvents= function (){
@@ -160,7 +161,7 @@ function getUrlVars()
     return vars;
 }
 
-document.addEventListener("polymer-ready", this.init.bind(this));
+document.addEventListener("WebComponentsReady", this.init.bind(this));
 
 // /** Connect back to the server with a websocket */
 

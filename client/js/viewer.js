@@ -6,6 +6,9 @@
 
 'use strict';
 
+// window.Polymer = window.Polymer || {};
+// window.Polymer.dom = 'shadow';
+
 var debug = require('bows')("viewer")
   , $ = require('jquery')
   , Hammer = require('hammerjs')
@@ -161,7 +164,7 @@ function qSA2Ar(s){
   return Array.prorotype.slice.call(null, document.querySelectorAll(s));
 }
 
-document.addEventListener("polymer-ready", this.init.bind(this));
+document.addEventListener("WebComponentsReady", this.init.bind(this));
 
 this.initImpress = function(){
   //init presentation adapter

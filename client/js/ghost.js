@@ -124,7 +124,7 @@ this.subscribeToEvents= function (){
 }
 
 
-document.addEventListener("polymer-ready", this.init.bind(this));
+document.addEventListener("WebComponentsReady", this.init.bind(this));
 
 this.initImpress = function(){
   //init presentation adapter
