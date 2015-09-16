@@ -40,8 +40,8 @@
   "dependencies": {
     "asq-microformat": "^0.3.8",
     "asq-plugin": "ASQ-USI/asq-plugin",
-    "asq-exercise": "ASQ-USI-Elements/asq-exercise",
-    "asq-settings": "ASQ-USI-Elements/asq-settings",
+    "asq-exercise": "ASQ-USI-Elements/asq-exercise#feat-polymer-1",
+    "asq-settings": "ASQ-USI-Elements/asq-settings#feat-polymer-1",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.2",
