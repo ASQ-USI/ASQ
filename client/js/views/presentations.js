@@ -54,9 +54,9 @@ module.exports = {
     });
 
     //hide all thumbs but the first one
-    document.querySelectorAll('.thumb').array().forEach(function(el){
+    [].forEach.call(document.querySelectorAll('.thumb'), function(el){
       el.dataset.activeThumbStep = 0;
-      el.querySelectorAll('.thumb-step').array().forEach(function(thumbStep, index){
+      [].forEach.call(el.querySelectorAll('.thumb-step'), function(thumbStep, index){
         if(index==0) return;
         utils.hide(thumbStep);
       })
@@ -93,8 +93,8 @@ module.exports = {
       },
       lastSession: currentThumb.querySelector('.last-session').innerText,
       lastEdit: currentThumb.querySelector('.last-session').innerText,
-      thumbnails: currentThumb.querySelectorAll('.thumb-wrapper .thumb-step')
-        .array().map(function(el){
+      thumbnails: [].map.call(currentThumb.querySelectorAll('.thumb-wrapper .thumb-step')
+        , function(el){
           return el.outerHTML;
         })
     }
@@ -112,8 +112,8 @@ module.exports = {
           currentThumb.innerHTML =  innerElements;
 
           //resize slide thumbs for the current thumb
-          var thumbs = currentThumb.querySelectorAll('.thumb-step').array();
-          thumbs.forEach(function resizeThumb(thumb){
+          var thumbs = currentThumb.querySelectorAll('.thumb-step');
+          [].forEach.call(thumbs, function resizeThumb(thumb){
             thumbGenerator.resizeThumb(thumb, {width: 280, height: 175});
           });
 
@@ -334,7 +334,7 @@ module.exports = {
 
       // Thumbs may contain polymer elements which take some time to render.
       // Layout operations should occur after polymer has initialized
-      window.addEventListener('polymer-ready', function onPolymerReady(e) {
+      window.addEventListener('WebComponentsReady', function onWebComponentsReady(e) {
         this.initThumbs();
       }.bind(this));
     
