@@ -111,9 +111,9 @@ module.exports = function(opts){
     //set transform orign property
     clone.style["-webkit-transform-origin"] = "0 0";
 
-    var cloneChildren = clone.querySelectorAll('*').array();
+    var cloneChildren = [].slice.call(clone.querySelectorAll('*'));
     //copy original computed style for children
-    slide.querySelectorAll('*').array().forEach(function copyComputedStyleForChildren(el , index){
+    [].forEach.call(slide.querySelectorAll('*'), function copyComputedStyleForChildren(el , index){
 
       var child = cloneChildren[index];
       var id = child.id;

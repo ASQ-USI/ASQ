@@ -106,7 +106,7 @@ Polymer( {
   generateThumbs : function(thumb, index){
     //add thumbs choose all elements 
     var steps = this.impressEl.querySelectorAll('.step');
-    steps.array().forEach(function pushStep(step, idx){
+    [].forEach.call(steps, function pushStep(step, idx){
       var thumb = this.thumbGenerator.createThumb(step);
       this.thumbs.push(thumb)
       this.injectThumb(thumb, idx) 
@@ -259,7 +259,7 @@ Polymer( {
     }
 
     var selectedThumb = this.target.querySelector('.' + this.sels.thumbContainerClass+'[data-references='+ stepId+']');
-    selectedThumb.parentNode.childNodes.array().forEach(function removeActiveClass(el){
+    [].forEach.call(selectedThumb.parentNode.childNodes, function removeActiveClass(el){
       el.classList.remove('active');
     });
     selectedThumb.classList.add('active');

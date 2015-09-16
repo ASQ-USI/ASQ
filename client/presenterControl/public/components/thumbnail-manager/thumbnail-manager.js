@@ -152,7 +152,7 @@
 	  generateThumbs : function(thumb, index){
 	    //add thumbs choose all elements 
 	    var steps = this.impressEl.querySelectorAll('.step');
-	    steps.array().forEach(function pushStep(step, idx){
+	    [].forEach.call(steps, function pushStep(step, idx){
 	      var thumb = this.thumbGenerator.createThumb(step);
 	      this.thumbs.push(thumb)
 	      this.injectThumb(thumb, idx) 
@@ -305,7 +305,7 @@
 	    }
 	
 	    var selectedThumb = this.target.querySelector('.' + this.sels.thumbContainerClass+'[data-references='+ stepId+']');
-	    selectedThumb.parentNode.childNodes.array().forEach(function removeActiveClass(el){
+	    [].forEach.call(selectedThumb.parentNode.childNodes, function removeActiveClass(el){
 	      el.classList.remove('active');
 	    });
 	    selectedThumb.classList.add('active');
@@ -483,9 +483,9 @@
 	    //set transform orign property
 	    clone.style["-webkit-transform-origin"] = "0 0";
 	
-	    var cloneChildren = clone.querySelectorAll('*').array();
+	    var cloneChildren = [].slice.call(clone.querySelectorAll('*'));
 	    //copy original computed style for children
-	    slide.querySelectorAll('*').array().forEach(function copyComputedStyleForChildren(el , index){
+	    [].forEach.call(slide.querySelectorAll('*'), function copyComputedStyleForChildren(el , index){
 	
 	      var child = cloneChildren[index];
 	      var id = child.id;
