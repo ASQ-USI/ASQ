@@ -168,9 +168,7 @@ if(conf.usingReverseProxy){
     ? "https"
     : "http";
 
-  conf.urlPort = (proxyOpts.port && parseInt(proxyOpts.port) !== 80) 
-    ? proxyOpts.port
-    : "";
+  conf.urlPort = proxyOpts.port || 80;
 
   conf.urlHost = proxyOpts.host
 }else{
