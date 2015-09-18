@@ -114,7 +114,7 @@
 	  },
 	
 	  _computeBeamerUrl: function(c){
-	    return "//" + c.host + ":" + c.port + "/" + c.username + "/presentations/" + c.presentationId + "/live/" + c.liveSessionId + "/?dom=shadow&role=presenter&view=presentation";
+	    return "//" + c.host + ":" + c.port + "/" + c.username + "/presentations/" + c.presentationId + "/live/" + c.liveSessionId + "/?role=presenter&view=presentation";
 	  },
 	
 	  _menuItemDeselected: function(event, detail){

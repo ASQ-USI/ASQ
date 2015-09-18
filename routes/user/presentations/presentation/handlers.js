@@ -106,7 +106,7 @@ function livePresentation(req, res) {
 
         presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
-                            + '/?dom=shadow&role=' + role+ '&view=presentation';
+                            + '/?role=' + role+ '&view=presentation';
 
         presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
@@ -117,7 +117,7 @@ function livePresentation(req, res) {
       } else if (role === 'presenter' || role === 'assistant') {
         presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
-                            + '/?dom=shadow&role=' + role+ '&view=presentation';
+                            + '/?role=' + role+ '&view=presentation';
 
         presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
@@ -128,7 +128,7 @@ function livePresentation(req, res) {
       } else if (role === 'ghost') {
        presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
-                            + '/?dom=shadow&role=' + role + '&view=presentation';
+                            + '/?role=' + role + '&view=presentation';
       return {
           template:  presentation.asqFilePath,
           namespace: 'ghost',
@@ -137,7 +137,7 @@ function livePresentation(req, res) {
       } else { //viewer
        presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
                             + presentation._id + '/live/' + req.liveSession.id
-                            + '/?dom=shadow&role=' + role + '&view=presentation';
+                            + '/?role=' + role + '&view=presentation';
       return {
           template:  presentation.asqFilePath,
           namespace: 'folo',
@@ -244,9 +244,9 @@ function startPresentation(req, res, next) {
     function sendReponse(){
       logger.info('Starting new ' + newSession.authLevel + ' session');
       res.location(['/', req.user.username, '/presentations/', newSession.slides,
-        '/live/', newSession._id, '/?dom=shadow&role=presenter&view=ctrl'].join(''));
+        '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
       console.log(['/', req.user.username, '/presentations/', newSession.slides,
-        '/live/', newSession._id, '/?dom=shadow&role=presenter&view=ctrl'].join(''));
+        '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
       res.sendStatus(201);
     },
     function errorHandler(err){
