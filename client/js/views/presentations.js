@@ -131,14 +131,14 @@ module.exports = {
 
     // clone thumb in case server responds with failure
     var clone = thumb.cloneNode(true);
-    // var $clone = $thumb.clone();
+
     //delete from DOM
     iso.remove(thumb);
     iso.layout();
       
     // send delete request to server
     request
-      .del(thumb.id)
+      .del(this.dataset.target)
       .set('Accept', 'application/json')
       .end(function(err, res){
         if(err || res.statusType!=2){

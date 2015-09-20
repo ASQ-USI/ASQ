@@ -1,6 +1,6 @@
 <div class="thumb{^thumbnails} no-steps{/thumbnails}" id="{_id}" data-sort-position="{position}" >
 
-  <a href="#remove" class="remove show-on-thumb-hover" data-toggle="tooltip" data-placement="left" title="Delete presentation">&times;</a>
+  <a href="#remove" class="remove show-on-thumb-hover" data-toggle="tooltip" data-target="/{params.username}/presentations/{_id}" data-placement="left" title="Delete presentation">&times;</a>
 
    {?live}
    <div class='thumb-live-container hide-on-thumb-hover'>
