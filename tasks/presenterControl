@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var execSync = require('child_process').execSync;
+var presenterControlDir = 'client/presenterControl';
+
+process.stdout.write("Installing npm dependencies for PresenterControl...")
+execSync("npm install", {
+  cwd: presenterControlDir,
+  timeout: 60000
+});
+process.stdout.write("done!\n")
+
+process.stdout.write("Installing bower dependencies for PresenterControl...")
+execSync("bower install", {
+  cwd: presenterControlDir,
+  timeout: 60000
+});
+
+process.stdout.write("done!")
+process.exit();
