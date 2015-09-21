@@ -816,37 +816,40 @@
             
         // }, false);
         
+
+        //FIXME: commenting the next one is ugly. since we have our own fork
+        //of impress we can make it cleaner
         // Adding hash change support.
-        root.addEventListener("impress:init", function(){
+        // root.addEventListener("impress:init", function(){
             
-            // last hash detected
-            var lastHash = "";
+        //     // last hash detected
+        //     var lastHash = "";
             
-            // `#/step-id` is used instead of `#step-id` to prevent default browser
-            // scrolling to element in hash.
-            //
-            // And it has to be set after animation finishes, because in Chrome it
-            // makes transtion laggy.
-            // BUG: http://code.google.com/p/chromium/issues/detail?id=62820
-            root.addEventListener("impress:stepenter", function (event) {
-                window.location.hash = lastHash = "#/" + event.target.id;
-            }, false);
+        //     // `#/step-id` is used instead of `#step-id` to prevent default browser
+        //     // scrolling to element in hash.
+        //     //
+        //     // And it has to be set after animation finishes, because in Chrome it
+        //     // makes transtion laggy.
+        //     // BUG: http://code.google.com/p/chromium/issues/detail?id=62820
+        //     root.addEventListener("impress:stepenter", function (event) {
+        //         window.location.hash = lastHash = "#/" + event.target.id;
+        //     }, false);
             
-            window.addEventListener("hashchange", function () {
-                // When the step is entered hash in the location is updated
-                // (just few lines above from here), so the hash change is 
-                // triggered and we would call `goto` again on the same element.
-                //
-                // To avoid this we store last entered hash and compare.
-                if (window.location.hash !== lastHash) {
-                    goto( getElementFromHash() );
-                }
-            }, false);
+        //     window.addEventListener("hashchange", function () {
+        //         // When the step is entered hash in the location is updated
+        //         // (just few lines above from here), so the hash change is 
+        //         // triggered and we would call `goto` again on the same element.
+        //         //
+        //         // To avoid this we store last entered hash and compare.
+        //         if (window.location.hash !== lastHash) {
+        //             goto( getElementFromHash() );
+        //         }
+        //     }, false);
             
-            // START 
-            // by selecting step defined in url or first step of the presentation
-            goto(getElementFromHash() || steps[0], null, 0);
-        }, false);
+        //     // START 
+        //     // by selecting step defined in url or first step of the presentation
+        //     goto(getElementFromHash() || steps[0], null, 0);
+        // }, false);
         
         body.classList.add("impress-disabled");
         
