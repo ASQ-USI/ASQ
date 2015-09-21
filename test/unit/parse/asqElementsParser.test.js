@@ -99,8 +99,45 @@ describe("asqElementsParser.js", function(){
       this.AsqElementsParser.prototype.injectRoleInfo.calledOnce.should.equal(true);
     });
   });
-  describe.skip("prototype.injectServerInfo()", function(){});
-  describe.skip("prototype.injectScripts()", function(){});
+  describe("prototype.injectServerInfo()", function(){
+    beforeEach(function(){
+      this.parser =  new this.AsqElementsParser();
+      this.$ = cheerio.load(this.simpleUidHtml);
+      this.parser.injectServerInfo(this.$);
+    });
+
+    it("should have server info injected", function(){
+      var $body = this.$('body').eq(0);
+      expect($body.attr('data-asq-role')).to.equal('{role}');
+
+      expect($body.attr('data-asq-host')).to.equal('{host}');
+      expect($body.attr('data-asq-port')).to.equal('{port}');
+      expect($body.attr('data-asq-session-id')).to.equal('{id}');
+      expect($body.attr('data-asq-live-url')).to.equal('{presenterLiveUrl}');
+      expect($body.attr('data-asq-presentation-viewer-url')).to.equal('{presentationViewUrl}');
+      expect($body.attr('data-asq-socket-namespace')).to.equal('{namespace}');
+      expect($body.attr('data-asq-socket-token')).to.equal('{token}');
+      expect($body.attr('data-asq-user-session-id')).to.equal('{userSessionId}');
+    });
+  });
+  describe("prototype.injectScripts()", function(){
+    beforeEach(function(){
+      this.parser =  new this.AsqElementsParser();
+      this.$ = cheerio.load(this.simpleUidHtml);
+      this.parser.injectScripts(this.$);
+    });
+
+    
+    it("should remove impress.js", function(){
+      var x = this.$('script[src$="impress.js"]');
+      expect(x.length).to.equal(0);
+    });
+
+    it("should have script injected", function(){
+      var x = this.$.root().html().toString();
+      expect(x.contains('{&gt;asqPresentationScripts /}')).to.be.true;
+    });
+  });
 
   describe("prototype.injectRoleInfo()", function(){
     before(function(){
