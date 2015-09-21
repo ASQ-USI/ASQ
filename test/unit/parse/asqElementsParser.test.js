@@ -16,6 +16,7 @@ describe("asqElementsParser.js", function(){
     this.simpleHtml = fs.readFileSync(require.resolve('./fixtures/simple.html'), 'utf-8');
     this.exercisesHtml = fs.readFileSync(require.resolve('./fixtures/exercises.html'), 'utf-8');
     this.questionsHtml = fs.readFileSync(require.resolve('./fixtures/questions.html'), 'utf-8');
+    this.simpleUidHtml = fs.readFileSync(require.resolve('./fixtures/simple-uid.html'), 'utf-8');
     
     var then =  this.then = function(cb){
       return cb();
@@ -65,9 +66,96 @@ describe("asqElementsParser.js", function(){
 
   });
   
-  describe.skip("prototype.asqify()", function(){});
+  describe("prototype.asqify()", function(){
+    before(function(){
+      sinon.stub(this.AsqElementsParser.prototype, "injectServerInfo");
+      sinon.stub(this.AsqElementsParser.prototype, "injectScripts");
+      sinon.stub(this.AsqElementsParser.prototype, "injectRoleInfo");
+    });
+
+    beforeEach(function(){
+      this.AsqElementsParser.prototype.injectServerInfo.reset();
+      this.AsqElementsParser.prototype.injectScripts.reset();
+      this.AsqElementsParser.prototype.injectRoleInfo.reset();
+      this.parser =  new this.AsqElementsParser();
+      this.parser.injectRoleInfo(this.simpleHtml);
+    });
+
+    after(function(){
+      this.AsqElementsParser.prototype.injectServerInfo.restore();
+      this.AsqElementsParser.prototype.injectScripts.restore();
+      this.AsqElementsParser.prototype.injectRoleInfo.restore();
+    });
+
+    it("should call injectServerInfo() ", function(){
+      this.AsqElementsParser.prototype.injectRoleInfo.calledOnce.should.equal(true);
+    });
+
+    it("should call injectScripts() ", function(){
+      this.AsqElementsParser.prototype.injectRoleInfo.calledOnce.should.equal(true);
+    });
+
+    it("should call injectRoleInfo() ", function(){
+      this.AsqElementsParser.prototype.injectRoleInfo.calledOnce.should.equal(true);
+    });
+  });
   describe.skip("prototype.injectServerInfo()", function(){});
   describe.skip("prototype.injectScripts()", function(){});
+
+  describe("prototype.injectRoleInfo()", function(){
+    before(function(){
+      this.eids = ['uid1','uid4'];
+      this.qids = ['uid2', 'uid3', 'uid5'];
+      sinon.stub(this.AsqElementsParser.prototype, "getExercises");
+      this.AsqElementsParser.prototype.getExercises.returns(['uid1','uid4']);
+
+      sinon.stub(this.AsqElementsParser.prototype, "getQuestions");
+      this.AsqElementsParser.prototype.getQuestions.returns(['uid2', 'uid3', 'uid5']);
+    });
+
+    beforeEach(function(){
+      this.AsqElementsParser.prototype.getExercises.reset();
+      this.AsqElementsParser.prototype.getQuestions.reset();
+      this.parser =  new this.AsqElementsParser();
+      this.$ = cheerio.load(this.simpleUidHtml);
+      this.parser.injectRoleInfo(this.$);
+    });
+
+    after(function(){
+      this.AsqElementsParser.prototype.getExercises.restore();
+      this.AsqElementsParser.prototype.getQuestions.restore();
+    });
+
+    it("should call getExercises() ", function(){
+      this.AsqElementsParser.prototype.getExercises.calledOnce.should.equal(true);
+      this.AsqElementsParser.prototype.getExercises.calledWith(this.simpleUidHtml).should.equal(true);
+    });
+
+    it("should call getQuestions() ", function(){
+      this.AsqElementsParser.prototype.getQuestions.calledOnce.should.equal(true);
+      this.AsqElementsParser.prototype.getQuestions.calledWith(this.simpleUidHtml).should.equal(true);
+    });
+
+    it("should have roleinfo injected for exercises", function(){
+      this.eids.forEach(function(eid, index){
+        var selector = '[uid=' + eid + ']';
+        var ex = this.$(selector);
+        expect(ex).to.exist;
+        expect(ex.attr('role')).to.equal('{role}');
+      }, this);
+    });
+
+    it("should have roleinfo injected for questions", function(){
+      this.qids.forEach(function(qid, index){
+        var selector = '[uid=' + qid + ']';
+        var question = this.$(selector);
+        expect(question).to.exist;
+        expect(question.attr('role')).to.equal('{role}');
+      }, this);
+    });
+
+
+  });
 
   describe("prototype.assignIdsToAsqElements()", function(){;
 
