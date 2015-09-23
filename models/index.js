@@ -7,7 +7,7 @@ module.exports = {
   answerProgressModel     : require('./answerProgress'),
   answerModel             : require('./answer'),
   settingModel            : require('./setting'),
-  presentationSettingModel            : require('./presentationSetting'),
+  presentationSettingModel : require('./presentationSetting'),
   exerciseModel           : require('./exercise'),
   exerciseSubmissionModel : require('./exerciseSubmission'),
   questionModel           : require('./question'),
@@ -15,6 +15,7 @@ module.exports = {
   userModel               : require('./user'),
   slideshowModel          : require('./slideshow'),
   sessionModel            : require('./session'),
+  sessionEventModel       : require('./sessionEvent'),
   whitelistModel          : require('./whitelist'),
   pluginModel             : require('./plugin')
 };
