@@ -11,7 +11,6 @@ var wkeys                  = require('when/keys');
 var Answer                 = db.model('Answer');
 var abstractQuestionSchema = require('./abstractQuestionSchema');
 var assessmentTypes        = require('./assessmentTypes');
-var stats                  = require('../lib/stats');
 var logger                 = require('logger-asq');
 var Promise                = require("bluebird");
 var coroutine              = Promise.coroutine;
@@ -71,14 +70,6 @@ questionSchema.methods.getSolution = function(){
   // logger.debug('Solution for question ' + this.stem);
   // logger.debug(result);
 	return result;
-}
-
-questionSchema.methods.getStats = function getStats(sessionId) {
-  var o = {};
-  for(var i = this.statTypes.length; i--;) {
-    o[this.statTypes[i]] = stats[this.statTypes[i]](this._id, sessionId);
-  }
-  return wkeys.all(o);
 }
 
 questionSchema.methods.listSettings = function() {
