@@ -201,9 +201,26 @@ this.subscribeToEvents= function (){
     connection.socket.emit('asq:snitch', {
       type: "tabvisible" 
     });
+  }).on('focusin', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "focusin",
+      data: evt 
+    });
+  }).on('focusout', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "focusout",
+      data: evt 
+    });
+  }).on('input', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "input",
+      data: evt 
+    });
   })
 
 }
+
+
 
 
 // querySelectorAll2Array :-)

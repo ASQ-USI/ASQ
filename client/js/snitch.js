@@ -24,6 +24,37 @@ module.exports = function(eventBus){
       })
     });
 
+    document.addEventListener("focusin", function(evt) {
+      var uid = evt.target.getAttribute('uid') || '';
+      var tagname = event.target.tagName.toLowerCase();
+      var eventName = "tab" + document.visibilityState;
+      eventBus.emit("focusin", {
+        uid: uid,
+        tagname: tagname
+      });
+    });
+
+    document.addEventListener("focusout", function(evt) {
+      var uid = evt.target.getAttribute('uid') || '';
+      var tagname = event.target.tagName.toLowerCase();
+      var eventName = "tab" + document.visibilityState;
+      eventBus.emit("focusout", {
+        uid: uid,
+        tagname: tagname
+      });
+    });
+
+    document.addEventListener("input", function(evt) {
+      var uid = evt.target.getAttribute('uid') || '';
+      var tagname = event.target.tagName.toLowerCase();
+      var eventName = "tab" + document.visibilityState;
+      eventBus.emit("input", {
+        uid: uid,
+        tagname: tagname,
+        value: evt.target.value
+      });
+    });
+
     document.addEventListener("visibilitychange", function() {
       var eventName = "tab" + document.visibilityState;
       eventBus.emit(eventName, {});
