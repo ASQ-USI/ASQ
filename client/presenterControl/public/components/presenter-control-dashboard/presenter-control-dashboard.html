@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../../bower_components/more-routing/more-route.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
@@ -114,6 +115,8 @@
             this._onUserDisconnected.bind(this, "presenter"));
           newBus.on("asq:ghost-disconnected",
             this._onUserDisconnected.bind(this, "ghost"));
+          newBus.on("asq:sessionEvent", 
+            this._onSessionEvent.bind(this));
         }
       },
 
@@ -149,6 +152,38 @@
         })
       },
 
+      _onSessionEvent: function(event){
+        switch(event.type){
+          case 'ctrl:goto':
+            var newDatum = {data : {}};
+            newDatum.data.user = {
+              nickname : event.data.user,
+            }
+
+            newDatum.data.msg = "Goto slide "+ event.data.slide;
+            newDatum.type = event.type
+            newDatum.timestamp = (new Date(event.time)).toLocaleTimeString();
+
+            this.unshift('eventData', newDatum)
+            break;
+          case 'question-activated':
+            var newDatum = {data : {}};
+            newDatum.data.user = {
+              nickname : event.data.user,
+            }
+
+            newDatum.data.msg = "Posed question: "+ event.data.question;
+            newDatum.type = event.type
+            newDatum.timestamp = (new Date(event.time)).toLocaleTimeString();
+
+            this.unshift('eventData', newDatum)
+            break;
+          case 'question-deactivated':
+            console.log("received question-deactivated")
+            break;
+        }
+      },
+
       ready: function(){
         // this.eventData = [];
         window.daList = this.$['event-list']  
@@ -159,16 +194,16 @@
       },
 
       attached: function(){
-        this.eventData = window.eventData;
-        this.eventTemplates = []; 
+        // this.eventData = window.eventData;
+        // this.eventTemplates = []; 
 
-        this.eventData.forEach(function(eventDatum){
-          this.eventTemplates.push(this._copyData(eventDatum));
-          var dt = new Date(parseInt(eventDatum.timestamp))
-          eventDatum.timestamp = dt.toLocaleTimeString();
-        }.bind(this))
+        // this.eventData.forEach(function(eventDatum){
+        //   this.eventTemplates.push(this._copyData(eventDatum));
+        //   var dt = new Date(parseInt(eventDatum.timestamp))
+        //   eventDatum.timestamp = dt.toLocaleTimeString();
+        // }.bind(this))
         
-        this._createEventRandomly();
+        // this._createEventRandomly();
       },
 
       _copyData: function(datum){

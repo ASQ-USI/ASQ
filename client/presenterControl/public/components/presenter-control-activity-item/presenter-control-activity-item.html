@@ -81,16 +81,18 @@
         color: #AAA;
       }
     </style>
-      
-    <div class$="{{_computeRibbonClass(type)}}"></div>
-    <div id="list-content">
-      <span id="list-role">{{roleText}}</span>
-      <span id="list-username">{{username}}</span>
-      <p id="list-msg">{{message}}</p>
-    </div>
-    <div id="list-time">
-     <span id="list-timestamp">{{timestamp}}</span>
-    </div>
+    
+    <paper-item>
+      <div class$="{{_computeRibbonClass(type)}}"></div>
+      <div id="list-content">
+        <span id="list-role">{{roleText}}</span>
+        <span id="list-username">{{username}}</span>
+        <p id="list-msg">{{message}}</p>
+      </div>
+      <div id="list-time">
+       <span id="list-timestamp">{{timestamp}}</span>
+      </div>
+    </paper-item>
 
    
   </template>

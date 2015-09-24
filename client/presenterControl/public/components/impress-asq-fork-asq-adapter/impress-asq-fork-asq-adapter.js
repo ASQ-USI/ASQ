@@ -47,7 +47,7 @@
 	'use strict';
 	
 	var debug = __webpack_require__(1)('impress-asq-fork-asq-adapter')
-	var adapterConstructor = __webpack_require__(2).adapter;
+	var adapterConstructor = __webpack_require__(3).adapter;
 	
 	Polymer({
 	  is: 'impress-asq-fork-asq-adapter', 
@@ -133,6 +133,9 @@
 
 	(function() {
 	  function checkColorSupport() {
+	    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+	      return false;
+	    }
 	    var chrome = !!window.chrome,
 	        firefox = /firefox/i.test(navigator.userAgent),
 	        firefoxVersion;
@@ -157,7 +160,7 @@
 	      ls = !inNode && window.localStorage,
 	      debugKey = ls.andlogKey || 'debug',
 	      debug = ls[debugKey],
-	      logger = __webpack_require__(3),
+	      logger = __webpack_require__(2),
 	      bind = Function.prototype.bind,
 	      hue = 0,
 	      padLength = 15,
@@ -165,7 +168,7 @@
 	      colorsSupported = ls.debugColors || checkColorSupport(),
 	      bows = null,
 	      debugRegex = null,
-	      invertRegex = false
+	      invertRegex = false,
 	      moduleColorsMap = {};
 	
 	  if (debug && debug[0] === '!' && debug[1] === '/') {
@@ -241,17 +244,6 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = {
-	  adapter : __webpack_require__(4),
-	  thumbGenerator : __webpack_require__(5),
-	  impressThumbGenerator : __webpack_require__(6)
-	}
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
 	// follow @HenrikJoreteg and @andyet if you like this ;)
 	(function () {
 	    var inNode = typeof window === 'undefined',
@@ -281,6 +273,17 @@
 	        window.console = out;
 	    }
 	})();
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = {
+	  adapter : __webpack_require__(4),
+	  thumbGenerator : __webpack_require__(5),
+	  impressThumbGenerator : __webpack_require__(6)
+	}
 
 
 /***/ },
@@ -321,7 +324,7 @@
 	*/
 	'use strict';
 	
-	var debug = __webpack_require__(7)("asqImpressAdapter")
+	var debug = __webpack_require__(1)("asqImpressAdapter")
 	/**
 	* @constuctor
 	* @param {Object} asqSocket To send and receive events
@@ -501,6 +504,11 @@
 	      if((subIdx === null || subIdx === undefined || isNaN(subIdx))){
 	          return null;
 	      }
+	    }
+	
+	    //this may be a resize
+	    if(activeStep == id && !subIdx){
+	      return impress().gotoOrig(activeStep)
 	    }
 	
 	    //these two should be valid
@@ -739,7 +747,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var debug = __webpack_require__(7)("thumbGenerator")
+	var debug = __webpack_require__(1)("thumbGenerator")
 	module.exports = function(opts, $){
 	  var impressEl = null
 	    , options = opts
@@ -1008,7 +1016,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var debug = __webpack_require__(7)("impressThumbGenerator")
+	var debug = __webpack_require__(1)("impressThumbGenerator")
 	module.exports = function(opts){
 	  var impressEl = null
 	    , options = opts
@@ -1286,136 +1294,6 @@
 	    resizeThumb : resizeThumb
 	  }
 	}
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	(function() {
-	  function checkColorSupport() {
-	    var chrome = !!window.chrome,
-	        firefox = /firefox/i.test(navigator.userAgent),
-	        firefoxVersion;
-	
-	    if (firefox) {
-	        var match = navigator.userAgent.match(/Firefox\/(\d+\.\d+)/);
-	        if (match && match[1] && Number(match[1])) {
-	            firefoxVersion = Number(match[1]);
-	        }
-	    }
-	    return chrome || firefoxVersion >= 31.0;
-	  }
-	
-	  var yieldColor = function() {
-	    var goldenRatio = 0.618033988749895;
-	    hue += goldenRatio;
-	    hue = hue % 1;
-	    return hue * 360;
-	  };
-	
-	  var inNode = typeof window === 'undefined',
-	      ls = !inNode && window.localStorage,
-	      debugKey = ls.andlogKey || 'debug',
-	      debug = ls[debugKey],
-	      logger = __webpack_require__(8),
-	      bind = Function.prototype.bind,
-	      hue = 0,
-	      padLength = 15,
-	      noop = function() {},
-	      colorsSupported = ls.debugColors || checkColorSupport(),
-	      bows = null,
-	      debugRegex = null,
-	      moduleColorsMap = {};
-	
-	  debugRegex = debug && debug[0]==='/' && new RegExp(debug.substring(1,debug.length-1));
-	
-	  var logLevels = ['log', 'debug', 'warn', 'error', 'info'];
-	
-	  //Noop should noop
-	  for (var i = 0, ii = logLevels.length; i < ii; i++) {
-	      noop[ logLevels[i] ] = noop;
-	  }
-	
-	  bows = function(str) {
-	    var msg, colorString, logfn;
-	    msg = (str.slice(0, padLength));
-	    msg += Array(padLength + 3 - msg.length).join(' ') + '|';
-	
-	    if (debugRegex && !str.match(debugRegex)) return noop;
-	
-	    if (!bind) return noop;
-	
-	    if (colorsSupported) {
-	      if(!moduleColorsMap[str]){
-	        moduleColorsMap[str]= yieldColor();
-	      }
-	      var color = moduleColorsMap[str];
-	      msg = "%c" + msg;
-	      colorString = "color: hsl(" + (color) + ",99%,40%); font-weight: bold";
-	
-	      logfn = bind.call(logger.log, logger, msg, colorString);
-	
-	      logLevels.forEach(function (f) {
-	        logfn[f] = bind.call(logger[f] || logfn, logger, msg, colorString);
-	      });
-	    } else {
-	      logfn = bind.call(logger.log, logger, msg);
-	      logLevels.forEach(function (f) {
-	        logfn[f] = bind.call(logger[f] || logfn, logger, msg);
-	      });
-	    }
-	
-	    return logfn;
-	  };
-	
-	  bows.config = function(config) {
-	    if (config.padLength) {
-	      padLength = config.padLength;
-	    }
-	  };
-	
-	  if (true) {
-	    module.exports = bows;
-	  } else {
-	    window.bows = bows;
-	  }
-	}).call();
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// follow @HenrikJoreteg and @andyet if you like this ;)
-	(function () {
-	    var inNode = typeof window === 'undefined',
-	        ls = !inNode && window.localStorage,
-	        out = {};
-	
-	    if (inNode) {
-	        module.exports = console;
-	        return;
-	    }
-	
-	    var andlogKey = ls.andlogKey || 'debug'
-	    if (ls && ls[andlogKey] && window.console) {
-	        out = window.console;
-	    } else {
-	        var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","),
-	            l = methods.length,
-	            fn = function () {};
-	
-	        while (l--) {
-	            out[methods[l]] = fn;
-	        }
-	    }
-	    if (true) {
-	        module.exports = out;
-	    } else {
-	        window.console = out;
-	    }
-	})();
 
 
 /***/ }

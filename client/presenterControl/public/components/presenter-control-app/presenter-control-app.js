@@ -45,7 +45,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var debug = __webpack_require__(1)("presenter-control-app")
-	  , EventEmitter2 = __webpack_require__(2);
+	  , EventEmitter2 = __webpack_require__(3);
 	
 	Polymer({
 	
@@ -146,6 +146,9 @@
 
 	(function() {
 	  function checkColorSupport() {
+	    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+	      return false;
+	    }
 	    var chrome = !!window.chrome,
 	        firefox = /firefox/i.test(navigator.userAgent),
 	        firefoxVersion;
@@ -170,7 +173,7 @@
 	      ls = !inNode && window.localStorage,
 	      debugKey = ls.andlogKey || 'debug',
 	      debug = ls[debugKey],
-	      logger = __webpack_require__(3),
+	      logger = __webpack_require__(2),
 	      bind = Function.prototype.bind,
 	      hue = 0,
 	      padLength = 15,
@@ -178,7 +181,7 @@
 	      colorsSupported = ls.debugColors || checkColorSupport(),
 	      bows = null,
 	      debugRegex = null,
-	      invertRegex = false
+	      invertRegex = false,
 	      moduleColorsMap = {};
 	
 	  if (debug && debug[0] === '!' && debug[1] === '/') {
@@ -252,6 +255,41 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// follow @HenrikJoreteg and @andyet if you like this ;)
+	(function () {
+	    var inNode = typeof window === 'undefined',
+	        ls = !inNode && window.localStorage,
+	        out = {};
+	
+	    if (inNode) {
+	        module.exports = console;
+	        return;
+	    }
+	
+	    var andlogKey = ls.andlogKey || 'debug'
+	    if (ls && ls[andlogKey] && window.console) {
+	        out = window.console;
+	    } else {
+	        var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","),
+	            l = methods.length,
+	            fn = function () {};
+	
+	        while (l--) {
+	            out[methods[l]] = fn;
+	        }
+	    }
+	    if (true) {
+	        module.exports = out;
+	    } else {
+	        window.console = out;
+	    }
+	})();
+
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -827,41 +865,6 @@
 	    window.EventEmitter2 = EventEmitter;
 	  }
 	}();
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// follow @HenrikJoreteg and @andyet if you like this ;)
-	(function () {
-	    var inNode = typeof window === 'undefined',
-	        ls = !inNode && window.localStorage,
-	        out = {};
-	
-	    if (inNode) {
-	        module.exports = console;
-	        return;
-	    }
-	
-	    var andlogKey = ls.andlogKey || 'debug'
-	    if (ls && ls[andlogKey] && window.console) {
-	        out = window.console;
-	    } else {
-	        var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","),
-	            l = methods.length,
-	            fn = function () {};
-	
-	        while (l--) {
-	            out[methods[l]] = fn;
-	        }
-	    }
-	    if (true) {
-	        module.exports = out;
-	    } else {
-	        window.console = out;
-	    }
-	})();
 
 
 /***/ }

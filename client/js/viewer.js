@@ -1,13 +1,9 @@
 /**
- @fileoverview Socket code for the viewer client.
+ @fileoverview Entry viewer clientside script.
  */
 
-/** Connect back to the server with a websocket */
 
 'use strict';
-
-// window.Polymer = window.Polymer || {};
-// window.Polymer.dom = 'shadow';
 
 var debug = require('bows')("viewer")
   , $ = require('jquery')
@@ -17,7 +13,8 @@ var debug = require('bows')("viewer")
   , EventEmitter2 = require('eventemitter2')
   , elements = require('./elements.js')
   , eventBus = new EventEmitter2({delimiter: ':',  maxListeners: 100})
-  , $body, userId;
+  , $body, userId
+  , snitch = require('./snitch')(eventBus);
 
 function assert(expected, actual, errorMsg){
   if(expected !== actual ){
@@ -155,6 +152,47 @@ this.subscribeToEvents= function (){
     }
   })
 
+  //snitch events
+  eventBus
+  .on('exercisefocus', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "exercisefocus",
+      exerciseUid: evt.exerciseUid 
+    });
+  }).on('exerciseblur', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "exerciseblur",
+      exerciseUid: evt.exerciseUid 
+    });
+  }).on('windowfocus', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "windowfocus" 
+    });
+  }).on('windowblur', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "windowblur" 
+    });
+  }).on('cut', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "cut" 
+    });
+  }).on('copy', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "copy" 
+    });
+  }).on('paste', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "paste" 
+    });
+  }).on('tabhidden', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "tabhidden" 
+    });
+  }).on('tabvisible', function(evt){
+    connection.socket.emit('asq:snitch', {
+      type: "tabvisible" 
+    });
+  })
 
 }
 
