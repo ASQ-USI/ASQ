@@ -39,11 +39,13 @@ module.exports = function(eventBus){
 
     //copy paste
     $(document).bind({
-      copy : function(){
+      copy : function(event){
        eventBus.emit('copy', {});
       },
-      paste : function(){
-       eventBus.emit('paste', {});
+      paste : function(e){
+       eventBus.emit('paste', {
+        textPlainData: e.originalEvent.clipboardData.getData("text/plain")
+       });
       },
       cut : function(){
        eventBus.emit('cut', {});

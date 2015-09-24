@@ -1,7 +1,8 @@
 /**
- @fileoverview Socket code for the presenter client.
- *
- */
+ * @module client/js/presenter
+ * @description Entry presenter clientside script.
+*/
+
 
 'use strict';
 

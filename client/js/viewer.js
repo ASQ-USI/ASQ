@@ -1,6 +1,8 @@
 /**
- @fileoverview Entry viewer clientside script.
- */
+ * @module client/js/viewer
+ * @description Entry viewer clientside script.
+*/
+
 
 
 'use strict';
@@ -157,12 +159,16 @@ this.subscribeToEvents= function (){
   .on('exercisefocus', function(evt){
     connection.socket.emit('asq:snitch', {
       type: "exercisefocus",
-      exerciseUid: evt.exerciseUid 
+      data:{
+        exerciseUid: evt.exerciseUid 
+      }
     });
   }).on('exerciseblur', function(evt){
     connection.socket.emit('asq:snitch', {
       type: "exerciseblur",
-      exerciseUid: evt.exerciseUid 
+      data:{
+        exerciseUid: evt.exerciseUid 
+      }
     });
   }).on('windowfocus', function(evt){
     connection.socket.emit('asq:snitch', {
@@ -182,7 +188,10 @@ this.subscribeToEvents= function (){
     });
   }).on('paste', function(evt){
     connection.socket.emit('asq:snitch', {
-      type: "paste" 
+      type: "paste",
+      data:{
+        textPlainData: evt.textPlainData
+      }
     });
   }).on('tabhidden', function(evt){
     connection.socket.emit('asq:snitch', {
