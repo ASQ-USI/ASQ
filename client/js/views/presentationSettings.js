@@ -97,8 +97,8 @@ module.exports = {
 
 
   onResponse: function(evt) {
-    var success = evt.status === 'success';
-    if ( success ) {
+    var isSuccess = evt.status === 'success';
+    if ( isSuccess ) {
       debug('Settings updated. (' + evt.scope + ' scope)');
       if ( evt.scope === 'presentation' ) {
         applySettingsForAllExercises(evt.settings);
@@ -106,7 +106,7 @@ module.exports = {
     } else {
       debug('Error: failed to update settings.(' + evt.scope + ' scope)');
     }
-    showAlert(success);
+    showAlert(isSuccess);
   },
 
 
