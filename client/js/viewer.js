@@ -106,7 +106,8 @@ this.connect = function(){
     "asq:stat",
     "asq:question_type",
     "asq:session-terminated",
-    'asq:update_live_presentation_settings'
+    'asq:update_live_presentation_settings',
+    "asq-plugin"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);

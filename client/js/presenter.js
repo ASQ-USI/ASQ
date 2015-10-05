@@ -96,7 +96,8 @@ this.connect = function(){
     "asq:stat",
     "asq:question_type",
     "asq:session-terminated",
-    'asq:update_live_presentation_settings'
+    'asq:update_live_presentation_settings',
+    "asq-plugin"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
@@ -128,16 +129,16 @@ this.subscribeToEvents= function (){
     // TODO: update connected viewers text
   })
   .on('socket:connect_error', function(evt){
-    console.log('error connecting to server');
     debug.log(evt)
   })
   .on('socket:error', function(evt){
-    console.log('socket error');
     debug.log(evt)
   })
   .on('asq:question_type', function(evt){
-    console.log(evt);
     debug.log(evt)
+  })
+  .on('asq-plugin', function(evt){
+    connection.socket.emit('asq-plugin', evt);
   });
 }
 
