@@ -16,11 +16,11 @@ var sessionEventSchema = new Schema({
 });
 
 
-sessionEventSchema.post("save", function(){
+sessionEventSchema.post("save", function(doc){
   socketEmitter.emit('emitToRoles',{
     evtName : 'asq:sessionEvent',
-    event : this.toObject(),
-    sessionId : this.session,
+    event : doc.toObject(),
+    sessionId : doc.session,
     namespaces: ['ctrl']
   });
 });
