@@ -83,7 +83,7 @@ var init = coroutine(function *initGen () {
   }
 
    /** Socket.io Server */
-  var io = require('./lib/socket/sockets').listen(server);
+  var io = require('./lib/socket').listen(server);
 });
 
 //fire things up
