@@ -29,8 +29,9 @@ server {
     error_page 502  /errors/502.html;
 
     ## serve static assets
-    location ~ ^/(images/|img/|javascript/|js/|css/|stylesheets/|fonts/|flash/|media/|static/|robots.txt|humans.txt|favicon.ico) {
-      root /Users/vassilis/Sites/ASQ-USI/ASQ/public;
+    location ~ ^/(images/|img/|javascript/|js/|css/|stylesheets/|fonts/|flash/|media/|static/|robots.txt|humans.txt|favicon.ico)(.+)$ {
+      root /Users/vassilis/Sites/ASQ-USI/ASQ;
+      try_files /public/$1$2 /client/presenterControl/public/$1$2 =404;
       access_log off;
       expires max;
     }
