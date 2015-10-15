@@ -2,7 +2,10 @@
     @description Exposes modules under models
 */
 
+// Order is important here!!
+
 module.exports = {
+  sessionEventModel       : require('./sessionEvent'),
   assessmentModel         : require('./assessment'),
   answerProgressModel     : require('./answerProgress'),
   answerModel             : require('./answer'),
@@ -15,7 +18,6 @@ module.exports = {
   userModel               : require('./user'),
   slideshowModel          : require('./slideshow'),
   sessionModel            : require('./session'),
-  sessionEventModel       : require('./sessionEvent'),
   whitelistModel          : require('./whitelist'),
   pluginModel             : require('./plugin')
 };

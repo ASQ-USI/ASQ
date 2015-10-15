@@ -25,6 +25,8 @@ sessionEventSchema.post("save", function(doc){
   });
 });
 
+sessionEventSchema.index({ session: 1, type: 1, time: 1 });
+
 
 logger.debug('Loading SessionEvent model');
 mongoose.model('SessionEvent', sessionEventSchema);

@@ -10,6 +10,7 @@ var when          = require('when');
 var arrayEqual    = require('../lib/utils/stats').arrayEqual;
 var logger        = require('logger-asq');
 var Assessment    = db.model('Assessment');
+var SessionEvent  = db.model('SessionEvent');
 
 var answerLogSchema = new Schema({
   startTime:{},
@@ -34,6 +35,18 @@ var answerSchema = new Schema({
 });
 
 answerSchema.index({ session: 1, answeree: 1, exercise: 1, submitDate: 1 });
+
+// Create a sessionEvent
+answerSchema.post('save', function(answer){
+  SessionEvent.create({
+    session: answer.session,
+    type: 'answer-submit',
+    data: {
+      answeree: answer.answeree,
+      answer: answer._id
+    }
+  })
+})
 
 
 // Saves an automatic assessment for a user submited answer asynchronously
