@@ -40,7 +40,7 @@ answerSchema.index({ session: 1, answeree: 1, exercise: 1, submitDate: 1 });
 answerSchema.post('save', function(answer){
   SessionEvent.create({
     session: answer.session,
-    type: 'answer-submit',
+    type: 'answer-submitted',
     data: {
       answeree: answer.answeree,
       answer: answer._id
