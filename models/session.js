@@ -23,6 +23,8 @@ var sessionSchema = new Schema({
   // answers              : { type:[{ type: ObjectId, ref: 'Answer' }],
   //                          default: [] },
   started              : { type: Boolean, default: false},
+  activeExercises      : { type: [{ type: ObjectId, ref: 'Exercise' }],
+                           default: [] },
   activeQuestions      : { type: [{ type: ObjectId, ref: 'Question' }],
                            default: [] },
   activeStatsQuestions : { type: [{ type: ObjectId, ref: 'Question' }],
