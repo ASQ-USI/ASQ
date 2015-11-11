@@ -13,6 +13,7 @@
 <link rel="import" href="../../bower_components/iron-icons/image-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/device-icons.html">
 <link rel="import" href="../../bower_components/more-routing/more-route-selector.html">
 <link rel="import" href="../../bower_components/more-routing/more-route-template-helpers.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
@@ -135,8 +136,8 @@
         <!--   <neon-animated-pages entry-animation = "slide-left-animation" exit-animation = "slide-left-animation"> -->
           <iron-pages>
             <presenter-control-slides id="presenterControlSlides" event-bus="{{eventBus}}"></presenter-control-slides>
-            <presenter-control-users event-bus="{{eventBus}}"></presenter-control-users>
-            <presenter-control-dashboard event-bus="{{eventBus}}"></presenter-control-dashboard>
+            <presenter-control-users event-bus="{{eventBus}}" users="{{model.users}}"></presenter-control-users>
+            <presenter-control-dashboard event-bus="{{eventBus}}" users="{{model.users}}"></presenter-control-dashboard>
             <presenter-control-stats></presenter-control-stats>
           </iron-pages>
           <!-- </neon-animated-pages> -->

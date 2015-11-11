@@ -79,6 +79,19 @@
 	    selectedPath:{
 	      type: String, 
 	      value: '/slides'
+	    },
+	
+	    model:{
+	      type: Object,
+	      value: function(){return {
+	        users:{
+	          "viewers": [],
+	          "presenters" : [],
+	          "ghosts" : []
+	          }
+	        } 
+	      },
+	      notify: true
 	    }
 	  },
 	

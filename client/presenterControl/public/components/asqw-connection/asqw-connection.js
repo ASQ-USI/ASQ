@@ -64,7 +64,7 @@
 	
 	  events2Forward: [
 	    "asq:sessionFlow",
-	    "asq:sessionEvent",
+	    "asq:sessionEventPC",
 	    "asq:folo-connected",
 	    "asq:ctrl-connected",
 	    "asq:ghost-connected",

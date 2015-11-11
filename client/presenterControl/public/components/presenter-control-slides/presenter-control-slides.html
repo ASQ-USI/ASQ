@@ -151,11 +151,11 @@
         this.$.adapter.slidesTree = this.config.slidesTree;
 
         //load iframes
-        this.$.currentSlideFrame.onload= this._iframeLoaded.bind(this);
-        var cSrc= this._computeCurrentIFrameSrc(this.config)
-        this.$.currentSlideFrame.setAttribute('src', cSrc);
-        var nSrc= this._computeNextIFrameSrc(this.config)
-        this.$.nextSlideFrame.setAttribute('src', nSrc);
+        // this.$.currentSlideFrame.onload= this._iframeLoaded.bind(this);
+        // var cSrc= this._computeCurrentIFrameSrc(this.config)
+        // this.$.currentSlideFrame.setAttribute('src', cSrc);
+        // var nSrc= this._computeNextIFrameSrc(this.config)
+        // this.$.nextSlideFrame.setAttribute('src', nSrc);
 
         //setup thumbmanager
         this.$.thumbManager.target = this.$.thumbsWrapper;

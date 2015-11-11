@@ -132,7 +132,7 @@ license that can be found in the LICENSE file.
       <span class="user-group-label" id="presenters">presenters: <span>{{presenters.length}}</span></span>
     </div>
     <div id="list-containers">
-      <iron-list items="[[viewers]]" as="user">
+      <iron-list items="[[users.viewers]]" as="user">
         <template>
            <div class$="{{_computeClass(selected)}}">
              <div class="ribbon ribbon-viewer"></div>
@@ -142,7 +142,7 @@ license that can be found in the LICENSE file.
           </div>
         </template>
       </iron-list>
-      <iron-list items="[[ghosts]]" as="user">
+      <iron-list items="[[users.ghosts]]" as="user">
         <template>
            <div class$="{{_computeClass(selected)}}">
              <div class="ribbon ribbon-ghost"></div>
@@ -152,7 +152,7 @@ license that can be found in the LICENSE file.
           </div>
         </template>
       </iron-list>
-      <iron-list items="[[presenters]]" as="user">
+      <iron-list items="[[users.presenters]]" as="user">
         <template>
            <div class$="{{_computeClass(selected)}}">
              <div class="ribbon ribbon-presenter"></div>
@@ -193,6 +193,11 @@ license that can be found in the LICENSE file.
           observer: '_eventBusChanged'
         },
 
+        users:{
+          type:Object,
+          notify: true
+        },
+
         totalNum: {
           type: Number,
           value: 0,
@@ -205,16 +210,15 @@ license that can be found in the LICENSE file.
       }, 
 
       ready: function(){
-        this.resetUsers();
+        // this.resetUsers();
       },
 
       resetUsers: function(){
-        this.viewerTokens = Object.create(null);
-        this.viewers = [];
-        this.presenterTokens = Object.create(null);
-        this.presenters = [];
-        this.ghostTokens = Object.create(null);
-        this.ghosts = [];
+        this.users = {
+          viewers: [],
+          presenters: [],
+          ghosts: []
+        }
       },
 
       _eventBusChanged: function(newBus, oldBus){
@@ -242,11 +246,8 @@ license that can be found in the LICENSE file.
       },
 
       _addUser: function(user, type){
-        // if(! this[type + "Tokens"][user.token]){
-        //   this[type + "Tokens"][user.token] = true;
-        // }
-        this[type + "s"].push(user);
-        this[type + "s"].sort(_compareUsers);       
+        this.push('users.'+ [type + 's'], user);
+        this.users[type + 's'].sort(_compareUsers);       
       },
 
       _onConnectedClients: function(event){
