@@ -6,7 +6,7 @@ var mongoose   = require('mongoose')
 var Schema     = mongoose.Schema;
 var ObjectId   = Schema.ObjectId;
 var logger     = require('logger-asq');
-var socketEmitter  = require('../lib/socket/pubsub');
+var modelBus  = require('../lib/model/pubsub');
 
 var sessionEventSchema = new Schema({
   session            : { type: ObjectId, ref: 'Session', required: true },
@@ -17,12 +17,11 @@ var sessionEventSchema = new Schema({
 
 
 sessionEventSchema.post("save", function(doc){
-  socketEmitter.emit('emitToRoles',{
-    evtName : 'asq:sessionEvent',
-    event : doc.toObject(),
-    sessionId : doc.session,
-    namespaces: ['ctrl']
-  });
+  modelBus.emit('sessionEventCreated', {
+    data:{
+      sessionEvent: doc.toObject()
+    } 
+  })
 });
 
 sessionEventSchema.index({ session: 1, type: 1, time: 1 });
