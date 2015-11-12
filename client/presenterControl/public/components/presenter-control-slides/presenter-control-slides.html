@@ -11,7 +11,6 @@
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="../../bower_components/more-routing/more-route.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
@@ -27,7 +26,6 @@
     <style include="presenter-control-slides-styles"></style>
 
     <app-config id="config"></app-config>
-    <more-route context name="slides"></more-route>
     
     <adapter-socket-interface id="socketInterface" socket="{{connection.socket}}"></adapter-socket-interface>
     <impress-asq-fork-asq-adapter id="adapter" activeStep="{{activeStep}}" standalone></impress-asq-fork-asq-adapter>
@@ -138,6 +136,20 @@
 
       },  
 
+      /**
+      * Will load the current and next iframes by setting the iframes src attributes
+      */
+      loadIframes: function(){
+        if(this._iframesInitialized) return;
+
+        this.$.currentSlideFrame.onload= this._iframeLoaded.bind(this);
+        var cSrc= this._computeCurrentIFrameSrc(this.config)
+        this.$.currentSlideFrame.setAttribute('src', cSrc);
+        var nSrc= this._computeNextIFrameSrc(this.config)
+        this.$.nextSlideFrame.setAttribute('src', nSrc);
+        this._iframesInitialized = true;
+      },
+
       _connectionChanged: function(newC, oldC){
         if(newC){
           this.$.adapter.asqSocket = this.$.socketInterface;
@@ -149,13 +161,6 @@
 
         //setup impress adapter
         this.$.adapter.slidesTree = this.config.slidesTree;
-
-        //load iframes
-        // this.$.currentSlideFrame.onload= this._iframeLoaded.bind(this);
-        // var cSrc= this._computeCurrentIFrameSrc(this.config)
-        // this.$.currentSlideFrame.setAttribute('src', cSrc);
-        // var nSrc= this._computeNextIFrameSrc(this.config)
-        // this.$.nextSlideFrame.setAttribute('src', nSrc);
 
         //setup thumbmanager
         this.$.thumbManager.target = this.$.thumbsWrapper;

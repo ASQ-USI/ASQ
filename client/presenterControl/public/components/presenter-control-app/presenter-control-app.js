@@ -60,6 +60,17 @@
 	      notify: true
 	    },
 	
+	    baseUrl: {
+	      type: String,
+	      notify: true
+	    },
+	
+	    route: {
+	      type: String,
+	      notify: true,
+	      observer: '_routeChanged'
+	    },
+	
 	    connection: {
 	      type: Object, 
 	      value: function(){
@@ -96,24 +107,31 @@
 	  },
 	
 	  ready: function(){
+	    var username = document.body.dataset.asqUsername; 
+	    var presentationId = document.body.dataset.asqPresentationId; 
+	    var liveSessionId = document.body.dataset.asqSessionId; 
+	    this.baseUrl = "/" + username + "/presentations/" + presentationId + "/live/" + liveSessionId +"/";
+	     // + window.location.search;
+	
 	    this._prevItemIndex = 1
 	    var c = this.config = this.$.config.values;
 	    this.$.connection.connect(c.protocol, c.host, c.port, c.liveSessionId, c.namespace, c.token, this.eventBus);
 	    this.$.presenterControlSlides.connection = this.$.connection;
+	    window.app = this;
 	
 	    //set correct menu-item
-	    var hash = window.location.hash
-	    var paths = Polymer.dom(this.root).querySelectorAll('main-nav-item').map(function(el){
-	      if(hash == ('#!'+ el.path)){
-	        this.selectedPath = el.path;
-	        return true;
-	      }
-	      return false;
-	    }.bind(this))
+	    // var hash = window.location.hash
+	    // var paths = Polymer.dom(this.root).querySelectorAll('main-nav-item').map(function(el){
+	    //   if(hash == ('#!'+ el.path)){
+	    //     this.selectedPath = el.path;
+	    //     return true;
+	    //   }
+	    //   return false;
+	    // }.bind(this))
 	
-	    setTimeout(function(){
-	      this._animateArrow(this.$['main-nav-menu'].selectedItem);
-	    }.bind(this),100)
+	    // setTimeout(function(){
+	    //   this._animateArrow(this.$['main-nav-menu'].selectedItem);
+	    // }.bind(this),100)
 	
 	  },
 	
@@ -121,9 +139,9 @@
 	      this.$.drawerPanel.togglePanel();
 	  },
 	
-	  _computeUrl: function(path, params) {
-	    var params = params ? JSON.parse(params) : {};
-	    return MoreRouting.urlFor(path, params);
+	  _computeUrl: function(baseUrl, path) {
+	    path = baseUrl +  window.location.search +  "#!" + path ;
+	    return path.replace('//', '/');
 	  },
 	
 	  _computeBeamerUrl: function(c){
@@ -144,12 +162,18 @@
 	     var arrow = this.$.learrow;
 	
 	     // logarithmic time depending on distance
-	     var diff = Math.abs(this.prevItemIndex - newIndex)
+	     var diff = Math.abs(this._prevItemIndex - newIndex)
 	     var t = (200 - (22 * Math.log(diff))) * diff
 	     var top = getComputedStyle(arrow).top || "0px"
 	     var y = parseInt(target.offsetTop + (target.offsetHeight - arrow.offsetHeight) / 2) ||0
 	
 	    arrow.animate([{"top" : top }, {"top" : y + "px"}], {duration: t, easing: 'ease-out', iterations:1, fill:"forwards"  })
+	  },
+	
+	  _routeChanged: function(newVal, oldVal){
+	    if(newVal == 'slides'){
+	      this.$.presenterControlSlides.loadIframes();
+	    }
 	  }
 	});
 
