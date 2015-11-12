@@ -14,9 +14,9 @@
     "tests"
   ],
   "dependencies": {
-    "asq-elements": "ASQ-USI-Elements/asq-elements#feat-polymer-1",
+    "asq-elements": "ASQ-USI-Elements/asq-elements#master",
     "webcomponentsjs": "~0.7.2",
-    "paper-dialog": "polymerelements/paper-dialog#~1.0.2"
+    "polymer": "polymer/polymer#1.2.1"
   },
   "resolutions": {
     "polymer": "^1.1.0"
