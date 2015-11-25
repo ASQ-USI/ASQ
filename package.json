@@ -16,7 +16,7 @@
     "test": "make test-unit",
     "start-dev": "NODE_ENV=development nodemon | bunyan",
     "start": "NODE_ENV=production node --harmony app.js",
-    "install": "bower install",
+    "install": "bower --allow-root install && npm run plugins",
     "webpack-dev": "NODE_ENV=development webpack -d --watch",
     "webpack-prod": "NODE_ENV=production webpack -p",
     "js-vendor-dev": "NODE_ENV=development tasks/vendor",
@@ -31,6 +31,7 @@
     "dust-dev": "dustc --watch views/shared/**/*.dust -o client/js/templates.js",
     "dust-prod": "dustc views/shared/**/*.dust -o client/js/templates.js",
     "clean": "rimraf slides/* test/slides/*",
+    "plugins" : "tasks/plugins",
     "db": "tasks/db",
     "watch": "parallelshell 'npm run webpack-dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack-prod && npm run js-vendor-dev && npm run static && npm run less-prod && npm run dust-prod",
@@ -39,6 +40,8 @@
   "dependencies": {
     "asq-microformat": "^0.3.8",
     "asq-plugin": "ASQ-USI/asq-plugin",
+    "asq-exercise": "ASQ-USI-Elements/asq-exercise#feat-polymer-1",
+    "asq-settings": "ASQ-USI-Elements/asq-settings#feat-polymer-1",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.2",
@@ -129,6 +132,9 @@
     "uglify-js": "^2.3.6",
     "webpack": "^1.9.10",
     "webpack-dev-server": "^1.9.0"
+  },
+  "asq": {
+    "corePlugins" : ["asq-settings", "asq-exercise"]
   },
   "keywords": [
     "node.js"

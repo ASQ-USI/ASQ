@@ -14,8 +14,10 @@
     "tests"
   ],
   "dependencies": {
-    "asq-elements": "ASQ-USI/asq-elements#master",
-    "asq-mashup-challenge-scoreboard": "ASQ-USI/asq-mashup-challenge-scoreboard#master",
+    "asq-elements": "ASQ-USI-Elements/asq-elements#feat-polymer-1",
     "webcomponentsjs": "~0.7.2"
+  },
+  "resolutions": {
+    "polymer": "^1.1.0"
   }
 }

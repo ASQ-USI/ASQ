@@ -33,6 +33,7 @@ node_modules/
 slides/
 /plugins/
 public/
+!client/presenterControl/public
 config/config.*
 !config/config.defaults.js.example
 !config/config.travis.js
@@ -79,10 +80,3 @@ public/thumbs
 ##################
 /bower_components
 /components
-
-
-# Experiments
-# ASQ Components #
-##################
-client/presenterControlReact
-client/presenterControlPolymer

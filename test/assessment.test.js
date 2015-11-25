@@ -14,11 +14,7 @@ var chai      = require('chai')
   , dust      = require('dustjs-linkedin')
   , when      = require('when');
 
-db = mongoose.createConnection(
-  config.mongoDBServer,
-  config.dbName,
-  config.mongoDBPort
-);
+db = mongoose.createConnection(config.mongo.mongoUri);
 
 chai.use(sinonChai);
 

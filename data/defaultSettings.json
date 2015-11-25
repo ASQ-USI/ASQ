@@ -1,1 +1,8 @@
-{}
+{
+  "core": {
+    "dbHash": {
+      "defaultValue": null,
+      "kind" : "ObjectId"
+    }
+  }
+}

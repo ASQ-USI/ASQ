@@ -9,7 +9,6 @@
 var Promise = require('bluebird');
 var mongoose = require('mongoose');
 var conf = require('../config');
-var mongoUrl = 'mongodb://' + conf.mongoDBServer + ':' + conf.mongoDBPort + '/' + conf.dbName;
 
 
 //process args
@@ -18,7 +17,7 @@ var command = args[0];
 
 if(command == "dropDb"){
 
-  mongoose.connect(mongoUrl, function(err) {
+  mongoose.connect(conf.mongo.mongoUri, function(err) {
     if (err) {
       throw err;
     }
@@ -37,7 +36,7 @@ if(command == "dropDb"){
 if(command == "emptyModel"){
 
   //models require a global db instance
-  global.db = mongoose.createConnection(mongoUrl);
+  global.db = mongoose.createConnection(conf.mongo.mongoUri);
   var schemas = require('../models');
 
   var modelNames = args.splice(1);

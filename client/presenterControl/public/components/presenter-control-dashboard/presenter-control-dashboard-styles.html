@@ -1,0 +1,98 @@
+<dom-module id="presenter-control-dashboard-styles">
+  <template>
+    <style>
+
+:host {
+  @apply(--layout-horizontal);
+}
+
+#discussion-container,
+#exercises-container{
+  @apply(--layout-flex);
+}
+
+.section-label {
+  font-size: 1.25em;
+  padding: 0 10px;
+  text-transform: uppercase;
+}
+#activity-container {
+  @apply(--layout-vertical);
+  width: 320px;
+}
+.filter-name {
+  font-weight: bold;
+  color: #aaa;
+}
+#collapse {
+  font-size: 12px;
+}
+#collapse > div {
+  padding: 0 10px;
+}
+#collapse paper-checkbox {
+  margin-left: 5px;
+}
+#collapse paper-checkbox::shadow #checkboxLabel {
+  color: #aaa;
+}
+presenter-control-activity-item {
+  background: #F8F8F8;
+  border-bottom: 1px solid #B5B5B5;
+  color: #222;
+  height: 60px;
+  cursor: pointer;
+}
+presenter-control-activity-item:last-child {
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
+}
+presenter-control-activity-item.selected {
+  background: #FFFBE8;
+}
+#filterToggleButton {
+  font-size: 12px;
+}
+#filterToggleButton iron-icon {
+  width: 20px;
+  height: 20px;
+  -webkit-transition: -webkit-transform 200ms ease-out 300ms;
+  -moz-transition: -moz-transform 200ms ease-out 300ms;
+  -o-transition: -o-transform 200ms ease-out 300ms;
+  transition: -webkit-transform 200ms ease-out 300ms,-moz-transform 200ms ease-out 300ms,-o-transform 200ms ease-out 300ms,transform 200ms ease-out 300ms;
+}
+#filterToggleButton[opened] iron-icon {
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: rotateZ(-180deg);
+  -moz-transform: rotateZ(-180deg);
+  -o-transform: rotateZ(-180deg);
+  -ms-transform: rotateZ(-180deg);
+  transform: rotateZ(-180deg);
+}
+
+#filters-toggle-container{
+  @apply(--layout-horizontal);
+  @apply(--layout-center-justified);
+}
+
+#filters-container{
+  @apply(--layout-horizontal);
+}
+
+.filter-column{
+  @apply(--layout-vertical);
+},
+.filter-column > paper-checkbox {
+  margin: 7px 20px 7px 0;
+}
+
+#event-list{
+  @apply(--layout-flex);
+}
+
+    </style> 
+  </template>
+</dom-module>

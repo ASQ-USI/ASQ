@@ -6,6 +6,9 @@
 
 'use strict';
 
+// window.Polymer = window.Polymer || {};
+// window.Polymer.dom = 'shadow';
+
 var debug = require('bows')("viewer")
   , $ = require('jquery')
   , Hammer = require('hammerjs')
@@ -88,6 +91,25 @@ this.readSessionInfo = function(){
 }
 
 this.connect = function(){
+  var events2Forward = [
+    "asq:sessionFlow",
+    "asq:folo-connected",
+    "asq:ctrl-connected",
+    "asq:ghost-connected",
+    "asq:connected-clients",
+    "asq:answered-all",
+    "asq:user-session-stats",
+    "asq:rankings",
+    "asq:goto",
+    "asq:submitted",
+    "asq:assessment",
+    "asq:assess",
+    "asq:stat",
+    "asq:question_type",
+    "asq:session-terminated",
+    'asq:update_live_presentation_settings'
+  ];
+  connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
 }
 
@@ -132,14 +154,17 @@ this.subscribeToEvents= function (){
       eventBus.emit('asq-exercise:submit', evt.detail);
     }
   })
+
+
 }
+
 
 // querySelectorAll2Array :-)
 function qSA2Ar(s){
   return Array.prorotype.slice.call(null, document.querySelectorAll(s));
 }
 
-document.addEventListener("polymer-ready", this.init.bind(this));
+document.addEventListener("WebComponentsReady", this.init.bind(this));
 
 this.initImpress = function(){
   //init presentation adapter

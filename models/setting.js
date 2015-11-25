@@ -12,7 +12,10 @@ var Promise    = require('bluebird');
 var coroutine  = Promise.coroutine;
 var _          = require('lodash');
 var logger     = require('logger-asq');
+
 var defaultSettings;
+
+
 
 // adopted from https://github.com/TryGhost/Ghost
 // For neatness, the defaults file is split into categories.
@@ -26,9 +29,10 @@ function parseDefaultSettings() {
         _.each(settings, function (setting, settingName) {
 
             var info = {
-              value: setting,
+              value: setting.defaultValue,
               category: categoryName,
               key: settingName,
+              kind: setting.kind
             };
 
             defaultSettingsFlattened[settingName] = info;
@@ -42,19 +46,32 @@ function getDefaultSettings() {
     if (!defaultSettings) {
         defaultSettings = parseDefaultSettings();
     }
-
     return defaultSettings;
 }
 
+var kinds = [ 'string',   
+              'number',   
+              'date',     
+              'boolean',  
+              'select',
+              'range',
+              'ObjectId'
+            ];
+
 var settingSchema = new Schema({
-    key        : { type : String , unique : true, required : true, dropDups: true },
-    value      : { type : {}},
-    category   : { type : String , required : true, default: 'core' },
-    createdAt  : { type: Date, default: Date.now },
-    createdBy  : { type : ObjectId, ref: 'User' },
-    updatedAt  : { type: Date, default: Date.now },
-    updatedBy  : { type : ObjectId, ref: 'User' }
+    key       : { type : String, required : true},
+    value     : { type : {} },
+    kind      : { type : String, required: true, enum: kinds},
+
+    params    : { type: {} },
+
+    category  : { type : String , required : true, default: 'core' },
+    createdAt : { type : Date, default: Date.now },
+    createdBy : { type : ObjectId, ref: 'User' },
+    updatedAt : { type : Date, default: Date.now },
+    updatedBy : { type : ObjectId, ref: 'User' }
 });
+
 
 // adopted from https://github.com/TryGhost/Ghost/
 settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen() {
@@ -71,7 +88,8 @@ settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen
       var newSetting = {
         key: defaultSettingKey,
         value: defaultSetting.value,
-        category: defaultSetting.category
+        category: defaultSetting.category,
+        kind: defaultSetting.kind
       }
       insertOperations.push(this.create(newSetting));
     }
@@ -79,6 +97,7 @@ settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen
 
   return Promise.all(insertOperations);
 });
+
 
 logger.debug('Loading settings model');
 mongoose.model('Setting', settingSchema);

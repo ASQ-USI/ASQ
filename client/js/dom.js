@@ -16,11 +16,16 @@ var menuDOMBinder = require('./views/menu');
 var presentations = require('./views/presentations');
 var pluginsSettings = require('./views/pluginsSettings');
 var upload = require('./views/upload');
+var presentationSettings = require('./views/presentationSettings');
+var upload = require('./views/upload');
 
 //binding the init function to the module to preserve the correct 'this'
+var uploadDOMBinder =  upload.init.bind(upload);
 var presentationsDOMBinder =  presentations.init.bind(presentations);
 var pluginsSettingsDOMBinder =  pluginsSettings.init.bind(pluginsSettings);
+
 var uploadDOMBinder =  upload.init.bind(upload);
+var presentationSettingsDOMBinder =  presentationSettings.init.bind(presentationSettings);
 
 var binders = Object.create(null);
 binders['completeRegistration'] = completeRegistrationDOMBinder,
@@ -31,7 +36,7 @@ binders['usersSettings'] =  usersSettingsDOMBinder;
 binders['presentations']  = presentationsDOMBinder;
 binders['pluginsSettings']  = pluginsSettingsDOMBinder;
 binders['upload']  = uploadDOMBinder;
-binders['presentationSettings'] =  require('./presentationSettingsBindings');
+binders['presentationSettings'] =  presentationSettingsDOMBinder;
 binders['presenterControl'] =  function(){
   menuDOMBinder();
   presenterControl();

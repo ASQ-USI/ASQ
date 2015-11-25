@@ -25,7 +25,7 @@ logger.initialize({
 
 // Globals : mongoose, db, and schemas
 global.mongoose   = require('mongoose');
-global.db         = mongoose.createConnection(config.mongoDBServer, config.dbName, config.mongoDBPort);
+global.db         = mongoose.createConnection(config.mongo.mongoUri);
 global.schemas    = require('./models');
 
 var Promise         = require('bluebird');
@@ -35,6 +35,7 @@ var fs              = require('fs');
 var http            = require('http');
 var middleware = require('./lib/middleware');
 var Setting = db.model('Setting');
+var settings = require('./lib/settings')
 
 //SSL
 var credentials     = config.enableHTTPS ? {
@@ -52,12 +53,20 @@ var init = coroutine(function *initGen () {
   //setup middleware
   middleware(app);
 
-  // make sure we have settings populated
+  // make sure we have all settings populated
   yield Setting.populateDefaults();
 
   //load plugins
   var plugins = require('./lib/plugin/');
   yield plugins.init();
+
+  var dbHash = yield settings.read('dbHash');
+  if(dbHash == null){
+    //database is new, we need to do some initialization
+    yield settings.update('dbHash', mongoose.Types.ObjectId());
+    var corePlugins = require('./package.json').asq.corePlugins;
+    yield Promise.map(corePlugins, plugins.activatePlugin);
+  }
 
   /** HTTP(S) Server */
   if (config.enableHTTPS && !config.usingReverseProxy) {

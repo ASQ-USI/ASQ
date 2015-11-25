@@ -1,0 +1,45 @@
+<!-- can remove when https://code.google.com/p/chromium/issues/detail?id=336698
+  is addressed. -->
+<meta charset="UTF-8">
+
+<link rel="import" href="/bower_components/polymer/polymer.html">
+
+<dom-module id="app-config">
+  <script>
+  (function() {
+    // these variables are shared by all instances of app-config
+    var dSet = document.body.dataset;
+
+    var values = {
+       protocol               : window.location.protocol || window.protocol,
+       host                   : dSet.asqHost || window.hostname, 
+       port                   : dSet.asqPort || window.port, 
+       username               : dSet.asqUsername, 
+       presentationId         : dSet.asqPresentationId, 
+       liveSessionId          : dSet.asqSessionId, 
+       lastSession            : dSet.asqlastSession, 
+       slidesTree             : JSON.parse(dSet.asqSlideTree),
+       namespace              : dSet.asqSocketNamespace,
+       token                  : dSet.asqSocketToken,
+       shouldGenerateThumbnails   : dSet.asqShouldGenerateThumbnails == 'true'     
+    }
+
+    values.urlport = ["80", '443'].indexOf(values.port) >=0 
+      ? "" 
+      : ":" + values.port;
+    values.rootUrl = [ values.protocol, '//', values.host, values.urlport].join('');
+
+
+    Polymer({
+      is : 'app-config',
+      properties: {
+        values: {
+          type: Object,
+          value: function() {return values;},
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

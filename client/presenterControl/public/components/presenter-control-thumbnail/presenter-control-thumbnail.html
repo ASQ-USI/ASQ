@@ -1,0 +1,67 @@
+<!-- can remove when https://code.google.com/p/chromium/issues/detail?id=336698
+  is addressed. -->
+<meta charset="UTF-8">
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="presenter-control-thumbnail">
+  <template>
+
+    <style>
+    :host{
+      display: block;
+      position:relative;
+      text-align: left;
+      -webkit-touch-callout : none;
+      -webkit-user-select : none;
+      -khtml-user-select : none;
+      -moz-user-select : none;
+      -ms-user-select : none;
+      user-select : none;
+    }
+
+    #thumb{
+    background : white;
+    position: relative;
+    border : 1px solid #ccc;
+    cursor: pointer;
+    }
+
+    #thumb-info{
+      @apply(--layout-horizontal);
+      padding: 3px 5px;
+    }
+
+    #thumb-id-label{
+      text-align: center;
+    }
+
+    #thumb-index{
+      @apply(--layout-flex);
+      color: #999;
+    }
+    </style>
+
+    <div id="thumb"></div>
+    <div id="thumb-info"t>
+      <div id="thumb-index">{{index}}</div>
+      <div id="thumb-id-label">{{ref}}</div>
+    </div>
+  </template>
+
+  <script>
+  Polymer( {
+    is: 'presenter-control-thumbnail',
+
+    properties: {
+      ref: {
+        type: String,
+        value: "",
+        notify: true,
+        reflectToAttribute: true
+      }
+    }
+  });
+  </script>
+</dom-module>

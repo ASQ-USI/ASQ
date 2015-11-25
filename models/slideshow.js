@@ -2,20 +2,25 @@
     @description the Slideshow Model
 */
 
-var mongoose   = require('mongoose');
-var Schema     = mongoose.Schema;
-var ObjectId   = Schema.ObjectId;
-var when       = require('when');
-var path       = require('path');
-var Promise    = require("bluebird");
-var coroutine  = Promise.coroutine;
-var logger     = require('logger-asq');
-var Question   = db.model('Question');
-var Exercises  = db.model('Exercise');
-var User       = db.model('User');
-var config = require('../config');
-var assessmentTypes = require('./assessmentTypes.js');
-var slideflowTypes = require('./slideflowTypes.js') ;
+var mongoose            = require('mongoose');
+var Schema              = mongoose.Schema;
+var ObjectId            = Schema.ObjectId;
+var when                = require('when');
+var path                = require('path');
+var Promise             = require("bluebird");
+var coroutine           = Promise.coroutine;
+var logger              = require('logger-asq');
+var Question            = db.model('Question');
+
+var Exercises           = db.model('Exercise');
+var User                = db.model('User');
+var config              = require('../config');
+var assessmentTypes     = require('./assessmentTypes.js');
+var slideflowTypes      = require('./slideflowTypes.js') ;
+
+var _ = require('lodash');
+
+var presentationSettingSchema = require('./presentationSetting.js');
 
 var questionsPerSlideSchema = new Schema({
   slideHtmlId : { type: String, required: true },
@@ -26,18 +31,6 @@ var statsPerSlideSchema = new Schema({
   slideHtmlId   : { type: String, required: true },
   statQuestions : { type: [{ type: ObjectId, ref: 'Question'}], required: true }
 }, { _id: false });
-
-var defaultConf = {
-  maxNumSubmissions : 1,
-  slideflow         : 'follow',
-  assessment        : 'self'
-}
-
-var defaultConfType = {
-  maxNumSubmissions : { type: "Number" },
-  slideflow  : { type: "String", options: slideflowTypes },
-  assessment : { type: "String", options: assessmentTypes }
-}
 
 var slideshowSchema = new Schema({
   title             : { type: String, required: true },
@@ -59,7 +52,7 @@ var slideshowSchema = new Schema({
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
   lastEdit          : { type: Date, default: Date.now },
-  configuration     : { type: Schema.Types.Mixed, default: defaultConf }
+  settings          : [ presentationSettingSchema ]
 });
 
 
@@ -360,7 +353,72 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   this.statsPerSlide = sPerSlidesArray;
 }
 
+slideshowSchema.methods.listSettings = function() {
+  return this.settings.toObject()
+}
+
+slideshowSchema.methods.readSetting = function(key) {
+  var settings = this.settings.toObject();
+  for ( var i in settings ) {
+    if ( settings[i].key === key ) {
+      return settings[i].value
+    }
+  }
+
+  throw 'Key not found';
+}
+
+slideshowSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
+  for ( var i in this.settings.toObject() ) {
+    var key = this.settings[i].key;
+    if ( setting.key === key ) {
+      if ( this.settings[i].value !== setting.value ) {
+        var old = this.settings[i].value;
+        this.settings[i].value = setting.value;
+
+        try{
+          yield this.save();
+        } catch(e){
+          console.log('Warning: failed to update settings. Rollback.', e.message);
+          this.settings[i].value = old;
+          yield this.save();
+
+          throw e;
+        }
+      }
+    }
+  }
+}),
+
+slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(settings) {
+  var flatten = {}
+  if ( _.isArray(settings) ) {
+    settings.forEach(function(setting) {
+      flatten[setting.key] = setting.value;
+    });
+  } else {
+    flatten = settings;
+  }
+
+
+  if ( this.settings.toObject().length > 0) {
+    for ( var i in this.settings.toObject() ) {
+      var key = this.settings[i].key;
+      if ( flatten.hasOwnProperty(key) ) {
+        if ( this.settings[i].value !== flatten[key] ) {
+          this.settings[i].value = flatten[key];
+        }
+      }
+    }
+  } else {
+    this.settings = settings;
+  }
+
+  yield this.save();
+})
+
 logger.debug('Loading Slideshow model');
+
 mongoose.model('Slideshow', slideshowSchema);
 
 module.exports = mongoose.model('Slideshow');

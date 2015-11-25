@@ -141,7 +141,7 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
     logger.log({
       owner_id: req.user._id,
       slideshow: slideshow._id,
-      file_path: path,
+      file_path: zipPath,
       file_name: name
     }, "updated presentation from zip");
 
@@ -175,7 +175,7 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
     logger.log({
       owner_id: req.user._id,
       slideshow: slideshow._id,
-      file_path: path,
+      file_path: zipPath,
       file_name: name
     }, "uploaded presentation");
 

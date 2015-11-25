@@ -3,7 +3,6 @@
   <head>
     <script src="/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="/asq-elements/asq-elements.html">
-    <link rel="import" href="/asq-mashup-challenge-scoreboard/asq-mashup-challenge-scoreboard.html">
     {>htmlHead/}
    
     <title>ASQ - My Presentations</title>
@@ -37,7 +36,7 @@
       <div class="row">
         <div class="col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
           <div class="alert alert-{type}">
-            fasdfs{alert}
+            {alert}
           </div>
         </div>
       </div>

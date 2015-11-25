@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var execSync = require('child_process').execSync;
+var mkdirp = require('mkdirp');
+var path = require('path');
+var fs = require('fs');
+
+var corePlugins = require('../package.json').asq.corePlugins;
+var pluginDir = require('../config').pluginDir;
+
+console.log("Will copy core plugins to %s ...", pluginDir)
+mkdirp.sync(pluginDir);
+
+corePlugins.forEach(function(pluginName){
+  console.log("copying %s ...", pluginName)
+
+  var command = "cp -R " + "node_modules/" + pluginName;
+  command += ' ' + pluginDir;
+  execSync(command, {timeout: 10000});
+})
+
+console.log("done!")
+process.exit();
