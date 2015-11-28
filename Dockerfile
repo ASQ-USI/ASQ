@@ -2,11 +2,6 @@ FROM asqhub/base-image:devel
 
 MAINTAINER Vincenzo FERME <info@vincenzoferme.it>
 
-#Environment Variables
-#ENV NODE_ENV production
-#ENV HOST 195.176.181.25
-#ENV PORT 3000
-
 # LOAD ASQ
 # Create folders
 RUN mkdir /ASQ
