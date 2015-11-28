@@ -1,2 +1,2 @@
 #!/bin/sh
-nginx 2>&1 
+nginx 2>&1
