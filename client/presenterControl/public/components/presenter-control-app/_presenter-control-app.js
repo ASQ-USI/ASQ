@@ -11,7 +11,8 @@ Polymer({
       value: function(){
         return new EventEmitter2({delimiter: ':'});
       },
-      notify: true
+      notify: true,
+      observer: '_eventBusChanged'
     },
 
     baseUrl: {
@@ -112,5 +113,13 @@ Polymer({
     if(newVal == 'slides'){
       this.$.presenterControlSlides.loadIframes();
     }
+  },
+
+  _eventBusChanged: function(newVal, oldVal){
+    if(! newVal) returnl
+      
+    this.eventBus.on('asq:session-terminated', function(){
+      window.location.replace(this.config.presenterLiveUrl);
+    }.bind(this))
   }
 });

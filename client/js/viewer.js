@@ -53,9 +53,11 @@ this.userAwake = function() {
 
 this.init = function(event) {
 
-  // var dialog = document.createElement('paper-dialog');
-  // dialog.id="app-dialog";
-  // document.body.appendChild(dialog);
+  // dialog to display messages
+  var dialog = document.createElement('paper-dialog');
+  dialog.id="app-dialog";
+  dialog.style.pointerEvents = 'auto';
+  document.body.appendChild(dialog);
 
   //let asq-elements get their eventEmitter instance
   var event = new CustomEvent('asq-ready', { 'detail': {asqEventBus : eventBus} });
@@ -63,7 +65,7 @@ this.init = function(event) {
 
   this.userId = document.body.dataset.asqUserSessionId;
 
-  var si = this.readSessionInfo()
+  var si = this.si = this.readSessionInfo();
   eventBus.emit('asq:sessionInfo', si);
   this.setupASQElements(si.role);
 
@@ -136,6 +138,39 @@ this.setupASQElements = function(role) {
   elements.setRole(role);
 }
 
+
+/**
+* Displays a dialog to notify the the session is over.
+* Will redirect to the live page of the presenter either automatically in 3 seconds
+* or immediately if the user clicks `Redirect now`.
+*/
+this.displaySessionOverDialog = function(){
+  var dialog = document.getElementById('app-dialog');
+  dialog.modal = true;
+  var content = '<h2>Session Terminated</h2>';
+  content +='<paper-dialog-scrollable>';
+  content +=  'This session is over. You will be redirected to the main live page shortly.';
+  content +='</paper-dialog-scrollable>';
+  content +='<div class="buttons">';
+  content +=  '<paper-button dialog-confirm autofocus>Redirect now</paper-button>';
+  content +='</div>';
+  dialog.innerHTML = content;
+
+  //redirect to live page of the presenter
+  var timeoutId = setTimeout(function(){
+    window.location.replace(this.si.liveUrl);
+  }.bind(this), 3000)
+
+  dialog.addEventListener('iron-overlay-closed', function onDialogClose(){
+    dialog.removeEventListener('iron-overlay-closed', onDialogClose);
+
+    clearTimeout(timeoutId);
+    window.location.replace(this.si.liveUrl);
+  }.bind(this))
+
+  dialog.open();
+}
+
 this.subscribeToEvents= function (){
   
   //socket events
@@ -173,20 +208,9 @@ this.subscribeToEvents= function (){
     }
   })
 
-  eventBus.on('asq:goto', function(){
-    // var dialog = document.getElementById('app-dialog');
-    // dialog.modal = true;
-    // var content = '<h2>Header</h2>';
-    // content +='<paper-dialog-scrollable>';
-    // content +=  'This session is over. You will be redirected to the main live page.';
-    // content +='</paper-dialog-scrollable>';
-    // content +='<div class="buttons">';
-    // content +=  '<paper-button dialog-dismiss>Cancel</paper-button>';
-    // content +=  '<paper-button dialog-confirm>Accept</paper-button>';
-    // content +='</div>';
-    // dialog.innerHTML = content;
-    // dialog.open();
-  })
+  eventBus.on('asq:session-terminated', function(){
+    this.displaySessionOverDialog();
+  }.bind(this))
 
   //snitch events
   eventBus

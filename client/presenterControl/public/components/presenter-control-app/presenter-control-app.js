@@ -57,7 +57,8 @@
 	      value: function(){
 	        return new EventEmitter2({delimiter: ':'});
 	      },
-	      notify: true
+	      notify: true,
+	      observer: '_eventBusChanged'
 	    },
 	
 	    baseUrl: {
@@ -111,28 +112,12 @@
 	    var presentationId = document.body.dataset.asqPresentationId; 
 	    var liveSessionId = document.body.dataset.asqSessionId; 
 	    this.baseUrl = "/" + username + "/presentations/" + presentationId + "/live/" + liveSessionId +"/";
-	     // + window.location.search;
 	
 	    this._prevItemIndex = 1
 	    var c = this.config = this.$.config.values;
 	    this.$.connection.connect(c.protocol, c.host, c.port, c.liveSessionId, c.namespace, c.token, this.eventBus);
 	    this.$.presenterControlSlides.connection = this.$.connection;
 	    window.app = this;
-	
-	    //set correct menu-item
-	    // var hash = window.location.hash
-	    // var paths = Polymer.dom(this.root).querySelectorAll('main-nav-item').map(function(el){
-	    //   if(hash == ('#!'+ el.path)){
-	    //     this.selectedPath = el.path;
-	    //     return true;
-	    //   }
-	    //   return false;
-	    // }.bind(this))
-	
-	    // setTimeout(function(){
-	    //   this._animateArrow(this.$['main-nav-menu'].selectedItem);
-	    // }.bind(this),100)
-	
 	  },
 	
 	  _menuIconClicked: function(event, detail){
@@ -174,6 +159,14 @@
 	    if(newVal == 'slides'){
 	      this.$.presenterControlSlides.loadIframes();
 	    }
+	  },
+	
+	  _eventBusChanged: function(newVal, oldVal){
+	    if(! newVal) returnl
+	      
+	    this.eventBus.on('asq:session-terminated', function(){
+	      window.location.replace(this.config.presenterLiveUrl);
+	    }.bind(this))
 	  }
 	});
 

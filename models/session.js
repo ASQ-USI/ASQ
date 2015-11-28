@@ -9,6 +9,9 @@ var when       = require('when');
 var logger     = require('logger-asq');
 var User       = db.model('User');
 var Slideshow  = db.model('Slideshow');
+var Promise     = require("bluebird");
+var coroutine   = Promise.coroutine;
+var socketPubSub = require('../lib/socket/pubsub');
 
 var sessionSchema = new Schema({
   presenter            : { type: ObjectId, ref: 'User', required: true },
@@ -95,6 +98,61 @@ sessionSchema.statics.getLiveSessionIds = function(userId, callback) {
   });
   return deferred.promise;
 }
+
+sessionSchema.statics.terminateAllSessionsForPresentation = coroutine(function *terminateAllSessionsForPresentationGen(userId, presentationId) {
+  var terminatedSessions = [];
+  var sessions = this.find({
+      presenter: userId,
+      slides: presentationId,
+      endDate: null
+    }).exec();
+
+  yield Promise.map(sessions, function(session){
+    session.endDate = Date.now();
+    terminatedSessions.push(session);
+    return session.save();
+  });
+
+  terminatedSessions.forEach(function(s){
+
+    socketPubSub.emit('emitToRoles', {
+      evtName: 'asq:session-terminated',
+      event: {},
+      sessionId: s._id,
+      namespaces: ['ctrl', 'folo', 'ghost', 'stat']
+    });
+  })
+
+  return terminatedSessions; 
+});
+
+sessionSchema.statics.terminateSession = coroutine(function *terminateSessionGen(userId, sessionId) {
+  var session = yield this.findOne({
+      presenter: userId,
+      _id: sessionId,
+      endDate: null
+    }).exec();
+
+  if(!session) {
+    throw new Error('Could not find a live session with _id ' + sessionId + ' for User ' + userId);
+  }
+
+  // start with a bluebird promise to have the extra goodies
+  yield Promise.resolve(true)
+  .then(function(){
+    session.endDate = Date.now();
+    return session.save();
+  });
+
+   socketPubSub.emit('emitToRoles', {
+      evtName: 'asq:session-terminated',
+      event: {},
+      sessionId: session._id,
+      namespaces: ['ctrl', 'folo', 'ghost', 'stat']
+    });
+
+  return session
+});
 
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
   var deferred = when.defer();

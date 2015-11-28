@@ -18,10 +18,9 @@
     "tests"
   ],
   "dependencies": {
-    "iron-ajax": "PolymerElements/iron-ajax#~1.0.6",
     "iron-collapse": "PolymerElements/iron-collapse#~1.0.4",
     "iron-icons": "PolymerElements/iron-icons#~1.0.4",
-    "iron-list": "polymerelements/iron-list#1.1.4",
+    "iron-list": "polymerelements/iron-list#1.1.5",
     "iron-pages": "polymerelements/iron-pages#~1.0.3",
     "iron-selector": "polymerelements/iron-selector#~1.0.8",
     "neon-animation": "PolymerElements/neon-animation#~1.0.6",
@@ -36,6 +35,6 @@
     "polymer": "Polymer/Polymer#~1.2.1",
     "web-animations-js": "~2.1.2",
     "paper-tabs": "polymerelements/paper-tabs#~1.0.4",
-    "asq-elements": "ASQ-USI-Elements/asq-elements#feat-polymer-1"
+    "asq-elements": "ASQ-USI-Elements/asq-elements#master"
   }
 }

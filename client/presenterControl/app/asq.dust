@@ -28,7 +28,7 @@
     }
   </style>
 </head>
-  <body data-asq-host="{host}" data-asq-port="{port}" data-asq-username="{username}" data-asq-presentation-id="{presentationId}" data-asq-session-id="{id}" data-asq-socket-namespace="{namespace}" data-asq-socket-token="{token}"  data-asq-last-session="{slideshow.lastSession}" data-view-name="presenterControl"  data-asq-slide-tree="{slideTree}" data-asq-should-generate-thumbnails="{shouldGenerateThumbs}">
+  <body data-asq-host="{host}" data-asq-port="{port}" data-asq-username="{username}" data-asq-presentation-id="{presentationId}" data-asq-session-id="{id}" data-asq-socket-namespace="{namespace}" data-asq-socket-token="{token}"  data-asq-last-session="{slideshow.lastSession}" data-view-name="presenterControl"  data-asq-slide-tree="{slideTree}" data-asq-should-generate-thumbnails="{shouldGenerateThumbs}" data-asq-live-url="{presenterLiveUrl}">
 
   <presenter-control-app></presenter-control-app>
   

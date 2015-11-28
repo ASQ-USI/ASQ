@@ -18,7 +18,7 @@ var Exercise    = db.model('Exercise');
 var User        = db.model('User', schemas.userSchema);
 var Session     = db.model('Session');
 var stats       = require('../../../../lib/stats/stats');
-var Promise     = require("bluebird")  ;
+var Promise     = require("bluebird");
 var coroutine   = Promise.coroutine;
 var _           = require('lodash');
 var settings    = lib.settings.presentationSettings;
@@ -91,7 +91,7 @@ function livePresentation(req, res) {
   var rootUrl = req.app.locals.rootUrl;
   var presentation = req.liveSession.slides;
   var presentationViewUrl = '';
-  var presenterLiveUrl = '';
+  var presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
 
   //TMP until roles are defined more precisely
   logger.debug('Select template for ' + role + ' ' + view);
@@ -108,7 +108,6 @@ function livePresentation(req, res) {
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
           // template: 'presenterControl',
           template: '../client/presenterControl/app/asq.dust',
@@ -119,7 +118,6 @@ function livePresentation(req, res) {
                             + presentation._id + '/live/' + req.liveSession.id
                             + '/?role=' + role+ '&view=presentation';
 
-        presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
         return {
           template:  presentation.asqFilePath,
           namespace: 'ctrl',
@@ -245,8 +243,6 @@ function startPresentation(req, res, next) {
       logger.info('Starting new ' + newSession.authLevel + ' session');
       res.location(['/', req.user.username, '/presentations/', newSession.slides,
         '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
-      console.log(['/', req.user.username, '/presentations/', newSession.slides,
-        '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
       res.sendStatus(201);
     },
     function errorHandler(err){
@@ -256,7 +252,7 @@ function startPresentation(req, res, next) {
 }
 
 
-var stopPresentation = coroutine(function *stopPresentationGen(req, res, next) {
+var terminatePresentation = coroutine(function *terminatePresentationGen(req, res, next) {
 
   try{
     logger.debug({
@@ -264,21 +260,14 @@ var stopPresentation = coroutine(function *stopPresentationGen(req, res, next) {
       slideshow: req.params.presentationId
     }, 'Stopping session');
 
-    var sessionIds = [];
-    var sessions = Session.find({
-        presenter: req.user._id,
-        slides: req.params.presentationId,
-        endDate: null
-      }).exec();
 
-    yield Promise.map(sessions, function(session){
-      session.endDate = Date.now();
-      sessionIds.push(session._id.toString());
-      return session.save();
-    }); 
+    var userId = req.user._id;
+    var presentationId = req.params.presentationId;
+    
+    var terminatedSessions = yield Session.terminateAllSessionsForPresentation(userId, presentationId)
 
-    // if sessionIds has zero length there was no session
-    if (! sessionIds.length) {
+    // if sessions has zero length there was no live sessions
+    if (! terminatedSessions.length) {
       var err404 = Error.http(404, 'No session found', {type:'invalid_request_error'});
       throw err404;
     }
@@ -288,14 +277,14 @@ var stopPresentation = coroutine(function *stopPresentationGen(req, res, next) {
     logger.log({
       owner_id: req.user._id,
       slideshow: req.params.presentationId,
-      sessions: sessionIds,
+      sessions: terminatedSessions.map(function(s){return s._id.toString()}),
     }, "stopped session");
 
   }catch(err){
     logger.error({
       err: err,
       owner_id: req.user._id,
-      sessions: sessionIds,
+      sessions: terminatedSessions,
     }, "error stopping session");
 
     //let error middleware take care of it
@@ -384,7 +373,7 @@ module.exports = {
   livePresentation          : livePresentation,
   livePresentationFiles     : livePresentationFiles,
   startPresentation         : startPresentation,
-  stopPresentation          : stopPresentation,
+  terminatePresentation     : terminatePresentation,
   getPresentationStats      : getPresentationStats,
 
   getPresentationSettings   : getPresentationSettings,
