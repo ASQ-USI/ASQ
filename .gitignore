@@ -36,7 +36,7 @@ public/
 !client/presenterControl/public
 config/config.*
 !config/config.defaults.js.example
-!config/config.travis.js
+!config/config.docker.js
 log/
 *.orig
 **/dump.rdb
