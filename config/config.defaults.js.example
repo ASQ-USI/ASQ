@@ -62,11 +62,11 @@ module.exports = {
   usingReverseProxy: false,
 
   reverseProxyOptions:{
-    // secure: whether the reverse proxy is using http or https (default: true)
+    // secure: whether the reverse proxy is using http or https (defualt: true)
     secure: true,
-    // host: the host of the reverse proxy (default: 'www.example.com')
+    // host: the host of the reverse proxy (defualt: 'www.example.com')
     host: 'www.example.com',
-    // port: the port of the reverse proxy (default: 443)
+    // port: the port of the reverse proxy (defualt: 443)
     port: 443
   },
 

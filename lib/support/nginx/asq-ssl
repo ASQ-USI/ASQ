@@ -18,13 +18,10 @@ upstream asq_node_upstream {
 
 server {
     listen 80;
-    listen   [::]:80 default ipv6only=on; ## listen for ipv6
     listen 443 ssl;
-    listen   [::]:443 default ipv6only=on; ## listen for ipv6
 
-    server_name 127.0.0.1; ## Replace this with something like asq.example.com
+    server_name YOUR_SERVER_FQDN; ## Replace this with something like asq.example.com
     server_tokens off; ## Don't show the nginx version number, a security best practice
-    client_max_body_size 50M;
 
     ssl_certificate     /etc/nginx/ssl/key.crt;
     ssl_certificate_key /etc/nginx/ssl/key.key;
@@ -64,22 +61,14 @@ server {
     # server static assets for presentations. 
     # matches: /:user/presentations/:presentationid/live/liveid/*
     location ~ ^/[a-zA-z]+/presentations/([\da-f]+)/live/[\da-f]+/(.+) {
-      alias /ASQ/slides/$1/$2;
+      alias /Users/vassilis/Sites/ASQ-USI/ASQ/slides/$1/$2;
       access_log off;
       expires max;
     }
 
     location /errors {
       internal;
-      alias /ASQ/public/errors;
-    }
-
-    # deny access to . files, for security
-    #
-    location ~ /\. {
-          access_log off;
-          log_not_found off; 
-          deny all;
+      alias /Users/vassilis/Sites/ASQ-USI/ASQ/public/errors;
     }
 
     ## proxy to node
