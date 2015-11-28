@@ -19,5 +19,6 @@ module.exports = {
   slideshowModel          : require('./slideshow'),
   sessionModel            : require('./session'),
   whitelistModel          : require('./whitelist'),
-  pluginModel             : require('./plugin')
+  pluginModel             : require('./plugin'),
+  presenterControlModels : require('./presenterControl')
 };

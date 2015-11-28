@@ -4,6 +4,7 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="presenter-control-activity-item">
   <template>
@@ -79,6 +80,19 @@
         font-size: 11px;
         line-height: 11px;
         color: #AAA;
+      }
+
+      paper-item{
+        overflow:hidden;
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+        padding: 12px 5px 0;
+        background-color: white;
+        cursor: pointer;
+        font-size: inherit;
+        /*font-family: Menlo,Monaco,Consolas,"Courier New",monospace;*/
+        @apply(--shadow-elevation-2dp);
+        outline:none;
       }
     </style>
     

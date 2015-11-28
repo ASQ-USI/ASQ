@@ -32,6 +32,12 @@ function isEmpty(val){
 
 this.init = function(event) {
 
+  // dialog to display messages
+  var dialog = document.createElement('paper-dialog');
+  dialog.id="app-dialog";
+  dialog.style.pointerEvents = 'auto';
+  document.body.appendChild(dialog);
+
   //let asq-elements get their eventEmitter instance
   var event = new CustomEvent('asq-ready', { 'detail': {asqEventBus : eventBus} });
   document.dispatchEvent(event);
@@ -120,6 +126,38 @@ this.setupASQElements = function(role) {
   assert(true, (isString(role) && !!role), 'role should be a non empty string');
   elements.setRole(role);
   Polymer && Polymer.dom().flush()
+}
+
+/**
+* Displays a dialog to notify the the session is over.
+* Will redirect to the live page of the presenter either automatically in 3 seconds
+* or immediately if the user clicks `Redirect now`.
+*/
+this.displaySessionOverDialog = function(){
+  var dialog = document.getElementById('app-dialog');
+  dialog.modal = true;
+  var content = '<h2>Session Terminated</h2>';
+  content +='<paper-dialog-scrollable>';
+  content +=  'This session is over. You will be redirected to your presentations shortly.';
+  content +='</paper-dialog-scrollable>';
+  content +='<div class="buttons">';
+  content +=  '<paper-button dialog-confirm autofocus>Redirect now</paper-button>';
+  content +='</div>';
+  dialog.innerHTML = content;
+
+  //redirect to live page of the presenter
+  var timeoutId = setTimeout(function(){
+    window.location.replace(this.si.liveUrl);
+  }.bind(this), 3000)
+
+  dialog.addEventListener('iron-overlay-closed', function onDialogClose(){
+    dialog.removeEventListener('iron-overlay-closed', onDialogClose);
+
+    clearTimeout(timeoutId);
+    window.location.replace(this.si.liveUrl);
+  }.bind(this))
+
+  dialog.open();
 }
 
 this.subscribeToEvents= function (){

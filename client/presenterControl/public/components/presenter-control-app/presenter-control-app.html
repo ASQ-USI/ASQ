@@ -1,10 +1,6 @@
-<!-- can remove when https://code.google.com/p/chromium/issues/detail?id=336698
-  is addressed. -->
-<meta charset="UTF-8">
-
 <link rel="import" href="/bower_components/polymer/polymer.html">
- <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
-<!-- <link rel="import" href="../../bower_components/neon-animation/neon-animations.html"> -->
+ <!-- <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html"> -->
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
@@ -13,8 +9,7 @@
 <link rel="import" href="../../bower_components/iron-icons/image-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
-<link rel="import" href="../../bower_components/more-routing/more-route-selector.html">
-<link rel="import" href="../../bower_components/more-routing/more-route-template-helpers.html">
+<link rel="import" href="../../bower_components/iron-icons/device-icons.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 
@@ -120,27 +115,25 @@
 
     <paper-drawer-panel id="drawerPanel" drawer-width="90px">
       <div drawer id="main-nav">
-          <paper-menu id="main-nav-menu" attr-for-selected="path" selected="{{selectedPath}}" on-iron-select="_menuItemSelected" on-iron-deselect="_menuItemDeselected">
+          <paper-menu id="main-nav-menu" attr-for-selected="data-route" selected="{{route}}" on-iron-select="_menuItemSelected" on-iron-deselect="_menuItemDeselected">
             <div id="learrow"></div>
-            <main-nav-item icon="image:photo" path="/slides" href="{{_computeUrl('slides')}}" label="Presentation"></main-nav-item>
-            <main-nav-item icon="social:group" path="/users" href="{{_computeUrl('users')}}" label="Users"></main-nav-item>
-            <main-nav-item icon="dashboard" path="/dashboard" href="{{_computeUrl('dashboard')}}" label="Dashboard"></main-nav-item>
-            <main-nav-item icon="device:dvr" path="/beamer" href$="{{_computeBeamerUrl(config)}}" label="Beamer view"></main-nav-item>
-            <main-nav-item icon="editor:insert-chart" path="/stats" href="{{_computeUrl('stats')}}" label="Statistics"></main-nav-item>
+            <main-nav-item icon="dashboard" data-route="dashboard" href="{{_computeUrl(baseUrl, '/dashboard')}}" label="Dashboard"></main-nav-item>
+            <main-nav-item icon="image:photo" data-route="slides" href="{{_computeUrl(baseUrl, '/slides')}}" label="Presentation"></main-nav-item>
+            <main-nav-item icon="social:group" data-route="users" href="{{_computeUrl(baseUrl, '/users')}}" label="Users"></main-nav-item>
+            <main-nav-item icon="device:dvr" data-route="beamer" href="{{_computeBeamerUrl(config)}}" label="Beamer view"></main-nav-item>
+            <main-nav-item icon="editor:insert-chart" data-route="stats" href="{{_computeUrl(baseUrl, '/stats')}}" label="Statistics"></main-nav-item>
           </paper-menu>
       </div>
       <div main id="main-content">
         <paper-icon-button id="navicon" icon="menu" on-tap="_menuIconClicked"></paper-icon-button>
-        <more-route-selector id="routeSelector" selectedPath="{{selectedPath}}">
         <!--   <neon-animated-pages entry-animation = "slide-left-animation" exit-animation = "slide-left-animation"> -->
-          <iron-pages>
-            <presenter-control-slides id="presenterControlSlides" event-bus="{{eventBus}}"></presenter-control-slides>
-            <presenter-control-users event-bus="{{eventBus}}"></presenter-control-users>
-            <presenter-control-dashboard event-bus="{{eventBus}}"></presenter-control-dashboard>
-            <presenter-control-stats></presenter-control-stats>
+          <iron-pages attr-for-selected="data-route" selected="{{route}}">
+            <presenter-control-dashboard data-route="dashboard" event-bus="{{eventBus}}" users="{{model.users}}"></presenter-control-dashboard>
+            <presenter-control-slides data-route="slides" id="presenterControlSlides" event-bus="{{eventBus}}"></presenter-control-slides>
+            <presenter-control-users data-route="users" event-bus="{{eventBus}}" users="{{model.users}}"></presenter-control-users>
+            <presenter-control-stats data-route="stats"></presenter-control-stats>
           </iron-pages>
           <!-- </neon-animated-pages> -->
-        </more-route-selector>
       </div>
     </paper-drawer-panel>
 

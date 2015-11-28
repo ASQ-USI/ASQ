@@ -7,16 +7,22 @@
 
 'use strict';
 
-var debug = require('bows')("viewer")
-  , $ = require('jquery')
-  , Hammer = require('hammerjs')
-  , manager = require('asq-visualization').Manager()
-  , connection = require('./connection.js')
-  , EventEmitter2 = require('eventemitter2')
-  , elements = require('./elements.js')
-  , eventBus = new EventEmitter2({delimiter: ':',  maxListeners: 100})
-  , $body, userId
-  , snitch = require('./snitch')(eventBus);
+var IDLE_INTERVAL = 10000;
+
+var debug = require('bows')("viewer");
+var $ = require('jquery');
+var Hammer = require('hammerjs');
+var manager = require('asq-visualization').Manager();
+var connection = require('./connection.js');
+var EventEmitter2 = require('eventemitter2');
+var elements = require('./elements.js');
+var eventBus = new EventEmitter2({delimiter: ':',  maxListeners: 100});
+var snitch = require('./snitch')(eventBus);
+var $body, userId, socket, session, client, idleTimeout;
+var client = null;
+// Save current question id;
+var questionId = null;
+
 
 function assert(expected, actual, errorMsg){
   if(expected !== actual ){
@@ -33,12 +39,25 @@ function isEmpty(val){
   return !val;
 }
 
-// Save current question id;
-var questionId = null, socket, session;
-var client = null;
+
+this.userAwake = function() {
+  if (idleTimeout) clearTimeout(idleTimeout);
+  idleTimeout = setTimeout(function() {
+    connection.socket.emit('asq:snitch', {
+      type: "viewer-idle",
+      data:{}
+    })
+  }, IDLE_INTERVAL);
+}
 
 
 this.init = function(event) {
+
+  // dialog to display messages
+  var dialog = document.createElement('paper-dialog');
+  dialog.id="app-dialog";
+  dialog.style.pointerEvents = 'auto';
+  document.body.appendChild(dialog);
 
   //let asq-elements get their eventEmitter instance
   var event = new CustomEvent('asq-ready', { 'detail': {asqEventBus : eventBus} });
@@ -46,7 +65,7 @@ this.init = function(event) {
 
   this.userId = document.body.dataset.asqUserSessionId;
 
-  var si = this.readSessionInfo()
+  var si = this.si = this.readSessionInfo();
   eventBus.emit('asq:sessionInfo', si);
   this.setupASQElements(si.role);
 
@@ -54,6 +73,7 @@ this.init = function(event) {
   this.initImpress();
 
   this.subscribeToEvents();
+  this.userAwake();
 
 }
 
@@ -118,6 +138,39 @@ this.setupASQElements = function(role) {
   elements.setRole(role);
 }
 
+
+/**
+* Displays a dialog to notify the the session is over.
+* Will redirect to the live page of the presenter either automatically in 3 seconds
+* or immediately if the user clicks `Redirect now`.
+*/
+this.displaySessionOverDialog = function(){
+  var dialog = document.getElementById('app-dialog');
+  dialog.modal = true;
+  var content = '<h2>Session Terminated</h2>';
+  content +='<paper-dialog-scrollable>';
+  content +=  'This session is over. You will be redirected to the main live page shortly.';
+  content +='</paper-dialog-scrollable>';
+  content +='<div class="buttons">';
+  content +=  '<paper-button dialog-confirm autofocus>Redirect now</paper-button>';
+  content +='</div>';
+  dialog.innerHTML = content;
+
+  //redirect to live page of the presenter
+  var timeoutId = setTimeout(function(){
+    window.location.replace(this.si.liveUrl);
+  }.bind(this), 3000)
+
+  dialog.addEventListener('iron-overlay-closed', function onDialogClose(){
+    dialog.removeEventListener('iron-overlay-closed', onDialogClose);
+
+    clearTimeout(timeoutId);
+    window.location.replace(this.si.liveUrl);
+  }.bind(this))
+
+  dialog.open();
+}
+
 this.subscribeToEvents= function (){
   
   //socket events
@@ -155,71 +208,94 @@ this.subscribeToEvents= function (){
     }
   })
 
+  eventBus.on('asq:session-terminated', function(){
+    this.displaySessionOverDialog();
+  }.bind(this))
+
   //snitch events
   eventBus
   .on('exercisefocus', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "exercisefocus",
       data:{
         exerciseUid: evt.exerciseUid 
       }
     });
-  }).on('exerciseblur', function(evt){
+  }.bind(this)).on('exerciseblur', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "exerciseblur",
       data:{
         exerciseUid: evt.exerciseUid 
       }
     });
-  }).on('windowfocus', function(evt){
+  }.bind(this)).on('windowfocus', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "windowfocus" 
     });
-  }).on('windowblur', function(evt){
+  }.bind(this)).on('windowblur', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "windowblur" 
     });
-  }).on('cut', function(evt){
+  }.bind(this)).on('cut', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "cut" 
     });
-  }).on('copy', function(evt){
+  }.bind(this)).on('copy', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "copy" 
     });
-  }).on('paste', function(evt){
+  }.bind(this)).on('paste', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "paste",
       data:{
         textPlainData: evt.textPlainData
       }
     });
-  }).on('tabhidden', function(evt){
+  }.bind(this)).on('tabhidden', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "tabhidden" 
     });
-  }).on('tabvisible', function(evt){
+  }.bind(this)).on('tabvisible', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "tabvisible" 
     });
-  }).on('focusin', function(evt){
+  }.bind(this)).on('focusin', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "focusin",
       data: evt 
     });
-  }).on('focusout', function(evt){
+  }.bind(this)).on('focusout', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "focusout",
       data: evt 
     });
-  }).on('input', function(evt){
+  }.bind(this)).on('input', function(evt){
+    this.userAwake();
     connection.socket.emit('asq:snitch', {
       type: "input",
       data: evt 
+    })
+  }.bind(this)).on('questioninput', function(evt){
+    this.userAwake();
+    connection.socket.emit('asq:snitch', {
+      type: "questioninput",
+      data: evt 
     });
-  })
-
+  }.bind(this));
 }
+
+
 
 
 

@@ -53,6 +53,9 @@ var init = coroutine(function *initGen () {
   //setup middleware
   middleware(app);
 
+  //use event denormalizer for CQRS
+  require('./lib/denormalizer/');
+
   // make sure we have all settings populated
   yield Setting.populateDefaults();
 

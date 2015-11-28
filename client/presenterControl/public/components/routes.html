@@ -1,19 +1,35 @@
-<link rel="import" href="../bower_components/more-routing/more-routing-config.html">
-<link rel="import" href="../bower_components/more-routing/more-route.html">
-  
-  <more-routing-config driver="hash"></more-routing-config>
-
-  <more-route name="users" path="/users"></more-route>
-  <more-route name="slides" path="/slides"></more-route>
-  <more-route name="dashboard" path="/dashboard"></more-route>
-  <more-route name="stats" path="/stats"></more-route>
+<script src="../bower_components/page/page.js"></script>
 
 <script>
-  //set urlPrefix dynamically
-  var username = document.body.dataset.asqUsername; 
-  var presentationId = document.body.dataset.asqPresentationId; 
-  var liveSessionId = document.body.dataset.asqSessionId; 
-  var urlPrefix = "/" + username + "/presentations/" + presentationId + "/live/" + liveSessionId +"/";
-  // var el = document.currentScript.ownerDocument.querySelector('more-routing-config');
-  // el.urlPrefix = urlPrefix;
+  window.addEventListener('WebComponentsReady', function() {
+    page.base(app.baseUrl);
+
+    // Routes
+    page('/', function() {
+      app.route = 'dashboard';
+    });
+    page('/users', function() {
+      app.route = 'users';
+    });
+    page('/slides', function(data) {
+      app.route = 'slides';
+    });
+    page('/dashboard', function() {
+      app.route = 'dashboard';
+    });
+    page('/stats', function() {
+      app.route = 'stats';
+    });
+    page('*', function() {
+      app.$.toast.text = 'Can\'t find: ' + window.location.href  + '. Redirected you to Home Page';
+      app.$.toast.show();
+      page.redirect('/');
+    });
+
+    // add #! before urls
+    page({
+      hashbang: true
+    });
+
+  });
 </script>

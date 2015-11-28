@@ -15,7 +15,7 @@ var presentationSettingSchema = require('./presentationSetting.js');
 var _ = require('lodash');
 
 var exerciseSchema = new Schema({
-  stem      : { type: String, required: true, default: '' },
+  stem      : { type: String, default: '' },
   questions : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
   settings  : [ presentationSettingSchema ],
 });

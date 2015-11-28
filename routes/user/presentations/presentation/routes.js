@@ -12,7 +12,7 @@ module.exports.setUp = function setUp(app, middleware) {
     middleware.isRouteOwner, handlers.startPresentation);
 
   app.delete('/:user/presentations/:presentationId/live',
-    middleware.isRouteOwner, handlers.stopPresentation);
+    middleware.isRouteOwner, handlers.terminatePresentation);
 
   app.get('/:user/presentations/:presentationId/live/:liveId', 
     middleware.authorizeLiveSession, handlers.livePresentation);

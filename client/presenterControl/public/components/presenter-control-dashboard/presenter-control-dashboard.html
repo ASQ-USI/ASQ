@@ -1,76 +1,130 @@
-<!-- can remove when https://code.google.com/p/chromium/issues/detail?id=336698
-  is addressed. -->
-<meta charset="UTF-8">
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
-<link rel="import" href="../../bower_components/more-routing/more-route.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
 
 <link rel="import" href="./presenter-control-dashboard-styles.html">
 <link rel="import" href="../presenter-control-activity-item/presenter-control-activity-item.html">
+
+<link rel="import" href="../../bower_components/asq-elements/asq-elements.html">
 <script src="./eventData.js"></script>
 
 <dom-module id="presenter-control-dashboard">
   <template>
     <style include="presenter-control-dashboard-styles"></style>
 
-    <more-route context name="dashboard"></more-route>
-    <div id="discussion-container">
-      <span class="section-label">Stage for Discussion</span>
-     <!-- col 1 -->
-    </div>
+    <paper-tabs id="lePaperTabs" selected-values="{{selectedTabs}}" on-iron-select="_onPaperTabsSelect" on-iron-deselect="_onPaperTabsSelect" no-bar multi>
+      <paper-tab><span class="section-label">Stage for Discussion</span></paper-tab>
+      <paper-tab><span class="section-label">Exercises</span></paper-tab>
+      <paper-tab><span class="section-label">Classroom</span></paper-tab>
+      <paper-tab><span class="section-label">Activity log</span></paper-tab>
+    </paper-tabs>
+    
+    <!-- activateEvent set to empty string stops selecting an item
+    when clicking on it -->
+    <iron-selector id="lePages" multi activate-event=''>
 
-   <div id="exercises-container">
-      <span class="section-label">Exercises</span>
-      <p>No exercises in Current Slide</p>
-   </div>
-
-    <div id="activity-container">
-      <span class="section-label">Activity log</span>
-       <!-- col 3 -->
-      <div id="filters-toggle-container">
-        <paper-button id="filterToggleButton" on-tap="_toggleFilters" opened?={{this.$.collapse.opened}}>
-        Filters
-          <iron-icon icon="hardware:keyboard-arrow-down"></iron-icon>
-        </paper-button>
+      <div id="discussion-container">
+        <p>TBD</p>
       </div>
-      <iron-collapse id="collapse">
-        <div id="filters-container">
-          <div class="filter-column">
-            <span class="filter-name">Level</span>
-            <paper-checkbox for label="net"></paper-checkbox>
-            <paper-checkbox for label="flow"></paper-checkbox>
-          </div>
-          <div class="filter-column">
-            <span class="filter-name">Flow</span>
-            <paper-checkbox for label="question"></paper-checkbox>
-            <paper-checkbox for label="answer"></paper-checkbox>
-            <paper-checkbox for label="assessment"></paper-checkbox>
-            <paper-checkbox for label="discussion"></paper-checkbox>
-          </div>
-          <div class="filter-column">
-            <span class="filter-name">Users</span>
-            <paper-checkbox for label="self"></paper-checkbox>
-            <paper-checkbox for label="viewers"></paper-checkbox>
-            <paper-checkbox for label="ghosts"></paper-checkbox>
-            <paper-checkbox for label="presenters"></paper-checkbox>
-          </div>
-        </div>
-      </iron-collapse>
 
-       <iron-list id="event-list" items="{{eventData}}" as="item">
-          <template>
-            <presenter-control-activity-item $class="{{_computeClass(selected)}}" type="{{item.tags.0}}" role="{{item.data.user.role}}" username="{{item.data.user.nickname}}" message="{{item.data.msg}}" timestamp="{{item.timestamp}}"></presenter-control-activity-item>
+      <div id="exercises-container">
+        <div class="layout horizontal justified">
+          <span>{{_calculateExercisesSlideMsg(exercises.*)}}</span>
+          <span>{{_calculateFollowedUserMsg(followedUser)}}</span>
+        </div>
+        <template is="dom-repeat" items="{{exercises}}" as="exercise">
+          <div class="exercise-block">
+            <div class="exercise-header">
+              <h5 inner-h-t-m-l="{{_calculateExerciseHeader(exercise)}}"></h5>
+              <small>{{exercise._id}}</small>
+            </div>
+            <div class="exercise-questions">
+              <template is="dom-repeat" items="{{exercise.questions}}" as="question">
+                <div class="question-block" inner-h-t-m-l="{{question.data.html}}"></div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div id="classroom-container">
+       <!--  <paper-item>
+          <paper-item-body two-line>
+            <div class="screenName"><iron-icon icon="face"></iron-icon> Lakestork Kitten</div>
+            <div class="status">Working</div>
+            <div class="action-buttons layout horizontal justified" style="color: #c0c0c0;">
+              <paper-icon-button class="follow-btn" toggles icon="icons:visibility" alt="follow user activity" on-tap="_followBtnTapped"></paper-icon-button>
+              <paper-icon-button class="mark-correct-btn" toggles icon="icons:check" alt="mark correct"></paper-icon-button>
+              <paper-icon-button class="mark-wrong-btn" toggles icon="icons:close" alt="mark wrong"></paper-icon-button>
+            </div>
+          </paper-item-body>
+        </paper-item> -->
+        <array-selector id="followedUserSelector" items="{{users.viewers}}" selected="{{followedUser}}" toggle></array-selector>
+        <template is="dom-repeat" items="{{users.viewers}}" as="viewer" observe="{{users.viewers.*}}">
+        <paper-item>
+          <paper-item-body two-line>
+            <div class="screenName"><iron-icon icon="face"></iron-icon> <span>{{viewer.screenName}}</span></div>
+            <div class="status">{{viewer.status}}</div>
+            <div class$="{{_calculateHasSubmittedClass(viewer.hasSubmitted)}}">submitted</div>
+            <div class="action-buttons layout horizontal justified" style="color: #c0c0c0;">
+              <paper-icon-button class="follow-btn" toggles icon="icons:visibility" alt="follow user activity" on-tap="_followBtnTapped" viewer-index="{{index}}"></paper-icon-button>
+              <paper-icon-button class="mark-correct-btn" toggles icon="icons:check" alt="mark correct"></paper-icon-button>
+              <paper-icon-button class="mark-wrong-btn" toggles icon="icons:close" alt="mark wrong"></paper-icon-button>
+            </div>
+          </paper-item-body>
          </template>
-       </iron-list>
-   </div>
+      </div>
+
+      <div id="activity-container">
+         <!-- col 3 -->
+        <div id="filters-toggle-container">
+          <paper-button id="filterToggleButton" on-tap="_toggleFilters" opened?={{this.$.collapse.opened}}>
+          Filters
+            <iron-icon icon="hardware:keyboard-arrow-down"></iron-icon>
+          </paper-button>
+        </div>
+        <iron-collapse id="collapse">
+          <div id="filters-container">
+            <div class="filter-column">
+              <span class="filter-name">Level</span>
+             <!--  <paper-checkbox for label="net"></paper-checkbox>
+              <paper-checkbox for label="flow"></paper-checkbox> -->
+            </div>
+            <div class="filter-column">
+              <span class="filter-name">Flow</span>
+            <!--   <paper-checkbox for label="question"></paper-checkbox>
+              <paper-checkbox for label="answer"></paper-checkbox>
+              <paper-checkbox for label="assessment"></paper-checkbox>
+              <paper-checkbox for label="discussion"></paper-checkbox> -->
+            </div>
+            <div class="filter-column">
+              <span class="filter-name">Users</span>
+              <!-- <paper-checkbox for label="self"></paper-checkbox>
+              <paper-checkbox for label="viewers"></paper-checkbox>
+              <paper-checkbox for label="ghosts"></paper-checkbox>
+              <paper-checkbox for label="presenters"></paper-checkbox> -->
+            </div>
+          </div>
+        </iron-collapse>
+
+         <iron-list id="event-list" items="{{eventData}}" as="item">
+            <template>
+              <presenter-control-activity-item $class="{{_computeClass(selected)}}" type="{{item.tags.0}}" role="{{item.data.user.role}}" username="{{item.data.user.screenName}}" message="{{item.data.msg}}" timestamp="{{item.timestamp}}"></presenter-control-activity-item>
+           </template>
+         </iron-list>
+     </div>
+  </iron-selector>
    
   </template>
   <script>
@@ -85,10 +139,34 @@
 
       properties: {
 
+        selectedTabs:{
+          type: Array,
+          value: function(){return [1, 2];},
+          notify:true
+        },
+
         eventBus: {
           type: Object, 
           value: function(){ return null;},
           observer: '_eventBusChanged'
+        },
+
+        users: {
+          type: Object, 
+          notify:true
+        },
+
+        followedUser: {
+          type: Object,
+          value: function(){return null;},
+          notify: true
+        },
+
+        exercises:{
+          type: Array,
+          value: function(){return [];},
+          notify: true
+          // observer: "_exercisesChanged"
         },
 
         eventData : {
@@ -96,6 +174,104 @@
           value: function(){ return [];},
           notify: true
         }
+      },
+
+      observers: [
+        '_answersByQuestionIdChanged(followedUser.answersByQuestionId)',
+        '_answersByQuestionIdSubChanged(followedUser.answersByQuestionId.*)',
+        '_liveByQuestionIdChanged(followedUser.liveByQuestionId)',
+        '_liveByQuestionIdSubChanged(followedUser.liveByQuestionId.*)'
+      ],
+
+      _exercisesChanged: function(){
+
+      },
+
+      _setQuestionValueForAnswer: function(answer){
+        var q = answer.question;
+        var questionEl = Polymer.dom(this.root).querySelector(q.type + '[uid="' + q._id +'"]');
+        
+        if(!questionEl) return;
+        questionEl.value = answer.submission
+      },
+
+      _answersByQuestionIdChanged: function(answersByQuestionId){
+        if(! answersByQuestionId) return;
+
+        Object.keys(answersByQuestionId).forEach(function(qid){
+          this._setQuestionValueForAnswer(answersByQuestionId[qid]);
+        }.bind(this));
+      },
+
+      _answersByQuestionIdSubChanged: function(changeRecord){
+        if(!changeRecord.value || ! changeRecord.value.question) return;
+
+        this._setQuestionValueForAnswer(changeRecord.value);
+      },
+
+      _setQuestionValueForLive: function(quid, value){
+        var questionEl = Polymer.dom(this.root).querySelector('[uid="' + quid +'"]');
+        
+        if(!questionEl) return;
+        questionEl.value = value
+      },
+
+      _liveByQuestionIdChanged: function(liveByQuestionId){
+        if(! liveByQuestionId) return;
+
+        Object.keys(liveByQuestionId).forEach(function(qid){
+          this._setQuestionValueForLive(qid, liveByQuestionId[qid]);
+        }.bind(this));
+      },
+
+      _liveByQuestionIdSubChanged: function(changeRecord){
+       
+        if(changeRecord.path == "followedUser.liveByQuestionId"){
+          return
+        }
+         console.log(changeRecord)
+
+        if(!changeRecord.value) return;
+        var qid = changeRecord.path.replace("followedUser.liveByQuestionId.", "")
+        console.log(qid)
+        this._setQuestionValueForLive(qid, changeRecord.value);
+      },
+
+      _followBtnTapped: function(event){
+        this.$.followedUserSelector.select(event.model.viewer);
+        // this.followedUser = event.model.viewer;
+      },
+
+      _calculateExerciseHeader: function(exercise){
+        if(exercise.stem && exercise.stem.trim()!= ''){
+          return exercise.stem;
+        }else{
+          return "Exercise " + exercise._id
+        }
+      },
+
+      _calculateExercisesSlideMsg: function(exercises){
+        if(this.exercises && this.exercises.length > 0){
+          return 'Exercises for Slide';
+        }
+        return 'No exercises in current slide';
+      },
+
+      _calculateFollowedUserMsg: function(followedUser){
+        if(followedUser){
+          return 'Following user ' + followedUser.screenName;
+        }
+        return 'You are not following anyone at the moment';
+      },
+
+      _onPaperTabsSelect: function(){
+        if(! this.isReady) return;
+
+        // for some reason it doesn't work with databinding
+        // and it doesn't work with direct assignemt.
+        // we need to reset the table;
+        this.$.lePages.selectedValues = [];
+        this.$.lePages.selectedValues  = this.$.lePaperTabs.selectedValues;
       },
 
       _eventBusChanged: function(newBus, oldBus){
@@ -115,7 +291,7 @@
             this._onUserDisconnected.bind(this, "presenter"));
           newBus.on("asq:ghost-disconnected",
             this._onUserDisconnected.bind(this, "ghost"));
-          newBus.on("asq:sessionEvent", 
+          newBus.on("asq:sessionEventPC", 
             this._onSessionEvent.bind(this));
         }
       },
@@ -125,7 +301,7 @@
           data: {
             user :{
               role: role,
-              nickname: event.screenName,
+              screenName: event.screenName,
               token : event.token
               },
             msg : "Connected"
@@ -141,7 +317,7 @@
           data: {
             user :{
               role: role,
-              nickname: event.screenName,
+              screenName: event.screenName,
               token : event.token
               },
             msg : "Disconnected"
@@ -152,34 +328,156 @@
         })
       },
 
+      _calculateHasSubmittedClass: function(hasSubmitted){
+        return (!!hasSubmitted) ? 'hasSubmitted' : 'hasSubmitted hidden'; 
+      }, 
+
       _onSessionEvent: function(event){
-        switch(event.type){
+        var sessionEvent = event.data.sessionEvent;
+        switch(sessionEvent.type){
           case 'ctrl:goto':
             var newDatum = {data : {}};
-            newDatum.data.user = {
-              nickname : event.data.user,
-            }
+            newDatum.data.user = sessionEvent.user;
+            newDatum.data.msg = "Goto slide "+ sessionEvent.slide;
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+            this.unshift('eventData', newDatum)
 
-            newDatum.data.msg = "Goto slide "+ event.data.slide;
-            newDatum.type = event.type
-            newDatum.timestamp = (new Date(event.time)).toLocaleTimeString();
+            //reset exercises
+            this.exercises = [];
+            break;
+
+          case 'viewer-idle':
+            var newDatum = {data : {}};
+            newDatum.data.user = sessionEvent.user;
+            newDatum.data.msg = "went idle";
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+            this.users.viewers.forEach(function(v, idx){
+              if(v.screenName == sessionEvent.user.screenName)
+                this.set('users.viewers.' + idx + '.status', 'idle');
+            }.bind(this))
+            this.unshift('eventData', newDatum)
+            break;
+
+          case 'answer-submitted':
+            var newDatum = {data : {}};
+            var answer = sessionEvent.answer;
+            newDatum.data.user = sessionEvent.answeree;
+            newDatum.data.msg = "went idle";
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+            this.users.viewers.forEach(function(v, idx){
+              if(v.screenName == sessionEvent.answeree.screenName){
+                if(! this.users.viewers[idx].answersByQuestionId){
+                  this.set('users.viewers.' + idx + '.answersByQuestionId', {});
+                  this.set('users.viewers.' + idx + '.hasSubmitted', true);
+                }
+                this.set('users.viewers.' + idx + '.answersByQuestionId.' + answer.question._id, answer);
+              }
+            }.bind(this));
+            this.unshift('eventData', newDatum)
+            break;
+
+          case 'questioninput':
+            var newDatum = {data : {}};
+            var question = sessionEvent.question;
+            newDatum.data.user = sessionEvent.user;
+            newDatum.data.msg = "went idle";
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+            this.users.viewers.forEach(function(v, idx){
+              if(v.screenName == sessionEvent.user.screenName){
+                if(! this.users.viewers[idx].liveByQuestionId){
+                  this.set('users.viewers.' + idx + '.liveByQuestionId', {});
+                  this.set('users.viewers.' + idx + '.status', 'working');
+                }
+                this.set('users.viewers.' + idx + '.liveByQuestionId.' + question._id, sessionEvent.value);
+              }
+            }.bind(this));
+            this.unshift('eventData', newDatum)
+            break;
+
+          case 'windowblur':
+            var newDatum = {data : {}};
+            newDatum.data.user = sessionEvent.user;
+            newDatum.data.msg = "blurred presentation window";
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+            this.users.viewers.forEach(function(v, idx){
+              if(v.screenName == sessionEvent.user.screenName)
+                this.set('users.viewers.' + idx + '.status', 'blurred');
+            }.bind(this))
+            this.unshift('eventData', newDatum)
+            break;
+
+          case 'focusin':
+          case 'copy':
+          case 'paste':
+          case 'cut':
+          case 'input':  
+          case 'windowfocus':
+            var newDatum = {data : {}};
+            newDatum.data.user = sessionEvent.user;
+            newDatum.data.msg = "blurred presentation window";
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+            this.users.viewers.forEach(function(v, idx){
+              if(v.screenName == sessionEvent.user.screenName)
+                this.set('users.viewers.' + idx + '.status', 'working');
+            }.bind(this))
+            this.unshift('eventData', newDatum)
+            break;
+
+          case 'exercise-activated':
+            var newDatum = {data : {}};
+            newDatum.data.user = sessionEvent.user;
+            var exText = sessionEvent.exercise.stem || sessionEvent.exercise._id;
+            newDatum.data.msg = "Posed exercise: " + exText;
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+            this.push('exercises', sessionEvent.exercise)
 
             this.unshift('eventData', newDatum)
             break;
+
+          case 'exercise-deactivated':
+            var newDatum = {data : {}};
+            newDatum.data.user = sessionEvent.user;
+            var exText = sessionEvent.exercise.stem || sessionEvent.exercise._id;
+            newDatum.data.msg = "Finished exercise: " + exText;
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+
+            this.unshift('eventData', newDatum)
+            break;
+
           case 'question-activated':
             var newDatum = {data : {}};
             newDatum.data.user = {
-              nickname : event.data.user,
+              screenName : sessionEvent.user.screenName,
             }
 
-            newDatum.data.msg = "Posed question: "+ event.data.question;
-            newDatum.type = event.type
-            newDatum.timestamp = (new Date(event.time)).toLocaleTimeString();
+            var exText = sessionEvent.question.data.stem || '';
+            newDatum.data.msg = "Posed question: " + exText;
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
 
             this.unshift('eventData', newDatum)
             break;
+
           case 'question-deactivated':
-            console.log("received question-deactivated")
+            var newDatum = {data : {}};
+            newDatum.data.user = {
+              screenName : sessionEvent.user.screenName,
+            }
+
+            var exText = sessionEvent.question.data.stem || ''; 
+            newDatum.data.msg = "Finished question: " + exText;
+            newDatum.type = sessionEvent.type
+            newDatum.timestamp = (new Date(sessionEvent.time)).toLocaleTimeString();
+
+            this.unshift('eventData', newDatum)
             break;
         }
       },
@@ -194,6 +492,8 @@
       },
 
       attached: function(){
+        this.isReady = true;
+        this._onPaperTabsSelect();
         // this.eventData = window.eventData;
         // this.eventTemplates = []; 
 
@@ -210,7 +510,7 @@
         var newDatum = {data : {}};
         if(datum.data.user){
           newDatum.data.user = {
-            nickname : datum.data.user.nickname,
+            screenName : datum.data.user.screenName,
             id: datum.data.user.id
           }
         }

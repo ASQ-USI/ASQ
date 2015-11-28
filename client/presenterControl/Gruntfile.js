@@ -72,34 +72,34 @@ module.exports = function(grunt) {
       },
     },
 
-    //less task
-    less: {
-      development: {
-        options: {
-          paths: ["public/components"]
-        },
-        files: [{
-          expand: true,
-          cwd:  "public/components",
-          src:  ["**/*.less"],
-          dest: "public/components/",
-          ext:  ".css"
-        }]
-      },
-      production: {
-        options: {
-          paths: ["public/components"],
-          yuicompress: true
-        },
-        files: [{
-          expand: true,
-          cwd:  "public/components",
-          src:  ["**/*.less"],
-          dest: "public/components/",
-          ext:  ".css"
-        }]
-      }
-    },
+    // //less task
+    // less: {
+    //   development: {
+    //     options: {
+    //       paths: ["public/components"]
+    //     },
+    //     files: [{
+    //       expand: true,
+    //       cwd:  "public/components",
+    //       src:  ["**/*.less"],
+    //       dest: "public/components/",
+    //       ext:  ".css"
+    //     }]
+    //   },
+    //   production: {
+    //     options: {
+    //       paths: ["public/components"],
+    //       yuicompress: true
+    //     },
+    //     files: [{
+    //       expand: true,
+    //       cwd:  "public/components",
+    //       src:  ["**/*.less"],
+    //       dest: "public/components/",
+    //       ext:  ".css"
+    //     }]
+    //   }
+    // },
 
 
     //watch
@@ -142,19 +142,19 @@ module.exports = function(grunt) {
           interrupt: true
         },
       },
-      less: {
-        files: ['public/components/**/*.less'],
-        tasks: ['less:development'],
-        options: {
-          interrupt: true
-        },
-      }
+      // less: {
+      //   files: ['public/components/**/*.less'],
+      //   tasks: ['less:development', 'concat'],
+      //   options: {
+      //     interrupt: true
+      //   },
+      // }
     }
   });
 
   // Our custom tasks.
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['less', 'webpack']);
+  grunt.registerTask('build', ['webpack']);
   grunt.registerTask('devwatch', ['build', 'watch']);
 
   //npm tasks

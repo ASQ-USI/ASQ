@@ -1,6 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
@@ -11,7 +10,6 @@
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="../../bower_components/more-routing/more-route.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
@@ -27,7 +25,6 @@
     <style include="presenter-control-slides-styles"></style>
 
     <app-config id="config"></app-config>
-    <more-route context name="slides"></more-route>
     
     <adapter-socket-interface id="socketInterface" socket="{{connection.socket}}"></adapter-socket-interface>
     <impress-asq-fork-asq-adapter id="adapter" activeStep="{{activeStep}}" standalone></impress-asq-fork-asq-adapter>
@@ -48,13 +45,7 @@
           <iframe id="nextSlideFrame" scrolling="no"></iframe>
         </div>
         <div id="timer-container">
-          <a class="paper-icon-button-anchor" href="#" style="color:#d9534f;">
-            <iron-ajax id="stopRequest"
-              method="DELETE"
-              url="/{{this.$.config.values.username}}/presentations/{{this.$.config.values.presentationId}}/live"
-              on-response="_stopCompleted"></iron-ajax>
-            <paper-icon-button class="x2" icon="av:stop" title="stop presentation" role="button" tabindex="0" aria-label="stop" on-tap="_sendStopRequest"></paper-icon-button>
-          </a>
+          <paper-icon-button style="color:#d9534f;" class="x2" icon="av:stop" title="terminate presentation session" role="button" tabindex="0" aria-label="stop" on-tap="_terminateSession"></paper-icon-button>
           <presenter-control-timer id="timer" sessionStart="{{this.$.config.values.lastSession}}"></presenter-control-timer>
           <paper-icon-button  class="" icon="refresh" title="reset timer" role="button" tabindex="0" id="resetTimer" aria-label="refresh" on-tap="_resetTimer"></paper-icon-button>
         </div>
@@ -138,6 +129,20 @@
 
       },  
 
+      /**
+      * Will load the current and next iframes by setting the iframes src attributes
+      */
+      loadIframes: function(){
+        if(this._iframesInitialized) return;
+
+        this.$.currentSlideFrame.onload= this._iframeLoaded.bind(this);
+        var cSrc= this._computeCurrentIFrameSrc(this.config)
+        this.$.currentSlideFrame.setAttribute('src', cSrc);
+        var nSrc= this._computeNextIFrameSrc(this.config)
+        this.$.nextSlideFrame.setAttribute('src', nSrc);
+        this._iframesInitialized = true;
+      },
+
       _connectionChanged: function(newC, oldC){
         if(newC){
           this.$.adapter.asqSocket = this.$.socketInterface;
@@ -149,13 +154,6 @@
 
         //setup impress adapter
         this.$.adapter.slidesTree = this.config.slidesTree;
-
-        //load iframes
-        this.$.currentSlideFrame.onload= this._iframeLoaded.bind(this);
-        var cSrc= this._computeCurrentIFrameSrc(this.config)
-        this.$.currentSlideFrame.setAttribute('src', cSrc);
-        var nSrc= this._computeNextIFrameSrc(this.config)
-        this.$.nextSlideFrame.setAttribute('src', nSrc);
 
         //setup thumbmanager
         this.$.thumbManager.target = this.$.thumbsWrapper;
@@ -202,8 +200,8 @@
         this.$.timer.reset();
       },
 
-      _sendStopRequest: function(){
-        this.$.stopRequest.go();
+      _terminateSession: function(){
+        this.connection.socket.emit('asq:terminate-session', {})
       },
 
       _stopCompleted: function(event, detail){

@@ -39,10 +39,10 @@
     "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'"
   },
   "dependencies": {
-    "asq-exercise": "ASQ-USI-Elements/asq-exercise#feat-polymer-1",
+    "asq-exercise": "ASQ-USI-Elements/asq-exercise#master",
     "asq-microformat": "^0.3.8",
     "asq-plugin": "ASQ-USI/asq-plugin",
-    "asq-settings": "ASQ-USI-Elements/asq-settings#feat-polymer-1",
+    "asq-settings": "ASQ-USI-Elements/asq-settings#master",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.2",
