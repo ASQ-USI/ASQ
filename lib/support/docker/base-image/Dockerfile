@@ -50,10 +50,10 @@ RUN ln -sf /dev/stderr /var/log/nginx/error.log
 # Configure Nginx
 ADD nginx.conf /etc/nginx/nginx.conf
 # Tweak nginx to match the workers to cpu's
-RUN procs=$(cat /proc/cpuinfo | grep processor | wc -l) && sed -i -e "s/worker_processes 4;/worker_processes $procs;/" /etc/nginx/nginx.conf
+RUN procs=$(cat /proc/cpuinfo | grep processor | wc -l) && sed -i -e "s/worker_processes 1;/worker_processes $procs;/" /etc/nginx/nginx.conf
 # Performance configurations
-RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
-RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\nclient_max_body_size 100m/" /etc/nginx/nginx.conf
+#RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
+RUN sed -i -e"s/keepalive_timeout 65/keepalive_timeout 65;\n        client_max_body_size 100m/" /etc/nginx/nginx.conf
 # To run in a Docker container
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 

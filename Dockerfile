@@ -52,4 +52,4 @@ RUN chmod +x /etc/service/asq/run
 
 #Configure Image
 VOLUME ["/ASQ"]
-EXPOSE 3000
+#EXPOSE 3000
