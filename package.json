@@ -35,7 +35,7 @@
     "presenterControl": "tasks/presenterControl",
     "db": "tasks/db",
     "watch": "parallelshell 'npm run webpack-dev' 'npm run dust-dev' 'npm run less-dev'",
-    "build": "npm run webpack-prod && npm run js-vendor-dev && npm run static && npm run less-prod && npm run dust-prod",
+    "build": "npm run webpack-prod && npm run js-vendor-prod && npm run static && npm run less-prod && npm run dust-prod",
     "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'"
   },
   "dependencies": {
@@ -67,6 +67,7 @@
     "impress-asq-adapter": "ASQ-USI/impress-asq-adapter",
     "impress-asq-fork-asq-adapter": "ASQ-USI/impress-asq-fork-asq-adapter#master",
     "jquery": "^2.1.0",
+    "kerberos": "^0.0.17",
     "jsonwebtoken": "^5.0.1",
     "jws": "^3.0.0",
     "ldapauth-fork": "^2.2.12",
