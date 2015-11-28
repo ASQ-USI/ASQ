@@ -16,7 +16,7 @@
     "test": "make test-unit",
     "start-dev": "NODE_ENV=development nodemon | bunyan",
     "start": "NODE_ENV=production node --harmony app.js",
-    "install": "bower --allow-root install && npm run presenterControl && npm run plugins",
+    "install": "bower cache clean && bower --allow-root install && npm run plugins",
     "webpack-dev": "NODE_ENV=development webpack -d --watch",
     "webpack-prod": "NODE_ENV=production webpack -p",
     "js-vendor-dev": "NODE_ENV=development tasks/vendor",
