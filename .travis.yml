@@ -1,7 +1,8 @@
 language: node_js
 sudo: false
+env:
+  - CXX=g++-4.8
 node_js:
-  - "0.12"
   - "4.0"
   - "5.0"
 before_script: "mv config/config.travis.js config/config.test.js"
