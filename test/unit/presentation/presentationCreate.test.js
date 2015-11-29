@@ -37,8 +37,21 @@ describe("presentationCreate.js", function(){
       "findByIdAndUpdate" : findByIdAndUpdateStub
     });
 
+    this.defaultPresentationSettings = {
+      "presentation": [{
+        "key": "maxNumSubmissions",
+        "value": "-1",
+        "kind": "number",
+        "level": "presentation",
+      }]
+    };
+
     var destination = "/Users/vassilis/Sites/ASQ-USI/ASQ/test";
     this.presentationCreate = SandboxedModule.require(modulePath, {
+      requires: {
+        "lodash":require('lodash'),
+        "../settings/defaultPresentationSettings.js" : this.defaultPresentationSettings
+      },
       globals : { db : db }
     });
   })
@@ -61,7 +74,8 @@ describe("presentationCreate.js", function(){
     it("should call create with the correct arguments", function(){
       this.createStub.calledWith({
           title : this.name,
-          owner : this.owner_id
+          owner : this.owner_id,
+          settings: this.defaultPresentationSettings['presentation']
         }).should.equal(true);
     });
 

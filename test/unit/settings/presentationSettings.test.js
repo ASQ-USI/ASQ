@@ -98,7 +98,7 @@ describe("presentationSettings.js", function(){
       'exercises': Object.keys(exercisesData)
     } 
 
-    var status = this.status = true;
+    this.status = 'success';
 
     var presentation_id = this.presentation_id = 'presentation-id-123';
 
@@ -109,7 +109,7 @@ describe("presentationSettings.js", function(){
       html: '<html></html>',
       settings: '',
       id: '',
-      status: true
+      status: 'success'
     }))}
 
 
@@ -268,8 +268,7 @@ describe("presentationSettings.js", function(){
       .then(function(r) {
         sinon.assert.pass(r===correctReturnValue);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
@@ -280,8 +279,7 @@ describe("presentationSettings.js", function(){
       .then(function() {
         this.slideshowModel.findById.calledOnce.should.equal(true);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
@@ -309,12 +307,11 @@ describe("presentationSettings.js", function(){
           exercise_id: exercise_id,
           settings: settings,
           html: html,
-          status: false
+          status: 'unknown'
         }).should.equal(true);
 
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
@@ -323,17 +320,17 @@ describe("presentationSettings.js", function(){
     });
   });
 
-  var status = true;
+  this.status = 'success';
   describe("updateExerciseSettings", function(){
 
     before(function() {
       
       sinon.stub(this.presentationSettings, "updateExerciseSettingsById", function() {
         return Promise.resolve({
-          status: status,
+          status: this.status,
           html: '<html></html>'
         });
-      });
+      }.bind(this));
     });
 
     beforeEach(function(){
@@ -349,8 +346,7 @@ describe("presentationSettings.js", function(){
         this.presentationSettings.updateExerciseSettingsById.calledOnce.should.equal(true);
         this.presentationSettings.updateExerciseSettingsById.calledWith('<html></html>', settings, 2).should.equal(true);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
@@ -362,39 +358,37 @@ describe("presentationSettings.js", function(){
       .then(function() {
         this.fs.readFile.calledOnce.should.equal(true);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
     });
 
-    it('should call writeFile once ', function(done) {
-      status = true;
+    it('should call writeFile once on `success` status ', function(done) {
+      this.status = 'success';
       var settings = '{}';
       this.presentationSettings.updateExerciseSettings(settings, 1, 2)
       .then(function() {
         this.fs.writeFile.calledOnce.should.equal(true);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
     });
 
-    it('should not call writeFile ', function(done) {
-      status = false;
+    it('should not call writeFile on `failed` status', function(done) {
+      this.status = 'failed';
       var settings = '{}';
       this.presentationSettings.updateExerciseSettings(settings, 1, 2)
       .then(function() {
+        done(new Error('expected to throw an error'))
+      }.bind(this))
+      .catch(function(err) {
+        err.message.should.match(/Failed to update exercise level settings/)
         this.fs.writeFile.called.should.equal(false);
         done();
-      }
-      .bind(this))
-      .catch(function(err) {
-        done(err);
-      });
+      }.bind(this));
     });
 
   });
@@ -419,11 +413,10 @@ describe("presentationSettings.js", function(){
           slideshow_id: slideshow_id,
           settings: settings,
           html: '<html></html>',
-          status: false
+          status: 'unknown'
         }).should.equal(true);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
@@ -436,21 +429,19 @@ describe("presentationSettings.js", function(){
       .then(function() {
         this.fs.readFile.calledOnce.should.equal(true);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
     });
 
     it('should call writeFile once ', function(done) {
-      status = true;
+      this.status = true;
       this.presentationSettings.updateSlideshowSettings([], 1)
       .then(function() {
         this.fs.writeFile.calledOnce.should.equal(true);
         done();
-      }
-      .bind(this))
+      }.bind(this))
       .catch(function(err) {
         done(err);
       });
