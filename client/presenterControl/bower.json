@@ -36,5 +36,8 @@
     "web-animations-js": "~2.1.2",
     "paper-tabs": "polymerelements/paper-tabs#~1.0.4",
     "asq-elements": "ASQ-USI-Elements/asq-elements#master"
+  },
+  "resolutions": {
+    "paper-toolbar": "~1.1.1"
   }
 }
