@@ -13,7 +13,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit",
+    "test": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
     "start-dev": "NODE_ENV=development nodemon | bunyan",
     "start": "NODE_ENV=production node --harmony app.js",
     "install": "bower --allow-root install && npm run presenterControl && npm run plugins",
