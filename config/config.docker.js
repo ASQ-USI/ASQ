@@ -11,6 +11,7 @@ module.exports = {
 
   //Port used by the server to listen for http requests (default: 80)
   //Note this is overwritten by the environment PORT value if it exists.
+  //Nginx is currently tied to port 3000 (hard coded) - Do not change, it is inside the container
   HTTPPort: 3000,
 
   //Port used by the server to listen for https requests (default: 443)
