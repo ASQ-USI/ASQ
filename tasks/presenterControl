@@ -15,7 +15,7 @@ process.stdout.write("done!\n")
 process.stdout.write("Installing bower dependencies for PresenterControl...")
 execSync("bower install", {
   cwd: presenterControlDir,
-  timeout: 60000
+  timeout: 120000
 });
 
 process.stdout.write("done!")
