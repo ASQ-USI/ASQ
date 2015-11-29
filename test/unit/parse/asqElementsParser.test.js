@@ -28,12 +28,43 @@ describe("asqElementsParser.js", function(){
       requires: {
         "mongoose" : require('mongoose'),
         "lodash" : _,
+        "cheerio" : require('cheerio'),
         "../hooks/hooks.js" : this.hooks,
       }
     });
   });
 
-   describe("prototype.parsePresentation", function(){
+   describe('constructor', function(){
+    
+    it("correctly set elementNames", function(){
+
+      this.parser =  new this.AsqElementsParser();
+      var expected = ['asq-welcome', 'asq-text-input-q-stats']
+      expect(this.parser.elementNames).to.deep.equal(expected);
+
+      this.parser =  new this.AsqElementsParser([ 'asq-el-1', 'asq-el-2']);
+      expected = [
+        'asq-el-1',
+        'asq-el-2',
+        'asq-welcome',
+        'asq-text-input-q-stats'
+      ];
+      expect(this.parser.elementNames).to.deep.equal(expected);
+      
+    })
+    it("correctly set questionElementNames", function(){
+       
+       this.parser =  new this.AsqElementsParser();
+       var expected = []
+       expect(this.parser.questionElementNames).to.deep.equal(expected);
+
+       this.parser =  new this.AsqElementsParser(null, [ 'asq-el-1', 'asq-el-2']);
+       expected = [ 'asq-el-1', 'asq-el-2'];
+       expect(this.parser.questionElementNames).to.deep.equal(expected);
+     })
+   })
+
+  describe("prototype.parsePresentation", function(){
 
     before(function(){
       sinon.stub(this.AsqElementsParser.prototype, "assignIdsToAsqElements" );
@@ -46,7 +77,7 @@ describe("asqElementsParser.js", function(){
       this.AsqElementsParser.prototype.assignIdsToAsqElements.reset();
       this.AsqElementsParser.prototype.getExercisesPerSlide.reset();
       this.parser =  new this.AsqElementsParser();
-      this.parser.parsePresentation(this.simpleHtml);
+      this.parser.parsePresentation({html: this.simpleHtml});
     });
 
     after(function(){
@@ -61,7 +92,12 @@ describe("asqElementsParser.js", function(){
 
     it("should call doHook() ", function(){
       this.hooks.doHook.calledOnce.should.equal(true);
-      this.hooks.doHook.calledWith('parse_html', this.simpleHtml).should.equal(true);
+      var expected = {
+        html: this.simpleHtml,
+        elementNames: ['asq-welcome', 'asq-text-input-q-stats'],
+        questionElementNames: []
+      }
+      this.hooks.doHook.calledWith('parse_html', expected).should.equal(true);
     });
 
   });
@@ -120,6 +156,7 @@ describe("asqElementsParser.js", function(){
       expect($body.attr('data-asq-user-session-id')).to.equal('{userSessionId}');
     });
   });
+
   describe("prototype.injectScripts()", function(){
     beforeEach(function(){
       this.parser =  new this.AsqElementsParser();
@@ -135,7 +172,7 @@ describe("asqElementsParser.js", function(){
 
     it("should have script injected", function(){
       var x = this.$.root().html().toString();
-      expect(x.contains('{&gt;asqPresentationScripts /}')).to.be.true;
+      expect(x.includes('{&gt;asqPresentationScripts /}')).to.be.true;
     });
   });
 
@@ -153,7 +190,7 @@ describe("asqElementsParser.js", function(){
     beforeEach(function(){
       this.AsqElementsParser.prototype.getExercises.reset();
       this.AsqElementsParser.prototype.getQuestions.reset();
-      this.parser =  new this.AsqElementsParser();
+      this.parser =  new this.AsqElementsParser(['asq-multi-choice-q'], ['asq-multi-choice-q']);
       this.$ = cheerio.load(this.simpleUidHtml);
       this.parser.injectRoleInfo(this.$);
     });
@@ -161,16 +198,6 @@ describe("asqElementsParser.js", function(){
     after(function(){
       this.AsqElementsParser.prototype.getExercises.restore();
       this.AsqElementsParser.prototype.getQuestions.restore();
-    });
-
-    it("should call getExercises() ", function(){
-      this.AsqElementsParser.prototype.getExercises.calledOnce.should.equal(true);
-      this.AsqElementsParser.prototype.getExercises.calledWith(this.simpleUidHtml).should.equal(true);
-    });
-
-    it("should call getQuestions() ", function(){
-      this.AsqElementsParser.prototype.getQuestions.calledOnce.should.equal(true);
-      this.AsqElementsParser.prototype.getQuestions.calledWith(this.simpleUidHtml).should.equal(true);
     });
 
     it("should have roleinfo injected for exercises", function(){
@@ -197,17 +224,13 @@ describe("asqElementsParser.js", function(){
   describe("prototype.assignIdsToAsqElements()", function(){;
 
     beforeEach(function(){
-      this.asqParser = new this.AsqElementsParser(this.asq);
+      this.asqParser = new this.AsqElementsParser(['asq-multi-choice-q'], ['asq-multi-choice-q']);
       this.resultHtml = this.asqParser.assignIdsToAsqElements(this.simpleHtml)
       this.$ = cheerio.load(this.resultHtml);
     });
 
     it("should give uids to elements that are in the tagNames list", function(){
-      var el = this.$("#ex-no-uid");
-      expect(el.attr('uid')).to.exist;
-      expect(el.attr('uid').length).to.be.greaterThan(5);
-
-      el = this.$("#mc-no-uid");
+      var el = this.$("#mc-no-uid");
       expect(el.attr('uid')).to.exist;
       expect(el.attr('uid').length).to.be.greaterThan(5);
 
@@ -235,7 +258,7 @@ describe("asqElementsParser.js", function(){
   describe("prototype.getExercises()", function(){
 
     beforeEach(function(){
-      this.asqParser = new this.AsqElementsParser(this.asq);
+      this.asqParser = new this.AsqElementsParser([], ['asq-multi-choice-q']);
       this.$ = cheerio.load(this.exercisesHtml);
     });
 
@@ -270,7 +293,7 @@ describe("asqElementsParser.js", function(){
   describe("prototype.getExercisesPerSlide()", function(){
 
     beforeEach(function(){
-      this.asqParser = new this.AsqElementsParser(this.asq);
+      this.asqParser = new this.AsqElementsParser([], ['asq-multi-choice-q']);
       this.$ = cheerio.load(this.exercisesHtml);
     });
 
@@ -324,9 +347,17 @@ describe("asqElementsParser.js", function(){
   });
 
   describe("prototype.getQuestions()", function(){
-
     beforeEach(function(){
-      this.asqParser = new this.AsqElementsParser(this.asq);
+      var knownQuestionTypes = [
+        'asq-multi-choice-q',
+        'asq-text-input-q',
+        'asq-code-q',
+        'asq-rating-q',
+        'asq-highlight-q',
+        'asq-css-select-q',
+        'asq-js-function-body-q'
+      ];
+      this.asqParser = new this.AsqElementsParser(knownQuestionTypes, knownQuestionTypes);
       this.$ = cheerio.load(this.questionsHtml);
     });
 
@@ -356,13 +387,13 @@ describe("asqElementsParser.js", function(){
       var html = this.$.html('#many-question-types');
       var results = this.asqParser.getQuestions(html);
       expect(results).to.deep.equal([
-        'uid-multi-choice',
-        'uid-text-input',
-        'uid-code',
-        'uid-rating',
-        'uid-highlight',
-        'uid-css-select',
-        'uid-js-function-body'
+        'uid-multi-choice-q',
+        'uid-text-input-q',
+        'uid-code-q',
+        'uid-rating-q',
+        'uid-highlight-q',
+        'uid-css-select-q',
+        'uid-js-function-body-q'
       ]);
     });
 
@@ -370,9 +401,9 @@ describe("asqElementsParser.js", function(){
       var html = this.$.html('#unknown-question-types');
       var results = this.asqParser.getQuestions(html);
       expect(results).to.deep.equal([
-        'uid-text-input',
-        'uid-code',
-        'uid-rating'
+        'uid-text-input-q',
+        'uid-code-q',
+        'uid-rating-q'
       ]);
     });
   });

@@ -10,13 +10,19 @@ var _ = require("lodash");
 
 describe("proxy.js", function(){
  before(function(){
-    this.commands = Object.create(null);
-    this.commands.goodCommand = sinon.stub();
-    this.commands.assessmentComplete = sinon.stub();
-    this.commands.noFunction = {};
+    this.pluginName = 'asq-plugin'
 
     this.hooks = {
       registerHook : sinon.stub()
+    }
+
+    this.registry = {
+      addHook : sinon.stub(),
+      addEvent : sinon.stub()
+    }
+
+    this.pubsub = {
+      on : sinon.stub(),
     }
 
     //mock db
@@ -25,8 +31,9 @@ describe("proxy.js", function(){
     this.Proxy = SandboxedModule.require(modulePath, {
       requires: {
         "lodash": _ ,
-        "./commands" : this.commands,
         "../hooks/hooks" : this.hooks,
+        "./registry" : this.registry,
+        "./pubsub" : this.pubsub
       },
       globals : {
         db : this.db
@@ -34,48 +41,48 @@ describe("proxy.js", function(){
     });
   });
 
-  describe("prototype.command()", function(){
-    beforeEach(function(){
-      this.proxy = new this.Proxy();
-      this.commands.goodCommand.reset();
-    });
-
-    it("should fail if the argument is empty or null or undefined ", function(){
-      expect(this.proxy.command).to.throw(Error, /command .* does not exist/);
-    });
-
-    it("should fail if the command doesn't exist ", function(){
-      expect(this.proxy.command.bind(this.proxy, "non-existent-command")).to.throw(Error, /command .* does not exist/);
-    });
-
-    it("should fail if the command is not a function ", function(){
-      expect(this.proxy.command.bind(this.proxy, "noFunction")).to.throw(Error, /command .* is not a function/);
-    });
-
-    it("should call the correct command", function(){
-      this.proxy.command("goodCommand");
-      this.commands.goodCommand.calledOnce.should.equal(true);
-      this.commands.goodCommand.calledWith().should.equal(true);
-    });
-
-    it("should pass the arguments correctly", function(){
-      this.proxy.command("goodCommand", 1, "hello", {foo: "bar"});
-      this.commands.goodCommand.calledWith(1, "hello", {foo:"bar"}).should.equal(true);
-    });
-  });
 
   describe("prototype.registerHook()", function(){
     beforeEach(function(){
-      this.proxy = new this.Proxy();
       this.hooks.registerHook.reset();
+      this.registry.addHook.reset();
       this.fn = function(){};
-    });
-
-    it("should call hooks ", function(){
+      
+      this.proxy = new this.Proxy(this.pluginName);
       this.proxy.registerHook("hookName", this.fn);
-      this.hooks.registerHook.calledWith("hookName", this.fn);
     });
 
+    it("should call registry.addHook ", function(){
+      this.registry.addHook
+        .calledWithExactly(this.pluginName,"hookName", this.fn)
+        .should.equal(true);
+    });
+
+    it("should call hooks.registerHook", function(){
+      this.hooks.registerHook
+        .calledWith("hookName", this.fn).should.equal(true);
+    });
+  });
+
+  describe("prototype.registerEvent()", function(){
+    beforeEach(function(){
+      this.pubsub.on.reset();
+      this.registry.addEvent.reset();
+      this.fn = function(){};
+
+      this.proxy = new this.Proxy(this.pluginName);
+      this.proxy.registerEvent("eventName", this.fn);
+    });
+
+    it("should call registry.addEvent ", function(){ 
+      this.registry.addEvent
+        .calledWithExactly(this.pluginName, "eventName", this.fn)
+        .should.equal(true);
+    });
+
+    it("should call pubsub.on", function(){
+      this.pubsub.on.calledWith("eventName", this.fn).should.equal(true);
+    });
   });
 
   describe("prototype.socket()", function(){
