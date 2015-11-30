@@ -1,7 +1,8 @@
-# Most explicit routing to GCE Precise
 sudo: required
 dist: precise
 group: edge
+
+language: bash
 
 services:
 - docker
@@ -21,4 +22,4 @@ script:
 #- docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel /sbin/my_init -- npm test
 
 after_success:
-- curl -H "Content-Type: application/json" --data '{"build": true}' -X POST $DOCKER_HUB_TRIGGER
+- "curl -H \"Content-Type: application/json\" --data '{\"build\": true}' -X POST $DOCKER_HUB_TRIGGER"
