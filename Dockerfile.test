@@ -23,7 +23,7 @@ RUN npm run build
 
 # CONFIGURE ASQ
 #Configure ASQ
-RUN mv /ASQ/config/config.docker.js /ASQ/config/config.production.js
+RUN mv /ASQ/config/config.docker.js /ASQ/config/config.test.js
 
 # CONFIGURE NGINX
 # Copy custom configuration file from the current directory
