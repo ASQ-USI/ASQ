@@ -6,9 +6,9 @@ services:
   - docker
 
 before_install:
-- docker pull redis
+- docker pull redis:2
 - docker run -d --name redis redis
-- docker pull mongo
+- docker pull mongo:3.0.3
 - docker run -d --name mongo mongo
 - docker ps -a
 - docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
