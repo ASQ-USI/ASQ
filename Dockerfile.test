@@ -19,7 +19,8 @@ RUN apt-get update -q \
     && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 # Install ASQ
 RUN npm install --unsafe-perm 
-RUN npm run build
+#Currenlty non needed for unit testing	
+#RUN npm run build
 
 # CONFIGURE ASQ
 #Configure ASQ
