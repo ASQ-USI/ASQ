@@ -4,21 +4,21 @@ dist: precise
 group: edge
 
 services:
-  - docker
+- docker
 
 before_install:
-  - docker pull redis:2
-  - docker run -d --name redis redis
-  - docker pull mongo:3.0.3
-  - docker run -d --name mongo mongo
-  - docker ps -a
-  - docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
-  - docker build -t asqhub/asq_test:devel -f Dockerfile.test .
+- docker pull redis:2
+- docker run -d --name redis redis:2
+- docker pull mongo:3.0.3
+- docker run -d --name mongo mongo:3.0.3
+- docker ps -a
+- docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
+- docker build -t asqhub/asq_test:devel -f Dockerfile.test .
 
 script:
-  # Overrides the init processes and runs the tests
-  - docker run -t --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel npm test
-  #- docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel /sbin/my_init -- npm test
+# Overrides the init processes and runs the tests
+- docker run -t --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel npm test
+#- docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel /sbin/my_init -- npm test
 
 after_success:
-  - curl -H "Content-Type: application/json" --data '{"build": true}' -X POST $DOCKER_HUB_TRIGGER
+- curl -H "Content-Type: application/json" --data '{"build": true}' -X POST $DOCKER_HUB_TRIGGER
