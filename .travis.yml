@@ -15,9 +15,8 @@ before_install:
 install:
 - docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
 - docker build -t asqhub/asq_test:devel -f Dockerfile.test .
+
+script:
 # Overrides the init processes and runs the tests
 - docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel npm test
 #- docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel /sbin/my_init -- npm test
-
-script:
-- npm test
