@@ -21,8 +21,9 @@ RUN set -ex \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
   done
 
-ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 5.1.0
+ENV NPM_CONFIG_LOGLEVEL=info \
+    NODE_VERSION=5.1.0 \
+    NGINX_VERSION=1.9.7-1~trusty
 
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
   && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
@@ -33,32 +34,33 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 
 # Nginx 1.9.7-1 (Adapted for ubuntu 14.04 used in the FROM baseimage, original: https://github.com/nginxinc/docker-nginx/blob/08eeb0e3f0a5ee40cbc2bc01f0004c2aa5b78c15/Dockerfile)
 
-RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
-RUN echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list
-
-ENV NGINX_VERSION 1.9.7-1~trusty
+RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
+    && echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list
 
 RUN apt-get update \
     && apt-get install -y ca-certificates nginx=${NGINX_VERSION} \
+    # We only use sites-available and sites-enabled
+    && rm -Rf /etc/nginx/conf.d/* \
     # Clean up APT when done.
-    && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+    && apt-get clean autoclean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
 # Forward request and error logs to docker log collector
-RUN ln -sf /dev/stdout /var/log/nginx/access.log
-RUN ln -sf /dev/stderr /var/log/nginx/error.log
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # Configure Nginx
 ADD nginx.conf /etc/nginx/nginx.conf
 # Tweak nginx to match the workers to cpu's
-RUN procs=$(cat /proc/cpuinfo | grep processor | wc -l) && sed -i -e "s/worker_processes 1;/worker_processes $procs;/" /etc/nginx/nginx.conf
-# Performance configurations
-#RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
-RUN sed -i -e"s/keepalive_timeout 65/keepalive_timeout 65;\n        client_max_body_size 100m/" /etc/nginx/nginx.conf
-# To run in a Docker container
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN procs=$(cat /proc/cpuinfo | grep processor | wc -l) && sed -i -e "s/worker_processes 1;/worker_processes $procs;/" /etc/nginx/nginx.conf \
+    # Performance configurations
+    #RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
+    && sed -i -e"s/keepalive_timeout 65/keepalive_timeout 65;\n        client_max_body_size 100m/" /etc/nginx/nginx.conf \
+    # To run in a Docker container
+    && echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Get Nginx ready to accept sites configurations
-RUN rm -Rf /etc/nginx/conf.d/*
 RUN mkdir -p /etc/nginx/sites-available
 RUN mkdir -p /etc/nginx/sites-enabled
 RUN mkdir -p /etc/nginx/ssl/
