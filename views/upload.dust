@@ -16,19 +16,17 @@
 			<div class="row">
 				<!--   Seperating Headline   -->
 				<div class="col-md-12 headline">
-					<h2>Upload new presentation</h2>
+					<h2>Upload a file</h2>
+				</div>
+				
+				<div class="col-md-12">
+					<p class="upload-gray">Your presentation can be either a zipped filed containing an <a href="http://impress.github.io/impress.js/#/bored" target="_blank">impress.js</a> presentation, or a PDF file.</p>
 				</div>
 
 			</div>
-			<div class="row">
+			<div class="row" style="padding: 20px 0;">
 				<div class="col-md-12">
 					<form method="POST" action="/{username}/presentations/" enctype="multipart/form-data" class="form-inline form-upload">
-						<!-- <input id="lefile" type="file" name="upload" size="40" maxlength="100000" style="display:none">
-						<div class="input-append">
-							<input id="photoCover" class="input-large" type="text">
-							<a class="btn btn-default" onclick="$('input[id=lefile]').click();">Browse</a>
-							<button type="submit" class="btn btn-primary">Upload</button>
-						</div> -->
 
 						<div class="input-group">
 						    <span class="input-group-btn">
@@ -45,7 +43,7 @@
 
 			<div class="row" >
 				<div class="col-md-12 headline">
-					<h2>Upload with curl</h2>
+					<h2>Upload a zipped HTML presentation with curl</h2>
 				</div>
 				<div class="col-md-12">
 					</p> To zip all the files in the current directory and upload them with curl as a new  presentation:<br>

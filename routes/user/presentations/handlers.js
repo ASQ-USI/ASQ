@@ -165,17 +165,15 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
   try{
     var owner_id = req.user._id
       , name = req.body.title || req.files.upload.name
-      , zipPath = req.files.upload.path;
+      , uploadFilePath = req.files.upload.path;
 
-    var slideshow = yield upload.createPresentationFromZipArchive( owner_id, name, zipPath);
-
-    //remove zip file
-    yield fs.unlinkAsync(zipPath);
+    const slideshowid = yield upload.createPresentationFromFile( owner_id, name, uploadFilePath);
+    const slideshow = yield Slideshow.findById(slideshowid).lean().exec();
 
     logger.log({
       owner_id: req.user._id,
       slideshow: slideshow._id,
-      file_path: zipPath,
+      file_path: uploadFilePath,
       file_name: name
     }, "uploaded presentation");
 
@@ -189,7 +187,7 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
     logger.error({
       err: err,
       owner_id: req.user._id,
-      file_path: zipPath,
+      file_path: uploadFilePath,
       file_name: name
     }, "error uploading presentation");
   }
