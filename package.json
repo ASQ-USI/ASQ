@@ -88,6 +88,7 @@
     "promised-io": "~0.3.3",
     "read-chunk": "^1.0.1",
     "redis": "~0.8.4",
+    "reveal-asq-fork-asq-adapter": "github:youyix/reveal-asq-fork-asq-adapter",
     "request": "^2.67.0",
     "rimraf": "^2.3.4",
     "serve-favicon": "^2.2.0",

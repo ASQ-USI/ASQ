@@ -70,7 +70,7 @@ this.init = function(event) {
   this.setupASQElements(si.role);
 
   this.connect();
-  this.initImpress();
+  this.initReveal();
 
   this.subscribeToEvents();
   this.userAwake();
@@ -307,15 +307,15 @@ function qSA2Ar(s){
 
 document.addEventListener("WebComponentsReady", this.init.bind(this));
 
-this.initImpress = function(){
+this.initReveal = function(){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0;
     // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
-    var impress = require('./impress-asq');
-    impress().init();
+    require('./presentationAdapter/adapters').revealAsqFork(asi, null, false, offset);
+    // var impress = require('./impress-asq');
+    // impress().init();
   }catch(err){
     debug(err.toString + err.stack)
   }

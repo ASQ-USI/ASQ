@@ -48,9 +48,8 @@ this.init = function(event) {
   eventBus.emit('asq:sessionInfo', si);
 
   this.setupASQElements(si.role);
-
   this.connect();
-  this.initImpress();
+  this.initReveal();
   this.subscribeToEvents();
 }
 
@@ -109,14 +108,15 @@ this.connect = function(){
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
 }
 
-this.initImpress = function(){
+this.initReveal = function(){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
-    var impress = require('./impress-asq');
-    impress().init();
+    var x = require('./presentationAdapter/adapters');
+    x.revealAsqFork(asi, null, false, offset);
+    // var impress = require('./impress-asq');
+    // impress().init();
   }catch(err){
     debug(err.toString + err.stack)
   }
