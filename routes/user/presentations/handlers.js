@@ -1,4 +1,5 @@
-require('when/monitor/console');
+'use strict';
+
 var _             = require('lodash');
 var moment          = require('moment');
 var validator       = require('validator');
@@ -117,7 +118,7 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
     , name = req.body.title //if name is null of undefined it won't be udpated
     , zipPath = req.files.upload.path;
 
-    var slideshow = yield Slideshow.findById(req.params.presentationId).exec();
+    let slideshow = yield Slideshow.findById(req.params.presentationId).exec();
     
     if(! slideshow){
       //treat it as new upload
@@ -133,7 +134,8 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
       preserveSession: req.query.preserveSession
     }
   
-    var slideshow = yield upload.updatePresentationFromZipArchive(slideshow._id, name, zipPath, options);
+    const slideshowid = yield upload.updatePresentationFromZipArchive(slideshow._id, name, zipPath, options);
+    slideshow = yield Slideshow.findById(slideshowid).lean().exec();
 
     //remove zip file
     yield fs.unlinkAsync(zipPath);

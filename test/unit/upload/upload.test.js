@@ -259,7 +259,7 @@ describe('upload.js', function(){
     it('should create a presentation owned by the owner_id', function() {
       this.presentationCreate.createBlankSlideshow.calledWith(this.owner_id).should.equal(true);
     });
-
+``
     it('should create a presentation with the correct name', function() {
       this.presentationCreate.createBlankSlideshow.calledWith(sinon.match.any, this.name).should.equal(true);
     });
@@ -365,6 +365,7 @@ describe('upload.js', function(){
       this.source = '/path/to/zip/file-name.zip';
       this.owner_id = 'owner-id-123';
       this.name = 'Presentation name';
+      const pid = this.presentationId = 'presentation-id-123' ;
       let presentation = this.presentation = {
         '_id': 'presentation-id-123',
         'title': 'SamplePresentation',
@@ -461,6 +462,19 @@ describe('upload.js', function(){
 
     it('should find and process the main file', function() {
       this.upload.findAndProcessMainFile.calledWith(this.presentation._id).should.equal(true);
+    });
+
+    it('should return the slideshow id from a pdf upload', function(done) {
+      this.fileType.returns({ext: 'pdf'});
+      this.upload.updatePresentationFromZipArchive(
+        this.presentation._id, this.name, this.source, {preserveSession : true})
+        .then(function(res){
+          res.should.equal(this.presentationId);
+          done();
+        }.bind(this))
+        .catch(function(err){
+          done(err);
+        });
     });
   });
 });
