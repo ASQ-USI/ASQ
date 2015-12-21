@@ -72,6 +72,7 @@ describe('upload.js', function(){
       this.source = '/path/to/zip/file-name.zip';
       this.owner_id = 'owner-id-123';
       this.name = 'Presentation name';
+      this.presentationFramework = "impress.js";
       const pid = this.presentationId = 'presentation-id-123' ;
 
       sinon.stub(this.upload, "createPresentationFromZipArchive", function(){
@@ -95,10 +96,12 @@ describe('upload.js', function(){
 
     it('should create a presentation from zip if the uploaded file is a zip', function(done) {
       this.fileType.returns({ext: 'zip'});
-      this.upload.createPresentationFromFile(this.owner_id, this.name, this.source)
+      this.upload.createPresentationFromFile(
+        this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(){
-          this.upload.createPresentationFromZipArchive.calledWith(
-            this.owner_id, this.name, this.source).should.equal(true);
+          this.upload.createPresentationFromZipArchive
+          .calledWith(this.owner_id, this.name, this.presentationFramework, this.source)
+          .should.equal(true);
 
           this.upload.createPresentationFromPdfFile.called.should.equal(false);
           done();
@@ -110,7 +113,8 @@ describe('upload.js', function(){
 
     it('should unlink the zip if the uploaded file is a zip', function(done) {
       this.fileType.returns({ext: 'zip'});
-      this.upload.createPresentationFromFile(this.owner_id, this.name, this.source)
+      this.upload.createPresentationFromFile(
+        this.owner_id, this.name, this.presentationFramework,this.source)
         .then(function(){
           this.fs.unlink.calledWith(this.source).should.equal(true);
           done();
@@ -122,10 +126,12 @@ describe('upload.js', function(){
 
     it('should create a presentation from pdf if the uploaded file is a pdf', function(done) {
       this.fileType.returns({ext: 'pdf'});
-      this.upload.createPresentationFromFile(this.owner_id, this.name, this.source)
+      this.upload
+        .createPresentationFromFile(
+          this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(){
           this.upload.createPresentationFromPdfFile.calledWith(
-            this.owner_id, this.name, this.source).should.equal(true);
+            this.owner_id, this.name, this.presentationFramework, this.source).should.equal(true);
 
           this.upload.createPresentationFromZipArchive.called.should.equal(false);
           done();
@@ -137,7 +143,7 @@ describe('upload.js', function(){
 
     it('should return the slideshow id from a zip upload', function(done) {
       this.fileType.returns({ext: 'zip'});
-      this.upload.createPresentationFromFile(this.owner_id, this.name, this.source)
+      this.upload.createPresentationFromFile(this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(res){
           res.should.equal(this.presentationId);
           done();
@@ -149,7 +155,7 @@ describe('upload.js', function(){
 
     it('should return the slideshow id from a pdf upload', function(done) {
       this.fileType.returns({ext: 'pdf'});
-      this.upload.createPresentationFromFile(this.owner_id, this.name, this.source)
+      this.upload.createPresentationFromFile(this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(res){
           res.should.equal(this.presentationId);
           done();
@@ -160,7 +166,7 @@ describe('upload.js', function(){
     });
   });
 
-  describe('createPresentationFromPdfFile', function() {
+  describe.skip('createPresentationFromPdfFile', function() {
     beforeEach(function(done) {
       this.htmlPath ='path/to/upload/dir/presentation-id-123/samplePresentationRubrics.html';
       this.asqFilePath ='path/to/upload/dir/presentation-id-123/samplePresentationRubrics.asq.dust';
@@ -168,6 +174,7 @@ describe('upload.js', function(){
       this.sourceBasename = 'file-name.pdf';
       this.owner_id = 'owner-id-123';
       this.name = 'Presentation name';
+      this.presentationFramework = "impress.js";
       this.presentation = {
         '_id': 'presentation-id-123',
         'title': 'SamplePresentation',
@@ -182,7 +189,8 @@ describe('upload.js', function(){
       this.pdf.convertPdf2Html = sinon.stub().callsArg(2);
       this.fs.rename.reset();
 
-      this.upload.createPresentationFromPdfFile(this.owner_id, this.name, this.source)
+      this.upload.createPresentationFromPdfFile(
+        this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(){
           done();
         }.bind(this))
@@ -205,7 +213,8 @@ describe('upload.js', function(){
     });
 
     it('return the presentation id', function(done) {
-      this.upload.createPresentationFromPdfFile(this.owner_id, this.name, this.source)
+      this.upload.createPresentationFromPdfFile(
+        this.owner_id, this.presentationFramework, this.name, this.presentationFramework, this.source)
         .then(function(res){
           res.should.equal(this.presentation._id)
           done();
@@ -228,6 +237,7 @@ describe('upload.js', function(){
       this.asqFilePath ='path/to/upload/dir/presentation-id-123/samplePresentationRubrics.asq.dust';
       this.source = '/path/to/zip/file-name.zip';
       this.owner_id = 'owner-id-123';
+      this.presentationFramework = "impress.js";
       this.name = 'Presentation name';
       this.presentation = {
         '_id': 'presentation-id-123',
@@ -243,7 +253,9 @@ describe('upload.js', function(){
       this.presentationCreate.createBlankSlideshow = sinon.stub().returns(Promise.resolve(this.presentation));
       this.archive.extractZipArchive = sinon.stub().callsArg(2);
 
-      this.upload.createPresentationFromZipArchive(this.owner_id, this.name, this.source)
+      this.upload
+        .createPresentationFromZipArchive(
+            this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(){
           done();
         }.bind(this))
@@ -264,6 +276,12 @@ describe('upload.js', function(){
       this.presentationCreate.createBlankSlideshow.calledWith(sinon.match.any, this.name).should.equal(true);
     });
 
+    it('should create a presentation with the correct presentation framework', function() {
+      this.presentationCreate.createBlankSlideshow
+      .calledWith(sinon.match.any, sinon.match.any, this.presentationFramework)
+      .should.equal(true);
+    });
+
     it('should extract the zip file contents into the destination folder', function() {
       this.archive.extractZipArchive.calledWith(this.source, this.destination).should.equal(true);
     });
@@ -273,7 +291,7 @@ describe('upload.js', function(){
     });
 
     it('return the presentation id', function(done) {
-      this.upload.createPresentationFromPdfFile(this.owner_id, this.name, this.source)
+      this.upload.createPresentationFromZipArchive(this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(res){
           res.should.equal(this.presentation._id)
           done();
@@ -365,12 +383,14 @@ describe('upload.js', function(){
       this.source = '/path/to/zip/file-name.zip';
       this.owner_id = 'owner-id-123';
       this.name = 'Presentation name';
+      this.presentationFramework = "impress.js";
       const pid = this.presentationId = 'presentation-id-123' ;
       let presentation = this.presentation = {
         '_id': 'presentation-id-123',
         'title': 'SamplePresentation',
         'owner': 'owner-id-123',
         'course': 'General',
+        'framework': 'impress.js',
         'path': this.uploadDir + '/presentation-id-123',
         'asqFilePath': this.asqFilePath,
         save: sinon.stub().returns(Promise.resolve(this))
@@ -390,7 +410,8 @@ describe('upload.js', function(){
       this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
       this.presentationDelete.removeFileAssets = sinon.stub().returns(Promise.resolve(true));
       
-      this.upload.updatePresentationFromZipArchive(presentation._id, this.name, this.source, {})
+      this.upload.updatePresentationFromZipArchive(
+        presentation._id, this.name, this.presentationFramework, this.source, {})
         .then(function(){
           done();
         }.bind(this))
@@ -410,7 +431,7 @@ describe('upload.js', function(){
     it('should not remove the Sessions associated with the presentation if the preserveSession option is set', function(done) {
       this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
       this.upload.updatePresentationFromZipArchive(
-        this.presentation._id, this.name, this.source, {preserveSession : true})
+        this.presentation._id, this.name, this.presentationFramework, this.source, {preserveSession : true})
         .then(function(){
           this.presentationDelete.removeDbAssets.calledWith(this.presentation._id, ["Session"]).should.equal(true);
           done();
@@ -426,7 +447,8 @@ describe('upload.js', function(){
 
     it('should set the correct presentation name', function(done) {
       this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
-      this.upload.updatePresentationFromZipArchive(this.presentation._id, "lename", this.source)
+      this.upload.updatePresentationFromZipArchive(
+        this.presentation._id, "lename", this.presentationFramework, this.source)
         .then(function(){
           this.presentation.title.should.equal("lename");
           done();
@@ -438,9 +460,36 @@ describe('upload.js', function(){
 
     it('should keep the original name if the new name is undefined', function(done) {
       this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
-      this.upload.updatePresentationFromZipArchive(this.presentation._id, undefined, this.source)
+      this.upload.updatePresentationFromZipArchive(
+        this.presentation._id, undefined, this.presentationFramework, this.source)
         .then(function(){
           this.presentation.title.should.equal(this.name);
+          done();
+        }.bind(this))
+        .catch(function(err){
+          done(err);
+        });
+    });
+
+
+    it('should set the correct presentation framework', function(done) {
+      this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
+      this.upload.updatePresentationFromZipArchive(
+        this.presentation._id, this.name, "reveal.js", this.source)
+        .then(function(){
+          this.presentation.presentationFramework.should.equal("reveal.js");
+          done();
+        }.bind(this))
+        .catch(function(err){
+          done(err);
+        });
+    });
+
+    it('should keep the original presentation framework if the new presentation framework is undefined', function(done) {
+      this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
+      this.upload.updatePresentationFromZipArchive(this.presentation._id, this.name, this.presentationFramework, this.source)
+        .then(function(){
+          this.presentation.presentationFramework.should.equal(this.presentationFramework);
           done();
         }.bind(this))
         .catch(function(err){
@@ -467,7 +516,7 @@ describe('upload.js', function(){
     it('should return the slideshow id from a pdf upload', function(done) {
       this.fileType.returns({ext: 'pdf'});
       this.upload.updatePresentationFromZipArchive(
-        this.presentation._id, this.name, this.source, {preserveSession : true})
+        this.presentation._id, this.name, this.presentationFramework, this.source, {preserveSession : true})
         .then(function(res){
           res.should.equal(this.presentationId);
           done();

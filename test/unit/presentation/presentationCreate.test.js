@@ -12,6 +12,7 @@ describe("presentationCreate.js", function(){
   before(function(){
     var name = this.name = "presentation-name"
     var owner_id = this.owner_id = "owner-id-123";
+    this.presentationFramework = "impress.js";
 
     this.presentation = {
         "_id": "presentation-id-123",
@@ -61,7 +62,8 @@ describe("presentationCreate.js", function(){
     beforeEach(function(done){
       this.createStub.reset();
       this.findByIdAndUpdateStub.reset();
-      this.presentationCreate.createBlankSlideshow(this.owner_id, this.name)
+      this.presentationCreate
+      .createBlankSlideshow(this.owner_id, this.name, this.presentationFramework)
       .then(function(res){
         this.result = res;
         done();
@@ -75,6 +77,7 @@ describe("presentationCreate.js", function(){
       this.createStub.calledWith({
           title : this.name,
           owner : this.owner_id,
+          presentationFramework : this.presentationFramework,
           settings: this.defaultPresentationSettings['presentation']
         }).should.equal(true);
     });
