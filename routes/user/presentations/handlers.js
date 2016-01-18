@@ -169,11 +169,11 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
 var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, next){
   try{
     let owner_id = req.user._id;
-    let name = req.body.title || req.files.upload.name;
     let presentationFramework = req.body.presentationFramework;
-    let uploadFilePath = req.files.upload.path;
+    var name = req.body.title || req.files.upload.name;
+    var uploadFilePath = req.files.upload.path;
 
-    const slideshowid = yield upload.createPresentationFromFile( owner_id, name, uploadFilePath, presentationFramework);
+    const slideshowid = yield upload.createPresentationFromFile( owner_id, name, presentationFramework, uploadFilePath);
     const slideshow = yield Slideshow.findById(slideshowid).lean().exec();
 
     logger.log({
