@@ -9,7 +9,7 @@ services:
 - docker
 
 before_install:
-- docker pull redis:2
+- docker pull redis:2.8.23
 - docker run -d --name redis redis:2.8.23
 - docker pull mongo:3.0.3
 - docker run -d --name mongo mongo:3.0.3
