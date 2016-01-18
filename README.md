@@ -25,7 +25,7 @@ Please follow the [getting started guide](doc/manual/getting_started.md)
 Requirements
 -------------
 Ubuntu/Mac OS X/L**
-node 0.4+
+node 4.0+
 mongoDB 2.6.0 +
 redis 2.0+
 
