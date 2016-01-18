@@ -1,8 +1,11 @@
 ## Table of Contents
 
 [Installation](#installation)
+
 [Creating an account](#creating-an-account)
+
 [Installing and Activating question type plugins](#installing-and-activating-question-type-plugins)
+
 [Your first presentation](#your-first-presentation)
 
 ##Installation
