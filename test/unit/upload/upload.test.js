@@ -315,6 +315,7 @@ describe('upload.js', function(){
         'course': 'General',
         'path': this.uploadDir + '/presentation-id-123',
         'asqFilePath': this.asqFilePath,
+        'presentationFramework': "impress.js",
         'save': sinon.stub().returns(Promise.resolve(this))
       };
 
@@ -326,7 +327,7 @@ describe('upload.js', function(){
 
       this.destination = path.join(this.uploadDir, this.presentation._id);
       this.fs.writeFile.reset();
-      this.adapters.impressAsqFork = { getSlidesTree: sinon.stub()};
+      this.adapters["impress.js"] = { getSlidesTree: sinon.stub()};
       this.fsUtils.getFirstHtmlFile = sinon.stub().returns(Promise.resolve(this.htmlPath));
       this.parse.parseAndPersist = sinon.stub().returns(Promise.resolve(true));
       this.parseAndPersist = sinon.stub();
@@ -353,7 +354,7 @@ describe('upload.js', function(){
     });
 
     it('should generate the slidesTree', function() {
-      this.adapters.impressAsqFork.getSlidesTree.calledWith(this.presentationHtml).should.equal(true);
+      this.adapters["impress.js"].getSlidesTree.calledWith(this.presentationHtml).should.equal(true);
     });
 
     it('should update the last edit timestamp', function() {
