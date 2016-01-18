@@ -1,5 +1,6 @@
 sudo: required
-dist: precise
+#changed from precise to trusty according to: https://github.com/travis-ci/travis-ci/issues/5448
+dist: trusty
 group: edge
 
 language: bash
