@@ -29,7 +29,7 @@ mongo:
   tags:
     - sc
 redis:
-  image: 'redis:2'
+  image: 'redis:2.8.23'
   restart: always
   tags:
     - sc
