@@ -5,7 +5,7 @@
  * UPDATE: express 4
  * presentations view redesign
  * presentations view: FIX 'invalid date' bug
- * node 0.12
+ * node 4.0
  * ADD: plugin system
  * ADD: hooks system
  * ADD: Polymer web components
@@ -13,6 +13,7 @@
  * REMOVE: dead routes
  * ADD: use npm for building
  * DROP: grunt
+ * ADD: support for [reveal.js](http://lab.hakim.se/reveal-js/#/) presentations
 
 ## v 0.2
  * Needs node v0.11.x
