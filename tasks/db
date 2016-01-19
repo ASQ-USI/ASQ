@@ -1,4 +1,4 @@
-#!/usr/bin/env node --harmony
+#!/usr/bin/env node
 
 /**
   @fileoverview db tsks
@@ -58,4 +58,25 @@ if(command == "emptyModel"){
   }).catch(function(err){
     throw err;
   })
+}
+
+if (command =="migrate"){
+
+  const fork = require('child_process').fork;
+  const path = require('path');
+
+  const mongoMigratePath = path.resolve(__dirname, '..', 'node_modules/mongodb-migrate');
+  //kick off process
+  var child = fork(mongoMigratePath, ['-runmm', '-cfg', 'config/migration-config.js']);
+
+  //spit stdout to screen
+  child.on('message', function (message) {   process.stdout.write(message.toString());  });
+
+  //spit stderr to screen
+  child.on('error', function (err) {   process.stdout.write(err.toString());  });
+
+  child.on('close', function (code) { 
+      console.log('Done!')
+      process.exit(0);
+  });
 }

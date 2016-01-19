@@ -16,7 +16,8 @@ describe("asqElementsParser.js", function(){
     this.simpleHtml = fs.readFileSync(require.resolve('./fixtures/simple.html'), 'utf-8');
     this.exercisesHtml = fs.readFileSync(require.resolve('./fixtures/exercises.html'), 'utf-8');
     this.questionsHtml = fs.readFileSync(require.resolve('./fixtures/questions.html'), 'utf-8');
-    this.simpleUidHtml = fs.readFileSync(require.resolve('./fixtures/simple-uid.html'), 'utf-8');
+    this.simpleUidHtmlImpress = fs.readFileSync(require.resolve('./fixtures/simple-uid-impress.html'), 'utf-8');
+    this.simpleUidHtmlReveal = fs.readFileSync(require.resolve('./fixtures/simple-uid-reveal.html'), 'utf-8');
     
     var then =  this.then = function(cb){
       return cb();
@@ -138,7 +139,7 @@ describe("asqElementsParser.js", function(){
   describe("prototype.injectServerInfo()", function(){
     beforeEach(function(){
       this.parser =  new this.AsqElementsParser();
-      this.$ = cheerio.load(this.simpleUidHtml);
+      this.$ = cheerio.load(this.simpleUidHtmlImpress);
       this.parser.injectServerInfo(this.$);
     });
 
@@ -158,10 +159,51 @@ describe("asqElementsParser.js", function(){
   });
 
   describe("prototype.injectScripts()", function(){
+    before(function(){
+      sinon.stub(this.AsqElementsParser.prototype, "injectScriptsForImpress");
+      sinon.stub(this.AsqElementsParser.prototype, "injectScriptsForReveal");
+    });
+
+    beforeEach(function(){
+      this.AsqElementsParser.prototype.injectScriptsForImpress.reset();
+      this.AsqElementsParser.prototype.injectScriptsForReveal.reset();
+      this.parser =  new this.AsqElementsParser();
+      this.$ = cheerio.load(this.simpleUidHtmlImpress);
+    });
+
+    after(function(){
+      this.AsqElementsParser.prototype.injectScriptsForImpress.restore();
+      this.AsqElementsParser.prototype.injectScriptsForReveal.restore();
+    });
+
+
+    it("should call injectScriptsForImpress() if `framework==\"impress.js\"`", function(){
+      this.parser.injectScripts(this.$,"impress.js");
+      this.AsqElementsParser.prototype.injectScriptsForImpress.calledOnce.should.equal(true);
+    });
+
+    it("should call injectScriptsForImpress() if `framework==\"impress.js\"`", function(){
+      this.parser.injectScripts(this.$,"reveal.js");
+      this.AsqElementsParser.prototype.injectScriptsForReveal.calledOnce.should.equal(true);
+    });
+
+    
+    it("should throw an error if the framework is empty", function(){
+      expect(this.parser.injectScripts.bind(this.parser, this.$))
+        .to.throw(/missing or unknown framework/);
+    });
+
+    it("should throw an error if the framework is unknown", function(){
+      expect(this.parser.injectScripts.bind(this.parser, this.$, "unknown.js"))
+        .to.throw(/missing or unknown framework/);
+    });
+  });
+
+  describe("prototype.injectScriptsForImpress()", function(){
     beforeEach(function(){
       this.parser =  new this.AsqElementsParser();
-      this.$ = cheerio.load(this.simpleUidHtml);
-      this.parser.injectScripts(this.$);
+      this.$ = cheerio.load(this.simpleUidHtmlImpress);
+      this.parser.injectScriptsForImpress(this.$);
     });
 
     
@@ -170,7 +212,20 @@ describe("asqElementsParser.js", function(){
       expect(x.length).to.equal(0);
     });
 
-    it("should have script injected", function(){
+    it("should inject the asq script placeholder", function(){
+      var x = this.$.root().html().toString();
+      expect(x.includes('{&gt;asqPresentationScripts /}')).to.be.true;
+    });
+  });
+
+  describe("prototype.injectScriptsForReveal()", function(){
+    beforeEach(function(){
+      this.parser =  new this.AsqElementsParser();
+      this.$ = cheerio.load(this.simpleUidHtmlReveal);
+      this.parser.injectScriptsForReveal(this.$);
+    });
+
+    it("should inject the asq script placeholder", function(){
       var x = this.$.root().html().toString();
       expect(x.includes('{&gt;asqPresentationScripts /}')).to.be.true;
     });
@@ -191,7 +246,7 @@ describe("asqElementsParser.js", function(){
       this.AsqElementsParser.prototype.getExercises.reset();
       this.AsqElementsParser.prototype.getQuestions.reset();
       this.parser =  new this.AsqElementsParser(['asq-multi-choice-q'], ['asq-multi-choice-q']);
-      this.$ = cheerio.load(this.simpleUidHtml);
+      this.$ = cheerio.load(this.simpleUidHtmlImpress);
       this.parser.injectRoleInfo(this.$);
     });
 
@@ -302,34 +357,40 @@ describe("asqElementsParser.js", function(){
       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser))
         .to.throw(/Argument `html` should be a non empty string/);
       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,'<html>'))
-        .to.throw(/Argument `slideSelector` should be a non empty string/);
-      expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,'<html>', 'sth'))
         .to.throw(/Argument `exerciseTag` should be a non empty string/);
+      expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,'<html>', 'sth'))
+        .to.throw(/Argument `slidesIds` should be an Array/);
 
       //empty
       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,''))
         .to.throw(/Argument `html` should be a non empty string/);
       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,'<html>', ''))
-        .to.throw(/Argument `slideSelector` should be a non empty string/);
-      expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,'<html>', 'sth',''))
         .to.throw(/Argument `exerciseTag` should be a non empty string/);
+      expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,'<html>', 'sth',{}))
+        .to.throw(/Argument `slidesIds` should be an Array/);
     });
 
-    it("should raise an error when slide containers have no id", function(){
-      var html = this.$.html('#no-step-ids');
-       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,html, '.step', 'asq-exercise'))
-        .to.throw(/Slide containers should have an id/);
+    it("should not raise an error when the slides for the given ids exist", function(){
+      var html = this.$.html('#one-ex-per-slide');
+       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser, html, 'asq-exercise', ['step-1', 'step-2']))
+        .to.not.throw();
+    });
+
+    it("should raise an error when a slide for a given id doesn't exist", function(){
+      var html = this.$.html('#one-ex-per-slide');
+       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser, html, 'asq-exercise', ['step-3']))
+        .to.throw(/Slide with id step-3 should exist/);
     });
 
     it("should raise an error when exercise elements have no uid", function(){
       var html = this.$.html('#no-exercise-uids');
-       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser,html, '.step', 'asq-exercise'))
+       expect(this.asqParser.getExercisesPerSlide.bind(this.asqParser, html, 'asq-exercise', ['step-1', 'step-2']))
         .to.throw(/Exercise elements should have a uid/);
     });
 
     it("should report the exercises per slides correctly", function(){
       var html = this.$.html('#one-ex-per-slide');
-      var results = this.asqParser.getExercisesPerSlide( html, '.step', 'asq-exercise');
+      var results = this.asqParser.getExercisesPerSlide( html, 'asq-exercise', ['step-1', 'step-2']);
       expect(results["step-1"]).to.exist;
       expect(results["step-1"]).to.deep.equal(['uid-1'])
       expect(results["step-2"]).to.exist;
@@ -338,7 +399,7 @@ describe("asqElementsParser.js", function(){
 
     it("should report the exercises per slides correctly for multiple exercises per slide", function(){
       var html = this.$.html('#more-than-one-ex-per-slide');
-      var results = this.asqParser.getExercisesPerSlide( html, '.step', 'asq-exercise');
+      var results = this.asqParser.getExercisesPerSlide( html, 'asq-exercise', ['step-1', 'step-2']);
       expect(results["step-1"]).to.exist;
       expect(results["step-1"]).to.deep.equal(['uid-1', 'uid-2', 'uid-3']);
       expect(results["step-2"]).to.exist;

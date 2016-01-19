@@ -15,7 +15,6 @@
   ],
   "dependencies": {
     "asq-elements": "ASQ-USI-Elements/asq-elements#master",
-    "webcomponentsjs": "~0.7.2",
     "polymer": "polymer/polymer#1.2.1"
   },
   "resolutions": {

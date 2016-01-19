@@ -8,7 +8,7 @@ module.exports = {
   "selenium" : {
     "start_process" : true,
     "server_path" : "/Users/vassilis/bin/selenium-server-standalone-2.43.1.jar",
-    "log_path" : false,
+    "log_path" : "",
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {

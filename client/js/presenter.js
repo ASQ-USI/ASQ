@@ -48,9 +48,8 @@ this.init = function(event) {
   eventBus.emit('asq:sessionInfo', si);
 
   this.setupASQElements(si.role);
-
   this.connect();
-  this.initImpress();
+  this.initPresentationFramework(si.presentationFramework);
   this.subscribeToEvents();
 }
 
@@ -65,6 +64,7 @@ this.readSessionInfo = function(){
   si.role      = this.role      = body.dataset.asqRole;
   si.namespace = this.namespace = body.dataset.asqSocketNamespace;
   si.token     = this.token     = body.dataset.asqSocketToken;
+  si.presentationFramework  = this.presentationFramework  = body.dataset.presentationFramework;
   si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
 
   assert(true, (isString(si.protocol) && !!si.protocol)
@@ -81,6 +81,8 @@ this.readSessionInfo = function(){
     , 'namespace is required');
   assert(true, (isString(si.token) && !!si.token)
     , 'token is required');
+  assert(true, (isString(si.presentationFramework) && !!si.presentationFramework)
+    , 'presentationFramework is required');
 
   return si;
 }
@@ -109,14 +111,52 @@ this.connect = function(){
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
 }
 
-this.initImpress = function(){
+this.initPresentationFramework = function(presentationFramework){
+  try{
+    switch(presentationFramework){
+      case 'impress.js':
+        require.ensure([], function(){
+          var adapter = require('impress-asq-fork-asq-adapter');
+          this.initImpress(adapter);
+        }.bind(this))
+        break;
+
+      case 'reveal.js':
+        require.ensure([], function(){
+          var adapter = require('./reveal-asq-fork-asq-adapter.js')
+         this.initReveal(adapter);
+        }.bind(this))
+        break;
+
+      default:
+        throw new Error('unknown presentationFramework ' + presentationFramework);
+    }
+  }catch(err){
+    debug(err.toString + err.stack)
+  }
+}
+
+this.initImpress = function(adapter){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
+    // require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
+    adapter.adapter(asi, null, false, offset);
     var impress = require('./impress-asq');
     impress().init();
+  }catch(err){
+    debug(err.toString + err.stack)
+  }
+}
+
+this.initReveal = function(adapter){
+  //init presentation adapter
+  try{
+    var offset = getUrlVars().offset || 0
+    var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
+    // var x = require('./presentationAdapter/adapters');
+    adapter(asi, null, false, offset);
   }catch(err){
     debug(err.toString + err.stack)
   }

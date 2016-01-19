@@ -49,7 +49,7 @@ this.init = function(event) {
   this.setupASQElements(si.role);
 
   this.connect();
-  this.initImpress();
+  this.initPresentationFramework();
 
   this.subscribeToEvents();
 
@@ -67,7 +67,7 @@ this.readSessionInfo = function(){
   si.namespace = this.namespace = body.dataset.asqSocketNamespace;
   si.token     = this.token     = body.dataset.asqSocketToken;
   si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
-
+  si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
 
   assert(true, (isString(si.protocol) && !!si.protocol)
     , 'protocol is required');
@@ -83,7 +83,9 @@ this.readSessionInfo = function(){
     , 'namespace is required');
   assert(true, (isString(si.token) && !!si.token)
     , 'token is required');
-
+  assert(true, (isString(si.presentationFramework) && !!si.presentationFramework)
+    , 'presentationFramework is required');
+  
   return si;
 }
 
@@ -126,15 +128,52 @@ this.subscribeToEvents= function (){
 
 document.addEventListener("WebComponentsReady", this.init.bind(this));
 
-this.initImpress = function(){
+this.initPresentationFramework = function(presentationFramework){
+  try{
+    switch(presentationFramework){
+      case 'impress.js':
+        require.ensure([], function(){
+          var adapter = require('impress-asq-fork-asq-adapter');
+          this.initImpress(adapter);
+        }.bind(this))
+        break;
+
+      case 'reveal.js':
+        require.ensure([], function(){
+          var adapter = require('./reveal-asq-fork-asq-adapter.js')
+         this.initReveal(adapter);
+        }.bind(this))
+        break;
+
+      default:
+        throw new Error('unknown presentationFramework ' + presentationFramework);
+    }
+  }catch(err){
+    debug(err.toString + err.stack)
+  }
+}
+
+this.initImpress = function(adapter){
+  //init presentation adapter
+  try{
+    var offset = getUrlVars().offset || 0
+    // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
+    var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
+    adapter.adapter(asi, null, false, offset);
+    var impress = require('./impress-asq');
+    impress().init();
+  }catch(err){
+    debug(err.toString + err.stack)
+  }
+}
+
+this.initReveal = function(adapter){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0;
     // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
-    var impress = require('./impress-asq');
-    impress().init();
+    adapter(asi, null, false, offset);
   }catch(err){
     debug(err.toString + err.stack)
   }

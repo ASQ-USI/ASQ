@@ -27,6 +27,9 @@ describe('parse.js', function(){
       'course': 'General',
       'path': this.destination + '/presentation-id-123',
       'asqFilePath': this.asqFilePath,
+      'slidesTree': {
+        "steps": ['step-1', 'step-2']
+      },
       setQuestionsPerSlide: function(){},
       setStatsPerSlide: function(){},
       save: sinon.stub().resolves(this),
@@ -381,7 +384,7 @@ describe('parse.js', function(){
     it('should call parser.getExercisesPerSlide with the right arguments', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
-          this.AsqElementsParser.prototype.getExercisesPerSlide.calledWith('<html></html>', '.step', 'asq-exercise').should.equal(true);
+          this.AsqElementsParser.prototype.getExercisesPerSlide.calledWith('<html></html>', 'asq-exercise', ['step-1', 'step-2']).should.equal(true);
         done();
       }.bind(this))
       .catch(function(err){
@@ -389,7 +392,7 @@ describe('parse.js', function(){
       });
     });
 
-    it('should mark `questionsPerSlide` as modified', function(done){
+    it('should mark `exercisesPerSlide` as modified', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.presentation.markModified.firstCall.calledWith('exercisesPerSlide').should.equal(true);
@@ -425,7 +428,7 @@ describe('parse.js', function(){
     it('should call parser.getQuestionsPerSlide with the right arguments', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
-          this.AsqElementsParser.prototype.getQuestionsPerSlide.calledWith('<html></html>', '.step').should.equal(true);
+          this.AsqElementsParser.prototype.getQuestionsPerSlide.calledWith('<html></html>', ['step-1','step-2']).should.equal(true);
         done();
       }.bind(this))
       .catch(function(err){

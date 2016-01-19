@@ -40,6 +40,11 @@ var slideshowSchema = new Schema({
   presenterFile     : { type: String, default: "" },
   viewerFile        : { type: String, default: "" },
   owner             : { type: ObjectId, ref: 'User', required: true },
+  presentationFramework : {
+                            type: String,
+                            default: "impress.js",
+                            enum: ['impress.js', 'reveal.js']
+                          },
   slidesTree        : { type: Object, default:{}},
   thumbnails        : { type: [String], default:[] },
   thumbnailsUpdated : { type: Date }, 

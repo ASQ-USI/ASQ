@@ -128,6 +128,10 @@ var conf = {
       file: "log/app.log",
       json: false
     }
+  },
+
+  pdfServer:{
+    url: "http://localhost:3300/api/impress"
   }
 };
 
