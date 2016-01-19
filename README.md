@@ -24,7 +24,7 @@ You can find the ASQ docker image on the [Docker Hub](https://hub.docker.com/r/a
 
 1. [Add you server to Tutum](https://support.tutum.co/support/solutions/articles/5000513678-bring-your-own-node), and [assign it a tag](https://support.tutum.co/support/solutions/articles/5000508859-deploy-tags)
 2. [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/?repo=https://github.com/ASQ-USI/ASQ)
-3. Configure you deployment:
+3. Configure your deployment:
    - Change the `HOST` environment variable passed to the ASQ service to match your host name.
    - Update the `tags` section of the defined services to match the tag you previously defined.
 
