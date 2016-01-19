@@ -13,7 +13,7 @@ execSync("npm install", {
 process.stdout.write("done!\n")
 
 process.stdout.write("Installing bower dependencies for PresenterControl...")
-execSync("bower install", {
+execSync("bower install --allow-root", {
   cwd: presenterControlDir,
   timeout: 120000
 });
