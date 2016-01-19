@@ -6,7 +6,7 @@ var execSync = require('child_process').execSync;
 var presenterControlDir = 'client/presenterControl';
 
 process.stdout.write("Installing npm dependencies for PresenterControl...")
-execSync("npm install", {
+execSync("npm install --unsafe-perm", {
   cwd: presenterControlDir,
   timeout: 60000
 });
