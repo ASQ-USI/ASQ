@@ -1,7 +1,7 @@
 asq:
   image: 'asqhub/asq:devel'
   environment:
-    - HOST=atelier.asq.inf.usi.ch
+    - HOST=<YOUR_HOST_NAME>
   expose:
     - '80'
     - '443'
