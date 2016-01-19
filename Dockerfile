@@ -18,13 +18,21 @@ RUN apt-get update -q \
 	# Clean up APT when done.
     && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 # Install ASQ
-RUN npm install --unsafe-perm \
-	&& npm run build \
+# RUN npm install --unsafe-perm \
+# 	&& npm run build \
+#     # Uninstall dev dependencies AND Dependencies not needed at runtime
+#     && npm prune --production \
+#     && apt-get remove -y --purge python build-essential \
+#     # Clean up when done.
+#     && rm -rf /tmp/* /var/tmp/*
+
+RUN npm install --unsafe-perm
+RUN npm run build
     # Uninstall dev dependencies AND Dependencies not needed at runtime
-    && npm prune --production \
-    && apt-get remove -y --purge python build-essential \
+RUN npm prune --production
+RUN apt-get remove -y --purge python build-essential
     # Clean up when done.
-    && rm -rf /tmp/* /var/tmp/*
+RUN rm -rf /tmp/* /var/tmp/*
 
 # CONFIGURE ASQ
 #Configure ASQ
