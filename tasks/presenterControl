@@ -8,7 +8,7 @@ var presenterControlDir = 'client/presenterControl';
 process.stdout.write("Installing npm dependencies for PresenterControl...")
 execSync("npm install --unsafe-perm", {
   cwd: presenterControlDir,
-  timeout: 60000
+  timeout: 120000
 });
 process.stdout.write("done!\n")
 
