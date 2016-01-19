@@ -18,7 +18,7 @@ lb:
   links:
     - asq
   ports:
-    - '8085:80'
+    - '80:80'
   roles:
     - global
   tags:
