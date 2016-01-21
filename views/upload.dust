@@ -16,19 +16,17 @@
 			<div class="row">
 				<!--   Seperating Headline   -->
 				<div class="col-md-12 headline">
-					<h2>Upload new presentation</h2>
+					<h2>Upload a file</h2>
+				</div>
+				
+				<div class="col-md-12">
+					<p class="upload-gray">Your presentation can be either a zipped filed containing an <a href="http://impress.github.io/impress.js/#/bored" target="_blank">impress.js</a>/<a href="http://lab.hakim.se/reveal-js" target="_blank">reveal.js</a> presentation, or a PDF file.</p>
 				</div>
 
 			</div>
-			<div class="row">
+			<div class="row" style="padding: 20px 0;">
 				<div class="col-md-12">
 					<form method="POST" action="/{username}/presentations/" enctype="multipart/form-data" class="form-inline form-upload">
-						<!-- <input id="lefile" type="file" name="upload" size="40" maxlength="100000" style="display:none">
-						<div class="input-append">
-							<input id="photoCover" class="input-large" type="text">
-							<a class="btn btn-default" onclick="$('input[id=lefile]').click();">Browse</a>
-							<button type="submit" class="btn btn-primary">Upload</button>
-						</div> -->
 
 						<div class="input-group">
 						    <span class="input-group-btn">
@@ -38,6 +36,10 @@
 						    </span>
 						    <input type="text" class="form-control" readonly>
 						</div>
+						<select class="form-control" name="presentationFramework">
+						  <option value="impress">impress.js</option>
+						  <option value="reveal">reveal.js</option>
+						</select>
 						<button type="submit" class="btn btn-primary">Upload</button>
 					</form>
 				</div>
@@ -45,25 +47,27 @@
 
 			<div class="row" >
 				<div class="col-md-12 headline">
-					<h2>Upload with curl</h2>
+					<h2>Upload a zipped HTML presentation with curl</h2>
 				</div>
 				<div class="col-md-12">
-					</p> To zip all the files in the current directory and upload them with curl as a new  presentation:<br>
-					<pre class="upload-code-snippet"><code>zip -r - * | curl -i --cookie "{user.cookie}" -F "title=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">1</i></span>" -F upload=@- {rootUrl}/{user.name}/presentations</code></pre>
+					To zip all the files in the current directory and upload them with curl as a new  presentation:<br>
+					<pre class="upload-code-snippet"><code>zip -r - * | curl -i --cookie "{user.cookie}" -F "title=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">1</i></span>" -F "presentationFramework=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">2</i></span>" -F upload=@- {rootUrl}/{user.name}/presentations</code></pre>
 					</p>
 					
 				</div>
 
 				<div class="col-md-12">
-					</p> or replace an existing presentation with a zip file:<br>
-					<pre class="upload-code-snippet"><code>zip -r - * | curl -X PUT -i --cookie "{user.cookie}" -F "title=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">1</i></span>" -F upload=@- {rootUrl}/{user.name}/presentations/<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">2</i></span><span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">3</i></span></code></pre>
+					or replace an existing presentation with a zip file:<br>
+					<pre class="upload-code-snippet"><code>zip -r - * | curl -X PUT -i --cookie "{user.cookie}" -F "title=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">1</i></span>" -F "presentationFramework=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">2</i></span>"  -F upload=@- {rootUrl}/{user.name}/presentations/<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">3</i></span><span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">4</i></span></code></pre>
+					Pro-tip: You can find the exact URL for updating an existing presentation on the <i class="fa fa-cloud-upload"></i> icon of your presentation thumbnail <a href="/{username}/presentations">here</a>
 					</p>	
 				</div>
 				
 				<div class="col-md-12">
 					<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">1</i></span> The title of the presentation, eg. <code class="upload-inline-code">Introduction to JavaScript</code> <br>
-					<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">2</i></span> The id of the presentation, eg. <code class="upload-inline-code">0123456789abcdef01234567</code> <br>
-					<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">3</i></span> You can append <code class="upload-inline-code">?preserveSession=true</code> to the URL to preserve the session; good for testing on a live presentation</code>
+					<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">2</i></span> The presentation framework , eg. <code class="upload-inline-code">impress.js</code> or <code class="upload-inline-code">reveal.js</code> <br>
+					<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">3</i></span> The id of the presentation, eg. <code class="upload-inline-code">0123456789abcdef01234567</code> <br>
+					<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">4</i></span> You can append <code class="upload-inline-code">?preserveSession=true</code> to the URL to preserve the session; good for testing on a live presentation</code>
 				</div>
 			</div>
 		</div>

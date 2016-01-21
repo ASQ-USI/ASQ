@@ -152,6 +152,7 @@ function livePresentation(req, res) {
   res.render(renderOpts.template, {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
+    presentationFramework : presentation.presentationFramework,
     host                  : req.app.locals.urlHost,
     port                  : req.app.locals.urlPort,
     namespace             : renderOpts.namespace,

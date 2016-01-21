@@ -5,6 +5,7 @@
 :host {
   @apply(--layout-vertical);
   @apply(--layout-fit);
+  font-size: 16px;
 }
 
 .hidden{
@@ -23,6 +24,7 @@
   padding: 5px 10px;
   display: none;
   @apply(--layout-flex);
+  overflow-y: auto;
 }
 
 #discussion-container.iron-selected,
@@ -221,6 +223,10 @@ presenter-control-activity-item.selected {
 
 #event-list{
   @apply(--layout-flex);
+}
+
+asq-sqlite-q{
+  min-height: 700px;
 }
 
     </style> 

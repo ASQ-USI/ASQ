@@ -1,4 +1,5 @@
-require('when/monitor/console');
+'use strict';
+
 var _             = require('lodash');
 var moment          = require('moment');
 var validator       = require('validator');
@@ -112,12 +113,14 @@ function listPresentations(req, res, next) {
 }
 
 var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
-  try{
-    var owner_id = req.user._id
-    , name = req.body.title //if name is null of undefined it won't be udpated
-    , zipPath = req.files.upload.path;
 
-    var slideshow = yield Slideshow.findById(req.params.presentationId).exec();
+  try{
+    let owner_id = req.user._id
+    var name = req.body.title //if name is null of undefined it won't be updated
+    let presentationFramework = req.body.presentationFramework; //if presentationFramework is null of undefined it won't be updated
+    var zipPath = req.files.upload.path;
+
+    let slideshow = yield Slideshow.findById(req.params.presentationId).exec();
     
     if(! slideshow){
       //treat it as new upload
@@ -133,7 +136,9 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
       preserveSession: req.query.preserveSession
     }
   
-    var slideshow = yield upload.updatePresentationFromZipArchive(slideshow._id, name, zipPath, options);
+    const slideshowid = yield upload.updatePresentationFromZipArchive(
+      slideshow._id, name, presentationFramework, zipPath, options);
+    slideshow = yield Slideshow.findById(slideshowid).lean().exec();
 
     //remove zip file
     yield fs.unlinkAsync(zipPath);
@@ -163,19 +168,18 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
 
 var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, next){
   try{
-    var owner_id = req.user._id
-      , name = req.body.title || req.files.upload.name
-      , zipPath = req.files.upload.path;
+    let owner_id = req.user._id;
+    let presentationFramework = req.body.presentationFramework;
+    var name = req.body.title || req.files.upload.name;
+    var uploadFilePath = req.files.upload.path;
 
-    var slideshow = yield upload.createPresentationFromZipArchive( owner_id, name, zipPath);
-
-    //remove zip file
-    yield fs.unlinkAsync(zipPath);
+    const slideshowid = yield upload.createPresentationFromFile( owner_id, name, presentationFramework, uploadFilePath);
+    const slideshow = yield Slideshow.findById(slideshowid).lean().exec();
 
     logger.log({
       owner_id: req.user._id,
       slideshow: slideshow._id,
-      file_path: zipPath,
+      file_path: uploadFilePath,
       file_name: name
     }, "uploaded presentation");
 
@@ -189,7 +193,7 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
     logger.error({
       err: err,
       owner_id: req.user._id,
-      file_path: zipPath,
+      file_path: uploadFilePath,
       file_name: name
     }, "error uploading presentation");
   }

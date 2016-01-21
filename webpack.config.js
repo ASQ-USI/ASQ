@@ -17,6 +17,7 @@ module.exports = {
     },
     output: {
       path: "./public/js/",
+      publicPath: "/js/",
       filename: "asq-[name].js"
     },
     devtool: devtool,

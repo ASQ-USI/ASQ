@@ -27,6 +27,9 @@ describe('parse.js', function(){
       'course': 'General',
       'path': this.destination + '/presentation-id-123',
       'asqFilePath': this.asqFilePath,
+      'slidesTree': {
+        "steps": ['step-1', 'step-2']
+      },
       setQuestionsPerSlide: function(){},
       setStatsPerSlide: function(){},
       save: sinon.stub().resolves(this),
@@ -48,7 +51,8 @@ describe('parse.js', function(){
     //mock asqElementsParser
     var AsqElementsParser =this.AsqElementsParser = function AsqElementsParser(){};
     this.AsqElementsParser.prototype={
-      parsePresentation: function(html){},
+      parsePresentation: function(options){},
+      parsePresentationSettings: function(options){},
       asqify: function(html){},
       getExercisesPerSlide: function(html, slideClass, tagName){},
       getExercises: function(html, tagName){},
@@ -56,37 +60,40 @@ describe('parse.js', function(){
       getQuestions: function(html){}
     }
 
-    sinon.stub(this.AsqElementsParser.prototype, 'parsePresentation', function(html){
-      return Promise.resolve(html);
+    sinon.stub(this.AsqElementsParser.prototype, 'parsePresentation', function(options){
+      return Promise.resolve(options);
+    });
+    sinon.stub(this.AsqElementsParser.prototype, 'parsePresentationSettings', function(options){
+      return Promise.resolve(options);
     });
     sinon.stub(this.AsqElementsParser.prototype, 'asqify', function(html){
-      return Promise.resolve(html);
+      return html;
     });
     sinon.stub(this.AsqElementsParser.prototype, 'getExercisesPerSlide', function(html, slideClass, tagName){
-      return Promise.resolve(html);
+      return html;
     });
     sinon.stub(this.AsqElementsParser.prototype, 'getExercises', function(html, tagName){
-      return Promise.resolve(html);
+      return html;
     });
     sinon.stub(this.AsqElementsParser.prototype, 'getQuestionsPerSlide', function(html, slideClass){
-      return Promise.resolve(html);
+      return html;
     });
     sinon.stub(this.AsqElementsParser.prototype, 'getQuestions', function(html){
-      return Promise.resolve(html);
+      return html;
     });
 
 
     // mock configuration
-    this.configuration = {
-      createSlidesConfiguration: function(opts){},
-      createExerciseConfiguration: function(opts){}
-    };
-    sinon.stub(this.configuration, 'createSlidesConfiguration', function(opts){
-      return Promise.resolve(true);
-    });
-    sinon.stub(this.configuration, 'createExerciseConfiguration', function(opts){
-      return Promise.resolve(opts.html);
-    });
+    // this.configuration = {
+    //   createSlidesConfiguration: function(opts){},
+    //   createExerciseConfiguration: function(opts){}
+    // };
+    // sinon.stub(this.configuration, 'createSlidesConfiguration', function(opts){
+    //   return Promise.resolve(true);
+    // });
+    // sinon.stub(this.configuration, 'createExerciseConfiguration', function(opts){
+    //   return Promise.resolve(opts.html);
+    // });
 
     //mock db
     var ObjectId = require('mongoose').Types.ObjectId
@@ -160,7 +167,8 @@ describe('parse.js', function(){
         'fs': this.fs,
         'lodash': require('lodash'),
         './AsqElementsParser' : this.AsqElementsParser,
-        '../configuration/conf.js' : this.configuration,
+        // '../configuration/conf.js' : this.configuration,
+        'mongoose': require('mongoose'),
         '../plugin/' : {getPluginNamesByType: this.getPluginNamesByTypeStub}
       },
       globals : {
@@ -275,9 +283,15 @@ describe('parse.js', function(){
 
   describe('parseAndPersist', function(){
 
+    before(function(){
+      sinon.stub(this.parse, 'escapeDustBrackets', function(html){
+        return html
+      })
+    })
+
     beforeEach(function(){
       this.AsqElementsParser.prototype.parsePresentation.reset();
-      this.AsqElementsParser.prototype.parsePresentation.reset();
+      this.AsqElementsParser.prototype.parsePresentationSettings.reset();
       this.presentation.save.reset();
       this.presentation.markModified.reset();
       this.getPluginNamesByTypeStub.reset();
@@ -285,7 +299,12 @@ describe('parse.js', function(){
       this.questionModel.find.reset();
       this.fs.readFile.reset();
       this.fs.writeFile.reset();
+      this.parse.escapeDustBrackets.reset();
     });
+
+    after(function(){
+      this.parse.escapeDustBrackets.restore();
+    })
 
     it('should open the right file', function(done){
       this.parse.parseAndPersist(this.presentation._id)
@@ -308,11 +327,42 @@ describe('parse.js', function(){
         done(err);
       });
     });
+
+    it('should call parser.parsePresentation', function(done){
+      this.parse.parseAndPersist(this.presentation._id)
+      .then(function(){
+        var expectedArg = {
+          html: '<html></html>',
+          slideshow_id: this.presentation._id
+        }
+        this.AsqElementsParser.prototype.parsePresentationSettings.calledWith(expectedArg).should.equal(true);
+        done();
+      }.bind(this))
+      .catch(function(err){
+        done(err);
+      });
+    });
     
     it('should call parser.parsePresentation', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
-        this.AsqElementsParser.prototype.parsePresentation.calledWith('<html></html>').should.equal(true);
+        var expectedArg = {
+          html: '<html></html>',
+          slideshow_id: this.presentation._id
+        }
+        this.AsqElementsParser.prototype.parsePresentation.calledWith(expectedArg).should.equal(true);
+        done();
+      }.bind(this))
+      .catch(function(err){
+        done(err);
+      });
+    });
+
+    it('should call escapeDustBrackets', function(done){
+      this.parse.parseAndPersist(this.presentation._id)
+      .then(function(){
+        var expectedArg = '<html></html>';
+        this.parse.escapeDustBrackets.calledWith(expectedArg).should.equal(true);
         done();
       }.bind(this))
       .catch(function(err){
@@ -334,7 +384,7 @@ describe('parse.js', function(){
     it('should call parser.getExercisesPerSlide with the right arguments', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
-          this.AsqElementsParser.prototype.getExercisesPerSlide.calledWith('<html></html>', '.step', 'asq-exercise').should.equal(true);
+          this.AsqElementsParser.prototype.getExercisesPerSlide.calledWith('<html></html>', 'asq-exercise', ['step-1', 'step-2']).should.equal(true);
         done();
       }.bind(this))
       .catch(function(err){
@@ -342,7 +392,7 @@ describe('parse.js', function(){
       });
     });
 
-    it('should mark `questionsPerSlide` as modified', function(done){
+    it('should mark `exercisesPerSlide` as modified', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.presentation.markModified.firstCall.calledWith('exercisesPerSlide').should.equal(true);
@@ -378,7 +428,7 @@ describe('parse.js', function(){
     it('should call parser.getQuestionsPerSlide with the right arguments', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
-          this.AsqElementsParser.prototype.getQuestionsPerSlide.calledWith('<html></html>', '.step').should.equal(true);
+          this.AsqElementsParser.prototype.getQuestionsPerSlide.calledWith('<html></html>', ['step-1','step-2']).should.equal(true);
         done();
       }.bind(this))
       .catch(function(err){
