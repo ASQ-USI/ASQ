@@ -87,7 +87,6 @@
     "promised-io": "~0.3.3",
     "redis": "~0.8.4",
     "reveal-asq-adapter": "github:asq-usi/reveal-asq-adapter",
-    "reveal-asq-fork-asq-adapter": "github:youyix/reveal-asq-fork-asq-adapter",
     "rimraf": "^2.3.4",
     "serve-favicon": "^2.2.0",
     "serve-static": "^1.9.2",
