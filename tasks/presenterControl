@@ -6,14 +6,14 @@ var execSync = require('child_process').execSync;
 var presenterControlDir = 'client/presenterControl';
 
 process.stdout.write("Installing npm dependencies for PresenterControl...")
-execSync("npm install", {
+execSync("npm install --unsafe-perm", {
   cwd: presenterControlDir,
-  timeout: 60000
+  timeout: 120000
 });
 process.stdout.write("done!\n")
 
 process.stdout.write("Installing bower dependencies for PresenterControl...")
-execSync("bower install", {
+execSync("bower install --allow-root", {
   cwd: presenterControlDir,
   timeout: 120000
 });

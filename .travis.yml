@@ -1,20 +1,26 @@
-language: node_js
-sudo: false
-env:
-  - CXX=g++-4.8
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-4.8
-node_js:
-  - "4.0"
-  - "5.0"
-before_script: "mv config/config.travis.js config/config.test.js"
-services:
-  - mongodb
-  - redis-server
-notifications:
-  hipchat: 053fa30889406842ce2432d239b201@266484
-  webhooks: http://desolate-woodland-3690.herokuapp.com/hubot/travis?room=ASQ
+sudo: required
+#changed from precise to trusty according to: https://github.com/travis-ci/travis-ci/issues/5448
+dist: trusty
+group: edge
+
+language: bash
+
+# services:
+# - docker
+
+before_install:
+- docker pull redis:2.8.23
+- docker run -d --name redis redis:2.8.23
+- docker pull mongo:3.0.3
+- docker run -d --name mongo mongo:3.0.3
+- docker ps -a
+- docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
+- docker build -t asqhub/asq_test:devel -f Dockerfile.test .
+
+script:
+# Overrides the init processes and runs the tests
+- docker run -t --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel npm test
+#- docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel /sbin/my_init -- npm test
+
+after_success:
+- "curl -H \"Content-Type: application/json\" --data '{\"build\": true}' -X POST $DOCKER_HUB_TRIGGER"
