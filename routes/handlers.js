@@ -21,7 +21,7 @@ function getHomePage(req, res) {
 }
 
 function getCompleteRegistration(req, res, next) {
-  var username = req.user.ldap.sAMAccountName ||  req.flash('username') ;
+  var username = req.user.ldap.cn ||  req.flash('username') ;
   if("undefined" == typeof username || username.length ==0){
     res.render('completeRegistration', {
       tipMessages : completeRegistrationMessages,
@@ -88,7 +88,7 @@ function postCompleteRegistration(req, res) {
       return deferred.promise;
   }).then(
     function onNewUser(user) {
-      logger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.sAMAccountName);
+      logger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.cn);
       res.redirect(utils.getPreviousURLOrHome(req));
 
   }).then(null,
