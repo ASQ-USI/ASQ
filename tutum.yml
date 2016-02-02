@@ -1,5 +1,5 @@
 asq:
-  image: 'asqhub/asq:devel'
+  image: 'asqhub/asq:master'
   environment:
     - HOST=<YOUR_HOST_NAME>
   expose:
