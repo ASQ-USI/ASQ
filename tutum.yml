@@ -1,5 +1,5 @@
 asq:
-  image: 'asqhub/asq:hotfix-ldap'
+  image: 'asqhub/asq:<DOCKER_HUB_IMAGE_TAG>'
   environment:
     - HOST=<YOUR_HOST_NAME>
   expose:
