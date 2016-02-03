@@ -23,4 +23,4 @@ script:
 #- docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel /sbin/my_init -- npm test
 
 after_success:
-- "curl -H \"Content-Type: application/json\" '{\"source_type\": \"Branch\", \"source_name\": \"$TRAVIS_BRANCH\"}' -X POST $DOCKER_HUB_TRIGGER"
+- "curl -H \"Content-Type: application/json\" --data '{\"source_type\": \"Branch\", \"source_name\": \"$TRAVIS_BRANCH\"}' -X POST $DOCKER_HUB_TRIGGER"
