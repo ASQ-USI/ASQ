@@ -29,7 +29,7 @@ var registeredUserSchema = baseUserSchema.extend({
   ldap        : {
     dn             : { type: String , unique: true, sparse: true
                      , required: false },
-    sAMAccountName : { type: String, unique: true, sparse: true
+    cn      : { type: String, unique: true, sparse: true
                      , required: false }
   }
 });
@@ -79,10 +79,10 @@ registeredUserSchema.statics.createOrAuthenticateLdapUser = function(ldapUser, d
         , newUser = new User();
 
       newUser.ldap.dn             = ldapUser.dn;
-      newUser.ldap.sAMAccountName = ldapUser.sAMAccountName;
+      // newUser.ldap.sAMAccountName = ldapUser.sAMAccountName;
       newUser.screenName          = ldapUser.cn;
-      newUser.firstname           = ldapUser.givenName || newUser.ldap.username;
-      newUser.lastname            = ldapUser.sn || newUser.ldap.username;
+      newUser.firstname           = ldapUser.givenName || newUser.ldap.username || ldapUser.cn;
+      newUser.lastname            = ldapUser.sn || newUser.ldap.username || ldapUser.cn;
 
       newUser.save(function(err, savedUser){
          if (err) { return done(err, null); }

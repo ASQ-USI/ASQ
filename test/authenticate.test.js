@@ -54,8 +54,7 @@ var ldapUser = {
     cn: "LDAPUserFirstname LDAPUserLastname",
     sn: "LDAPUserLastname",
     givenName: "ldapuser",
-    dn : "CN=LDAPUserFirstname LDAPUserLastname,OU=PersonalDesktop,OU=Desktop,OU=_UsersW7,OU=CAMPUS_USI,DC=usilu,DC=net",
-    sAMAccountName : "ldapuser"
+    dn : "CN=LDAPUserFirstname LDAPUserLastname,OU=PersonalDesktop,OU=Desktop,OU=_UsersW7,OU=CAMPUS_USI,DC=usilu,DC=net"
   }
 
 function ldapMiddleware(req, res, next){
@@ -98,7 +97,7 @@ describe('routes/handlers.postLoginCampus', function() {
       User.findOne({"ldap.dn" : ldapUser.dn }, function(err, user){
         if (err) {done(err)};
         expect(user).to.exist;
-        expect(user.ldap.sAMAccountName).to.equal(ldapUser.sAMAccountName)
+        expect(user.ldap.cn).to.equal(ldapUser.cn)
         expect(user.firstname).to.equal(ldapUser.givenName)
         expect(user.lastname).to.equal(ldapUser.sn)
         done();
