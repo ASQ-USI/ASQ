@@ -159,15 +159,34 @@ margin-right: auto;
   margin-top: 6px;
 }
 
-#icwe2015-logo {
-
-}
 
 #asq-icwe2015{
 width: 110px;
 height: auto;
 margin-top: -3px;
 margin-right: auto;
+}
+
+
+/* CeBIT 2016 section*/
+#cebit2016 h2{
+  color: #fff;
+}
+
+#cebit2016-logo-container{
+  height : 300px;
+  margin-right: 30px;
+}
+
+#asq-cebit2016{
+width: 110px;
+height: auto;
+margin-top: -3px;
+margin-right: auto;
+}
+
+.twitter-follow-button{
+  margin-top: 10px;
 }
 
 
