@@ -37,8 +37,8 @@
 						    <input type="text" class="form-control" readonly>
 						</div>
 						<select class="form-control" name="presentationFramework">
-						  <option value="impress">impress.js</option>
-						  <option value="reveal">reveal.js</option>
+						  <option value="impress.js">impress.js</option>
+						  <option value="reveal.js">reveal.js</option>
 						</select>
 						<button type="submit" class="btn btn-primary">Upload</button>
 					</form>
