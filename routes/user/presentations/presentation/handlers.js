@@ -71,7 +71,7 @@ function editPresentation(req, res) {
       }, function(error){
         //TODO How about handling the error?
         logger.error('This is an error left unhandeled...');
-        logger.error(error.toStirng());
+        logger.error(error.toString());
       });
     }
   });
