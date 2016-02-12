@@ -18,7 +18,24 @@ Make sure you have install ASQ following our [installation guide](../install/ins
 You have successfully created your first user.
 
 ##Installing and activating question type plugins
-By default the only enabled plugins are `asq-settings` and `asq-exercise`. Depending on the question types your users use in their presentations, you will need to install and enable one or more question type plugins.
+By default enabled plugins are:
+
+* [asq-buckets-q](https://github.com/ASQ-USI-Elements/asq-buckets-q/)
+* [asq-canvas](https://github.com/ASQ-USI-Elements/asq-canvas/)
+* [asq-code-q](https://github.com/ASQ-USI-Elements/asq-code-q/)
+* [asq-css-select-q](https://github.com/ASQ-USI-Elements/asq-css-select-q/)
+* [asq-exercise](https://github.com/ASQ-USI-Elements/asq-exercise/)
+* [asq-fiddle-q](https://github.com/ASQ-USI-Elements/asq-fiddle-q/)
+* [asq-highlight-q](https://github.com/ASQ-USI-Elements/asq-highlight-q/)
+* [asq-js-function-body-q](https://github.com/ASQ-USI-Elements/asq-js-function-body-q/)
+* [asq-multi-choice-q](https://github.com/ASQ-USI-Elements/asq-multi-choice-q/)
+* [asq-order-q](https://github.com/ASQ-USI-Elements/asq-order-q/)
+* [asq-rating-q](https://github.com/ASQ-USI-Elements/asq-rating-q/)
+* [asq-settings](https://github.com/ASQ-USI-Elements/asq-settings/)
+* [asq-sqlite-q](https://github.com/ASQ-USI-Elements/asq-sqlite-q/)
+* [asq-text-input-q](https://github.com/ASQ-USI-Elements/asq-text-input-q/)
+
+Depending on the question types your users use in their presentations, you will need to install and enable more question type plugins.
 
 ### 1. Download a question type plugin.
 The vast majority of question type plugins can be found under the [ASQ-USI-Elements](https://github.com/ASQ-USI-Elements/) Github organization. You can download a plugin either using the git clone command

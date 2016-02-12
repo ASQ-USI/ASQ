@@ -39,10 +39,22 @@
     "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'"
   },
   "dependencies": {
+    "asq-buckets-q": "ASQ-USI-Elements/asq-buckets-q#master",
+    "asq-canvas": "ASQ-USI-Elements/asq-canvas#master",
+    "asq-code-q": "ASQ-USI-Elements/asq-code-q#master",
+    "asq-css-select-q": "ASQ-USI-Elements/asq-css-select-q#master",
     "asq-exercise": "ASQ-USI-Elements/asq-exercise#master",
+    "asq-fiddle-q": "ASQ-USI-Elements/asq-fiddle-q#master",
+    "asq-highlight-q": "ASQ-USI-Elements/asq-highlight-q#master",
+    "asq-js-function-body-q": "ASQ-USI-Elements/asq-js-function-body-q#master",
     "asq-microformat": "^0.3.8",
+    "asq-multi-choice-q": "ASQ-USI-Elements/asq-multi-choice-q#master",
+    "asq-order-q": "ASQ-USI-Elements/asq-order-q#master",
     "asq-plugin": "ASQ-USI/asq-plugin",
+    "asq-rating-q": "ASQ-USI-Elements/asq-rating-q#master",
     "asq-settings": "ASQ-USI-Elements/asq-settings#master",
+    "asq-sqlite-q": "ASQ-USI-Elements/asq-sqlite-q#master",
+    "asq-text-input-q": "ASQ-USI-Elements/asq-text-input-q#master",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.2",
@@ -141,8 +153,20 @@
   },
   "asq": {
     "corePlugins": [
-      "asq-settings",
-      "asq-exercise"
+        "asq-buckets-q",
+        "asq-canvas",
+        "asq-code-q",
+        "asq-css-select-q",
+        "asq-exercise",
+        "asq-fiddle-q",
+        "asq-highlight-q",
+        "asq-js-function-body-q",
+        "asq-multi-choice-q",
+        "asq-order-q",
+        "asq-rating-q",
+        "asq-settings",
+        "asq-sqlite-q",
+        "asq-text-input-q"
     ]
   },
   "keywords": [
