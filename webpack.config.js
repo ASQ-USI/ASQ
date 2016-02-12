@@ -28,8 +28,5 @@ module.exports = {
         { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
       ]
     },
-    externals:[{
-      jquery: 'jQuery'
-    }],
     plugins: [commonsPlugin]
   }
