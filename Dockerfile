@@ -52,5 +52,6 @@ RUN mv /ASQ/config/config.docker.js /ASQ/config/config.production.js \
     && chmod +x /etc/service/asq/run
 
 #Configure Image
-VOLUME ["/ASQ"]
+VOLUME ["/ASQ/plugins"]
+VOLUME ["/ASQ/slides"]
 #EXPOSE 3000
