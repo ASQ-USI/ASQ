@@ -66,6 +66,10 @@ Changelog
 
 See the changelog [here](https://github.com/ASQ-USI/ASQ/blob/master/CHANGELOG.md).
 
+Licence
+---------
+Reciprocal Public License 1.5 (RPL-1.5). See the full Licence text [here](LICENCE.md).
+
 [1]: http://nodejs.org/                     "node.js"
 [2]: http://expressjs.com/                  "express.js"
 [3]: http://www.mongodb.org/                "MongoDB"
