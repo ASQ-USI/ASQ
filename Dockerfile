@@ -34,12 +34,10 @@ RUN apt-get remove -y --purge python build-essential
     # Clean up when done.
 RUN rm -rf /tmp/* /var/tmp/*
 
-# CONFIGURE ASQ
-#Configure ASQ
-RUN mv /ASQ/config/config.docker.js /ASQ/config/config.production.js \
-    # CONFIGURE NGINX
-    # Copy custom configuration file from the current directory
-    && cp /ASQ/lib/support/nginx/asq.conf /etc/nginx/sites-available/default.conf \
+# CONFIGURE NGINX, RUNIT
+# CONFIGURE NGINX
+# Copy custom configuration file from the current directory
+RUN cp /ASQ/lib/support/nginx/asq.conf /etc/nginx/sites-available/default.conf \
     && ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf \
     # CONFIGURE RUNIT
     # Nginx
