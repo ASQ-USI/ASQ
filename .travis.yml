@@ -9,18 +9,19 @@ language: bash
 # - docker
 
 before_install:
-- docker pull redis:2.8.23
-- docker run -d --name redis redis:2.8.23
-- docker pull mongo:3.0.3
-- docker run -d --name mongo mongo:3.0.3
-- docker ps -a
+# - docker pull redis:2.8.23
+# - docker run -d --name redis redis:2.8.23
+# - docker pull mongo:3.0.3
+# - docker run -d --name mongo mongo:3.0.3
+# - docker ps -a
 - docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
 - docker build -t asqhub/asq_test:test -f Dockerfile.test .
 
 script:
 # Overrides the init processes and runs the tests
-- docker run -t --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:test npm test
-#- docker run -d --name asq --link mongo:mongo --link redis:redis asqhub/asq_test:devel /sbin/my_init -- npm test
+- docker run -t --name asq asqhub/asq_test:test npm test
+#- docker run -d --name asq --link mongo:mongo --link redis:redis -e "MONGO_HOST=mongo" -e "REDIS_HOST=redis" asqhub/asq_test:devel /sbin/my_init -- npm test
 
-after_success:
-- "curl -H \"Content-Type: application/json\" --data '{\"source_type\": \"Branch\", \"source_name\": \"'$TRAVIS_BRANCH'\"}' -X POST $DOCKER_HUB_TRIGGER"
+deploy:
+  provider: script
+  script: "curl -H \"Content-Type: application/json\" --data '{\"source_type\": \"Branch\", \"source_name\": \"'$TRAVIS_BRANCH'\"}' -X POST $DOCKER_HUB_TRIGGER"
