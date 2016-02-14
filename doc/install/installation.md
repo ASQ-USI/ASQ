@@ -94,14 +94,17 @@ Then configure it
 
 ```bash
 cd ASQ
-# Copy the default example configuration
-cp config/config.defaults.js.example config/config.defaults.js
-# Set the `host` variable to your host's fully-qualified domain name
+# Copy the default example configuration. The .env file a convenient way
+# to expose multiple environmental variables. Of course you can also pass them
+# through the command line.
+cp .env.example .env
+# Set the `HOST` variable to your host's 
+# fully-qualified domain name
 #
-# If you want to use https make sure that you set `enableHTTPS` to `true`.
+# If you want to use HTTPS make sure that you set `ENABLE_HTTPS=true`.
 #
-# If you are using a reverse proxy (like nginx) make sure `usingReverseProxy` is set to `true` and configure the 'reverseProxyOptions' object.
-editor config/config.defaults.js
+# If you are using a reverse proxy (like nginx) make sure `USE_REVERSE_PROXY` is set to `true` and configure the 'REVERSE_PROXY_SECURE`, REVERSE_PROXY_HOST` and `REVERSE_PROXY_PORT' variables.
+editor .env
 ```
 
 Install npm packages and bower components

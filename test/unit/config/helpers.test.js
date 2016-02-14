@@ -1,12 +1,12 @@
 'use strict';
 
-var chai = require('chai')
-var sinon = require('sinon');
-var path = require('path')
-var should = chai.should();
-var expect = chai.expect;
-var SandboxedModule = require('sandboxed-module');
-var modulePath = '../../../config/helpers';
+const chai = require('chai')
+const sinon = require('sinon');
+const path = require('path')
+const should = chai.should();
+const expect = chai.expect;
+const SandboxedModule = require('sandboxed-module');
+const modulePath = '../../../config/helpers';
 
 
 describe('config/helpers.js', function(){
@@ -15,7 +15,7 @@ describe('config/helpers.js', function(){
 
     this.helpers = SandboxedModule.require(modulePath, {
       requires: {
-        'lodash': require('lodash'),
+        'lodash': require('lodash')
       },
       globals : {
         db : this.db
@@ -24,11 +24,35 @@ describe('config/helpers.js', function(){
   
   })
 
-  describe('createMongoUri()', function(){
+  describe('booleanOrDefault()', function(){
 
-    beforeEach(function(){
-      // this.exerciseCopy = JSON.parse(JSON.stringify(parsed.exercises[0]));
-    });
+    it('should return the val if it is boolean(y)', function(){
+      let result = this.helpers.booleanOrDefault(false, false);
+      result.should.equal(false);
+      result = this.helpers.booleanOrDefault(false, true);
+      result.should.equal(false);
+      result = this.helpers.booleanOrDefault(true, false);
+      result.should.equal(true);
+      result = this.helpers.booleanOrDefault(true, true);
+      result.should.equal(true);
+      result = this.helpers.booleanOrDefault('true', false);
+      result.should.equal(true);
+    })
+
+    it('should return default if value is missing or is not boolean', function(){
+      let result = this.helpers.booleanOrDefault(null, true);
+      result.should.equal(true);
+      result = this.helpers.booleanOrDefault(undefined, true);
+      result.should.equal(true);
+      result = this.helpers.booleanOrDefault("hi", false);
+      result.should.equal(false);
+      result = this.helpers.booleanOrDefault(1, false);
+      result.should.equal(false);
+    })
+
+  })
+
+  describe('createMongoUri()', function(){
 
     it('should throw an error when there is no configuration object', function(){
       expect(this.helpers.createMongoUri.bind(this.helpers))
@@ -46,7 +70,7 @@ describe('config/helpers.js', function(){
     });
 
     it('should throw an error when there is a username but not a password', function(){
-      var conf = {
+      let conf = {
         host: '127.0.0.1',
         port: '27102',
         username: 'testuser'
@@ -56,30 +80,30 @@ describe('config/helpers.js', function(){
     });
 
     it('should return the correct configuration when username is NOT specified', function(){
-      var conf = {
+      let conf = {
         host: '127.0.0.1',
         port: '27102'
       }
-      var result = this.helpers.createMongoUri(conf);
+      let result = this.helpers.createMongoUri(conf);
       result.should.equal("mongodb://127.0.0.1:27102/");
 
       conf.dbName = "testdb";
-      var result = this.helpers.createMongoUri(conf);
+      result = this.helpers.createMongoUri(conf);
       result.should.equal("mongodb://127.0.0.1:27102/testdb");
     });
 
     it('should return the correct configuration when username is specified', function(){
-      var conf = {
+      let conf = {
         host: '127.0.0.1',
         port: '27102',
         username: 'testuser',
         password: 'testpassword'
       }
-      var result = this.helpers.createMongoUri(conf);
+      let result = this.helpers.createMongoUri(conf);
       result.should.equal("mongodb://testuser:testpassword@127.0.0.1:27102/");
 
       conf.dbName = "testdb";
-      var result = this.helpers.createMongoUri(conf);
+      result = this.helpers.createMongoUri(conf);
       result.should.equal("mongodb://testuser:testpassword@127.0.0.1:27102/testdb");
     });
 
