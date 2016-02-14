@@ -157,7 +157,7 @@ To run ASQ with all the developer goodies (watchers to recompile assets upon cha
   ],
   "watch": [ "app.js", "lib/*", "config/*", "models/*", "shared/*", "views/*", "routes/*", "plugins/*"],
   "execMap": {
-    "js": "node --stack-trace-limit=1000 --stack-size=1024"
+    "js": "node -r dotenv/config app.js dotenv_config_silent=true --stack-trace-limit=1000 --stack-size=1024"
   }
 }
 ```
