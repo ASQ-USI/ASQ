@@ -295,6 +295,12 @@ this.subscribeToEvents= function (){
       type: "questioninput",
       data: evt 
     });
+  }.bind(this)).on('exercise-edit', function(evt){
+    this.userAwake();
+    connection.socket.emit('asq:snitch', {
+      type: "exercise-edit",
+      data: evt 
+    });
   }.bind(this));
 }
 

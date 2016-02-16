@@ -56,11 +56,21 @@ module.exports = function(eventBus){
     });
 
     document.addEventListener("questioninput", function(evt) {
-      console.log('called');
       var uid = evt.target.getAttribute('uid') || '';
       var tagname = event.target.tagName.toLowerCase();
       var eventName = "tab" + document.visibilityState;
       eventBus.emit("questioninput", {
+        uid: uid,
+        tagname: tagname,
+        value: evt.target.value
+      });
+    });
+
+    document.addEventListener("exercise-edit", function(evt) {
+      var uid = evt.target.getAttribute('uid') || '';
+      var tagname = event.target.tagName.toLowerCase();
+      var eventName = "tab" + document.visibilityState;
+      eventBus.emit("exercise-edit", {
         uid: uid,
         tagname: tagname,
         value: evt.target.value
