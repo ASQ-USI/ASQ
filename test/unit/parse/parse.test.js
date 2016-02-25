@@ -328,7 +328,7 @@ describe('parse.js', function(){
       });
     });
 
-    it('should call parser.parsePresentation', function(done){
+    it('should call parser.parsePresentationSettings', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
         var expectedArg = {
@@ -348,6 +348,7 @@ describe('parse.js', function(){
       .then(function(){
         var expectedArg = {
           html: '<html></html>',
+          user_id: this.presentation.owner,
           slideshow_id: this.presentation._id
         }
         this.AsqElementsParser.prototype.parsePresentation.calledWith(expectedArg).should.equal(true);
