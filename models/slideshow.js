@@ -2,6 +2,8 @@
     @description the Slideshow Model
 */
 
+'use strict';
+
 var mongoose            = require('mongoose');
 var Schema              = mongoose.Schema;
 var ObjectId            = Schema.ObjectId;
@@ -99,7 +101,7 @@ slideshowSchema.pre('save', true, function checkQuestionsOnSave(next, done) {
         'All question items should have a real Question _id');
       logger.error({
             err: err,
-            "presentation_id": this._id
+            "presentation_id": this._id,
             "questions_length": questions.length,
             "self_questions_length": self.questions.length,
           }, "error on saving presentation");
