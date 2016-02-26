@@ -95,8 +95,15 @@ slideshowSchema.pre('save', true, function checkQuestionsOnSave(next, done) {
     if (err) { done(err); }
 
     else if (questions.length !== self.questions.length) {
-      return done(new Error(
-        'All question items should have a real Question _id'));
+      let err = new Error(
+        'All question items should have a real Question _id');
+      logger.error({
+            err: err,
+            "presentation_id": this._id
+            "questions_length": questions.length,
+            "self_questions_length": self.questions.length,
+          }, "error on saving presentation");
+      return done(err);
     }
     done();
   });
