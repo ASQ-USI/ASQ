@@ -303,6 +303,19 @@
                 lastEntered = null;
             }
         };
+
+        // reference to last entered substep
+        var lastSubEntered = null;
+
+        // `onSubstepEnter` is called whenever the substep element is entered
+        // but the event is triggered only if the substep is different than
+        // last entered substep.
+        var onSubstepEnter = function (substep) {
+            if (lastSubEntered !== substep) {
+                triggerEvent(substep, "impress:substepenter");
+                lastSubEntered = substep;
+            }
+        };
         
         // `initStep` initializes given step element by reading data from its
         // data attributes and setting correct styles.
@@ -616,6 +629,7 @@
             }
             data.classList.remove('previous');
             data.classList.add('active');
+            onSubstepEnter(data);
         };
 
         var setActiveAllSubs = function (step){
