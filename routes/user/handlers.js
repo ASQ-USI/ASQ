@@ -138,6 +138,10 @@ function getLivePresentations(req, res) {
                       + '/?role=viewer&view=presentation';
       })
 
+      if (slideshows.length == 1) {
+        return res.redirect(slideshows[0].liveUrl);
+      }
+
       res.render('userLive', {
       livePresentations: slideshows,
       username: req.routeOwner.username,
