@@ -104,5 +104,52 @@ module.exports = function(eventBus){
        eventBus.emit('cut', {});
       }
     });
+
+    // mouse events
+    document.addEventListener("click", function(evt) {
+      eventBus.emit("click", evt);
+    });
+
+    document.addEventListener("mousemove", function(evt) {
+      eventBus.emit("mousemove", evt);
+    });
+
+    document.addEventListener("dblclick", function(evt) {
+      eventBus.emit("dblclick", evt);
+    });
+
+    document.addEventListener("contextmenu", function(evt) {
+      eventBus.emit("contextmenu", evt);
+    });
+
+    document.addEventListener("wheel", function(evt) {
+      eventBus.emit("wheel", evt);
+    });
+
+    document.addEventListener("touchend", function(evt) {
+      eventBus.emit("touchend", evt);
+    });
+
+    document.addEventListener("touchmove", function(evt) {
+      eventBus.emit("touchmove", evt);
+    });
+
+    document.addEventListener("touchstart", function(evt) {
+      eventBus.emit("touchstart", evt);
+    });
+
+    document.addEventListener("impress:stepenter", function(evt){ 
+      eventBus.emit("slideenter", {
+        slide: evt.target.id,
+        localtimestamp: new Date().toISOString() 
+      })
+    });
+
+    document.addEventListener("impress:stepleave", function(evt){ 
+      eventBus.emit("slideleave", {
+        slide: evt.target.id,
+        localtimestamp: new Date().toISOString() 
+      })
+    });
   })
 }
