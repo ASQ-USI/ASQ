@@ -50,6 +50,8 @@ var app = express();
 
 var init = coroutine(function *initGen () {
 
+  let server, serverHTTP;
+
   //setup middleware
   middleware(app);
 
@@ -73,21 +75,44 @@ var init = coroutine(function *initGen () {
 
   /** HTTP(S) Server */
   if (config.enableHTTPS && !config.usingReverseProxy) {
-    var server = require('https').createServer(credentials, app).listen(config.port, function(){
+    server = require('https').createServer(credentials, app).listen(config.port, function(){
         logger.log("ASQ HTTPS server listening on port " + config.port + " in " + app.get('env') + " mode");
     });
-    var serverHTTP = http.createServer(app).listen(config.HTTPPort, function() {
+    serverHTTP = http.createServer(app).listen(config.HTTPPort, function() {
         logger.log("HTTP redirection ready, listening on port " + config.HTTPPort);
     });
   } else {
-    var server = http.createServer(app).listen(config.port, '0.0.0.0', function(){
+    server = http.createServer(app).listen(config.port, '0.0.0.0', function(){
       logger.info("ASQ HTTP server listening on port " + config.port + " in " + app.get('env') + " mode");
     });
   }
 
    /** Socket.io Server */
   var io = require('./lib/socket').listen(server);
+
+  // this function is called when you want the server to die gracefully
+  // i.e. wait for existing connections
+  var gracefulShutdown = function() {
+    logger.log("Received kill signal, shutting down gracefully.");
+    server.close(function() {
+      logger.log("Closed out remaining connections.");
+      process.exit()
+    });
+    
+     // if it hasn't stopped after 10 seconds kill it
+     setTimeout(function() {
+        logger.error("Could not close connections in time, forcefully shutting down");
+         process.exit()
+    }, 10*1000);
+  }
+
+  // listen for TERM signal .e.g. kill 
+  process.on ('SIGTERM', gracefulShutdown);
+  // listen for INT signal e.g. Ctrl-C
+  process.on ('SIGINT', gracefulShutdown); 
 });
+
+
 
 //fire things up
 try{
