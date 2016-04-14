@@ -2,8 +2,6 @@
     @description activity event listeners.
 */
 
-
-
 'use strict';
 
 var debug = require('bows')("snitch");
