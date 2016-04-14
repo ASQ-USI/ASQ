@@ -257,7 +257,6 @@ this.subscribeToEvents= function (){
     }
 
     eventBus.on(item.type, function(evt){
-      console.log(item.type)
       if(item.awakesUser){
         this.userAwake();
       }
