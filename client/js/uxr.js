@@ -48,7 +48,7 @@ module.exports = {
     
     $.ajax({
       type : "POST",
-      url : "http://localhost:55555/api/UXS/SendEvent",
+      url : "https://localhost.konopka.sk:55554/api/UXS/SendEvent",
       data : {
         "Token" : "ASQ-3v3nts_30126",
         "Value" : JSON.stringify(data),
