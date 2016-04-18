@@ -8,14 +8,14 @@ var presenterControlDir = 'client/presenterControl';
 process.stdout.write("Installing npm dependencies for PresenterControl...")
 execSync("npm install --unsafe-perm", {
   cwd: presenterControlDir,
-  timeout: 120000
+  timeout: 300000
 });
 process.stdout.write("done!\n")
 
 process.stdout.write("Installing bower dependencies for PresenterControl...")
 execSync("bower install --allow-root", {
   cwd: presenterControlDir,
-  timeout: 120000
+  timeout: 300000
 });
 
 process.stdout.write("done!")

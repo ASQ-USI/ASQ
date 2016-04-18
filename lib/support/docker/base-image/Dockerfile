@@ -1,8 +1,6 @@
-FROM phusion/baseimage:0.9.17
+FROM phusion/baseimage:0.9.18
 
 MAINTAINER Vincenzo FERME <info@vincenzoferme.it>
-
-CMD ["/sbin/my_init"]
 
 # SETUP ASQ DEPENDENCIES
 
@@ -65,3 +63,5 @@ RUN mkdir -p /etc/nginx/ssl/
 VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80 443
+
+CMD ["/sbin/my_init"]
