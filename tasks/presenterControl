@@ -13,7 +13,7 @@ execSync("npm install --unsafe-perm", {
 process.stdout.write("done!\n")
 
 process.stdout.write("Installing bower dependencies for PresenterControl...")
-execSync("bower --allow-root cache clean && bower --allow-root install ", {
+execSync("bower --allow-root install ", {
   cwd: presenterControlDir,
   timeout: 300000
 });
