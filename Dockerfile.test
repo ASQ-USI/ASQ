@@ -20,6 +20,7 @@ RUN mkdir -p /opt/app && mkdir -p /opt/app/log && cp -a /tmp/node_modules /opt/a
 
 # LOAD ASQ
 ENV WORKDIR /opt/app
+ENV ASQDIR /opt/app
 WORKDIR $WORKDIR
 # Copy ASQ
 COPY . $WORKDIR
