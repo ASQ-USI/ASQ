@@ -15,10 +15,6 @@
   ],
   "dependencies": {
     "asq-elements": "ASQ-USI-Elements/asq-elements#master",
-    "polymer": "polymer/polymer#1.2.1"
-  },
-  "resolutions": {
-    "polymer": "^1.2.3",
-    "paper-toolbar": "~1.1.1"
+    "polymer": "polymer/polymer#^1.4.0"
   }
 }
