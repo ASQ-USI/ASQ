@@ -25,6 +25,7 @@ RUN cd /tmp && npm install --unsafe-perm \
 # LOAD ASQ
 # Copy ASQ
 COPY . $ASQDIR
+WORKDIR $ASQDIR
 
 # Install ASQ
 RUN npm install --unsafe-perm \
