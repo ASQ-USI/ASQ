@@ -2,12 +2,10 @@
 #################
 doc/
 node_modules/
-client/presenterControl/public
 
 # ASQ Components #
 ##################
-/bower_components
-/components
+bower_components/
 
 # Continuous Integration #
 #################

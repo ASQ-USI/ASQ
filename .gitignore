@@ -22,8 +22,10 @@
 
 # Hidden Files and Folders #
 ############################
-!/.bowerrc
-!/.gitignore
+.*
+!.bowerrc
+!/.dockerignore
+!.gitignore
 !/.gitattributes
 !/.env.example
 
