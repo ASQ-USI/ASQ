@@ -1,0 +1,23 @@
+# Node.js & ASQ #
+#################
+doc/
+node_modules/
+client/presenterControl/public
+
+# ASQ Components #
+##################
+/bower_components
+/components
+
+# Continuous Integration #
+#################
+.travis.yml
+Dockerfile
+Dockerfile.ci
+
+# Miscellaneous #
+##################
+LICENCE
+README.md
+CHANGELOG.md
+TODO.md
