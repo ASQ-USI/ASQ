@@ -22,7 +22,6 @@
 
 # Hidden Files and Folders #
 ############################
-.*
 !/.bowerrc
 !/.gitignore
 !/.gitattributes
@@ -73,9 +72,6 @@ Thumbs.db
 # Nodemon #
 ######################
 nodemon.json
-
-
-public/thumbs
 
 # ASQ Components #
 ##################

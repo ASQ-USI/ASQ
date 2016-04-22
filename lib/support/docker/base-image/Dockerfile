@@ -56,9 +56,9 @@ RUN procs=$(cat /proc/cpuinfo | grep processor | wc -l) && sed -i -e "s/worker_p
     && echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Get Nginx ready to accept sites configurations
-RUN mkdir -p /etc/nginx/sites-available
-RUN mkdir -p /etc/nginx/sites-enabled
-RUN mkdir -p /etc/nginx/ssl/
+RUN mkdir -p /etc/nginx/sites-available \
+    && mkdir -p /etc/nginx/sites-enabled \
+    && mkdir -p /etc/nginx/ssl/
 
 VOLUME ["/var/cache/nginx"]
 
