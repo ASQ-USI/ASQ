@@ -9,7 +9,7 @@
 var debug = require('bows')("presenter")
   , $ = require('jquery')
   , EventEmitter2 = require('eventemitter2')
-  , manager = require('asq-visualization').Manager()
+  // , manager = require('asq-visualization').Manager()
   , connection = require('./connection.js')
   , elements = require('./elements.js')
   , eventBus = new EventEmitter2({delimiter: ':', maxListeners: 100})
