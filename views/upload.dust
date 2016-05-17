@@ -46,7 +46,7 @@
 					</div> {! /.upload-details !}					
 
 					 <div class="dz-message" data-dz-message>
-					 	<span class="big-font" style="font-weight:300; padding-right: 5px;">Drop</span> <span class="big-font">your presentation</span> <span class="big-font" style="font-weight:300; padding: 0 5px;">here</span> <span class="big-font">to upload<sup> <a style="font-size:14px" href="#" data-toggle="tooltip" data-container="body" data-placement="top" title="Drag a zip archive tha contains your presentation. When uploaded, it will be extracted and it's the contents will be set as your presentation files."><span class="glyphicon glyphicon-info-sign"></span></a></sup></span> 
+					 	<span class="big-font" style="font-weight:300; padding-right: 5px;">Drop</span> <span class="big-font">your presentation</span> <span class="big-font" style="font-weight:300; padding: 0 5px;">here</span> <span class="big-font">to upload<sup> <a style="font-size:14px" href="#" data-toggle="tooltip" data-container="body" data-placement="top" title="Drag a zip archive tha contains your presentation. When uploaded, it will be extracted and its contents will be set as your presentation files."><span class="glyphicon glyphicon-info-sign"></span></a></sup></span> 
 							<br><i class="fa fa-cloud-upload"></i>
 							<br><span style="font-size:20px;">( or click to select a file )</span> 
 						</div>
