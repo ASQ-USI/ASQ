@@ -1,13 +1,13 @@
 module.exports = {
   "src_folders" : ["./test/acceptance"],
   "output_folder" : "./test/acceptance-reports",
-  "custom_commands_path" : "",
+  "custom_commands_path" : "./test/acceptance/custom-commands",
   "custom_assertions_path" : "",
   "globals_path" : "",
   
   "selenium" : {
     "start_process" : true,
-    "server_path" : "/Users/vassilis/bin/selenium-server-standalone-2.43.1.jar",
+    "server_path" : "/Users/vassilis/bin/selenium-server-standalone-2.53.0.jar",
     "log_path" : "",
     "host" : "127.0.0.1",
     "port" : 4444,
@@ -38,6 +38,14 @@ module.exports = {
         "browserName": "firefox",
         "javascriptEnabled": true,
         "acceptSslCerts": true
+      }
+    },
+
+    "safari" : {
+      "desiredCapabilities" : {
+        "browserName" : "safari",
+        "javascriptEnabled" : true,
+        "acceptSslCerts" : true
       }
     }
   }

@@ -1,5 +1,6 @@
 module.exports = {
   "login test enter" : function (browser) {
+    console.log(browser.launchUrl)
     browser
       .url(browser.launchUrl + '/login')
       .waitForElementVisible('body', 500)

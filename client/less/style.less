@@ -1,6 +1,7 @@
 // mixins
 @import "lib/lesshat.less";
 @import "layout.less";
+@import "upload.less";
 
 body{
     background-image: url("../img/pattern5.jpg");
@@ -941,7 +942,7 @@ h2{
   text-decoration: none;
 }
 
-.remove:hover{
+.remove:hover, .remove:focus{
   text-decoration: none;
 }
 
@@ -1035,81 +1036,6 @@ form{
 
 #createAccount, #completeRegistrationSbmt {
   position: relative;
-}
-
-/*  Upload FORM */
-  
-.upload-gray{
-  color: rgb(174, 174, 174);
-}
-
-.form-upload{
-  .btn-file {
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-file input[type=file] {
-      position: absolute;
-      top: 0;
-      right: 0;
-      min-width: 100%;
-      min-height: 100%;
-      font-size: 100px;
-      text-align: right;
-      filter: alpha(opacity=0);
-      opacity: 0;
-      outline: none;
-      background: white;
-      cursor: inherit;
-      display: block;
-  }
-}
-
-.upload-code-snippet{
-  background: none;
-  font-size: 1.7em;
-  border: none;
-  color: rgb(174, 174, 174);
-  margin: 10px auto;
-  overflow: hidden;
-}
-
-.upload-code-snippet-modal{
-  text-align: left;
-  font-size: 1.2em;
-}
-
-.upload-fa-stack.fa-stack {
-  width: 1.5em;
-  height: 1.5em;
-  line-height: 1.5em;
-  
-  .fa-stack-2x{
-    font-size: 1.5em;
-  }
-
-  .fa-stack-1x{
-    font-size: 0.85em;
-  }
-
-  .fa-stack-1x, .fa-stack-2x {
-    top:0;
-  }
-
-  .fa-circle{
-    color: #D08C8C;
-  }
-
-  .fa.text{
-    font-weight: bold;
-    color: rgb(100, 39, 39);
-  }
-}
-
-.upload-inline-code{
-  color: @pastel-red;
-  background: none;
-  font-weight: bold;
 }
 
 /**********************************************
