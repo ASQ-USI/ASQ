@@ -13,9 +13,7 @@ test-unit:
 		$(MOCHA_OPTS)
 
 test-acceptance:
-	@NODE_ENV=test casperjs test \
-		--log-level=debug \
-		test/acceptance/*.js
+	@NODE_ENV=test nightwatch
 
 test-cov: lib-cov
 	@EXPRESS_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
