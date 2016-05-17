@@ -4,7 +4,7 @@
 'use strict';
 var debug = require('bows')("js/views/upload");
 var menuDOMBinder = require('./menu');
-var Dropzone = require('Dropzone');
+var Dropzone = require('dropzone');
 // 
 module.exports = {
   activateDropzone: function(){
