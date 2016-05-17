@@ -26,6 +26,7 @@ module.exports = {
         "enabled" : false,
         "path" : ""
       },
+      "exclude" : ["custom-commands/*.js","edit/*.js"],
       "desiredCapabilities": {
         "browserName": "chrome",
         "javascriptEnabled": true,
