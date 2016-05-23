@@ -61,7 +61,7 @@
     "bluebird": "^2.7.1",
     "body-parser": "^1.12.2",
     "bows": "^1.1.2",
-    "cheerio": "^0.19.0",
+    "cheerio": "^0.20.0",
     "connect": "2.8.x",
     "connect-flash": "~0.1.1",
     "connect-redis": "^2.2.0",
