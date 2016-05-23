@@ -28,12 +28,34 @@ describe("proxy.js", function(){
     //mock db
     this.db = {model: function(){}};
 
+    this.defaultPresentationSettings = {
+      "exercise": [
+        { key: 'maxNumSubmissions',
+          value: 1,
+          kind: 'number',
+          level: 'exercise' 
+        },
+        { key: 'assessment',
+          value: 'none',
+          kind: 'select',
+          params: { options: [Object] },
+          level: 'exercise' 
+        },
+        { key: 'confidence',
+          value: false,
+          kind: 'boolean',
+          level: 'exercise' 
+        } 
+      ]
+    }
+
     this.Proxy = SandboxedModule.require(modulePath, {
       requires: {
         "lodash": _ ,
         "../hooks/hooks" : this.hooks,
         "./registry" : this.registry,
-        "./pubsub" : this.pubsub
+        "./pubsub" : this.pubsub,
+        "../settings/defaultPresentationSettings.js" : this.defaultPresentationSettings
       },
       globals : {
         db : this.db
@@ -85,6 +107,21 @@ describe("proxy.js", function(){
     });
   });
 
+   describe("prototype.api.settings.getDefaultSettings", function(){
+    it("should return a new instance of settings everty time", function(){
+      var proxy = new this.Proxy(this.pluginName);
+      // overwriting a value shouldn't matter when we get the defaultSettigns
+      // cause we clone every time
+      proxy.api.settings.defaultSettings['exercise'][0].value.should.equal(1);
+      proxy.api.settings.defaultSettings['exercise'][0].value = 9999;
+      proxy.api.settings.defaultSettings['exercise'][0].value.should.equal(1);
+
+      proxy.api.settings.defaultSettings['exercise'][2].value.should.equal(false);
+      proxy.api.settings.defaultSettings['exercise'][2].value = true;
+      proxy.api.settings.defaultSettings['exercise'][2].value.should.equal(false);
+    })
+  });
+
   describe("prototype.socket()", function(){
     it.skip("should test socket")
   });
@@ -93,8 +130,3 @@ describe("proxy.js", function(){
   });
   
 });
-
-
-
-
-
