@@ -368,6 +368,46 @@ var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req
 });
 
 
+var getScoreboard = coroutine(function* getScoreboardGen(req, res, next) {
+  logger.debug(require('util').inspect(req.whitelistEntry));
+  var role = req.query.role || 'ghost'; //Check user is allowed to have this role
+  if (req.whitelistEntry !== undefined) {
+    role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
+  } else {
+    logger.debug('Public session');
+    role = 'ghost'; //Public session and not whitelisted only allows viewers.
+  }
+  var presentation = req.liveSession.slides
+  var scoreBoardTemplatePath = path.join( presentation.path, "scoreboard.asq.dust" );
+  var presentationViewUrl = ''
+  var presentationDir = presentation.path + '/'
+  var presentationFile = presentationDir + presentation.asqFile
+  var presenterLiveUrl = req.app.locals.rootUrl + '/' + req.routeOwner.username + '/live/';
+  var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
+
+  res.render(scoreBoardTemplatePath,{
+    username              : req.user? req.user.username :'',
+    title                 : presentation.title,
+    host                  : req.app.locals.urlHost,
+    port                  : req.app.locals.urlPort,
+    namespace             : 'ghost',
+    commonScript          : '/js/asq-common.js',
+    roleScript            : '/js/asq-ghost.js',
+    role                  : 'ghost',
+    presentation          : presentation._id,
+    slideTree             : JSON.stringify(presentation.slidesTree),
+    presentationId        : presentation._id,
+    id                    : req.liveSession.id,
+    token                 : token,
+    userSessionId         : req.whitelistEntry.id,
+    date                  : req.liveSession.startDate,
+    presentationFramework : "none",
+    presentationViewUrl   : presentationViewUrl,
+    presenterLiveUrl      : presenterLiveUrl
+  });
+});
+
+
 
 module.exports = {
   editPresentation          : editPresentation,
@@ -376,6 +416,6 @@ module.exports = {
   startPresentation         : startPresentation,
   terminatePresentation     : terminatePresentation,
   getPresentationStats      : getPresentationStats,
-
   getPresentationSettings   : getPresentationSettings,
+  getScoreboard             : getScoreboard
 }

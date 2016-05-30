@@ -17,6 +17,9 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/:user/presentations/:presentationId/live/:liveId', 
     middleware.authorizeLiveSession, handlers.livePresentation);
 
+  app.get('/:user/presentations/:presentationId/live/:liveId/scoreboard', 
+    middleware.authorizeLiveSession, handlers.getScoreboard);
+
   //static files
   app.get('/:user/presentations/:presentationId/live/:liveId/*', 
    handlers.livePresentationFiles);
