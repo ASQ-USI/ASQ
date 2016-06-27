@@ -12,7 +12,6 @@ var events = require("events");
 
 describe("archive.js", function() {
   beforeEach(function() {
-    var Timer;
     this.logger = {
       error: sinon.stub(),
       log: sinon.stub()
