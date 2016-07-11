@@ -156,7 +156,7 @@ this.initReveal = function(adapter){
     var offset = getUrlVars().offset || 0
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
     // var x = require('./presentationAdapter/adapters');
-    adapter(asi, null, false, offset);
+    adapter.adapter(asi, null, false, offset);
   }catch(err){
     debug(err.toString + err.stack)
   }

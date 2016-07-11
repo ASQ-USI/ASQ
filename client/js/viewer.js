@@ -323,7 +323,7 @@ this.initReveal = function(adapter){
     var offset = getUrlVars().offset || 0;
     // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    adapter(asi, null, false, offset);
+    adapter.adapter(asi, null, false, offset);
   }catch(err){
     debug(err.toString + err.stack)
   }
