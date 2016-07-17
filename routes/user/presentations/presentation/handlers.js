@@ -6,7 +6,6 @@ var cheerio     = require('cheerio');
 var path        = require('path') ;
 var pfs         = require('promised-io/fs');
 var lib         = require('../../../../lib');
-var sockAuth    = require('../../../../lib/socket/authentication');
 var logger      = require('logger-asq');
 var presUtils   = lib.utils.presentation;
 var config      = require('../../../../config');
@@ -147,8 +146,6 @@ function livePresentation(req, res) {
 
   renderOpts.commonScript = '/js/asq-common.js';
 
-  var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
-  
   res.render(renderOpts.template, {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
@@ -164,7 +161,6 @@ function livePresentation(req, res) {
     slideTree             : JSON.stringify(presentation.slidesTree),
     presentationId        : presentation._id,
     id                    : req.liveSession.id,
-    token                 : token,
     userSessionId         : req.whitelistEntry.id,
     date                  : req.liveSession.startDate,
     presentationViewUrl   : presentationViewUrl,
@@ -347,12 +343,10 @@ var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req
   var sessionId = yield presUtils.getSessionIfLiveByUser(userId, slideshowId);
   var livelink  = !sessionId ? null : presUtils.getLiveLink(username, slideshowId, sessionId);
 
-  var token  = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID});
   var params = {
       host                 : req.app.locals.urlHost,
       port                 : req.app.locals.urlPort,
       namespace            : '/',
-      token                : token,
       browserSesstionId    : req.sessionID,
       
       title                : slideshow.title,
@@ -364,7 +358,6 @@ var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req
   };
 
   res.render('presentationSettings', params);
-
 });
 
 

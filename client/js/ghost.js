@@ -65,7 +65,6 @@ this.readSessionInfo = function(){
   si.sessionId = this.sessionId = body.dataset.asqSessionId;
   si.role      = this.role      = body.dataset.asqRole;
   si.namespace = this.namespace = body.dataset.asqSocketNamespace;
-  si.token     = this.token     = body.dataset.asqSocketToken;
   si.presentationFramework  = this.presentationFramework  = body.dataset.presentationFramework;
   si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
 
@@ -81,8 +80,6 @@ this.readSessionInfo = function(){
     , 'role is required');
   assert(true, (isString(si.namespace) && !!si.namespace)
     , 'namespace is required');
-  assert(true, (isString(si.token) && !!si.token)
-    , 'token is required');
   assert(true, (isString(si.presentationFramework) && !!si.presentationFramework)
     , 'presentationFramework is required');
   
@@ -110,7 +107,7 @@ this.connect = function(){
     "asq-plugin"
   ];
   connection.addEvents2Forward(events2Forward);
-  connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
+  connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
 }
 
 this.setupASQElements = function(role) {
