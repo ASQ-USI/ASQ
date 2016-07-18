@@ -241,6 +241,7 @@ describe('authentication.js', function(){
         before(function(done){
           this.req = reqs.public.newGuest;
           sinon.spy(this.req.session, "touch");
+          sinon.stub(this.req.session, "save").callsArg(0);
           this.leUser = {
             _id : "guestUserId",
             browserSessionId : this.req.sessionID,
@@ -293,6 +294,7 @@ describe('authentication.js', function(){
         after(function(){
           this.req.isAuthenticated.restore();
           this.req.session.touch.restore();
+          this.req.session.save.restore();
           this.GuestUserModel.reset()
           this.GuestUserModel.findOne.reset()
           this.WhitelistEntryModel.reset()
@@ -301,6 +303,11 @@ describe('authentication.js', function(){
 
         it('Should accept the connection', function testNewGuest(){
           expect(this.err).to.not.exist;
+        });
+
+        it('should mark the session as a guest session', function(){
+          expect(this.req.session.isGuest).to.be.true;
+          expect(this.req.session.save).to.have.been.calledOnce;
         });
 
         it('Should create a new guest user',

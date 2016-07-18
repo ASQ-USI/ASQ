@@ -89,7 +89,9 @@ var reqs = {
       "sessionID": browserSessionTokens.validGuest1,
       "liveSession" : fixtures.Session[0],
       "session" : {
-        "touch" : function touch() {}
+        "touch" : function touch() {},
+        "save" : function save() {}
+
       },
       "isAuthenticated" : function isAuthenticated() { return false; }
     },
