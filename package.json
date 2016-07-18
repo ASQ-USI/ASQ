@@ -108,6 +108,7 @@
     "session-mongoose": "~0.2.2",
     "sillyname": "0.0.3",
     "simple-errors": "0.0.4",
+    "sinon": "^1.17.4",
     "socket.io": "~1.3.5",
     "socket.io-browserify": "~0.9.6",
     "socket.io-client": "~1.3.5",
