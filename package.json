@@ -76,6 +76,7 @@
     "file-type": "^3.3.0",
     "grunt-webpack": "^1.0.8",
     "hammerjs": "^2.0.4",
+    "helmet": "^2.1.1",
     "imports-loader": "^0.6.3",
     "impress-asq-adapter": "ASQ-USI/impress-asq-adapter",
     "impress-asq-fork-asq-adapter": "ASQ-USI/impress-asq-fork-asq-adapter#master",
