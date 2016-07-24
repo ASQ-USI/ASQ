@@ -71,10 +71,6 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
-# Nodemon #
-######################
-nodemon.json
-
 # ASQ Components #
 ##################
 /bower_components

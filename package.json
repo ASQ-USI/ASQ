@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
-    "start-dev": "NODE_ENV=development nodemon | bunyan",
+    "start-dev": "NODE_ENV=development nodemon app.js dotenv_config_silent=true| bunyan",
     "start": "NODE_ENV=production node -r dotenv/config app.js dotenv_config_silent=true",
     "install": "bower --allow-root cache clean && bower --allow-root install && npm run presenterControl && npm run plugins",
     "webpack-dev": "NODE_ENV=development webpack -d --watch",
@@ -95,6 +95,7 @@
     "multer": "^0.1.8",
     "node-libs-browser": "^0.5.2",
     "node-redis": "^0.1.7",
+    "nodemon": "^1.9.2",
     "passport": "^0.3.2",
     "passport-local": "~0.1.6",
     "passport.socketio": "^3.6.2",
