@@ -1,0 +1,38 @@
+version: '2'
+services:
+  asq:
+    image: asqhub/asq:<DOCKER_HUB_IMAGE_TAG>
+    container_name: asq
+    environment:
+      HOST: <YOUR_HOST_NAME>
+      MONGO_DB_NAME: asq
+      MONGO_HOST: mongo
+      REDIS_HOST: redis
+      REVERSE_PROXY_HOST: <YOUR_HOST_NAME>
+      REVERSE_PROXY_SECURE: 'false'
+      USE_REVERSE_PROXY: 'true'
+    tty: true
+    ports:
+      - 80:3000
+    networks:
+      - asq
+    depends_on:
+      - mongo
+      - redis
+    links:
+      - 'redis:'
+      - 'mongo:'
+  mongo:
+    image: mongo:3.0.3
+    container_name: mongo
+    networks:
+      - asq
+  redis:
+    image: redis:2.8.23
+    container_name: redis
+    networks:
+      - asq
+
+networks:
+  asq:
+      driver: bridge
