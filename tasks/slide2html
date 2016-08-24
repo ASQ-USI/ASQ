@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+
+// Download, install and build slide2html
+'use strict';
+
+const fs = require("fs");
+const spawnSync = require('child_process').spawnSync;
+const slide2htmlDir = 'slide2html';
+const timeout = 300000; // 5 mins
+
+function ifErrPrintAndExit(spawnPs){
+  if(spawnPs.status > 0){
+    process.stderr.write(spawnPs.stderr.toString() + "\n");
+    process.exit(1);
+  }
+}
+
+// download
+process.stdout.write("Downloading slide2html...");
+let out = spawnSync("git", [
+  "clone",
+  "https://github.com/ASQ-USI/slide2html.git",
+  slide2htmlDir
+],{
+  timeout: timeout
+});
+ifErrPrintAndExit(out);
+process.stdout.write("done!\n");
+
+// install npm deps
+process.stdout.write("Installing npm dependencies for slide2html...");
+out = spawnSync("npm", [
+  "install",
+  "--unsafe-perm",
+  "--production"
+], {
+  cwd: slide2htmlDir,
+  timeout: timeout
+});
+ifErrPrintAndExit(out);
+process.stdout.write("done!\n");
