@@ -76,8 +76,19 @@ function editPresentation(req, res) {
   });
 }
 
+
+/**
+* This function renders the appropriate view of a live presentation.
+* To decide which view to render:
+* a) it checks the query string for `role` and `view` variables. Defaults
+* are `viewer` and `presentation` respectively.
+* b) It then does a authorization
+* check to see if the user has the `role` they claim. 
+* Notice that for the cockpit view, we redirect in order to get rid of 
+* the query string which causes trouble in the clientside routing lib of
+* the cockpit.
+*/
 function livePresentation(req, res) {
-  logger.debug(require('util').inspect(req.whitelistEntry));
   var role = req.query.role || 'viewer'; //Check user is allowed to have this role
   if (req.whitelistEntry !== undefined) {
     role = req.whitelistEntry.validateRole(role); //Demotion of role if too elevated for the user
@@ -92,55 +103,40 @@ function livePresentation(req, res) {
   var presentationViewUrl = '';
   var presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
 
+  //bail out early if we need to renderthe cockpit
+  if (view === 'cockpit' && role !== 'viewer') {
+    return  res.redirect(301, ['/', req.user.username, '/presentations/',
+        req.params.presentationId, '/live/', req.params.liveId,
+        '/cockpit'].join(''));
+  }
+
   //TMP until roles are defined more precisely
   logger.debug('Select template for ' + role + ' ' + view);
 
-  var shouldGenerateThumbs = 'true' //string because of dust templates
-  if(presentation.thumbnailsUpdated && (presentation.lastEdit - presentation.thumbnailsUpdated < 0 )){
-    shouldGenerateThumbs = 'false';
-  }
-
   var renderOpts = (function getTemplate(role, view, presentation) {
-      if (view === 'ctrl' && role !== 'viewer') {
+    presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
+                               + presentation._id + '/live/' + req.liveSession.id
+                               + '/?role=' + role + '&view=presentation';
 
-        presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
-                            + presentation._id + '/live/' + req.liveSession.id
-                            + '/?role=' + role+ '&view=presentation';
-
-        return {
-          // template: 'presenterControl',
-          template: '../client/presenterControl/app/asq.dust',
-          namespace: 'ctrl', //change to role
-        };
-      } else if (role === 'presenter' || role === 'assistant') {
-        presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
-                            + presentation._id + '/live/' + req.liveSession.id
-                            + '/?role=' + role+ '&view=presentation';
-
-        return {
-          template:  presentation.asqFilePath,
-          namespace: 'ctrl',
-          roleScript : '/js/asq-presenter.js'
-        };
-      } else if (role === 'ghost') {
-       presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
-                            + presentation._id + '/live/' + req.liveSession.id
-                            + '/?role=' + role + '&view=presentation';
+   if (role === 'presenter' || role === 'assistant') {
       return {
-          template:  presentation.asqFilePath,
-          namespace: 'ghost',
-          roleScript : '/js/asq-viewer.js'
-        };
-      } else { //viewer
-       presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
-                            + presentation._id + '/live/' + req.liveSession.id
-                            + '/?role=' + role + '&view=presentation';
+        template:  presentation.asqFilePath,
+        namespace: 'ctrl',
+        roleScript : '/js/asq-presenter.js'
+      };
+    } else if (role === 'ghost') {
       return {
-          template:  presentation.asqFilePath,
-          namespace: 'folo',
-          roleScript : '/js/asq-viewer.js'
-        };
-      }
+        template:  presentation.asqFilePath,
+        namespace: 'ghost',
+        roleScript : '/js/asq-viewer.js'
+      };
+    } else { //viewer
+      return {
+        template:  presentation.asqFilePath,
+        namespace: 'folo',
+        roleScript : '/js/asq-viewer.js'
+      };
+    }
 
   })(role, view, presentation);
 
@@ -150,6 +146,7 @@ function livePresentation(req, res) {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
     presentationFramework : presentation.presentationFramework,
+    asqApi                : config.rootUrl,
     host                  : req.app.locals.urlHost,
     port                  : req.app.locals.urlPort,
     namespace             : renderOpts.namespace,
@@ -157,7 +154,6 @@ function livePresentation(req, res) {
     roleScript            : renderOpts.roleScript,
     role                  : role,
     presentation          : presentation._id,
-    shouldGenerateThumbs  : shouldGenerateThumbs,
     slideTree             : JSON.stringify(presentation.slidesTree),
     presentationId        : presentation._id,
     id                    : req.liveSession.id,
@@ -181,6 +177,46 @@ function livePresentationFiles(req, res) {
   } else {
     res.send(404, 'Presentation not found, unable to serve attached file.');
   }
+}
+
+
+/**
+* Server the presentation's cockpit
+*/
+function liveCockpit(req, res) {
+  const presentation = req.liveSession.slides;
+  const rootUrl = req.app.locals.rootUrl;
+  const presentationViewUrl = `${rootUrl}/${req.routeOwner.username}/presentations/
+    ${presentation._id}/live/${req.liveSession.id}/?role=presernter&view=presentation`;
+  const presenterLiveUrl = `${rootUrl}/${req.routeOwner.username}/live/`;
+
+
+  let shouldGenerateThumbs = 'true' //string because of dust templates
+  if(presentation.thumbnailsUpdated && (presentation.lastEdit - presentation.thumbnailsUpdated < 0 )){
+    shouldGenerateThumbs = 'false';
+  }
+  
+  return res.render('../public/cockpit/dust/asq.dust', {
+    username              : req.user? req.user.username :'',
+    title                 : presentation.title,
+    presentationFramework : presentation.presentationFramework,
+    serveDir              : 'cockpit/build',
+    asqApi                : config.rootUrl,
+    host                  : req.app.locals.urlHost,
+    port                  : req.app.locals.urlPort,
+    namespace             : 'ctrl',
+    commonScript          : '/js/asq-common.js',
+    role                  : "presenter",
+    presentation          : presentation._id,
+    shouldGenerateThumbs  : shouldGenerateThumbs,
+    slideTree             : JSON.stringify(presentation.slidesTree),
+    presentationId        : presentation._id,
+    id                    : req.liveSession.id,
+    userSessionId         : req.whitelistEntry.id,
+    date                  : req.liveSession.startDate,
+    presentationViewUrl   : presentationViewUrl,
+    presenterLiveUrl      : presenterLiveUrl
+  });
 }
 
 
@@ -363,12 +399,12 @@ var getPresentationSettings = coroutine(function* getPresentationSettingsGen(req
 
 
 module.exports = {
-  editPresentation          : editPresentation,
-  livePresentation          : livePresentation,
-  livePresentationFiles     : livePresentationFiles,
-  startPresentation         : startPresentation,
-  terminatePresentation     : terminatePresentation,
-  getPresentationStats      : getPresentationStats,
-
-  getPresentationSettings   : getPresentationSettings,
+  editPresentation : editPresentation,
+  liveCockpit: liveCockpit,
+  livePresentation : livePresentation,
+  livePresentationFiles : livePresentationFiles,
+  startPresentation : startPresentation,
+  terminatePresentation : terminatePresentation,
+  getPresentationStats : getPresentationStats,
+  getPresentationSettings : getPresentationSettings,
 }
