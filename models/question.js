@@ -34,6 +34,7 @@ var questionSchema = abstractQuestionSchema.extend({
 var questionSchema = new Schema({
   // TODO: enum questionTypes
   type : { type: String, required: true },
+  author : { type: ObjectId, ref: 'User', required: false },
   data : {type: Schema.Types.Mixed},
   date_created : {type: Date, default: Date.now()},
   date_modified : {type: Date, default: Date.now()},
