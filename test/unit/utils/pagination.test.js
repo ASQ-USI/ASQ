@@ -62,7 +62,7 @@ describe('lib/utils/pagination', function(){
         res.page.should.equal(10);
     });
 
-    it('should allow negative integers', function(){
+    it('should allow negative integer only for `perPage`', function(){
       const payload = {
         perPage: -1,
         page: -10,
@@ -71,19 +71,19 @@ describe('lib/utils/pagination', function(){
         res.should.have.property("perPage");
         res.perPage.should.equal(-1);
         res.should.have.property("page");
-        res.page.should.equal(-10);
+        res.page.should.equal(1);
     });
 
     it('should floor floats', function(){
       const payload = {
-        perPage: -1.1,
-        page: -10.7,
+        perPage: 1.1,
+        page: 10.7,
       }
       const res = pagination.sanitizePaginationOptions(payload);
         res.should.have.property("perPage");
-        res.perPage.should.equal(-1);
+        res.perPage.should.equal(1);
         res.should.have.property("page");
-        res.page.should.equal(-10);
+        res.page.should.equal(10);
     });
 
     it('should add default values if missing or undefined', function(){
@@ -94,7 +94,7 @@ describe('lib/utils/pagination', function(){
         res.should.have.property("perPage");
         res.perPage.should.equal(-1);
         res.should.have.property("page");
-        res.page.should.equal(0);
+        res.page.should.equal(1);
     });
 
     it('should only return `perPage` and `page`', function(){
