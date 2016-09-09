@@ -1,27 +1,22 @@
 sudo: required
-#changed from precise to trusty according to: https://github.com/travis-ci/travis-ci/issues/5448
 dist: trusty
 group: edge
-
 language: bash
-
-# services:
-# - docker
-
 before_install:
-# - docker pull redis:2.8.23
-# - docker run -d --name redis redis:2.8.23
-# - docker pull mongo:3.0.3
-# - docker run -d --name mongo mongo:3.0.3
-# - docker ps -a
-- docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
-- docker build -t asqhub/asq_test:test -f Dockerfile.ci .
-
+- echo -e "machine github.com\n login $CI_USER_TOKEN" >> ~/.netrc	
+- docker build -t asqhub/base-image:devel -v ~/.netrc:~/.netrc lib/support/docker/base-image/.
+- docker build -t asqhub/asq_test:test -v ~/.netrc:~/.netrc -f Dockerfile.ci .
 script:
 # Overrides the init processes and runs the tests
 - docker run -t --name asq asqhub/asq_test:test npm test
-#- docker run -d --name asq --link mongo:mongo --link redis:redis -e "MONGO_HOST=mongo" -e "REDIS_HOST=redis" asqhub/asq_test:devel /sbin/my_init -- npm test
-
-deploy:
-  provider: script
-  script: "curl -H \"Content-Type: application/json\" --data '{\"source_type\": \"Branch\", \"source_name\": \"'$TRAVIS_BRANCH'\"}' -X POST $DOCKER_HUB_TRIGGER"
+after_success:
+- if [ "$TRAVIS_BRANCH" == "master" || "$TRAVIS_BRANCH" == "devel" || "$TRAVIS_BRANCH" =~ "^feat-" ]; then
+   docker build -t $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH -v ~/.netrc:~/.netrc -f Dockerfile .;
+   docker login -e="$DOCKER_HUB_EMAIL" -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD";
+   docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH;
+  fi
+env:
+  global:
+  - secure: aelrJerHwLQtGsofEPs8Pds/wkeWLA+llpaPNk687zxpEpqxdt8GYgtYFVh1Md0KI/MDrTPyPIVxhBNNUCOwwfHzX/mXF8S/HokrKlfWaetpEDu8Wt9G/tyQjyxZxswqI/NV6Fn0Z/B+s6ONR+Ae7gJl7fCXLrzAoQSr76tR/bE=
+  - secure: QcJBsy+HNvx5ZObDDn5yE9TNXM5IUmOLMnrTg6ejC/8MR8vPOq5svlQcL2539k28mZk3KoMm1CwT8Z0d/Mnm4PiFUxRMSR0WvK7xdcWVTQ9WLeMXD953uONCBjdZ4TPIXiC91VQS/jiigz9vLaT3G60tAOTnNWZvwaj11fns91g=
+  - secure: Cba9Mexl0K6FfN/KZEbBaJ8wTd1DES0/5U+bixbWiNW6Yn6Zg4/9vvbGt20bFqdhVywldqzeB50/W8TjGRJ6naBD3OObYfQyUtCQphXAO41BEMGlemVkhmUkHI1Nu8Rcrc1/HHAClsObhVG4tycTXj00xmHT+NfEftpiPmGJChw=
