@@ -28,4 +28,7 @@ clean:
 	rm -f coverage.html
 	rm -fr lib-cov
 
+build_docker_local:
+	docker build -t asqhub/asq:local -f Dockerfile .
+
 .PHONY: test test-unit test-acceptance benchmark clean
