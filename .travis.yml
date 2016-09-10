@@ -11,8 +11,7 @@ script:
 after_success:
 - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "devel" ] || [ "$TRAVIS_BRANCH"
   =~ "^feat-*" ]; then docker build -t $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH --build-arg
-  CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile .; docker login -e="$DOCKER_HUB_EMAIL"
-  -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD"; docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH;
+  CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile .; docker login -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD"; docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH;
   fi
 env:
   global:
