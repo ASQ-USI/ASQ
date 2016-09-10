@@ -6,7 +6,7 @@ before_install:
 - docker build -t asqhub/base-image:master lib/support/docker/base-image/.
 - docker build -t $DOCKER_HUB_USERNAME/asq:test --build-arg CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile.ci .
 script:
-- docker run -t --name asq asqhub/asq_test:test npm test
+- docker run -t --name asq $DOCKER_HUB_USERNAME/asq:test npm test
 after_success:
 - if [ "$TRAVIS_BRANCH" == "master" || "$TRAVIS_BRANCH" == "devel" || "$TRAVIS_BRANCH" =~ "^feat-*" ]; then 
   	docker build -t $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH --build-arg CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile .; 
