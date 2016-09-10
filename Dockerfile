@@ -4,6 +4,9 @@ MAINTAINER Vincenzo FERME <info@vincenzoferme.it>
 
 ENV ASQDIR /ASQ
 
+ARG CI_USER_TOKEN
+ENV CI_USER_TOKEN ${CI_USER_TOKEN}
+
 # Setup Dependencies
 RUN apt-get update -q \
 	&& apt-get install -y -q --no-install-recommends git python build-essential unzip \
@@ -17,9 +20,7 @@ ADD bower.json /tmp/bower.json
 ADD config/* /tmp/config/
 ADD tasks/* /tmp/tasks/
 ADD client/presenterControl/* /tmp/client/presenterControl/
-RUN eval `ssh-agent -s` > /dev/null \
-    && echo "$CI_USER_TOKEN" | ssh-add - \
-    && cd /tmp && npm install --unsafe-perm \
+RUN cd /tmp && npm install --unsafe-perm \
     && mkdir -p $ASQDIR && mkdir -p $ASQDIR/log && cp -a /tmp/node_modules $ASQDIR \
     # Clean up when done.
     && rm -rf /tmp/* /var/tmp/*
