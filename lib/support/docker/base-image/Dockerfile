@@ -22,7 +22,7 @@ RUN set -ex \
   done
 
 ENV NPM_CONFIG_LOGLEVEL=info \
-    NODE_VERSION 6.5.0 \
+    NODE_VERSION=6.5.0 \
     NGINX_VERSION=1.9.7-1~trusty
 
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
