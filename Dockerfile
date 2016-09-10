@@ -4,6 +4,9 @@ MAINTAINER Vincenzo FERME <info@vincenzoferme.it>
 
 ENV ASQDIR /ASQ
 
+ARG CI_USER_TOKEN
+ENV CI_USER_TOKEN ${CI_USER_TOKEN}
+
 # Setup Dependencies
 RUN apt-get update -q \
 	&& apt-get install -y -q --no-install-recommends git python build-essential unzip \

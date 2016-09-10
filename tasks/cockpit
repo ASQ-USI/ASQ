@@ -15,11 +15,12 @@ function ifErrPrintAndExit(spawnPs){
   }
 }
 
+
 // download
 process.stdout.write("Downloading cockpit-asq...");
 let out = spawnSync("git", [
   "clone",
-  "https://triglian@github.com/ASQ-USI/cockpit-asq",
+  "https://" + process.env.CI_USER_TOKEN + ":x-oauth-basic@github.com/ASQ-USI/cockpit-asq",
    cockpitDir
   ],{
   timeout: timeout

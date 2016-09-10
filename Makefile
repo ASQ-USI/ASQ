@@ -28,4 +28,7 @@ clean:
 	rm -f coverage.html
 	rm -fr lib-cov
 
+build_docker_local:
+	docker build -t asqhub/asq:local --build-arg CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile .
+
 .PHONY: test test-unit test-acceptance benchmark clean
