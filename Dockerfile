@@ -17,7 +17,9 @@ ADD bower.json /tmp/bower.json
 ADD config/* /tmp/config/
 ADD tasks/* /tmp/tasks/
 ADD client/presenterControl/* /tmp/client/presenterControl/
-RUN cd /tmp && npm install --unsafe-perm \
+RUN eval `ssh-agent -s` > /dev/null \
+    && echo "$CI_USER_TOKEN" | ssh-add - \
+    && cd /tmp && npm install --unsafe-perm \
     && mkdir -p $ASQDIR && mkdir -p $ASQDIR/log && cp -a /tmp/node_modules $ASQDIR \
     # Clean up when done.
     && rm -rf /tmp/* /var/tmp/*

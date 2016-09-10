@@ -3,20 +3,19 @@ dist: trusty
 group: edge
 language: bash
 before_install:
-- echo -e "machine github.com\n login $CI_USER_TOKEN" >> ~/.netrc	
-- docker build -t asqhub/base-image:devel -v ~/.netrc:~/.netrc lib/support/docker/base-image/.
-- docker build -t asqhub/asq_test:test -v ~/.netrc:~/.netrc -f Dockerfile.ci .
+- docker build -t asqhub/base-image:devel lib/support/docker/base-image/.
+- docker build -t asqhub/asq_test:test --build-arg CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile.ci .
 script:
-# Overrides the init processes and runs the tests
 - docker run -t --name asq asqhub/asq_test:test npm test
 after_success:
-- if [ "$TRAVIS_BRANCH" == "master" || "$TRAVIS_BRANCH" == "devel" || "$TRAVIS_BRANCH" =~ "^feat-" ]; then
-   docker build -t $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH -v ~/.netrc:~/.netrc -f Dockerfile .;
-   docker login -e="$DOCKER_HUB_EMAIL" -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD";
-   docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH;
+- if [ "$TRAVIS_BRANCH" == "master" || "$TRAVIS_BRANCH" == "devel" || "$TRAVIS_BRANCH" =~ "^feat-" ]; then 
+  	docker build -t $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH --build-arg CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile .; 
+  	docker login -e="$DOCKER_HUB_EMAIL" -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD";
+  	docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH; 
   fi
 env:
   global:
   - secure: aelrJerHwLQtGsofEPs8Pds/wkeWLA+llpaPNk687zxpEpqxdt8GYgtYFVh1Md0KI/MDrTPyPIVxhBNNUCOwwfHzX/mXF8S/HokrKlfWaetpEDu8Wt9G/tyQjyxZxswqI/NV6Fn0Z/B+s6ONR+Ae7gJl7fCXLrzAoQSr76tR/bE=
   - secure: QcJBsy+HNvx5ZObDDn5yE9TNXM5IUmOLMnrTg6ejC/8MR8vPOq5svlQcL2539k28mZk3KoMm1CwT8Z0d/Mnm4PiFUxRMSR0WvK7xdcWVTQ9WLeMXD953uONCBjdZ4TPIXiC91VQS/jiigz9vLaT3G60tAOTnNWZvwaj11fns91g=
   - secure: Cba9Mexl0K6FfN/KZEbBaJ8wTd1DES0/5U+bixbWiNW6Yn6Zg4/9vvbGt20bFqdhVywldqzeB50/W8TjGRJ6naBD3OObYfQyUtCQphXAO41BEMGlemVkhmUkHI1Nu8Rcrc1/HHAClsObhVG4tycTXj00xmHT+NfEftpiPmGJChw=
+  - secure: BYwXQTohRWX0nk1f9IP/u2WCsaFjzc1htGV978PzCYOwmPoM7EQm/RwaDy4U5IfnzzcvkiMOdCAfo5YObuIi0jWk1L6JDz2CMQaBBtKFt9OctPi+jpiVUHD0qBxyj8Cvv69Z6aflJh0sFC9tbt+OvipL1xwt75FRn4ddXAH2wCg=
