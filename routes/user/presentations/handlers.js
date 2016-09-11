@@ -96,7 +96,7 @@ function listPresentations(req, res, next) {
 
     res.render('presentations', {
        username        : req.user.username,
-       cookie          : 'asq.sid=' + req.cookies['asq.sid'],
+       cookie          : decodeURIComponent(req.headers.cookie),
        slidesByCourses : slidesByCourse,
        JSONIter        : dustHelpers.JSONIter,
        host            : res.app.locals.urlHost,

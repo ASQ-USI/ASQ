@@ -210,16 +210,6 @@ function getLogin(req, res) {
 function postLogin(req, res) {
   if(req.body.rememberMe){
     req.session.cookie.maxAge = 2592000000 //30 days
-    // we also need to set the cookie in the response
-    res.cookie(
-      'asq.sid', 
-      req.cookies["asq.sid"], 
-      {
-        maxAge: req.session.cookie.maxAge,
-        path: '/', 
-        httpOnly: true
-      }
-    );
   }
   
   res.redirect(utils.getPreviousURLOrHome(req));
@@ -250,7 +240,7 @@ function logout(req, res) {
 }
 
 function getUploadForm(req, res) {
-  var cookie = 'asq.sid=' + req.cookies['asq.sid'];
+  var cookie = decodeURIComponent(req.headers.cookie);
   var rendObj = {
     username : req.user.username,
     user : {

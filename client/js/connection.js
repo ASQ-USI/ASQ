@@ -34,12 +34,12 @@ this.addEvents2Forward = function(events){
 }
 
 // TODO: add asserts for the arguments
-this.connect = function(protocol, host, port, session, namespace, token, eventBus) {
+this.connect = function(protocol, host, port, session, namespace, eventBus) {
   var eb = eventBus;
 
   var socketUrl =  protocol + '//' + host + ":" + port + '/' + namespace;
   this.socket = io.connect(socketUrl, { 
-    'query': 'token=' + token+'&asq_sid=' + session 
+    'query': 'asq_sid=' + session 
   });
 
   // events related to socket.io

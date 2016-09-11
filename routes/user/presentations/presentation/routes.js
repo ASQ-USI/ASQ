@@ -17,6 +17,13 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/:user/presentations/:presentationId/live/:liveId', 
     middleware.authorizeLiveSession, handlers.livePresentation);
 
+  // this has to be before static files
+  app.get('/:user/presentations/:presentationId/live/:liveId/cockpit', 
+    middleware.authorizeLiveSession, middleware.authorizePresenter, handlers.liveCockpit);
+  // this has to be before static files
+  app.get('/:user/presentations/:presentationId/live/:liveId/cockpit/*', 
+    middleware.authorizeLiveSession, middleware.authorizePresenter, handlers.liveCockpit);
+
   //static files
   app.get('/:user/presentations/:presentationId/live/:liveId/*', 
    handlers.livePresentationFiles);

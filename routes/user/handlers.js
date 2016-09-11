@@ -27,7 +27,7 @@ function getUserPage(req, res) {
       var type = utils.getAlertTypeClass(req);
        res.render('user', {
          username        : req.user.username,
-         cookie          : 'asq.sid=' + req.cookies['asq.sid'],
+         cookie          : decodeURIComponent(req.headers.cookie),
          slidesByCourses : slidesByCourse,
          JSONIter        : dustHelpers.JSONIter,
          host            : req.app.locals.urlHost,

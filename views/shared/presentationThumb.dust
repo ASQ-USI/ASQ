@@ -29,7 +29,7 @@
     {?live}
       <a class="btn-thumb btn-stop btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Stop presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-stop"></i></a>
 
-      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=ctrl"  data-toggle="tooltip" data-placement="top" title="go to presenter control"><i class="fa fa-dashboard"></i></a>
+      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/cockpit"  data-toggle="tooltip" data-placement="top" title="go to presenter control"><i class="fa fa-dashboard"></i></a>
 
       <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation"  data-toggle="tooltip" data-placement="top" title="Join as presenter"><i class="fa fa-graduation-cap"></i></a>
 
