@@ -3,74 +3,78 @@
 // Download, install and build cockpit-asq
 'use strict';
 
-const fs = require("fs");
+const fs = require('fs');
 const spawnSync = require('child_process').spawnSync;
 const cockpitDir = 'public/cockpit';
 const timeout = 300000; // 5 mins
 
 function ifErrPrintAndExit(spawnPs){
   if(spawnPs.status > 0){
-    process.stderr.write(spawnPs.stderr.toString() + "\n");
+    process.stderr.write(spawnPs.stderr.toString() + '\n');
     process.exit(1);
   }
 }
 
+//clean
+process.stdout.write('Cleaning ui-asq dir...');
+rimraf.sync(uiDir);
+process.stdout.write('done!\n');
 
 // download
-process.stdout.write("Downloading cockpit-asq...");
-let out = spawnSync("git", [
-  "clone",
-  "https://" + process.env.CI_USER_TOKEN + ":x-oauth-basic@github.com/ASQ-USI/cockpit-asq",
+process.stdout.write('Downloading cockpit-asq...');
+let out = spawnSync('git', [
+  'clone',
+  'https://' + process.env.CI_USER_TOKEN + ':x-oauth-basic@github.com/ASQ-USI/cockpit-asq',
    cockpitDir
   ],{
   timeout: timeout
 });
 ifErrPrintAndExit(out);
-process.stdout.write("done!\n");
+process.stdout.write('done!\n');
 
 // install npm deps
-process.stdout.write("Installing npm dependencies for cockpit-asq...");
-out = spawnSync("npm", [
-  "install",
-  "--unsafe-perm"
+process.stdout.write('Installing npm dependencies for cockpit-asq...');
+out = spawnSync('npm', [
+  'install',
+  '--unsafe-perm'
   ], {
   cwd: cockpitDir,
   timeout: timeout
 });
 ifErrPrintAndExit(out);
-process.stdout.write("done!\n");
+process.stdout.write('done!\n');
 
 
 // avoid using root .bowerrc by creating a local one
 // with the default settings
-process.stdout.write("Creating local .bowerrc...");
+process.stdout.write('Creating local .bowerrc...');
 const bowerrcContents = `{
   "directory": "bower_components"
 }`;
 fs.writeFileSync(`${cockpitDir}/.bowerrc`, bowerrcContents);
-process.stdout.write("done!\n");
+process.stdout.write('done!\n');
 
 // install bower deps
-process.stdout.write("Installing bower dependencies for cockpit-asq...");
-out = spawnSync("bower",[
-  "install",
-  "--allow-root"
+process.stdout.write('Installing bower dependencies for cockpit-asq...');
+out = spawnSync('bower',[
+  'install',
+  '--allow-root'
   ], {
   cwd: cockpitDir,
   timeout: timeout
 });
 ifErrPrintAndExit(out);
-process.stdout.write("done!\n");
+process.stdout.write('done!\n');
 
 // build
-process.stdout.write("Building cockpit-asq...");
-out = spawnSync("npm",[
-  "run",
-  "build"
+process.stdout.write('Building cockpit-asq...');
+out = spawnSync('npm',[
+  'run',
+  'build'
   ], {
   cwd: cockpitDir,
   timeout: timeout
 });
 ifErrPrintAndExit(out);
-process.stdout.write("done!");
+process.stdout.write('done!\n');
 process.exit();
