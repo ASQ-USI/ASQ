@@ -50,6 +50,14 @@ describe('lib/utils/pagination', function(){
   });
 
   describe('sanitizePaginationOptions()', function(){
+    it('should work with no or undefined arguments', function(){
+      const res = pagination.sanitizePaginationOptions();
+        res.should.have.property("perPage");
+        res.perPage.should.equal(-1);
+        res.should.have.property("page");
+        res.page.should.equal(1);
+    });
+
     it('should return the original values if they are integers', function(){
       const payload = {
         perPage: 1,

@@ -14,11 +14,9 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <nav class="collapse navbar-collapse navbar-main-nav" role="navigation">
       <ul class="nav navbar-nav">
+        <li><a href="/upload/">Upload Presentation</a></li>
         <li><a href="/{username}/presentations/">My Presentations</a></li>
-        <!-- <li><a href="/questions">My Questions</a></li> -->
-        <li>
-          <a href="/upload/">Upload Presentation</a>
-        </li>
+        <li><a href="/{username}/questions/">My Questions</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li> <a href="/{username}/settings">Settings</a></li>

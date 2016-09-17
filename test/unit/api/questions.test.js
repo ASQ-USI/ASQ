@@ -19,6 +19,7 @@ describe('lib/api/questions', function(){
       questionModel.skip = sinon.stub().returns(questionModel);
       questionModel.limit = sinon.stub().returns(questionModel);
       questionModel.count = sinon.stub().returns(questionModel);
+      questionModel.lean = sinon.stub().returns(questionModel);
       questionModel.exec = sinon.stub();
       questionModel.exec.onCall(0).resolves(['question1', 'question2'])
         .onCall(1).resolves(110);
@@ -61,6 +62,7 @@ describe('lib/api/questions', function(){
       this.questionModel.sort.reset();
       this.questionModel.skip.reset();
       this.questionModel.limit.reset();
+      this.questionModel.lean.reset();
       this.questionModel.count.reset();
       this.questionModel.exec.reset();
       this.lodash.pick.reset();
@@ -101,6 +103,7 @@ describe('lib/api/questions', function(){
         this.questionModel.sort.should.have.been.calledWith({'date_modified': -1});
         this.questionModel.skip.should.have.been.calledWith(0);
         this.questionModel.limit.should.have.been.calledWith(10);
+        this.questionModel.lean.should.have.been.calledOnce;
         this.questionModel.exec.should.have.been.calledTwice;
         this.questionModel.count.should.have.been.calledWith(opts);
         done();

@@ -33,6 +33,7 @@
     "clean": "rimraf slides/* test/slides/*",
     "plugins": "tasks/plugins",
     "cockpit": "tasks/cockpit",
+    "ui": "tasks/ui",
     "db": "tasks/db",
     "watch": "parallelshell 'npm run webpack-dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack-prod && npm run js-vendor-prod && npm run static && npm run less-prod && npm run dust-prod",

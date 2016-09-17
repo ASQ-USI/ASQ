@@ -6,6 +6,7 @@
 var handlers      = require('./handlers');
 var presentations = require('./presentations');
 var sessions      = require('./sessions');
+var questions     = require('./questions');
 var logger        = require('logger-asq');
 
 module.exports.setUp = function setUp(app, middleware) {
@@ -18,4 +19,5 @@ module.exports.setUp = function setUp(app, middleware) {
 
   presentations.setUp(app, middleware);
   sessions.setUp(app, middleware);
+  questions.setUp(app, middleware);
 }
