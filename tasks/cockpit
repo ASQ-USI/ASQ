@@ -4,6 +4,7 @@
 'use strict';
 
 const fs = require('fs');
+const rimraf = require('rimraf')
 const spawnSync = require('child_process').spawnSync;
 const cockpitDir = 'public/cockpit';
 const timeout = 300000; // 5 mins
@@ -17,7 +18,7 @@ function ifErrPrintAndExit(spawnPs){
 
 //clean
 process.stdout.write('Cleaning ui-asq dir...');
-rimraf.sync(uiDir);
+rimraf.sync(cockpitDir);
 process.stdout.write('done!\n');
 
 // download
