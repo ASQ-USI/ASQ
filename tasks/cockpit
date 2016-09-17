@@ -17,12 +17,20 @@ function ifErrPrintAndExit(spawnPs){
 
 
 // download
+// process.stdout.write("Downloading cockpit-asq...");
+// let out = spawnSync("git", [
+//   "clone",
+//   "https://" + process.env.CI_USER_TOKEN + ":x-oauth-basic@github.com/ASQ-USI/cockpit-asq",
+//    cockpitDir
+//   ],{
+//   timeout: timeout
+// });
 process.stdout.write("Downloading cockpit-asq...");
 let out = spawnSync("git", [
   "clone",
-  "https://" + process.env.CI_USER_TOKEN + ":x-oauth-basic@github.com/ASQ-USI/cockpit-asq",
-   cockpitDir
-  ],{
+  "https://giggiux@github.com/ASQ-USI/cockpit-asq",
+  cockpitDir
+],{
   timeout: timeout
 });
 ifErrPrintAndExit(out);
