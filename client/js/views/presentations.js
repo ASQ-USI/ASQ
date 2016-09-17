@@ -12,6 +12,9 @@ var menuDOMBinder = require('./menu');
 var utils = require('../utils');
 var thumbGenerator = require('impress-asq-fork-asq-adapter').impressThumbGenerator();
 
+//import socket connection here
+var io = require('socket.io-client');
+
 //bootstrap  tooltip options
 var tooltipOptions = {
   container: 'body',
@@ -26,6 +29,23 @@ module.exports = {
     //init dialog 
     var dialogEl = document.getElementById('main-dialog');
     dlg = new Dialog(dialogEl);
+  },
+
+  initSocket: function(){
+    var l = window.location;
+    this.socket = io.connect(l.origin + "/");
+
+    this.socket.on("message", function handleProgress(evt) {
+      if (evt.type == 'change' && evt.resource == 'presentations') {
+        var slideshowThumb = document.getElementById(evt.body.object_id);
+        var progressBar = slideshowThumb.querySelector('.thumb-progressbar');
+        if (evt.body.data.phase == 'converting_pdf') {
+          progressBar.style.width = (evt.body.data.progress * 100).toString() + '%';
+        } else if ( evt.body.data.phase == 'conversion_done') {
+          this.reRenderThumb(evt.body.object_id, progressBar.dataset.username);
+        }
+      }
+    }.bind(this));
   },
 
   initThumbs : function (){
@@ -323,7 +343,8 @@ module.exports = {
     }
 
     this.initDialog();
-    
+    this.initSocket();
+
     //iphone/ipad install as web-app pop up
     $(function(){
 

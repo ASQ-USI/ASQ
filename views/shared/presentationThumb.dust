@@ -55,7 +55,10 @@
       <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/stats"  data-toggle="tooltip" data-placement="top" title="Show statistics"><i class="fa fa-signal"> </i></a>
     </div>
       {:else}
-          <span>Converting...</span>
+          <span>Converting to PDF...</span>
+          <div class="thumb-progress-container">
+              <div class="thumb-progressbar" data-username="{params.username}" style="width:0%"></div>
+          </div>
       {/isConverting}
   </div>
   
