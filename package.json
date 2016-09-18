@@ -16,7 +16,7 @@
     "test": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
     "start-dev": "NODE_ENV=development nodemon app.js dotenv_config_silent=true| bunyan",
     "start": "NODE_ENV=production node -r dotenv/config app.js dotenv_config_silent=true",
-    "install": "bower --allow-root cache clean && bower --allow-root install && CI_USER_TOKEN=${CI_USER_TOKEN} npm run cockpit && npm run plugins && npm run s2h-install",
+    "install": "bower --allow-root cache clean && bower --allow-root install && CI_USER_TOKEN=${CI_USER_TOKEN} npm run ui && npm run cockpit && npm run plugins && npm run s2h-install",
     "webpack-dev": "NODE_ENV=development webpack -d --watch",
     "webpack-prod": "NODE_ENV=production webpack -p",
     "js-vendor-dev": "NODE_ENV=development tasks/vendor",
