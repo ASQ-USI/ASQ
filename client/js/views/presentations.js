@@ -44,7 +44,7 @@ module.exports = {
             progressBar.style.width = (evt.body.data.progress * 100).toString() + '%';
             break;
           default:
-            // this.reRenderThumb(evt.body.object_id, progressBar.dataset.username);
+            this.reRenderThumb(evt.body.object_id, progressBar.dataset.username);
         }
       }
     }.bind(this));
@@ -363,14 +363,13 @@ module.exports = {
     
       this.setupThumbEventListeners();
 
-      var $documentHammered = $(document).hammer();
-      
-      // $documentHammered.on("touch", hidePopover);
-      // function hidePopover(){
-      //   $('#iOSWebAppInfo').popover('destroy');
-      // };
 
-      $documentHammered      
+      // seems like polymer creates it's own tap events which interferes
+      // with hammer
+      // var $documentHammered = $(document).hammer();
+
+      //$documentHammered
+      $(document)       
         //remove slideshow
         .on('tap', '.thumb > .remove' , this.onTapThumbRemove)
 
