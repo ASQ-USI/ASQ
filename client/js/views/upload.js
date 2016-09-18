@@ -15,7 +15,7 @@ module.exports = {
       parallelUploads: 1, 
       autoProcessQueue: false,
       clickable: ".dz-message",
-      acceptedFiles:  "application/zip",
+      acceptedFiles:  "application/zip, application/pdf",
       previewsContainer: "#previews",
       init: function() {
 

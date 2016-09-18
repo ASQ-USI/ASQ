@@ -53,6 +53,7 @@
 
       <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/stats"  data-toggle="tooltip" data-placement="top" title="Show statistics"><i class="fa fa-signal"> </i></a>
     </div>
+
   </div>
   
   <div class="thumb-text">

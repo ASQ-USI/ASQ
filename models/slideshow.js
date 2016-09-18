@@ -59,7 +59,9 @@ var slideshowSchema = new Schema({
   links             : { type: Array, default: [] },
   lastSession       : { type: Date, default: null },
   lastEdit          : { type: Date, default: Date.now },
-  settings          : [ presentationSettingSchema ]
+  settings          : [ presentationSettingSchema ],
+  pdfFile           : { type: String, default: ""},
+  isConversionDone  : { type: Boolean, default: false}
 });
 
 
