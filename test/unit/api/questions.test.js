@@ -21,7 +21,14 @@ describe('lib/api/questions', function(){
       questionModel.count = sinon.stub().returns(questionModel);
       questionModel.lean = sinon.stub().returns(questionModel);
       questionModel.exec = sinon.stub();
-      questionModel.exec.onCall(0).resolves(['question1', 'question2'])
+      questionModel.exec.onCall(0).resolves( [
+        {
+          _id: "0123456789abcdef01234567"
+        },
+        {
+          _id: "abcdef0123456789abcdef01"
+        }
+      ])
         .onCall(1).resolves(110);
 
       this.lodash = {
@@ -70,6 +77,17 @@ describe('lib/api/questions', function(){
       this.pagination.sanitizePaginationOptions.reset();
       this.pagination.calcNumOfItemsPerPage.reset();
       this.pagination.calcNumOfPages.reset();
+      // we need to reset the return array cause we modify it in place
+      // and subsequent tests fail
+      this.questionModel.exec.onCall(0).resolves( [
+        {
+          _id: "0123456789abcdef01234567"
+        },
+        {
+          _id: "abcdef0123456789abcdef01"
+        }
+      ])
+        .onCall(1).resolves(110);
     })
     it('should filter and sanitize the options', function(done){
       const filters = ['type', 'author', 'date_created', 'date_modified'];
@@ -118,7 +136,14 @@ describe('lib/api/questions', function(){
       this.lodash.forOwn.returns(opts);
       this.questionsApi.list(opts).then(function(res){
        expect(res).to.deep.equal({
-        questions: ['question1', 'question2'],
+        questions: [
+          {
+            id: "0123456789abcdef01234567"
+          },
+          {
+            id: "abcdef0123456789abcdef01"
+          }
+        ],
         page: 1,
         pages: 11
        })
