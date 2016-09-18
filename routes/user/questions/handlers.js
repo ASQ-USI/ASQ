@@ -4,7 +4,6 @@ const questionsApi = require('../../../lib/api/questions.js')
 module.exports = {
   listQuestions: function(req, res){
     //HTML
-    
     if(req.accepts('html')){
       const viewPath = path.resolve(__dirname, '../../../public/ui/index.html');
       return res.sendFile(viewPath);
