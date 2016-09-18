@@ -39,10 +39,12 @@ module.exports = {
       if (evt.type == 'change' && evt.resource == 'presentations') {
         var slideshowThumb = document.getElementById(evt.body.object_id);
         var progressBar = slideshowThumb.querySelector('.progress-bar');
-        if (evt.body.data.phase == 'converting_pdf_to_html') {
-          progressBar.style.width = (evt.body.data.progress * 100).toString() + '%';
-        } else if ( evt.body.data.phase == 'conversion_done') {
-          this.reRenderThumb(evt.body.object_id, progressBar.dataset.username);
+        switch(evt.body.data.phase){
+          case 'converting_pdf_to_html':
+            progressBar.style.width = (evt.body.data.progress * 100).toString() + '%';
+            break;
+          default:
+            // this.reRenderThumb(evt.body.object_id, progressBar.dataset.username);
         }
       }
     }.bind(this));
