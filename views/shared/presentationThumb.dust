@@ -25,7 +25,6 @@
   </div>
 
   <div class="thumb-controls layout vertical">
-      {^isConverting}
     <div class="thumb-controls-first-row layout horizontal justified">
     {?live}
       <a class="btn-thumb btn-stop btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Stop presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-stop"></i></a>
@@ -54,12 +53,7 @@
 
       <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/stats"  data-toggle="tooltip" data-placement="top" title="Show statistics"><i class="fa fa-signal"> </i></a>
     </div>
-      {:else}
-          <span>Converting to PDF...</span>
-          <div class="thumb-progress-container">
-              <div class="thumb-progressbar" data-username="{params.username}" style="width:0%"></div>
-          </div>
-      {/isConverting}
+
   </div>
   
   <div class="thumb-text">

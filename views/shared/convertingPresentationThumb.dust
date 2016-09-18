@@ -1,0 +1,24 @@
+<div class="thumb{^thumbnails} no-steps{/thumbnails}" id="{_id}" data-sort-position="{position}" >
+
+    <a href="#remove" class="remove show-on-thumb-hover" data-toggle="tooltip" data-target="/{params.username}/presentations/{_id}" data-placement="left" title="Delete presentation">&times;</a>
+
+    {!<div class="thumb-wrapper">!}
+
+
+    {!</div>!}
+
+    <div class="thumb-controls layout vertical">
+        <span id="label">Converting to PDF...</span>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" data-username="{params.username}" style="width:0%"></div>
+        </div>
+    </div>
+
+    <div class="thumb-text">
+        <span class="thumb-title">{title}</span>
+    </div>
+    <div class="thumb-dates layout horizontal justify">
+        <p class="last-session flex"><span class="glyphicon glyphicon-play"></span> {?lastSession}{lastSession}{:else}No sessions yet{/lastSession}</p>
+        <p class="last-edit flex"><span class="glyphicon glyphicon-pencil" ></span> {lastEdit}</p>
+    </div>
+</div>
