@@ -21,7 +21,7 @@ if(command == "dropDb"){
     if (err) {
       throw err;
     }
-    console.log('Dropping database: '+ conf.dbName +' ...');
+    console.log('Dropping database: '+ conf.mongo.dbName +' ...');
     mongoose.connection.db.dropDatabase(function(err) {
       if (err) {
         throw err;
@@ -48,7 +48,7 @@ if(command == "emptyModel"){
   console.log("Notice: no middleware (hooks) are executed when removing documents...");
 
   Promise.reduce(modelNames, function(result, name){
-    console.log('Emptying model: '+ conf.dbName +'.' + name + ' ...');
+    console.log('Emptying model: '+ conf.mongo.dbName +'.' + name + ' ...');
     var m = db.model(name);
 
     return m.remove({}).exec();

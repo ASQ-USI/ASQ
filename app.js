@@ -24,11 +24,12 @@ logger.initialize({
 });
 
 // Globals : mongoose, db, and schemas
+var Promise         = require('bluebird');
 global.mongoose   = require('mongoose');
+global.mongoose.Promise = Promise
 global.db         = mongoose.createConnection(config.mongo.mongoUri);
 global.schemas    = require('./models');
 
-var Promise         = require('bluebird');
 var coroutine       = Promise.coroutine;
 var express         = require('express');
 var fs              = require('fs');
