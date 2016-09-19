@@ -7,21 +7,21 @@ chai.use(sinonChai);
 const SandboxedModule = require('sandboxed-module');
 const Promise = require('bluebird');
 require('sinon-as-promised')(Promise);
-const modulePath = '../../../lib/api/questions';
+const modulePath = '../../../lib/api/presentations';
 
 
-describe('lib/api/questions', function(){
+describe('lib/api/presentations', function(){
   describe('list()', function(){
     before(function(){
-      const questionModel = this.questionModel = {};
-      questionModel.find = sinon.stub().returns(questionModel);
-      questionModel.sort = sinon.stub().returns(questionModel);
-      questionModel.skip = sinon.stub().returns(questionModel);
-      questionModel.limit = sinon.stub().returns(questionModel);
-      questionModel.count = sinon.stub().returns(questionModel);
-      questionModel.lean = sinon.stub().returns(questionModel);
-      questionModel.exec = sinon.stub();
-      questionModel.exec.onCall(0).resolves( [
+      const presentationModel = this.presentationModel = {};
+      presentationModel.find = sinon.stub().returns(presentationModel);
+      presentationModel.sort = sinon.stub().returns(presentationModel);
+      presentationModel.skip = sinon.stub().returns(presentationModel);
+      presentationModel.limit = sinon.stub().returns(presentationModel);
+      presentationModel.count = sinon.stub().returns(presentationModel);
+      presentationModel.lean = sinon.stub().returns(presentationModel);
+      presentationModel.exec = sinon.stub();
+      presentationModel.exec.onCall(0).resolves( [
         {
           _id: '0123456789abcdef01234567'
         },
@@ -38,7 +38,7 @@ describe('lib/api/questions', function(){
 
       this.db = {
         model : function(){
-          return questionModel;
+          return presentationModel;
         }
       }
       this.mongoSanitizeStub = sinon.stub();
@@ -52,7 +52,7 @@ describe('lib/api/questions', function(){
       }
 
       // load module with mocked modules
-      this.questionsApi = SandboxedModule.require(modulePath, {
+      this.presentationsApi = SandboxedModule.require(modulePath, {
         requires: {
           'lodash': this.lodash,
           'mongo-sanitize' :  this.mongoSanitizeStub,
@@ -65,13 +65,13 @@ describe('lib/api/questions', function(){
     });
 
     beforeEach(function(){
-      this.questionModel.find.reset();
-      this.questionModel.sort.reset();
-      this.questionModel.skip.reset();
-      this.questionModel.limit.reset();
-      this.questionModel.lean.reset();
-      this.questionModel.count.reset();
-      this.questionModel.exec.reset();
+      this.presentationModel.find.reset();
+      this.presentationModel.sort.reset();
+      this.presentationModel.skip.reset();
+      this.presentationModel.limit.reset();
+      this.presentationModel.lean.reset();
+      this.presentationModel.count.reset();
+      this.presentationModel.exec.reset();
       this.lodash.pick.reset();
       this.lodash.forOwn.reset();
       this.pagination.sanitizePaginationOptions.reset();
@@ -79,7 +79,7 @@ describe('lib/api/questions', function(){
       this.pagination.calcNumOfPages.reset();
       // we need to reset the return array cause we modify it in place
       // and subsequent tests fail
-      this.questionModel.exec.onCall(0).resolves( [
+      this.presentationModel.exec.onCall(0).resolves( [
         {
           _id: '0123456789abcdef01234567'
         },
@@ -90,12 +90,12 @@ describe('lib/api/questions', function(){
         .onCall(1).resolves(110);
     })
     it('should filter and sanitize the options', function(done){
-      const filters = ['type', 'author', 'date_created', 'date_modified'];
+      const filters = ['title', 'owner', 'course', 'presentationFramework', 'lastSession', 'lastEdit', 'conversionStatus'];
       const opts = {
-        type : 'asq-question-type'
+        title : 'A Title'
       };
       this.lodash.pick.returns(opts);
-      this.questionsApi.list(opts).then(function(){
+      this.presentationsApi.list(opts).then(function(){
         this.lodash.pick.should.have.been.calledWith(opts, filters);
         this.lodash.forOwn.should.have.been.calledWith(opts, this.mongoSanitizeStub);
         done();
@@ -103,7 +103,7 @@ describe('lib/api/questions', function(){
     });
 
     it('should sanitize pagination options and calculate the results to show per page', function(done){
-      this.questionsApi.list({}).then(function(){
+      this.presentationsApi.list({}).then(function(){
         this.pagination.sanitizePaginationOptions.should.have.been.calledWith({});
         this.pagination.calcNumOfItemsPerPage.should.have.been.calledWith(30, 100, 10);
         done();
@@ -112,31 +112,31 @@ describe('lib/api/questions', function(){
 
     it('should query with the right options', function(done){
       const opts = {
-        type : 'asq-question-type'
+        title : 'A title'
       };
       this.lodash.pick.returns(opts);
       this.lodash.forOwn.returns(opts);
-      this.questionsApi.list(opts).then(function(){
-        this.questionModel.find.should.have.been.calledWith(opts);
-        this.questionModel.sort.should.have.been.calledWith({'date_modified': -1});
-        this.questionModel.skip.should.have.been.calledWith(0);
-        this.questionModel.limit.should.have.been.calledWith(10);
-        this.questionModel.lean.should.have.been.calledOnce;
-        this.questionModel.exec.should.have.been.calledTwice;
-        this.questionModel.count.should.have.been.calledWith(opts);
+      this.presentationsApi.list(opts).then(function(){
+        this.presentationModel.find.should.have.been.calledWith(opts);
+        this.presentationModel.sort.should.have.been.calledWith({'lastEdit': -1});
+        this.presentationModel.skip.should.have.been.calledWith(0);
+        this.presentationModel.limit.should.have.been.calledWith(10);
+        this.presentationModel.lean.should.have.been.calledOnce;
+        this.presentationModel.exec.should.have.been.calledTwice;
+        this.presentationModel.count.should.have.been.calledWith(opts);
         done();
       }.bind(this));
     });
 
     it('should return correctly formatted results', function(done){
       const opts = {
-        type : 'asq-question-type'
+        title : 'A title'
       };
       this.lodash.pick.returns(opts);
       this.lodash.forOwn.returns(opts);
-      this.questionsApi.list(opts).then(function(res){
+      this.presentationsApi.list(opts).then(function(res){
        expect(res).to.deep.equal({
-        questions: [
+        presentations: [
           {
             id: '0123456789abcdef01234567'
           },
