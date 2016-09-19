@@ -35,7 +35,7 @@ let out = spawnSync('git', [
 ifErrPrintAndExit(out);
 process.stdout.write('done!\n');
 
-install npm deps
+// install npm deps
 process.stdout.write('Installing npm dependencies for ui-asq...');
 out = spawnSync('npm', [
   'install',
