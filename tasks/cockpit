@@ -25,6 +25,8 @@ process.stdout.write('done!\n');
 process.stdout.write('Downloading cockpit-asq...');
 let out = spawnSync('git', [
   'clone',
+  '-b',
+  'feat-use-polymer-build',
   'https://' + process.env.CI_USER_TOKEN + ':x-oauth-basic@github.com/ASQ-USI/cockpit-asq',
    cockpitDir
   ],{

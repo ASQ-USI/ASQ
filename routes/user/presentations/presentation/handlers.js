@@ -200,7 +200,7 @@ function liveCockpit(req, res) {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
     presentationFramework : presentation.presentationFramework,
-    serveDir              : 'cockpit/build',
+    serveDir              : 'cockpit/src/elements/cockpit-asq',
     asqApi                : config.rootUrl,
     host                  : req.app.locals.urlHost,
     port                  : req.app.locals.urlPort,
