@@ -61,7 +61,9 @@ var slideshowSchema = new Schema({
   lastEdit          : { type: Date, default: Date.now },
   settings          : [ presentationSettingSchema ],
   pdfFile           : { type: String, default: ""},
-  isConversionDone  : { type: Boolean, default: false}
+  conversionStatus  : { type: String,
+                        default: "not_started",
+                        enum: ["not_started", "done", "converting_pdf_to_html", "injecting_questions"]}
 });
 
 
