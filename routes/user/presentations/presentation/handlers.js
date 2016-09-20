@@ -196,11 +196,11 @@ function liveCockpit(req, res) {
     shouldGenerateThumbs = 'false';
   }
   
-  return res.render('../public/cockpit/dust/asq.dust', {
+  return res.render('../public/cockpit/build/bundled/dust/asq.dust', {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
     presentationFramework : presentation.presentationFramework,
-    serveDir              : 'cockpit/src/elements/cockpit-asq',
+    serveDir              : 'cockpit/build/bundled/src/elements/cockpit-asq',
     asqApi                : config.rootUrl,
     host                  : req.app.locals.urlHost,
     port                  : req.app.locals.urlPort,
