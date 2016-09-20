@@ -3,8 +3,6 @@
  * @description Entry viewer clientside script.
 */
 
-
-
 'use strict';
 
 var IDLE_INTERVAL = 10000;
@@ -12,7 +10,7 @@ var IDLE_INTERVAL = 10000;
 var debug = require('bows')("viewer");
 var $ = require('jquery');
 var Hammer = require('hammerjs');
-var manager = require('asq-visualization').Manager();
+// var manager = require('asq-visualization').Manager();
 var connection = require('./connection.js');
 var EventEmitter2 = require('eventemitter2');
 var elements = require('./elements.js');
@@ -87,7 +85,6 @@ this.readSessionInfo = function(){
   si.sessionId = this.sessionId = body.dataset.asqSessionId;
   si.role      = this.role      = body.dataset.asqRole;
   si.namespace = this.namespace = body.dataset.asqSocketNamespace;
-  si.token     = this.token     = body.dataset.asqSocketToken;
   si.presentationFramework  = this.presentationFramework  = body.dataset.presentationFramework;
   si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
 
@@ -104,8 +101,6 @@ this.readSessionInfo = function(){
     , 'role is required');
   assert(true, (isString(si.namespace) && !!si.namespace)
     , 'namespace is required');
-  assert(true, (isString(si.token) && !!si.token)
-    , 'token is required');
   assert(true, (isString(si.presentationFramework) && !!si.presentationFramework)
     , 'presentationFramework is required');
 
@@ -133,7 +128,7 @@ this.connect = function(){
     "asq-plugin"
   ];
   connection.addEvents2Forward(events2Forward);
-  connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
+  connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
 }
 
 this.setupASQElements = function(role) {
@@ -215,92 +210,62 @@ this.subscribeToEvents= function (){
     this.displaySessionOverDialog();
   }.bind(this))
 
-  //snitch events
-  eventBus
-  .on('exercisefocus', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "exercisefocus",
-      data:{
-        exerciseUid: evt.exerciseUid 
+
+  // snitch events
+  var snitchEvents = [
+    { type: "exercisefocus" },
+    { type: "exerciseblur" },
+    { type: "windowfocus" },
+    { type: "windowblur" },
+    { type: "cut" },
+    { type: "copy" },
+    { type: "paste" },
+    { type: "tabhidden" },
+    { type: "tabvisible" },
+    { type: "focusin" },
+    { type: "focusout" },
+    { type: "input" },
+    { type: "questioninput" },
+    { type: "exercise-edit" },
+    { type: "slideenter", awakesUser: false },
+    { type: "slideleave", awakesUser: false },
+    { type: "mousemove", send2Server: false },
+    { type: "dblclick", send2Server: false },
+    { type: "contextmenu", send2Server: false },
+    { type: "wheel", send2Server: false },
+    { type: "touchend", send2Server: false },
+    { type: "touchmove", send2Server: false },
+    { type: "touchstart", send2Server: false }
+  ];
+
+  snitchEvents.forEach(function(item){
+    item.awakesUser = ( typeof item.awakesUser == "undefined" ) 
+      ? true
+      : item.awakesUser;
+
+    item.send2Server = ( typeof item.send2Server == "undefined" ) 
+      ? true
+      : item.send2Server;
+
+    if(item.awakesUser == false
+      && item.send2Server == false){
+      // no need to add a listener
+      return;
+    }
+
+    eventBus.on(item.type, function(evt){
+      if(item.awakesUser){
+        this.userAwake();
       }
-    });
-  }.bind(this)).on('exerciseblur', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "exerciseblur",
-      data:{
-        exerciseUid: evt.exerciseUid 
+      if(item.send2Server){
+        connection.socket.emit('asq:snitch', {
+          type: item.type,
+          data: evt
+        });
       }
-    });
-  }.bind(this)).on('windowfocus', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "windowfocus" 
-    });
-  }.bind(this)).on('windowblur', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "windowblur" 
-    });
-  }.bind(this)).on('cut', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "cut" 
-    });
-  }.bind(this)).on('copy', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "copy" 
-    });
-  }.bind(this)).on('paste', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "paste",
-      data:{
-        textPlainData: evt.textPlainData
-      }
-    });
-  }.bind(this)).on('tabhidden', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "tabhidden" 
-    });
-  }.bind(this)).on('tabvisible', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "tabvisible" 
-    });
-  }.bind(this)).on('focusin', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "focusin",
-      data: evt 
-    });
-  }.bind(this)).on('focusout', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "focusout",
-      data: evt 
-    });
-  }.bind(this)).on('input', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "input",
-      data: evt 
-    })
-  }.bind(this)).on('questioninput', function(evt){
-    this.userAwake();
-    connection.socket.emit('asq:snitch', {
-      type: "questioninput",
-      data: evt 
-    });
+    }.bind(this));
   }.bind(this));
 }
-
-
-
-
 
 
 // querySelectorAll2Array :-)
@@ -415,7 +380,7 @@ function getUrlVars()
 }
 
 // /** Connect back to the server with a websocket */
-// function connect(host, port, session, mode, token) {
+// function connect(host, port, session, mode) {
 //   var impressInited = false;
 //   this.answerSaved = false;
 //   this.assessmentSaved = false;
@@ -423,7 +388,7 @@ function getUrlVars()
 //   var that = this;
 //   var socketUrl =  window.location.protocol + '//' + host + '/folo';
 //   var socket = this.socket = io.connect(socketUrl, { 
-//     'query': 'token=' + token+'&asq_sid=' + session 
+//     'query': 'asq_sid=' + session 
 //   });
 
 

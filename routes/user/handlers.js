@@ -27,7 +27,7 @@ function getUserPage(req, res) {
       var type = utils.getAlertTypeClass(req);
        res.render('user', {
          username        : req.user.username,
-         cookie          : 'asq.sid=' + req.cookies['asq.sid'],
+         cookie          : decodeURIComponent(req.headers.cookie),
          slidesByCourses : slidesByCourse,
          JSONIter        : dustHelpers.JSONIter,
          host            : req.app.locals.urlHost,
@@ -137,6 +137,10 @@ function getLivePresentations(req, res) {
                       + slideshowSessionMap[slideshow._id]
                       + '/?role=viewer&view=presentation';
       })
+
+      if (slideshows.length == 1) {
+        return res.redirect(slideshows[0].liveUrl);
+      }
 
       res.render('userLive', {
       livePresentations: slideshows,

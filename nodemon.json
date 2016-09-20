@@ -1,0 +1,14 @@
+{
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    "test/*","client/*",
+    "slides/*",
+    "log/*",
+    "plugins/*/node_modules/*"
+  ],
+  "watch": [ "app.js", "config/*", "lib/*", "models/*", "shared/*", "views/*", "routes/*", "plugins/*"],
+  "execMap": {
+    "js": "node -r dotenv/config --stack-trace-limit=1000 --stack-size=1024"
+  }
+}

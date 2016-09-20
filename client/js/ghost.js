@@ -49,7 +49,7 @@ this.init = function(event) {
   this.setupASQElements(si.role);
 
   this.connect();
-  this.initPresentationFramework();
+  this.initPresentationFramework(si.presentationFramework);
 
   this.subscribeToEvents();
 
@@ -65,8 +65,7 @@ this.readSessionInfo = function(){
   si.sessionId = this.sessionId = body.dataset.asqSessionId;
   si.role      = this.role      = body.dataset.asqRole;
   si.namespace = this.namespace = body.dataset.asqSocketNamespace;
-  si.token     = this.token     = body.dataset.asqSocketToken;
-  si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
+  si.presentationFramework  = this.presentationFramework  = body.dataset.presentationFramework;
   si.presentationViewerUrl  = this.presentationViewerUrl  = body.dataset.asqPresentationViewerUrl;
 
   assert(true, (isString(si.protocol) && !!si.protocol)
@@ -81,8 +80,6 @@ this.readSessionInfo = function(){
     , 'role is required');
   assert(true, (isString(si.namespace) && !!si.namespace)
     , 'namespace is required');
-  assert(true, (isString(si.token) && !!si.token)
-    , 'token is required');
   assert(true, (isString(si.presentationFramework) && !!si.presentationFramework)
     , 'presentationFramework is required');
   
@@ -90,7 +87,27 @@ this.readSessionInfo = function(){
 }
 
 this.connect = function(){
-  connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, this.token, eventBus);
+  var events2Forward = [
+    "asq:sessionFlow",
+    "asq:folo-connected",
+    "asq:ctrl-connected",
+    "asq:ghost-connected",
+    "asq:connected-clients",
+    "asq:answered-all",
+    "asq:user-session-stats",
+    "asq:rankings",
+    "asq:goto",
+    "asq:submitted",
+    "asq:assessment",
+    "asq:assess",
+    "asq:stat",
+    "asq:question_type",
+    "asq:session-terminated",
+    'asq:update_live_presentation_settings',
+    "asq-plugin"
+  ];
+  connection.addEvents2Forward(events2Forward);
+  connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
 }
 
 this.setupASQElements = function(role) {
@@ -143,6 +160,9 @@ this.initPresentationFramework = function(presentationFramework){
           var adapter = require('./reveal-asq-fork-asq-adapter.js')
          this.initReveal(adapter);
         }.bind(this))
+        break;
+
+      case 'none':
         break;
 
       default:

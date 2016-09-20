@@ -9,7 +9,7 @@ module.exports = {
   },
 
   getASQElements: function() {
-    var allAsqElements = document.querySelectorAll('html /deep/ *');
+    var allAsqElements = document.querySelectorAll('*');
     allAsqElements = Array.prototype.slice.call(allAsqElements).filter(function(el) {
       return this.isASQEl(el);
     }.bind(this));

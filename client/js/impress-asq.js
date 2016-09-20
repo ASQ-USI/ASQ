@@ -185,12 +185,7 @@
                            
                           // and `classList` and `dataset` APIs
                            ( body.classList ) &&
-                           ( body.dataset ) &&
-                           
-                          // but some mobile devices need to be blacklisted,
-                          // because their CSS 3D support or hardware is not
-                          // good enough to run impress.js properly, sorry...
-                           ( ua.search(/(iphone)|(ipod)|(android)/) === -1 );
+                           ( body.dataset )
     
     if (!impressSupported) {
         // we can't be sure that `classList` is supported
@@ -301,6 +296,19 @@
             if (lastEntered === step) {
                 triggerEvent(step, "impress:stepleave");
                 lastEntered = null;
+            }
+        };
+
+        // reference to last entered substep
+        var lastSubEntered = null;
+
+        // `onSubstepEnter` is called whenever the substep element is entered
+        // but the event is triggered only if the substep is different than
+        // last entered substep.
+        var onSubstepEnter = function (substep) {
+            if (lastSubEntered !== substep) {
+                triggerEvent(substep, "impress:substepenter");
+                lastSubEntered = substep;
             }
         };
         
@@ -616,6 +624,7 @@
             }
             data.classList.remove('previous');
             data.classList.add('active');
+            onSubstepEnter(data);
         };
 
         var setActiveAllSubs = function (step){

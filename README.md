@@ -19,15 +19,16 @@ Installation
 ###Manual
 Please follow the [installation guide](doc/install/installation.md)
 
-###Docker with Tutum
-You can find the ASQ docker image on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/). With [Tutum](http://tutum.co) you can simply deploy ASQ with the deployment descriptor we provide. The following steps assume you have a  [Tutum Account](https://dashboard.tutum.co/accounts/login/) or your are logged in with your [Docker Hub account](https://dashboard.tutum.co/login/docker/). The steps are:
+###Docker with Docker Compose
+You can find the ASQ docker image on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/). With [Docker Compose](https://docs.docker.com/compose/) you can simply deploy ASQ with the deployment descriptor we provide. The steps are:
 
-1. [Add you server to Tutum](https://support.tutum.co/support/solutions/articles/5000513678-bring-your-own-node), and [assign it a tag](https://support.tutum.co/support/solutions/articles/5000508859-deploy-tags)
-2. [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/?repo=https://github.com/ASQ-USI/ASQ)
-3. Configure your deployment:
+1. Get the `docker-compose.yml` file from this repo and place it in a folder named `asq` on your machine.
+2. Configure your deployment:
+   - Replace the `<DOCKER_HUB_IMAGE_TAG>` variable with an actual tag. You can find the list of available tags on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/tags/). One is `master`.
    - Change the `HOST` environment variable passed to the ASQ service to match your host name.
-   - Update the `tags` section of the defined services to match the tag you previously defined.
-
+   
+The provided `docker-compose.yml` file uses the [Docker Compose V2 format](https://docs.docker.com/compose/compose-file/#/versioning) thus it requires [**Docker Engine 1.10.0+**](https://docs.docker.com/engine/installation/) and [**Docker Compose 1.6.0+**](https://docs.docker.com/compose/install/).
+Moreover it relies on the bridge network provided by Docker. Refer to the [Docker Compose file reference](https://docs.docker.com/compose/compose-file/) to customise the deployment for your settings.
 
 Getting started
 ----------------
@@ -64,6 +65,10 @@ Changelog
 ---------
 
 See the changelog [here](https://github.com/ASQ-USI/ASQ/blob/master/CHANGELOG.md).
+
+Licence
+---------
+Reciprocal Public License 1.5 (RPL-1.5). See the full Licence text [here](LICENCE).
 
 [1]: http://nodejs.org/                     "node.js"
 [2]: http://expressjs.com/                  "express.js"

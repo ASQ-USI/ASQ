@@ -328,7 +328,7 @@ describe('parse.js', function(){
       });
     });
 
-    it('should call parser.parsePresentation', function(done){
+    it('should call parser.parsePresentationSettings', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
         var expectedArg = {
@@ -348,6 +348,7 @@ describe('parse.js', function(){
       .then(function(){
         var expectedArg = {
           html: '<html></html>',
+          user_id: this.presentation.owner,
           slideshow_id: this.presentation._id
         }
         this.AsqElementsParser.prototype.parsePresentation.calledWith(expectedArg).should.equal(true);
@@ -462,6 +463,39 @@ describe('parse.js', function(){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
           this.questionModel.find.calledOnce.should.equal(true);
+        done();
+      }.bind(this))
+      .catch(function(err){
+        done(err);
+      });
+    });
+
+    it('should add author information to the presentation questions', function(done){
+      const question  = {
+        save: sinon.stub()
+      }
+      this.questionModel.find.restore();
+      sinon.stub(this.questionModel, 'find', function(c){
+        return {
+          exec: function(){
+            return Promise.resolve([question]);
+          }
+        }
+      });
+      this.parse.parseAndPersist(this.presentation._id)
+      .then(function(){
+          question.author.should.equal(this.presentation.owner)
+          question.save.calledOnce.should.equal(true);
+
+       // restore question model to the previous stub
+       this.questionModel.find.restore()
+       sinon.stub(this.questionModel, 'find', function(c){
+         return {
+           exec: function(){
+             return Promise.resolve([question]);
+           }
+         }
+       });
         done();
       }.bind(this))
       .catch(function(err){

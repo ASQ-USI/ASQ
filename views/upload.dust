@@ -12,44 +12,53 @@
 
 		<!--   Content area   -->
 		<div class="container" id="main-container">
-
+		
 			<div class="row">
-				<!--   Seperating Headline   -->
-				<div class="col-md-12 headline">
-					<h2>Upload a file</h2>
-				</div>
-				
-				<div class="col-md-12">
-					<p class="upload-gray">Your presentation can be either a zipped filed containing an <a href="http://impress.github.io/impress.js/#/bored" target="_blank">impress.js</a>/<a href="http://lab.hakim.se/reveal-js" target="_blank">reveal.js</a> presentation, or a PDF file.</p>
-				</div>
 
-			</div>
-			<div class="row" style="padding: 20px 0;">
-				<div class="col-md-12">
-					<form method="POST" action="/{username}/presentations/" enctype="multipart/form-data" class="form-inline form-upload">
+				<!--  Dropzone  Content area   -->
+				<form class="dropzone" id="le-dropzone" method="POST" action="/{username}/presentations/" enctype="multipart/form-data">
 
-						<div class="input-group">
-						    <span class="input-group-btn">
-						        <span class="btn btn-default btn-file">
-						            Browse&hellip; <input type="file" id="lefile" type="file" name="upload" size="40" maxlength="100000">
-						        </span>
-						    </span>
-						    <input type="text" class="form-control" readonly>
+					<div id="dropzone-dragover-overlay">
+						<div class="dropzone-bg"></div>
+						<div class="dropzone-message">Drop it like it's hot!</div>
+					</div>	
+
+					<div id="upload-details">
+					  <div class="text-center" style="position:relative; width:282px; margin:0 auto;">
+						  <input type="text" id="title-input" class="text-center dz-text-input" name="title" placeholder="Title *">
 						</div>
-						<select class="form-control" name="presentationFramework">
-						  <option value="impress">impress.js</option>
-						  <option value="reveal">reveal.js</option>
-						</select>
-						<button type="submit" class="btn btn-primary">Upload</button>
-					</form>
-				</div>
-			</div>
+						 <div class="text-center" style="position:relative; width:282px; margin: 32px auto 0;">
+						 {! Transparent icon to balance the select !}
+						 	<span class="glyphicon glyphicon-info-sign" style="color: transparent;"></span>
+							<select class="form-control" name="presentationFramework" style="display:inline-block; width: auto;">
+							  <option value="impress.js">impress.js</option>
+							  <option value="reveal.js">reveal.js</option>
+							</select>
+							<a style="font-size:14px" href="#" data-toggle="tooltip" data-container="body" data-placement="top" title="What presentation framework does your presentation use?"><span class="glyphicon glyphicon-info-sign"></span></a>
+						</div>
+						
+						<div id="previews" class="dropzone-previews"></div>
+
+						<div id="upload-btn-containter" class="text-center">
+							<button id="upload-btn" type="submit" class="upload-btn fa fa-cloud-upload"><span>Upload</span></button>
+						</div>
+
+					</div> {! /.upload-details !}					
+
+					 <div class="dz-message" data-dz-message>
+					 	<span class="big-font" style="font-weight:300; padding-right: 5px;">Drop</span> <span class="big-font">your presentation</span> <span class="big-font" style="font-weight:300; padding: 0 5px;">here</span> <span class="big-font">to upload<sup> <a style="font-size:14px" href="#" data-toggle="tooltip" data-container="body" data-placement="top" title="Drag a zip archive tha contains your presentation. When uploaded, it will be extracted and its contents will be set as your presentation files."><span class="glyphicon glyphicon-info-sign"></span></a></sup></span> 
+							<br><i class="fa fa-cloud-upload"></i>
+							<br><span style="font-size:20px;">( or click to select a file )</span> 
+						</div>
+
+				</form> {! /.dropzone !}
+			</div> {! /.row !}
 
 			<div class="row" >
 				<div class="col-md-12 headline">
-					<h2>Upload a zipped HTML presentation with curl</h2>
+					<h2 style="font-size: 30px;">Upload a zipped HTML presentation with curl</h2>
 				</div>
-				<div class="col-md-12">
+				<div class="col-md-12" style="margin-top: 20px;">
 					To zip all the files in the current directory and upload them with curl as a new  presentation:<br>
 					<pre class="upload-code-snippet"><code>zip -r - * | curl -i --cookie "{user.cookie}" -F "title=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">1</i></span>" -F "presentationFramework=<span class="upload-fa-stack fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-stack-1x text">2</i></span>" -F upload=@- {rootUrl}/{user.name}/presentations</code></pre>
 					</p>

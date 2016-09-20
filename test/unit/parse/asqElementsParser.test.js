@@ -153,7 +153,6 @@ describe("asqElementsParser.js", function(){
       expect($body.attr('data-asq-live-url')).to.equal('{presenterLiveUrl}');
       expect($body.attr('data-asq-presentation-viewer-url')).to.equal('{presentationViewUrl}');
       expect($body.attr('data-asq-socket-namespace')).to.equal('{namespace}');
-      expect($body.attr('data-asq-socket-token')).to.equal('{token}');
       expect($body.attr('data-asq-user-session-id')).to.equal('{userSessionId}');
     });
   });

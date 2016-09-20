@@ -1,2 +1,2 @@
 #!/bin/sh
-cd /ASQ && npm run start 2>&1
+cd $ASQDIR && npm run start 2>&1

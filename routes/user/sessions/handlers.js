@@ -39,12 +39,10 @@ exports.getSessionStats = gen.lift(function *getSessionStatsGen(req, res, next) 
     statsObj.username = req.user.username;
     statsObj.questionWidth = (100/statsObj.questions.length);
     if(session.endData === null || session.endData === undefined){
-      var token = sockAuth.createSocketToken({'user': req.user, 'browserSessionId': req.sessionID})
       statsObj.host = req.app.locals.urlHost;
       statsObj.port = req.app.locals.urlPort;
       statsObj.live = true;
       statsObj.mode = 'ctrl';
-      statsObj.token = token;
     }
     return res.render('sessionStats', statsObj);
   }catch(err){

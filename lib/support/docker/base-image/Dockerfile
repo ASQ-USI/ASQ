@@ -1,12 +1,10 @@
-FROM phusion/baseimage:0.9.17
+FROM phusion/baseimage:0.9.18
 
 MAINTAINER Vincenzo FERME <info@vincenzoferme.it>
 
-CMD ["/sbin/my_init"]
-
 # SETUP ASQ DEPENDENCIES
 
-# Node 5.1.0 (https://github.com/nodejs/docker-node/blob/3622304ad09a84826521e81cb7ddf253c020d89e/5.1/Dockerfile)
+# Node 6.5.0 (https://github.com/nodejs/docker-node/blob/master/6.5/Dockerfile)
 
 # gpg keys listed at https://github.com/nodejs/node
 RUN set -ex \
@@ -17,20 +15,23 @@ RUN set -ex \
     FD3A5288F042B6850C66B31F09FE44734EB7990E \
     71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
     DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
+    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
+    C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
   ; do \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
   done
 
 ENV NPM_CONFIG_LOGLEVEL=info \
-    NODE_VERSION=5.1.0 \
+    NODE_VERSION=6.5.0 \
     NGINX_VERSION=1.9.7-1~trusty
 
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
   && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
-  && gpg --verify SHASUMS256.txt.asc \
+  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
   && grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
   && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
-  && rm "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc
+  && rm "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
+  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
 # Nginx 1.9.7-1 (Adapted for ubuntu 14.04 used in the FROM baseimage, original: https://github.com/nginxinc/docker-nginx/blob/08eeb0e3f0a5ee40cbc2bc01f0004c2aa5b78c15/Dockerfile)
 
@@ -58,10 +59,12 @@ RUN procs=$(cat /proc/cpuinfo | grep processor | wc -l) && sed -i -e "s/worker_p
     && echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Get Nginx ready to accept sites configurations
-RUN mkdir -p /etc/nginx/sites-available
-RUN mkdir -p /etc/nginx/sites-enabled
-RUN mkdir -p /etc/nginx/ssl/
+RUN mkdir -p /etc/nginx/sites-available \
+    && mkdir -p /etc/nginx/sites-enabled \
+    && mkdir -p /etc/nginx/ssl/
 
 VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80 443
+
+CMD ["/sbin/my_init"]

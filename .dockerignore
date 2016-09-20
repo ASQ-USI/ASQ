@@ -1,0 +1,25 @@
+# Node.js & ASQ #
+#################
+doc/
+node_modules/
+
+# ASQ Components #
+##################
+bower_components/
+
+# Continuous Integration #
+#################
+.travis.yml
+Dockerfile
+Dockerfile.ci
+
+# Miscellaneous #
+##################
+LICENCE
+README.md
+CHANGELOG.md
+TODO.md
+
+# Git #
+##################
+.git/
