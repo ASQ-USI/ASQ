@@ -317,6 +317,8 @@ describe('parse.js', function(){
       });
     });
 
+    it.skip("should inject questions to html")
+
     it('should call plugin.getPluginNamesByType', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
@@ -506,7 +508,7 @@ describe('parse.js', function(){
     it('should save the presentation', function(done){
       this.parse.parseAndPersist(this.presentation._id)
       .then(function(){
-          this.presentation.save.calledOnce.should.equal(true);
+          this.presentation.save.calledTwice.should.equal(true);
         done();
       }.bind(this))
       .catch(function(err){
