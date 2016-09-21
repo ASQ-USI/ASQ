@@ -373,16 +373,18 @@ module.exports = {
 
       // start presentation action
       if(btn.classList.contains("btn-start")){
-        this.startLivePresentation(btn);
+        return this.startLivePresentation(btn);
       }
       //stop presentation
       else if(btn.classList.contains("btn-stop")){
-        this.stopLivePresentation(btn);
+        return this.stopLivePresentation(btn);
       }
       //upload link
       else if(btn.classList.contains("btn-upload-command")){
-        this.showUploadCommand(btn);
+        return this.showUploadCommand(btn);
       }
+
+      window.location = event.currentTarget.href;
   },
 
   init : function (){
