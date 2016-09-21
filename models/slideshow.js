@@ -112,7 +112,7 @@ slideshowSchema.pre('save', true, function checkQuestionsOnSave(next, done) {
       return done(err);
     }
     done();
-  });
+  }.bind(this));
 });
 
 //check if questionsPerSlide are valid
