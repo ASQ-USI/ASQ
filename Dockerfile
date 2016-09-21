@@ -1,4 +1,4 @@
-FROM asqhub/base-image:master
+FROM asqhub/base-image:BASE_IMAGE_TAG
 
 MAINTAINER Vincenzo FERME <info@vincenzoferme.it>
 
