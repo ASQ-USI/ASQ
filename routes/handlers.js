@@ -245,7 +245,7 @@ function getUploadForm(req, res) {
     username : req.user.username,
     user : {
       name : req.user.username,
-      cookie: 'cookie'
+      cookie
     }
   };
   res.render('upload', rendObj);
