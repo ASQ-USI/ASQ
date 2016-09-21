@@ -240,12 +240,12 @@ function logout(req, res) {
 }
 
 function getUploadForm(req, res) {
-  var cookie = decodeURIComponent(req.headers.cookie);
+  var cookie = decodeURIComponent(req.headers.cookie).match(/asq\.sid=\S+/);
   var rendObj = {
     username : req.user.username,
     user : {
       name : req.user.username,
-      cookie:cookie
+      cookie: 'cookie'
     }
   };
   res.render('upload', rendObj);
