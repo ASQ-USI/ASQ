@@ -143,6 +143,8 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
     yield fs.unlinkAsync(zipPath);
 
     // HACK: empty dust cache
+    // if multiple servers are used then the rest of the servers WILL NOT
+    // get notified :-(
     // TODO: should only delete the updated presentation path
     cons.clearCache()
 
