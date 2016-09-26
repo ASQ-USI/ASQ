@@ -1,4 +1,4 @@
-<div class="thumb thumb-converting" id="{_id}" data-sort-position="{position}" >
+<div class="thumb thumb-converting" id="{_id}" data-username="{params.username}" data-sort-position="{position}" >
 
     <a href="#remove" class="remove show-on-thumb-hover" data-toggle="tooltip" data-target="/{params.username}/presentations/{_id}" data-placement="left" title="Delete presentation">&times;</a>
 
