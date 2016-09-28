@@ -39,7 +39,12 @@ module.exports = {
     };
 
     if (conversionStatus != undefined){
-      if (conversionStatus == 'done') this.reRenderThumb(presentationDom.id, presentationDom.dataset.username);
+      if (conversionStatus == 'done') {
+        var currentThumb = document.getElementById(presentationDom.id);
+        currentThumb.classList.add('no-steps');
+        currentThumb.classList.remove('thumb-converting');
+        this.reRenderThumb(presentationDom.id, presentationDom.dataset.username);
+      }
       else {
         presentationDom.querySelector('.thumb-conversion-status-label').innerText = dictionary[conversionStatus];
         if (conversionStatus == 'injecting_questions') {
