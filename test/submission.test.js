@@ -20,7 +20,6 @@ var chai    = require('chai')
 , dust      = require('dustjs-linkedin')
 , fs        = require('fs')
 , path      = require('path')
-, rimraf    = require('rimraf')
 , when      = require('when');
 
 db = mongoose.createConnection(config.mongo.mongoUri);

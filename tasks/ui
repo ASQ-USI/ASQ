@@ -4,9 +4,8 @@
 'use strict';
 
 require('dotenv').config()
-const fs = require('fs');
+const fs = require('fs-extra');
 const config = require('../config');
-const rimraf = require('rimraf');
 const spawnSync = require('child_process').spawnSync;
 const uiDir = 'public/ui';
 const timeout = 300000; // 5 mins
@@ -20,7 +19,7 @@ function ifErrPrintAndExit(spawnPs){
 
 //clean
 process.stdout.write('Cleaning ui-asq dir...');
-rimraf.sync(uiDir);
+fs.removeSync(uiDir);
 process.stdout.write('done!\n');
 
 // download
