@@ -37,21 +37,24 @@
     {:else}
       <a class="btn-thumb btn-start btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Start presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-play"></i></a>
 {!       
-      <a class="btn-thumb show-on-thumb-hover1" href="#"  data-toggle="tooltip" data-placement="top" title="Public Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-group"></i></a>
+      <a class="btn-thumb show-on-thumb-hover" href="#"  data-toggle="tooltip" data-placement="top" title="Public Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-group"></i></a>
 
-      <a class="btn-thumb show-on-thumb-hover1" href="#"  data-toggle="tooltip" data-placement="top" title="Anonymous Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous"><i class="fa fa-user"></i></a>
+      <a class="btn-thumb show-on-thumb-hover" href="#"  data-toggle="tooltip" data-placement="top" title="Anonymous Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="anonymous"><i class="fa fa-user"></i></a>
 
-      <a class="btn-thumb show-on-thumb-hover1" href="#"  data-toggle="tooltip" data-placement="top" title="Private Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="private"><i class="fa fa-user-secret"></i></a> !}
+      <a class="btn-thumb show-on-thumb-hover" href="#"  data-toggle="tooltip" data-placement="top" title="Private Presentation" data-username="{params.username}" data-id="{_id}" data-authLevel="private"><i class="fa fa-user-secret"></i></a> !}
     {/live}
     </div>
     <div class="thumb-controls-second-row layout horizontal justified">
-      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/settings"  data-toggle="tooltip" data-placement="top" title="Settings"><i class="fa fa-cog"></i></a>
+      <a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/settings"  data-toggle="tooltip" data-placement="top" title="Settings"><i class="fa fa-cog"></i></a>
 
-      <a class="btn-thumb btn-upload-command show-on-thumb-hover1" href="#" data-username="{params.username}" data-presentation-id="{_id}" data-cookie="{params.cookie}" data-title="{title}" data-toggle="tooltip" data-placement="top" title="command to replace this presentation with a new one"><i class="fa fa-cloud-upload"></i></a>
 
-  {!     <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/edit/"  data-toggle="tooltip" data-placement="top" title="Edit presentation"><i class="fa fa-pencil"></i></a>
+      <a class="btn-thumb btn-download show-on-thumb-hover" href="/{params.username}/presentations/{_id}/download" data-username="{params.username}" data-presentation-id="{_id}" data-toggle="tooltip" data-placement="top" title="Download presentation"><i class="fa fa-cloud-download"></i></a>
 
-      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/stats"  data-toggle="tooltip" data-placement="top" title="Show statistics"><i class="fa fa-signal"> </i></a> !}
+      <a class="btn-thumb btn-upload-command show-on-thumb-hover" href="#" data-username="{params.username}" data-presentation-id="{_id}" data-cookie="{params.cookie}" data-title="{title}" data-toggle="tooltip" data-placement="top" title="command to replace this presentation with a new one"><i class="fa fa-cloud-upload"></i></a>
+
+  {!     <a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/edit/"  data-toggle="tooltip" data-placement="top" title="Edit presentation"><i class="fa fa-pencil"></i></a>
+
+      <a class="btn-thumb show-on-thumb-hover" href="/{params.username}/presentations/{_id}/stats"  data-toggle="tooltip" data-placement="top" title="Show statistics"><i class="fa fa-signal"> </i></a> !}
     </div>
 
   </div>

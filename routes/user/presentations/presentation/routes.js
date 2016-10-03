@@ -4,6 +4,10 @@ var logger     = require('logger-asq');
 module.exports.setUp = function setUp(app, middleware) {
   logger.debug('Setting presentation routes');
 
+  //download zip
+  app.get('/:user/presentations/:presentationId/download/', middleware.isRouteOwner,
+    handlers.downloadPresentation);
+
   // Get the presentation matching presentationId.
   app.get('/:user/presentations/:presentationId/edit/', middleware.isRouteOwner,
     handlers.editPresentation);

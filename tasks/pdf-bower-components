@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+// Download bower components that will be included with the pdf presentations
+'use strict';
+
+const fs = require('fs-extra');
+const spawnSync = require('child_process').spawnSync;
+const PdfSupportDir = 'lib/support/pdf';
+const timeout = 120000; // 2 mins
+
+function ifErrPrintAndExit(spawnPs){
+  if(spawnPs.status > 0){
+    process.stderr.write(spawnPs.stderr.toString() + '\n');
+    process.exit(1);
+  }
+}
+
+// install bower deps
+process.stdout.write('Installing bower dependencies PDF support...');
+const out = spawnSync('bower',[
+  'install',
+  '--allow-root'
+  ], {
+  cwd: PdfSupportDir,
+  timeout: timeout
+});
+ifErrPrintAndExit(out);
+process.stdout.write('done!\n');
+process.exit();
