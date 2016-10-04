@@ -27,6 +27,7 @@ By default enabled plugins are:
 * [asq-exercise](https://github.com/ASQ-USI-Elements/asq-exercise/)
 * [asq-fiddle-q](https://github.com/ASQ-USI-Elements/asq-fiddle-q/)
 * [asq-highlight-q](https://github.com/ASQ-USI-Elements/asq-highlight-q/)
+* [asq-js-eval-q](https://github.com/ASQ-USI-Elements/asq-js-eval-q/)
 * [asq-js-function-body-q](https://github.com/ASQ-USI-Elements/asq-js-function-body-q/)
 * [asq-multi-choice-q](https://github.com/ASQ-USI-Elements/asq-multi-choice-q/)
 * [asq-order-q](https://github.com/ASQ-USI-Elements/asq-order-q/)
