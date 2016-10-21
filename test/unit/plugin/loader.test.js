@@ -24,7 +24,8 @@ describe("loader.js", function(){
     this.fs = {
       existsSync: this.existsSync,
       readdir: this.readdir,
-      lstat: this.lstat
+      lstat: this.lstat,
+      mkdirpSync : sinon.stub()
     }
 
     this.pathResolve = sinon.stub();
@@ -44,8 +45,7 @@ describe("loader.js", function(){
 
     this.loader = SandboxedModule.require(modulePath, {
       requires: {
-        fs : this.fs,
-        mkdirp: this.mkdirp = {},
+        'fs-extra' : this.fs,
         path: this.path = {resolve: this.pathResolve},
         "../../config" : this.config,
         "path/to/plugin" : this.plugin = sinon.stub(),
@@ -59,7 +59,7 @@ describe("loader.js", function(){
     beforeEach(function(){
       this.existsSync.reset();
       this.readdir.reset();
-      this.mkdirp.sync = sinon.stub();
+      this.fs.mkdirpSync.reset();
       this.pathResolve.reset();
     });
 
@@ -78,7 +78,7 @@ describe("loader.js", function(){
       this.config.pluginDir = "/does/not/exist";
       this.loader.checkPluginDir();
       this.existsSync.calledOnce.should.equal(true);
-      this.mkdirp.sync.calledOnce.should.equal(true);
+      this.fs.mkdirpSync.calledOnce.should.equal(true);
     });
 
   });

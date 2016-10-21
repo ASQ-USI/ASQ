@@ -3,8 +3,7 @@
 // Download, install and build slide2html
 'use strict';
 
-const fs = require('fs');
-const rimraf = require('rimraf');
+const fs = require('fs-extra');
 const spawnSync = require('child_process').spawnSync;
 const slide2htmlDir = 'slide2html';
 const timeout = 300000; // 5 mins
@@ -18,7 +17,7 @@ function ifErrPrintAndExit(spawnPs){
 
 //clean
 process.stdout.write('Cleaning slide2html dir...');
-rimraf.sync(slide2htmlDir);
+fs.removeSync(slide2htmlDir);
 process.stdout.write('done!\n');
 
 

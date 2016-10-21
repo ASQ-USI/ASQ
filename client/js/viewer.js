@@ -273,8 +273,6 @@ function qSA2Ar(s){
   return Array.prorotype.slice.call(null, document.querySelectorAll(s));
 }
 
-document.addEventListener("WebComponentsReady", this.init.bind(this));
-
 this.initPresentationFramework = function(presentationFramework){
   try{
     switch(presentationFramework){
@@ -364,6 +362,19 @@ this.setupNickname = function(){
     evt.preventDefault();
     setPlayerName();
   });
+}
+
+
+var webComponentsSupported = (
+  'registerElement' in document
+  && 'import' in document.createElement('link')
+  && 'content' in document.createElement('template')
+);
+
+if (!webComponentsSupported) {
+  document.addEventListener("WebComponentsReady", this.init.bind(this));
+}else{
+  this.init();
 }
 
 function getUrlVars()

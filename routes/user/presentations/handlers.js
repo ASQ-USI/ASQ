@@ -1,24 +1,23 @@
 'use strict';
 
-var _             = require('lodash');
-var moment          = require('moment');
-var validator       = require('validator');
-var nodefn          = require('when/node/function');
-var path            = require('path');
-var fs              = require('fs');
-var when            = require('when');
-var Promise         = require('bluebird');
-var coroutine       = Promise.coroutine;
-var errorTypes      = require('../../../errors/errorTypes');
-var lib             = require('../../../lib');
-var dustHelpers     = lib.dustHelpers;
-var logger     = require('logger-asq');
-var utils           = lib.utils.routes;
-var questionModel   = require('../../../models/question'); //TODO fix and remove this require
-var Slideshow       = db.model('Slideshow');
-var Session         = db.model('Session');
-var getPresentationsByCourse = require('../../../lib/courses/listPresentations').getPresentationsByCourse;
-var upload = require('../../../lib/upload/upload');
+const _ = require('lodash');
+const moment = require('moment');
+const validator = require('validator');
+const path = require('path');
+const fs  = require('fs');
+const Promise = require('bluebird');
+const coroutine = Promise.coroutine;
+const errorTypes = require('../../../errors/errorTypes');
+const lib = require('../../../lib');
+const dustHelpers = lib.dustHelpers;
+const logger = require('logger-asq');
+const utils = lib.utils.routes;
+const questionModel = require('../../../models/question'); //TODO fix and remove this require
+const Slideshow = db.model('Slideshow');
+const Session = db.model('Session');
+const getPresentationsByCourse = require('../../../lib/courses/listPresentations').getPresentationsByCourse;
+const upload = require('../../../lib/upload/upload');
+const cons = require('consolidate');
 
 Promise.promisifyAll(fs);
 
@@ -33,7 +32,7 @@ function deletePresentation(req, res, next) {
 
   //validate slideshow
   function(slideshow) {
-      if (slideshow) return nodefn.call(slideshow.remove.bind(slideshow));
+      if (slideshow) return slideshow.remove()
       //no slideshow
       next(Error.http(404, 'Invalid presentation Id', {type:'invalid_request_error'}));
   })
@@ -142,6 +141,12 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
 
     //remove zip file
     yield fs.unlinkAsync(zipPath);
+
+    // HACK: empty dust cache
+    // if multiple servers are used then the rest of the servers WILL NOT
+    // get notified :-(
+    // TODO: should only delete the updated presentation path
+    cons.clearCache()
 
     logger.log({
       owner_id: req.user._id,

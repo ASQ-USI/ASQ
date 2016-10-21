@@ -37,10 +37,10 @@ var statsPerSlideSchema = new Schema({
 var slideshowSchema = new Schema({
   title             : { type: String, required: true },
   course            : { type: String, required: true, default: 'General' },
-  originalFile      : { type: String, default: "" },
-  asqFile           : { type: String, default: "" },
-  presenterFile     : { type: String, default: "" },
-  viewerFile        : { type: String, default: "" },
+  originalFile      : { type: String, default: '' },
+  asqFile           : { type: String, default: '' },
+  presenterFile     : { type: String, default: '' },
+  viewerFile        : { type: String, default: '' },
   owner             : { type: ObjectId, ref: 'User', required: true },
   presentationFramework : {
                             type: String,
@@ -60,8 +60,10 @@ var slideshowSchema = new Schema({
   lastSession       : { type: Date, default: null },
   lastEdit          : { type: Date, default: Date.now },
   settings          : [ presentationSettingSchema ],
-  pdfFile           : { type: String, default: ""},
-  isConversionDone  : { type: Boolean, default: false}
+  pdfFile           : { type: String, default: ''},
+  conversionStatus  : { type: String,
+                        default: 'not_started',
+                        enum: ['not_started', 'done', 'converting_pdf_to_html', 'injecting_questions']}
 });
 
 
@@ -103,14 +105,14 @@ slideshowSchema.pre('save', true, function checkQuestionsOnSave(next, done) {
         'All question items should have a real Question _id');
       logger.error({
             err: err,
-            "presentation_id": this._id,
-            "questions_length": questions.length,
-            "self_questions_length": self.questions.length,
-          }, "error on saving presentation");
+            'presentation_id': this._id,
+            'questions_length': questions.length,
+            'self_questions_length': self.questions.length,
+          }, 'error on saving presentation');
       return done(err);
     }
     done();
-  });
+  }.bind(this));
 });
 
 //check if questionsPerSlide are valid

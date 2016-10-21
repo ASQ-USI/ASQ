@@ -1,11 +1,11 @@
-<div class="thumb thumb-converting" id="{_id}" data-sort-position="{position}" >
+<div class="thumb thumb-converting" id="{_id}" data-username="{params.username}" data-sort-position="{position}" >
 
     <a href="#remove" class="remove show-on-thumb-hover" data-toggle="tooltip" data-target="/{params.username}/presentations/{_id}" data-placement="left" title="Delete presentation">&times;</a>
 
     <div class="thumb-wrapper"></div>
 
     <div class="thumb-controls layout vertical">
-        <span class="thumb-conversion-status-label">Converting to PDF&hellip;</span>
+        <span class="thumb-conversion-status-label">{conversionMessage}</span>
         <div class="progress">
             <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" data-username="{params.username}" style="width:0%"></div>
         </div>

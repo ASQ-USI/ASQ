@@ -18,9 +18,8 @@ var chai    = require('chai')
 , mongoose  = require('mongoose')
 , config    = require('../config')
 , dust      = require('dustjs-linkedin')
-, fs        = require('fs')
+, fs        = require('fs-extra')
 , path      = require('path')
-, rimraf    = require('rimraf')
 , when      = require('when');
 
 
@@ -211,7 +210,7 @@ describe('uploadPresentation(req, res, next)', function upload() {
     after(function tearDown(done) {
       defaultTearDown(done).then(
         function onTearDown() {
-          rimraf(app.get('uploadDir'), function onError(err) { done(err); });
+          fs.remove(app.get('uploadDir'), function onError(err) { done(err); });
         },
         function onError(err) { done(err); });
     });

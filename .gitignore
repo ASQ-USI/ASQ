@@ -76,3 +76,6 @@ Thumbs.db
 ##################
 /bower_components
 /components
+
+# ASQ Components for PDF uploaded presentatopns #
+/lib/support/pdf/bower_components

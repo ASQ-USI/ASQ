@@ -142,8 +142,17 @@ this.subscribeToEvents= function (){
 
 }
 
+var webComponentsSupported = (
+  'registerElement' in document
+  && 'import' in document.createElement('link')
+  && 'content' in document.createElement('template')
+);
 
-document.addEventListener("WebComponentsReady", this.init.bind(this));
+if (!webComponentsSupported) {
+  document.addEventListener("WebComponentsReady", this.init.bind(this));
+}else{
+  this.init();
+}
 
 this.initPresentationFramework = function(presentationFramework){
   try{

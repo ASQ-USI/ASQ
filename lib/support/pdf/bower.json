@@ -1,0 +1,11 @@
+{
+  "name": "asq-presentation",
+  "private": "true",
+  "authors": [ "ASQ" ],
+  "description": "Presentation generated from ASQ",
+  "keywords": [ "ASQ" ],
+  "dependencies": {
+    "asq-elements": "ASQ-USI-Elements/asq-elements#master",
+    "webcomponentsjs": "*"
+  }
+}

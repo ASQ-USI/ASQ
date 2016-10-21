@@ -3,8 +3,9 @@
 // Download, install and build ui-asq
 'use strict';
 
-const fs = require('fs');
-const rimraf = require('rimraf');
+require('dotenv').config()
+const fs = require('fs-extra');
+const config = require('../config');
 const spawnSync = require('child_process').spawnSync;
 const uiDir = 'public/ui';
 const timeout = 300000; // 5 mins
@@ -18,7 +19,7 @@ function ifErrPrintAndExit(spawnPs){
 
 //clean
 process.stdout.write('Cleaning ui-asq dir...');
-rimraf.sync(uiDir);
+fs.removeSync(uiDir);
 process.stdout.write('done!\n');
 
 // download
@@ -65,6 +66,12 @@ out = spawnSync('bower',[
   timeout: timeout
 });
 ifErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// create .env for configuration
+process.stdout.write('Creating local .env..');
+const envContents = `ASQ=${config.rootUrl}`;
+fs.writeFileSync(`${uiDir}/.env`, envContents);
 process.stdout.write('done!\n');
 
 // build

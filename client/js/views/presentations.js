@@ -11,6 +11,8 @@ var templates = require('imports?dust=dustjs-linkedin!../templates.js');
 var menuDOMBinder = require('./menu');
 var utils = require('../utils');
 var thumbGenerator = require('impress-asq-fork-asq-adapter').impressThumbGenerator();
+var msgIdCnt = 1;
+var _ = require('lodash');
 
 //import socket connection here
 var io = require('socket.io-client');
@@ -24,28 +26,81 @@ var iso; //the isotope container
 var dlg; // a modal dialogue
 
 module.exports = {
-
   initDialog: function(){
     //init dialog 
     var dialogEl = document.getElementById('main-dialog');
     dlg = new Dialog(dialogEl);
   },
+  changeThumbProgress: function(presentationDom, conversionStatus) {
+    var dictionary =  {
+      "not_started": 'Conversion is not started yet',
+      "converting_pdf_to_html": 'Conversion in progress',
+      "injecting_questions": 'Injecting questions'
+    };
+
+    if (conversionStatus != undefined){
+      if (conversionStatus == 'done') {
+        var currentThumb = document.getElementById(presentationDom.id);
+        currentThumb.classList.add('no-steps');
+        currentThumb.classList.remove('thumb-converting');
+        this.reRenderThumb(presentationDom.id, presentationDom.dataset.username);
+      }
+      else {
+        presentationDom.querySelector('.thumb-conversion-status-label').innerText = dictionary[conversionStatus];
+        if (conversionStatus == 'injecting_questions') {
+          var progressBar = presentationDom.querySelector('.progress-bar');
+          if (progressBar) progressBar.parentNode.remove(progressBar);
+        }
+      }
+    }
+  },
+
+  checkConversionStatus: function(presentations) {
+    var convertingPresentationDOMS = document.querySelectorAll('.thumb-converting');
+    var presentations = _.keyBy(presentations, 'id');
+    convertingPresentationDOMS.forEach(function (presentationDom) {
+      this.changeThumbProgress(presentationDom, presentations[presentationDom.id].conversionStatus);
+    }.bind(this));
+  },
+
+  updateConversionStatus: function(presentationId, phase, progress) {
+    var slideshowThumb = document.getElementById(presentationId);
+    var progressBar = slideshowThumb.querySelector('.progress-bar');
+    this.changeThumbProgress(slideshowThumb, phase)
+    switch(phase){
+      case 'converting_pdf_to_html':
+        progressBar.style.width = (progress * 100).toString() + '%';
+      default:
+        this.changeThumbProgress(slideshowThumb, phase);
+    }
+  },
 
   initSocket: function(){
     var l = window.location;
     this.socket = io.connect(l.origin + "/");
-
+    this.socket.send({
+      type: 'request',
+      id: msgIdCnt++,
+      body: {
+        entity: 'presentations',
+        method: 'read',
+      },
+    });
     this.socket.on("message", function handleProgress(evt) {
-      if (evt.type == 'change' && evt.resource == 'presentations') {
-        var slideshowThumb = document.getElementById(evt.body.object_id);
-        var progressBar = slideshowThumb.querySelector('.progress-bar');
-        switch(evt.body.data.phase){
-          case 'converting_pdf_to_html':
-            progressBar.style.width = (evt.body.data.progress * 100).toString() + '%';
-            break;
-          default:
-            // this.reRenderThumb(evt.body.object_id, progressBar.dataset.username);
-        }
+
+
+      switch (evt.type) {
+        case 'response':
+          if (evt.body.entity == 'presentations') {
+            this.checkConversionStatus(evt.body.data.presentations);
+          }
+          break;
+        case 'change':
+          if (evt.body.entity == 'presentations') {
+            this.updateConversionStatus(evt.body.object.id, evt.body.data.phase, evt.body.data.progress)
+          }
+          break;
+
       }
     }.bind(this));
   },
@@ -141,7 +196,7 @@ module.exports = {
 
           $('#'+ presentationId).find('[data-toggle="tooltip"]').tooltip(tooltipOptions);
         }
-    });    
+    });
   },
 
   onTapThumbRemove : function (event) {
@@ -157,7 +212,7 @@ module.exports = {
     //delete from DOM
     iso.remove(thumb);
     iso.layout();
-      
+
     // send delete request to server
     request
       .del(this.dataset.target)
@@ -165,7 +220,7 @@ module.exports = {
       .end(function(err, res){
         if(err || res.statusType!=2){
           iso.insert(clone);
-          alert('Something went wrong with removing your presentation: ' + 
+          alert('Something went wrong with removing your presentation: ' +
             (err!=null ? err.message : JSON.stringify(res.body)));
           return;
         }
@@ -202,7 +257,7 @@ module.exports = {
             .setErrorContent("An error occured while starting presentation:\n" + res.text)
             .toggle();
         }
-        
+
       });
   },
 
@@ -239,7 +294,7 @@ module.exports = {
               }else{
                 utils.prependHtml(out, document.getElementById("main-container"));
               }
-          });   
+          });
         }else{
           debug(res.text);
           dlg
@@ -262,19 +317,19 @@ module.exports = {
       dlg.setContent(out);
       utils.selectText(dlg.el.querySelector(".upload-code-snippet-modal"));
       dlg.toggle();
-    }); 
+    });
   },
 
   setupThumbEventListeners: function(){
     // store focused thumb
-    $(document).on('click', function(evt){ 
+    $(document).on('click', function(evt){
       $('.thumb').each(function(){
          this.setAttribute('hasFocus', false);
       });
     });
 
-    
-    $(document).on('click', '.thumb', function(evt){ 
+
+    $(document).on('click', '.thumb', function(evt){
       $('.thumb').each(function(){
          this.setAttribute('hasFocus', false);
       });
@@ -323,16 +378,18 @@ module.exports = {
 
       // start presentation action
       if(btn.classList.contains("btn-start")){
-        this.startLivePresentation(btn);
+        return this.startLivePresentation(btn);
       }
       //stop presentation
-      else if(btn.classList.contains("btn-stop")){ 
-        this.stopLivePresentation(btn);
+      else if(btn.classList.contains("btn-stop")){
+        return this.stopLivePresentation(btn);
       }
       //upload link
       else if(btn.classList.contains("btn-upload-command")){
-        this.showUploadCommand(btn);
+        return this.showUploadCommand(btn);
       }
+
+      window.location = event.currentTarget.href;
   },
 
   init : function (){
@@ -360,17 +417,16 @@ module.exports = {
       window.addEventListener('WebComponentsReady', function onWebComponentsReady(e) {
         this.initThumbs();
       }.bind(this));
-    
+
       this.setupThumbEventListeners();
 
-      var $documentHammered = $(document).hammer();
-      
-      // $documentHammered.on("touch", hidePopover);
-      // function hidePopover(){
-      //   $('#iOSWebAppInfo').popover('destroy');
-      // };
 
-      $documentHammered      
+      // seems like polymer creates it's own tap events which interferes
+      // with hammer
+      // var $documentHammered = $(document).hammer();
+
+      //$documentHammered
+      $(document)
         //remove slideshow
         .on('tap', '.thumb > .remove' , this.onTapThumbRemove)
 

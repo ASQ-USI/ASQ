@@ -238,7 +238,18 @@ function getUrlVars()
     return vars;
 }
 
-document.addEventListener("WebComponentsReady", this.init.bind(this));
+
+var webComponentsSupported = (
+  'registerElement' in document
+  && 'import' in document.createElement('link')
+  && 'content' in document.createElement('template')
+);
+
+if (!webComponentsSupported) {
+  document.addEventListener("WebComponentsReady", this.init.bind(this));
+}else{
+  this.init();
+}
 
 // /** Connect back to the server with a websocket */
 

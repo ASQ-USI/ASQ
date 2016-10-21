@@ -1,4 +1,4 @@
-FROM asqhub/base-image:master
+FROM asqhub/base-image:BASE_IMAGE_TAG
 
 MAINTAINER Vincenzo FERME <info@vincenzoferme.it>
 
@@ -55,6 +55,5 @@ RUN cp $ASQDIR/lib/support/nginx/asq.conf /etc/nginx/sites-available/default.con
     && chmod +x /etc/service/asq/run
 
 #Configure Image
-VOLUME ["/ASQ/plugins"]
 VOLUME ["/ASQ/slides"]
 #EXPOSE 3000
