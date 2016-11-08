@@ -77,5 +77,7 @@ Thumbs.db
 /bower_components
 /components
 
-# ASQ Components for PDF uploaded presentatopns #
+# ASQ Components for PDF uploaded presentations #
 /lib/support/pdf/bower_components
+# ASQ Components for live app #
+/lib/support/liveApp/bower_components
