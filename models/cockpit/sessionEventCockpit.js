@@ -1,4 +1,4 @@
-/** @module models/presenterControl/sessionEventPC
+/** @module models/presenterControl/sessionEventCockpit
     @description a SessionEvent Model to hold denormalized sessionEvents for presenter control
 */
 
@@ -8,7 +8,7 @@ var ObjectId   = Schema.ObjectId;
 var logger     = require('logger-asq');
 var socketEmitter  = require('../../lib/socket/pubsub');
 
-var sessionEventPCSchema = new Schema({
+var sessionEventCockpitSchema = new Schema({
   origSessionEvent   : { type: ObjectId, ref: 'SessionEvent', required: true },
   session            : { type: ObjectId, ref: 'Session', required: true },
   type               : { type: String, required: true },
@@ -16,9 +16,9 @@ var sessionEventPCSchema = new Schema({
 }, { strict: false });
 
 
-sessionEventPCSchema.post("save", function(doc){
+sessionEventCockpitSchema.post("save", function(doc){
   socketEmitter.emit('emitToRoles',{
-    evtName : 'asq:sessionEventPC',
+    evtName : 'asq:sessionEventCockpit',
     event : {
       data: {
         sessionEvent: doc.toObject()
@@ -29,10 +29,10 @@ sessionEventPCSchema.post("save", function(doc){
   });
 });
 
-sessionEventPCSchema.index({ session: 1, type: 1, time: 1 });
+sessionEventCockpitSchema.index({ session: 1, type: 1, time: 1 });
 
 
-logger.debug('Loading SessionEventPC model');
-mongoose.model('SessionEventPC', sessionEventPCSchema);
+logger.debug('Loading SessionEventCockpit model');
+mongoose.model('SessionEventCockpit', sessionEventCockpitSchema);
 
-module.exports = mongoose.model('SessionEventPC');
+module.exports = mongoose.model('SessionEventCockpit');

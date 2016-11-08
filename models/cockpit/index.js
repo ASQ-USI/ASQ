@@ -5,5 +5,5 @@
 // Order is important here!!
 
 module.exports = {
-  sessionEventPCModel       : require('./sessionEventPC')
+  sessionEventCockpitModel       : require('./sessionEventCockpit')
 };
