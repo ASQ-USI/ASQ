@@ -125,11 +125,7 @@ this.connect = function(){
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
     "asq-plugin",
-    "live-app",
-    "share-student-question",
-    "student-question-rated",
-    "update-student-questions",
-    "close-modal"
+    "live-app"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -219,25 +215,7 @@ this.subscribeToEvents= function (){
       connection.socket.emit('live-app', evt.detail);
     }
   })
-  eventBus.on('share-student-question', function (question) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.showQuestion(question);
-  });
 
-  eventBus.on('student-question-rated', function (evt) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.questionRated(evt.data.question);
-  });
-
-  eventBus.on('update-student-questions', function (questions) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.updateQuestions(questions);
-  });
-
-  eventBus.on('close-modal', function (evt) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.closeModal();
-  });
   // snitch events
   var snitchEvents = [
     { type: "exercisefocus" },
