@@ -1,10 +1,17 @@
 {
   "name": "ASQ live app",
   "private": "true",
-  "authors": [ "ASQ" ],
+  "authors": [
+    "ASQ"
+  ],
   "description": "Live app for ASQ",
-  "keywords": [ "ASQ" ],
+  "keywords": [
+    "ASQ"
+  ],
   "dependencies": {
     "asq-live-app": "https://github.com/ASQ-USI/live-app-asq.git#master"
+  },
+  "resolutions": {
+    "asq-base": "master"
   }
 }
