@@ -55,6 +55,10 @@ describe('upload.js', function(){
         //   addLiveAppFiles: sinon.stub().returns(Promise.resolve(true))
         // },
         './pdf' : this.pdf = {},
+        './liveApp' : this.liveApp = {
+          addLiveAppFiles: sinon.stub().returns(Promise.resolve(uploadDir))
+            
+        },
         '../parse/parse' : this.parse = {},
         '../presentationAdapter/adapters': this.adapters = {},
         '../presentation/presentationCreate' : this.presentationCreate = {},
@@ -256,7 +260,6 @@ describe('upload.js', function(){
       // this.liveApp.addLiveAppFiles.reset();
       this.presentationCreate.createBlankSlideshow = sinon.stub().returns(Promise.resolve(this.presentation));
       this.archive.extractZipArchive = sinon.stub().callsArg(2);
-
       this.upload
         .createPresentationFromZipArchive(
             this.owner_id, this.name, this.presentationFramework, this.source)
