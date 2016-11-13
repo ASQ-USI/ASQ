@@ -51,6 +51,9 @@ describe('upload.js', function(){
         },
         'logger-asq' : require('logger-asq'),
         './archive' : this.archive = {},
+        './liveApp' : this.liveApp = {
+          addLiveAppFiles: sinon.stub().returns(Promise.resolve(true))
+        },
         './pdf' : this.pdf = {},
         '../parse/parse' : this.parse = {},
         '../presentationAdapter/adapters': this.adapters = {},
@@ -250,6 +253,7 @@ describe('upload.js', function(){
       };
       this.destination = path.join(this.uploadDir, this.presentation._id);
       this.upload.findAndProcessMainFile.reset();
+      this.liveApp.addLiveAppFiles.reset();
       this.presentationCreate.createBlankSlideshow = sinon.stub().returns(Promise.resolve(this.presentation));
       this.archive.extractZipArchive = sinon.stub().callsArg(2);
 
@@ -284,6 +288,10 @@ describe('upload.js', function(){
 
     it('should extract the zip file contents into the destination folder', function() {
       this.archive.extractZipArchive.calledWith(this.source, this.destination).should.equal(true);
+    });
+
+    it('should inject the liveApp files', function() {
+      this.liveApp.addLiveAppFiles.calledWith(this.destination).should.equal(true);
     });
 
     it('should find and process the main file', function() {
@@ -407,6 +415,7 @@ describe('upload.js', function(){
       this.destination = path.join(this.uploadDir, this.presentation._id);
       this.fs.readFile.reset();
       this.fs.writeFile.reset();
+      this.liveApp.addLiveAppFiles.reset();
       this.archive.extractZipArchive = sinon.stub().callsArg(2);
       this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
       this.presentationDelete.removeFileAssets = sinon.stub().returns(Promise.resolve(true));
@@ -508,6 +517,10 @@ describe('upload.js', function(){
 
     it('should save the slideshow', function() {
       this.presentation.save.called.should.equal(true);
+    });
+
+    it('should inject the liveApp files', function() {
+      this.liveApp.addLiveAppFiles.calledWith(this.destination).should.equal(true);
     });
 
     it('should find and process the main file', function() {

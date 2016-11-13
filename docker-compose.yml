@@ -11,6 +11,7 @@ services:
       REVERSE_PROXY_HOST: <YOUR_HOST_NAME>
       REVERSE_PROXY_SECURE: 'false'
       USE_REVERSE_PROXY: 'true'
+      NGINX_CLIENT_MAX_BODY_SIZE: '100m'
     tty: true
     ports:
       - 80:3000
