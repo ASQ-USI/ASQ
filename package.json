@@ -36,6 +36,7 @@
     "ui": "tasks/ui",
     "s2h-install": "tasks/slide2html",
     "pdf-bower-components" : "tasks/pdf-bower-components",
+    "live-app-bower-components" : "tasks/live-app-bower-components",
     "db": "tasks/db",
     "watch": "parallelshell 'npm run webpack:dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack:prod && npm run js-vendor-prod && npm run static && npm run less-prod && npm run dust-prod",
