@@ -125,7 +125,7 @@ this.connect = function(){
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
     "asq-plugin",
-    "live-app"
+    "liveApp"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -210,9 +210,9 @@ this.subscribeToEvents= function (){
     this.displaySessionOverDialog();
   }.bind(this))
   // Live App Events
-  document.addEventListener('live-app', function(evt){
+  document.addEventListener('liveApp', function(evt){
     if (evt.target.tagName == "ASQ-LIVE-APP"){
-      connection.socket.emit('live-app', evt.detail);
+      connection.socket.emit('liveApp', evt.detail);
     }
   })
 
