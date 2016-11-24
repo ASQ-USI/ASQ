@@ -9,10 +9,28 @@ ENV CI_USER_TOKEN ${CI_USER_TOKEN}
 
 # Setup Dependencies
 RUN apt-get update -q \
-	&& apt-get install -y -q --no-install-recommends git python build-essential unzip \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false \
-	# Clean up APT when done.
-  && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+    && apt-get install -y -q --no-install-recommends git python build-essential software-properties-common cmake make unzip \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false \
+    # Clean up APT when done.
+    && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+
+# Adds pdf2htmlEX
+RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty multiverse" \
+    && add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty-updates multiverse" \
+    && apt-get update -qq \
+    && add-apt-repository ppa:fontforge/fontforge --yes \
+    && add-apt-repository ppa:delayargentina/delayx --yes \
+    && apt-get update -qq \
+    && apt-get install -y libpoppler-dev libpoppler-private-dev libspiro-dev libcairo-dev libpango1.0-dev libfreetype6-dev libltdl-dev libfontforge-dev python-imaging python-pip \
+    && git clone https://github.com/coolwanglu/pdf2htmlEX.git \
+    && pushd pdf2htmlEX \
+    && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DENABLE_SVG=ON . \
+    && make \
+    && make install \
+    && popd \
+    && rm -R pdf2htmlEX \
+    # Clean up APT when done.
+    && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
 # Build performance improvement: http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/
 ADD package.json /tmp/package.json
