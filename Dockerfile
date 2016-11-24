@@ -21,13 +21,13 @@ RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty multiverse"
     && add-apt-repository ppa:fontforge/fontforge --yes \
     && add-apt-repository ppa:delayargentina/delayx --yes \
     && apt-get update -qq \
-    && apt-get install -y libpoppler-dev libpoppler-private-dev libspiro-dev libcairo-dev libpango1.0-dev libfreetype6-dev libltdl-dev libfontforge-dev python-imaging python-pip \
+    && apt-get install -y --force-yes -q --no-install-recommends libpoppler-dev libpoppler-private-dev libspiro-dev libcairo-dev libpango1.0-dev libfreetype6-dev libltdl-dev libfontforge-dev python-imaging python-pip \
     && git clone https://github.com/coolwanglu/pdf2htmlEX.git \
-    && pushd pdf2htmlEX \
+    && cd pdf2htmlEX \
     && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DENABLE_SVG=ON . \
     && make \
     && make install \
-    && popd \
+    && cd .. \
     && rm -R pdf2htmlEX \
     # Clean up APT when done.
     && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
