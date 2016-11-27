@@ -9,8 +9,8 @@ const _ = require('lodash');
 module.exports = {
 
   booleanOrDefault: function (val, dflt){
-    if(val ==="true") val = true;
-    if(val ==="false") val = false;
+    if(val === 'true') val = true;
+    if(val === 'false') val = false;
     
     return _.isBoolean(val) ? val : dflt;
   },
