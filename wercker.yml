@@ -243,6 +243,10 @@ build:
 push-releases:
   steps:
     # push container as-is
+    - script:
+            name: generate $WERCKER_GIT_BRANCH_$WERCKER_GIT_COMMIT as custom tag
+            code: |
+                  export WERCKER_GIT_BRANCH_WERCKER_GIT_COMMIT=$WERCKER_GIT_BRANCH"_"$WERCKER_GIT_COMMIT
     - internal/docker-push:
         author: Vincenzo FERME <info@vincenzoferme.it>
         disable-sync: false
@@ -250,7 +254,7 @@ push-releases:
         email: $DOCKER_HUB_EMAIL
         username: $DOCKER_HUB_USERNAME
         password: $DOCKER_HUB_PASSWORD
-        tag: "$WERCKER_GIT_BRANCH_$WERCKER_GIT_COMMIT"
+        tag: $WERCKER_GIT_BRANCH,$WERCKER_GIT_BRANCH_WERCKER_GIT_COMMIT
         ports: "80, 443, 3000"
         volumes: "/var/cache/nginx, /ASQ/slides"
         working-dir: /ASQ
