@@ -1,0 +1,255 @@
+box: 
+  id: phusion/baseimage:0.9.19
+  ports:
+    - "3000:3000"
+
+# TODO: add .werckerignore, when this it is gonna be supported (https://github.com/wercker/wercker/issues/62)
+# TODO: evaluate if there is a way to avoid duplication across pipelines
+
+dev:
+    services:
+      - name: mongo
+        id: mongo:3.2.11
+      - name: redis
+        id: redis:3.2.5-alpine
+        cmd: redis-server
+    steps:
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: make ASQ environment
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, setup the environment, and the folder we want to cache
+            code: |
+                  export ASQDIR=${WERCKER_SOURCE_DIR}
+                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+        - wercker/npm-install@1.1.4:
+            use-cache: true
+            clear-cache-on-failed: false
+            options: --unsafe-perm
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: install Bower dependencies
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to install the bower dependencies using the cache,
+            # and the folders in which the bower.json files are defined
+            code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: install ASQ private dependencies
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, install ASQ private dependencies,
+            # and that we do not want to store any folder
+            # This happens only if the current user has the permission to read
+            # the private dependencies
+            # NOTE: we do not need to store folders, because they are already part
+            #       source code, after the installation
+            code: |
+                  if [ -n "$CI_USER_TOKEN" ]; then
+                      echo 'Configuring npm to use wercker cache'
+                      npm config set cache "$WERCKER_CACHE_DIR/wercker/npm" -g
+                      ./utils/wercker_cache_handler.sh "asq_private_dependencies_dev" \
+                      "install_private_dependencies.sh" ""
+                  else
+                     echo 'Skipping step, because not authorized'
+                  fi
+        # TODO: START move to the build
+        - wercker/npm-test@0.0.3
+        # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
+        - script:
+            name: build ASQ
+            code: |
+                  npm run build
+        - script:
+            name: uninstall ASQ dev/build dependencies
+            code: |
+                  npm prune --production
+        #TODO@triglian: check if we should exclude other files     
+        - script:
+            name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
+            code: |
+                  export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
+                  export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
+        - wercker/copy-to-output@0.0.5:
+            exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        - script:
+            name: restore default Wercker output dir
+            code: |
+                  export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
+        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
+        # - script:
+        #     name: remove files not needed for Deploy
+        #     code: |
+        #           rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        - script:
+            name: uninstall environment dev/build dependencies
+            # TODO: evaluate if we can remove other build time dependencies
+            # NOTE: rsync is installed by the wercker/copy-to-output@0.0.5 step
+            # NOTE: default-jre is installed, because needed by pdf2htmlEX during the compilation process
+            code: |
+                  apt-get remove -y --purge python build-essential rsync default-jre
+                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
+                  apt-get clean autoclean
+                  apt-get autoremove -y
+                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+        
+        - internal/shell
+        # TODO: move output to the expected asq folder /asq (also setting it in ASQDIR)
+        # TODO: END move to the build
+        - script:
+            name: setting up environment
+            code: |
+                  export MONGO_DB_NAME=asq
+                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
+                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        - internal/watch:
+            code: npm run start-dev
+            reload: false
+        # - internal/shell
+        # - internal/store-container
+
+# NOTE: the following pipeline assumes you already built the ASQ container using the dev pipeline
+#       and npm install, bower have been correctly executed.
+#       By assuming what stated above, we speed up the execution time of the pipeline
+dev-test:
+    services:
+      - name: mongo
+        id: mongo:3.2.11
+      - name: redis
+        id: redis:3.2.5-alpine
+        cmd: redis-server
+    steps:
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: make ASQ environment
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, setup the environment, and the folder we want to cache
+            code: |
+                  export ASQDIR=${WERCKER_SOURCE_DIR}
+                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+        # - wercker/npm-install@1.1.4:
+        #     use-cache: true
+        #     clear-cache-on-failed: false
+        #     options: --unsafe-perm
+        # - script:
+        #     # If you want to update environment dependencies, refer to the ENV
+        #     # variables set on top of the references script
+        #     name: install Bower dependencies
+        #     # Set the working folder, so we can refer to files in that context
+        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+        #     # Declare we want to install the bower dependencies using the cache,
+        #     # and the folders in which the bower.json files are defined
+        #     code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
+        # - script:
+        #     # If you want to update environment dependencies, refer to the ENV
+        #     # variables set on top of the references script
+        #     name: install ASQ private dependencies
+        #     # Set the working folder, so we can refer to files in that context
+        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+        #     # Declare we want to use a cache, install ASQ private dependencies,
+        #     # and that we do not want to store any folder
+        #     # This happens only if the current user has the permission to read
+        #     # the private dependencies
+        #     # NOTE: we do not need to store folders, because they are already part
+        #     #       source code, after the installation
+        #     code: |
+        #           if [ -n "$CI_USER_TOKEN" ]; then
+        #               echo 'Configuring npm to use wercker cache'
+        #               npm config set cache "$WERCKER_CACHE_DIR/wercker/npm" -g
+        #               ./utils/wercker_cache_handler.sh "asq_private_dependencies_dev" \
+        #               "install_private_dependencies.sh" ""
+        #           else
+        #              echo 'Skipping step, because not authorized'
+        #           fi
+        - wercker/npm-test@0.0.3
+
+# TODO: improve the pipelines to build minimal base image, then separate different
+#       builds, tests pipeline where we add the dependencies dedicated to the tasks
+#       Ref: 
+build:
+    services:
+      - name: mongo
+        id: mongo:3.2.11
+      - name: redis
+        id: redis:3.2.5-alpine
+        cmd: redis-server
+    steps:
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: make ASQ environment
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, setup the environment, and the folder we want to cache
+            code: |
+                  export ASQDIR=${WERCKER_SOURCE_DIR}
+                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+        - wercker/npm-install@1.1.4:
+            use-cache: true
+            clear-cache-on-failed: false
+            options: --unsafe-perm
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: install Bower dependencies
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to install the bower dependencies using the cache,
+            # and the folders in which the bower.json files are defined
+            code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: install ASQ private dependencies
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, install ASQ private dependencies,
+            # and that we do not want to store any folder
+            # This happens only if the current user has the permission to read
+            # the private dependencies
+            # NOTE: we do not need to store folders, because they are already part
+            #       source code, after the installation
+            code: |
+                  if [ -n "$CI_USER_TOKEN" ]; then
+                      echo 'Configuring npm to use wercker cache'
+                      npm config set cache "$WERCKER_CACHE_DIR/wercker/npm" -g
+                      ./utils/wercker_cache_handler.sh "asq_private_dependencies_build" \
+                      "install_private_dependencies.sh" "slide2html public/ui public/cockpit"
+                  else
+                     echo 'Skipping step, because not authorized'
+                  fi
+        - script:
+            name: setting up environment
+            code: |
+                  export MONGO_DB_NAME=asq
+                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
+                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        
+# TODO Deploy
+# VOLUME ["/var/cache/nginx"]
+# EXPOSE 80 443
+# CMD ["/sbin/my_init"]
+
+#Configure Image
+# VOLUME ["/ASQ/slides"]
+#EXPOSE 3000
+
+# script:
+# - docker run -t --name asq $DOCKER_HUB_USERNAME/asq:test npm test
+# - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && ( [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "devel" ] || [[ $TRAVIS_BRANCH =~ ^feat-* ]] ); then
+#   sed -i.bak s/BASE_IMAGE_TAG/${TRAVIS_BRANCH}/g Dockerfile;
+#   docker build -t $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH --build-arg CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile .;
+#   fi
+# after_success:
+# - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && ( [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "devel" ] || [[ $TRAVIS_BRANCH =~ ^feat-* ]] ); then
+#   docker login -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD"; docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH;
+#   fi
