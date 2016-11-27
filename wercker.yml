@@ -58,49 +58,6 @@ dev:
                   else
                      echo 'Skipping step, because not authorized'
                   fi
-        # TODO: START move to the build
-        - wercker/npm-test@0.0.3
-        # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
-        - script:
-            name: build ASQ
-            code: |
-                  npm run build
-        - script:
-            name: uninstall ASQ dev/build dependencies
-            code: |
-                  npm prune --production
-        #TODO@triglian: check if we should exclude other files     
-        - script:
-            name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
-            code: |
-                  export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
-                  export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
-        - wercker/copy-to-output@0.0.5:
-            exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
-        - script:
-            name: restore default Wercker output dir
-            code: |
-                  export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
-        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
-        # - script:
-        #     name: remove files not needed for Deploy
-        #     code: |
-        #           rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
-        - script:
-            name: uninstall environment dev/build dependencies
-            # TODO: evaluate if we can remove other build time dependencies
-            # NOTE: rsync is installed by the wercker/copy-to-output@0.0.5 step
-            # NOTE: default-jre is installed, because needed by pdf2htmlEX during the compilation process
-            code: |
-                  apt-get remove -y --purge python build-essential rsync default-jre
-                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
-                  apt-get clean autoclean
-                  apt-get autoremove -y
-                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
-        
-        - internal/shell
-        # TODO: move output to the expected asq folder /asq (also setting it in ASQDIR)
-        # TODO: END move to the build
         - script:
             name: setting up environment
             code: |
@@ -233,6 +190,52 @@ build:
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        # TODO: START move to the dev for testing, after "setting up environment"
+        - wercker/npm-test@0.0.3
+        # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
+        - script:
+            name: build ASQ
+            code: |
+                  npm run build
+        - script:
+            name: uninstall ASQ dev/build dependencies
+            code: |
+                  npm prune --production
+        #TODO@triglian: check if we should exclude other files     
+        - script:
+            name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
+            code: |
+                  export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
+                  export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
+        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
+        # - script:
+        #     name: remove files not needed for Deploy
+        #     code: |
+        #           rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        - wercker/copy-to-output@0.0.5:
+            exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        - script:
+            name: restore default Wercker output dir
+            code: |
+                  export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
+        # TODO: evaluate if I can move the following step above (maybe but the rsync for now),
+        #       evaluating with @triglian if some of these dependency are needed by npm install
+        #       This way, we can cache also after this step (or the environment step)
+        - script:
+            name: uninstall environment dev/build dependencies
+            # TODO: evaluate if we can remove other build time dependencies
+            # NOTE: rsync is installed by the wercker/copy-to-output@0.0.5 step
+            # NOTE: default-jre is installed, because needed by pdf2htmlEX during the compilation process
+            code: |
+                  apt-get remove -y --purge python build-essential rsync default-jre
+                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
+                  apt-get clean autoclean
+                  apt-get autoremove -y
+                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+        # TODO: move output to the expected asq folder /asq (also setting it in ASQDIR)
+        # TODO: END move to the dev for testing, after "setting up environment"
+        # TODO: remove, here for testing
+        - internal/store-container
         
 # TODO Deploy
 # VOLUME ["/var/cache/nginx"]
