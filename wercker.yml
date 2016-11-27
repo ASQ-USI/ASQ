@@ -238,24 +238,23 @@ build:
         # TODO: END move to the dev for testing, after "setting up environment"
 
 # TODO: define the deploy section, refer to http://devcenter.wercker.com/docs/steps/internal-steps
-# push-release:
-#   steps:
-#     # push container as-is
-#     - internal/docker-push:
-#         disable-sync: true
-#         repository: quay.io/wercker/todo-demo-release
-#         username: $DOCKER_USERNAME
-#         password: $DOCKER_PASSWORD
-#         registry: quay.io
-#         tag: $WERCKER_GIT_BRANCH        
-# TODO Deploy
-# VOLUME ["/var/cache/nginx"]
-# EXPOSE 80 443
-# CMD ["/sbin/my_init"]
-
-#Configure Image
-# VOLUME ["/ASQ/slides"]
-#EXPOSE 3000
+# TODO: define the push for the community edition (after building it without the private deps)
+#       referring to a shared base image, and a splitting workflow    
+push-releases:
+  steps:
+    # push container as-is
+    - internal/docker-push:
+        author: Vincenzo FERME <info@vincenzoferme.it>
+        disable-sync: false
+        repository: asqlive/asq-pro
+        email: $DOCKER_HUB_EMAIL
+        username: $DOCKER_HUB_USERNAME
+        password: $DOCKER_HUB_PASSWORD
+        tag: $WERCKER_GIT_BRANCH_$WERCKER_GIT_COMMIT
+        ports: 80,443,3000
+        volumes: /var/cache/nginx,/ASQ/slides
+        working-dir: /ASQ
+        cmd: /sbin/my_init
 
 # script:
 # - docker run -t --name asq $DOCKER_HUB_USERNAME/asq:test npm test
@@ -267,3 +266,5 @@ build:
 # - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && ( [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "devel" ] || [[ $TRAVIS_BRANCH =~ ^feat-* ]] ); then
 #   docker login -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD"; docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH;
 #   fi
+
+# TODO: define the continuous deployment pipeline
