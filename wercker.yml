@@ -202,22 +202,22 @@ build:
             code: |
                   npm prune --production
         #TODO@triglian: check if we should exclude other files     
-        - script:
-            name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
-            code: |
-                  export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
-                  export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
-        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
         # - script:
-        #     name: remove files not needed for Deploy
+        #     name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
         #     code: |
-        #           rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
-        - wercker/copy-to-output@0.0.5:
-            exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        #           export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
+        #           export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
+        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
         - script:
-            name: restore default Wercker output dir
+            name: remove files not needed for deploy
             code: |
-                  export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
+                  rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        # - wercker/copy-to-output@0.0.5:
+        #     exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        # - script:
+        #     name: restore default Wercker output dir
+        #     code: |
+        #           export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
         # TODO: evaluate if I can move the following step above (maybe but the rsync for now),
         #       evaluating with @triglian if some of these dependency are needed by npm install
         #       This way, we can cache also after this step (or the environment step)
@@ -236,7 +236,17 @@ build:
         # TODO: END move to the dev for testing, after "setting up environment"
         # TODO: remove, here for testing
         - internal/store-container
-        
+
+# push-release:
+#   steps:
+#     # push container as-is
+#     - internal/docker-push:
+#         disable-sync: true
+#         repository: quay.io/wercker/todo-demo-release
+#         username: $DOCKER_USERNAME
+#         password: $DOCKER_PASSWORD
+#         registry: quay.io
+#         tag: $WERCKER_GIT_BRANCH        
 # TODO Deploy
 # VOLUME ["/var/cache/nginx"]
 # EXPOSE 80 443
