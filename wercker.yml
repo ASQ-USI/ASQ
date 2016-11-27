@@ -65,9 +65,9 @@ dev:
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
-        - internal/watch:
-            code: npm run start-dev
-            reload: false
+        # - internal/watch:
+        #     code: npm run start-dev
+        #     reload: false
         # - internal/shell
         # - internal/store-container
 
@@ -132,12 +132,12 @@ dev-test:
 #       builds, tests pipeline where we add the dependencies dedicated to the tasks
 #       Ref: 
 build:
-    services:
-      - name: mongo
-        id: mongo:3.2.11
-      - name: redis
-        id: redis:3.2.5-alpine
-        cmd: redis-server
+    # services:
+    #   - name: mongo
+    #     id: mongo:3.2.11
+    #   - name: redis
+    #     id: redis:3.2.5-alpine
+    #     cmd: redis-server
     steps:
         - script:
             # If you want to update environment dependencies, refer to the ENV
@@ -201,6 +201,8 @@ build:
             name: uninstall ASQ dev/build dependencies
             code: |
                   npm prune --production
+        # TODO: in case I need to use the copy alternative, refer to:
+        #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
         #TODO@triglian: check if we should exclude other files     
         # - script:
         #     name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
@@ -237,6 +239,7 @@ build:
         # TODO: remove, here for testing
         - internal/store-container
 
+# TODO: define the deploy section, refer to http://devcenter.wercker.com/docs/steps/internal-steps
 # push-release:
 #   steps:
 #     # push container as-is
