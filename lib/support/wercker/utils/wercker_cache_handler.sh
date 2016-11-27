@@ -150,7 +150,7 @@ handle_single_folder_cache() {
   		echo "Storing Cache for "$2
   		# TODO: improve the way the stdout and stderr are redirected
   		# TODO: evaluate if adding --ignore-failed-read
-  		tar --same-owner --exclude="${SRC}/${2}" --exclude='/proc' --exclude='/sys' --exclude='/dev' --exclude='/pipeline' -zcf "${DST}/${2}/${2}.tar.gz" "${SRC}" > /dev/null 2>&1
+  		tar --same-owner --exclude="${SRC}/${2}" --exclude='/proc' --exclude='/sys' --exclude='/dev' --exclude='/mnt' --exclude='/pipeline' -zcf "${DST}/${2}/${2}.tar.gz" "${SRC}" > /dev/null 2>&1
   	# restores the cache, only if we saved some files
   	elif test -f "${SRC}/${2}/${2}.tar.gz"; then
   		echo "Restoring Cache for "$2
