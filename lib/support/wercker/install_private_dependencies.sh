@@ -15,7 +15,7 @@ export cockpitDir=public/cockpit
 export cockpitBranch=feat-use-polymer-build
 export cockpitCommit=1cace88d4dff32e3366c1b6c97a3c4b350a6d81f
 
-# current_folder=$(pwd)
-# cd ${WERCKER_SOURCE_DIR}
-# CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies
-# cd $current_folder
+current_folder=$(pwd)
+cd ${WERCKER_SOURCE_DIR}
+CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies
+cd $current_folder
