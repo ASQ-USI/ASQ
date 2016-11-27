@@ -36,6 +36,7 @@ slides/
 /plugins/
 public/
 slide2html/
+/client/js/templates.js
 !client/presenterControl/public
 config/config.*
 !config/config.defaults.js.example
@@ -78,6 +79,13 @@ Thumbs.db
 /components
 
 # ASQ Components for PDF uploaded presentations #
+##################
 /lib/support/pdf/bower_components
+
 # ASQ Components for live app #
+##################
 /lib/support/liveApp/bower_components
+
+# Wercker #
+##################
+/wercker.ene
