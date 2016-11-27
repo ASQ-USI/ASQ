@@ -250,9 +250,9 @@ push-releases:
         email: $DOCKER_HUB_EMAIL
         username: $DOCKER_HUB_USERNAME
         password: $DOCKER_HUB_PASSWORD
-        tag: $WERCKER_GIT_BRANCH_$WERCKER_GIT_COMMIT
-        ports: 80,443,3000
-        volumes: /var/cache/nginx,/ASQ/slides
+        tag: "$WERCKER_GIT_BRANCH_$WERCKER_GIT_COMMIT"
+        ports: "80, 443, 3000"
+        volumes: "/var/cache/nginx, /ASQ/slides"
         working-dir: /ASQ
         cmd: /sbin/my_init
 
