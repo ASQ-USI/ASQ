@@ -275,7 +275,9 @@ build:
         - script:
             name: inspect Wercker cache and MD5
             code: |
+                  ls ${WERCKER_CACHE_DIR}
                   ls -R ${WERCKER_CACHE_DIR}/asq_private_dependencies_build
+                  du -sh ${WERCKER_CACHE_DIR}
                   md5_current=($(md5sum "$WERCKER_SOURCE_DIR/lib/support/wercker/install_private_dependencies.sh"))
                   md5_cached=($(md5sum "$WERCKER_CACHE_DIR/asq_private_dependencies_build/install_private_dependencies.sh"))
                   echo "Current MD5: "$md5_current
