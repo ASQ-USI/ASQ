@@ -206,7 +206,7 @@ build:
         - wercker/npm-test@0.0.3
         # TODO: improve this 
         - script:
-            name: install ASQ pluginf
+            name: install ASQ plugins
             code: |
                   export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
                   npm run plugins
