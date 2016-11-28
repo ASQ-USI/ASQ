@@ -138,7 +138,10 @@ dev-tests:
 # TODO: improve the pipelines to build minimal base image, then separate different
 #       builds, tests pipeline where we add the dependencies dedicated to the tasks
 #       Ref: http://blog.wercker.com/introducing-wercker-workflows
-build-initial:
+# NOTE: since we have to reload the environment, we collapsed some pipelines
+#       , to save time. Or just install the dependency we need for the pipeline (if faster)
+# build-initial:
+build:
     steps:
         - script:
             # If you want to update environment dependencies, refer to the ENV
@@ -151,10 +154,15 @@ build-initial:
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
+        # NOTE: install all the dependencies, now that the pipelines are collapsed
+        # - wercker/npm-install@1.1.4:
+        #     use-cache: true
+        #     clear-cache-on-failed: false
+        #     options: --unsafe-perm --production
         - wercker/npm-install@1.1.4:
             use-cache: true
             clear-cache-on-failed: false
-            options: --unsafe-perm --production
+            options: --unsafe-perm
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -164,50 +172,48 @@ build-initial:
             # Declare we want to install the bower dependencies using the cache,
             # and the folders in which the bower.json files are defined
             code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
-
+# 
 # Depends on: build-initial
-# TODO: since we have to reload the environment, evaluate if it is better to collapse
-#       some steps, to save time. Or just install the dependency we need for the pipeline (if faster)
-build-execute-tests:
+# build-execute-tests:
     # services:
     #   - name: mongo
     #     id: mongo:3.2.11
     #   - name: redis
     #     id: redis:3.2.5-alpine
     #     cmd: redis-server
-    steps:
-        - script:
-            # If you want to update environment dependencies, refer to the ENV
-            # variables set on top of the references script
-            name: make ASQ environment
-            # Set the working folder, so we can refer to files in that context
-            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-            # Declare we want to use a cache, setup the environment, and the folder we want to cache
-            code: |
-                  export ASQDIR=${WERCKER_SOURCE_DIR}
-                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+    # steps:
+        # - script:
+        #     # If you want to update environment dependencies, refer to the ENV
+        #     # variables set on top of the references script
+        #     name: make ASQ environment
+        #     # Set the working folder, so we can refer to files in that context
+        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
+        #     code: |
+        #           export ASQDIR=${WERCKER_SOURCE_DIR}
+        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
-        - wercker/npm-install@1.1.4:
-            use-cache: true
-            clear-cache-on-failed: false
-            options: --unsafe-perm
+        # - wercker/npm-install@1.1.4:
+        #     use-cache: true
+        #     clear-cache-on-failed: false
+        #     options: --unsafe-perm
         - wercker/npm-test@0.0.3
-
-# Must depend on: build-execute-tests
-# TODO: since we have to reload the environment, evaluate if it is better to collapse
-#       some steps, to save time. Or just install the dependency we need for the pipeline (if faster)
-build-clean:
-    steps:
-        - script:
-            # If you want to update environment dependencies, refer to the ENV
-            # variables set on top of the references script
-            name: make ASQ environment
-            # Set the working folder, so we can refer to files in that context
-            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-            # Declare we want to use a cache, setup the environment, and the folder we want to cache
-            code: |
-                  export ASQDIR=${WERCKER_SOURCE_DIR}
-                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+# 
+# Depends on: build-initial
+# TODO: since we have to reload the environment, we collapsed some pipelines
+#       , to save time. Or just install the dependency we need for the pipeline (if faster)
+# build-clean:
+#     steps:
+        # - script:
+        #     # If you want to update environment dependencies, refer to the ENV
+        #     # variables set on top of the references script
+        #     name: make ASQ environment
+        #     # Set the working folder, so we can refer to files in that context
+        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
+        #     code: |
+        #           export ASQDIR=${WERCKER_SOURCE_DIR}
+        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
         - script:
             name: build ASQ
@@ -237,26 +243,26 @@ build-clean:
         #     name: restore default Wercker output dir
         #     code: |
         #           export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
-
-# Depend on: build-clean
-# TODO: since we have to reload the environment, evaluate if it is better to collapse
-#       some steps, to save time. Or just install the dependency we need for the pipeline (if faster)
-build-pro:
-    steps:
+#
+# Depends on: build-initial
+# TODO: since we have to reload the environment, we collapsed some pipelines
+#       , to save time. Or just install the dependency we need for the pipeline (if faster)
+# build-pro:
+#     steps:
         # - wercker/install-packages@1.0.0:
         #     packages: git
         #     clear-cache: false
         # install the dependencies for this pipeline
-        - script:
-            # If you want to update environment dependencies, refer to the ENV
-            # variables set on top of the references script
-            name: make ASQ environment
-            # Set the working folder, so we can refer to files in that context
-            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-            # Declare we want to use a cache, setup the environment, and the folder we want to cache
-            code: |
-                  export ASQDIR=${WERCKER_SOURCE_DIR}
-                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+        # - script:
+        #     # If you want to update environment dependencies, refer to the ENV
+        #     # variables set on top of the references script
+        #     name: make ASQ environment
+        #     # Set the working folder, so we can refer to files in that context
+        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
+        #     code: |
+        #           export ASQDIR=${WERCKER_SOURCE_DIR}
+        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -279,7 +285,7 @@ build-pro:
                      echo 'Skipping step, because not authorized'
                   fi
  
-# Must depend on: build-pro
+# Must depend on: build-pro (currently build)
 push-pro-release:
   steps:
     - script:
@@ -292,6 +298,10 @@ push-pro-release:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+    # TODO: remove
+    - script:
+            name: (REMOVE) inspect log
+            code: ls /usr/bin
     # Remove build dependencies
     - script:
             name: remove ASQ build dependencies needed up to here in the workflow
