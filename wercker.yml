@@ -27,6 +27,7 @@ dev:
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
+        #       Maybe also evaluation Yarn
         - wercker/npm-install@1.1.4:
             use-cache: true
             clear-cache-on-failed: false
@@ -51,7 +52,7 @@ dev:
             # This happens only if the current user has the permission to read
             # the private dependencies
             # NOTE: we do not need to store folders, because they are already part
-            #       source code, after the installation
+            #       of the source code, after the installation
             code: |
                   if [ -n "$CI_USER_TOKEN" ]; then
                       echo 'Configuring npm to use wercker cache'
@@ -74,8 +75,7 @@ dev:
         # - internal/shell
         # - internal/store-container
 
-# NOTE: the following pipeline assumes you already built the ASQ container using the dev pipeline
-#       and npm install, and bower have been correctly executed.
+# NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
 #       By assuming what stated above, we speed up the execution time of the pipeline
 # Depends on: dev
 dev-tests:
@@ -97,40 +97,6 @@ dev-tests:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
-        # - wercker/npm-install@1.1.4:
-        #     use-cache: true
-        #     clear-cache-on-failed: false
-        #     options: --unsafe-perm
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: install Bower dependencies
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to install the bower dependencies using the cache,
-        #     # and the folders in which the bower.json files are defined
-        #     code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: install ASQ private dependencies
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to use a cache, install ASQ private dependencies,
-        #     # and that we do not want to store any folder
-        #     # This happens only if the current user has the permission to read
-        #     # the private dependencies
-        #     # NOTE: we do not need to store folders, because they are already part
-        #     #       source code, after the installation
-        #     code: |
-        #           if [ -n "$CI_USER_TOKEN" ]; then
-        #               echo 'Configuring npm to use wercker cache'
-        #               npm config set cache "$WERCKER_CACHE_DIR/wercker/npm" -g
-        #               ./utils/wercker_cache_handler.sh "asq_private_dependencies_dev" \
-        #               "install_private_dependencies.sh" ""
-        #           else
-        #              echo 'Skipping step, because not authorized'
-        #           fi
         - wercker/npm-test@0.0.3
 
 ####### THE FOLLOWING PIPELINES ARE DEFINED FOR WERCKER CLOUD #######
@@ -139,8 +105,9 @@ dev-tests:
 #       builds, tests pipeline where we add the dependencies dedicated to the tasks
 #       Ref: http://blog.wercker.com/introducing-wercker-workflows
 # NOTE: since we have to reload the environment, we collapsed some pipelines
-#       , to save time. Or just install the dependency we need for the pipeline (if faster)
-# build-initial:
+#       , to save time. TODO:  Try to just install the dependency we need for 
+#       the pipeline (if it is faster)
+# NOTE: Name when split: build-initial:
 build:
     steps:
         # TODO: remove, here for inspection (now the cache should be there)
@@ -180,7 +147,7 @@ build:
             code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
 # 
 # Depends on: build-initial
-# build-execute-tests:
+# NOTE: Name when split: build-execute-tests:
     # services:
     #   - name: mongo
     #     id: mongo:3.2.11
@@ -204,19 +171,19 @@ build:
         #     clear-cache-on-failed: false
         #     options: --unsafe-perm
         - wercker/npm-test@0.0.3
-        # TODO: improve this 
+        # TODO: improve the following step, if slow, to store the plugin folder
+        #       and use the cache. Moreover check if I can cwd into the directory
+        #       and avoid setting the environment variable
         - script:
             name: install ASQ plugins
             code: |
                   export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
                   npm run plugins
-# 
-# export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
-# 
+#
 # Depends on: build-initial
 # TODO: since we have to reload the environment, we collapsed some pipelines
 #       , to save time. Or just install the dependency we need for the pipeline (if faster)
-# build-clean:
+# NOTE: Name when split: build-clean:
 #     steps:
         # - script:
         #     # If you want to update environment dependencies, refer to the ENV
@@ -232,8 +199,7 @@ build:
         - script:
             name: build ASQ
             cwd: $WERCKER_SOURCE_DIR
-            code: |
-                  npm run build
+            code: npm run build
         # TODO: in case we need to use the copy alternative, refer to:
         #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
         #TODO@triglian: check if we should exclude other files     
@@ -261,7 +227,7 @@ build:
 # Depends on: build-initial
 # TODO: since we have to reload the environment, we collapsed some pipelines
 #       , to save time. Or just install the dependency we need for the pipeline (if faster)
-# build-pro:
+# NOTE: Name when split: build-pro:
 #     steps:
         # - wercker/install-packages@1.0.0:
         #     packages: git
