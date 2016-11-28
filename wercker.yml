@@ -174,6 +174,10 @@ build-execute-tests:
     #     id: redis:3.2.5-alpine
     #     cmd: redis-server
     steps:
+        # install the dependencies for this pipeline
+        - wercker/install-packages@1.0.0:
+            packages: npm
+            clear-cache: false
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
         # - wercker/npm-install@1.1.4:
         #     use-cache: true
@@ -185,6 +189,10 @@ build-execute-tests:
 # Must depend on: build-execute-tests
 build-clean:
     steps:
+        # install the dependencies for this pipeline
+        - wercker/install-packages@1.0.0:
+            packages: npm
+            clear-cache: false
         # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
         - script:
             name: build ASQ
@@ -221,6 +229,10 @@ build-pro:
         # - wercker/install-packages@1.0.0:
         #     packages: git
         #     clear-cache: false
+        # install the dependencies for this pipeline
+        - wercker/install-packages@1.0.0:
+            packages: npm
+            clear-cache: false
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -242,15 +254,6 @@ build-pro:
                   else
                      echo 'Skipping step, because not authorized'
                   fi
-        # Remove build dependencies
-        - script:
-            name: remove ASQ build dependencies needed up to here in the workflow
-            code: |
-                  apt-get remove -y --purge git build-essential
-                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
-                  apt-get clean autoclean
-                  apt-get autoremove -y
-                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
  
 # Must depend on: build-pro
 push-pro-release:
@@ -265,6 +268,15 @@ push-pro-release:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+    # Remove build dependencies
+    - script:
+            name: remove ASQ build dependencies needed up to here in the workflow
+            code: |
+                  apt-get remove -y --purge git build-essential
+                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
+                  apt-get clean autoclean
+                  apt-get autoremove -y
+                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
     - script:
             name: move ASQ to the /ASQ folder
             code: |
