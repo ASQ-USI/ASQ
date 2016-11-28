@@ -172,12 +172,13 @@ build:
         #     options: --unsafe-perm
         - wercker/npm-test@0.0.3
         # TODO: improve the following step, if slow, to store the plugin folder
-        #       and use the cache. Moreover check if I can cwd into the directory
-        #       and avoid setting the environment variable
+        #       and use the cache. 
         - script:
             name: install ASQ plugins
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR
             code: |
-                  export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
+                  export PLUGIN_DIR=plugins
                   npm run plugins
 #
 # Depends on: build-initial
