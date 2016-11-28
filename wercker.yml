@@ -357,7 +357,10 @@ push-pro-release:
             # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
             code: |
                   rm -Rf /report /pipeline
-                  env
+    - script:
+            name: generate branch_commit as custom tag
+            cwd: /
+            code: |
                   SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
                   echo $WERCKER_GIT_BRANCH
                   echo $WERCKER_GIT_COMMIT
@@ -365,15 +368,6 @@ push-pro-release:
                   DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"_"$SHORT_WERCKER_GIT_COMMIT
                   echo $DOCKER_IMAGE_CUSTOM_TAG
                   export DOCKER_IMAGE_CUSTOM_TAG 
-
-    # SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
-                  # echo $SHORT_WERCKER_GIT_COMMIT
-                  # DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"_"$SHORT_WERCKER_GIT_COMMIT
-                  # echo $DOCKER_IMAGE_CUSTOM_TAG
-                  # export DOCKER_IMAGE_CUSTOM_TAG  
-    # - script:
-    #         name: generate branch_commit as custom tag
-    #         code: env
     # push container as-is
     - internal/docker-push:
         author: Vincenzo FERME <info@vincenzoferme.it>
