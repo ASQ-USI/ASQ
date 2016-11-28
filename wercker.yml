@@ -357,11 +357,11 @@ push-pro-release:
             # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
             code: rm -Rf /report /pipeline  
     - script:
-            name: generate $WERCKER_GIT_BRANCH/$SHORT_WERCKER_GIT_COMMIT as custom tag
+            name: generate $WERCKER_GIT_BRANCH_$SHORT_WERCKER_GIT_COMMIT as custom tag
             code: |
                   SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
                   echo $SHORT_WERCKER_GIT_COMMIT
-                  DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"/"$SHORT_WERCKER_GIT_COMMIT
+                  DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"_"$SHORT_WERCKER_GIT_COMMIT
                   echo $DOCKER_IMAGE_CUSTOM_TAG
                   export DOCKER_IMAGE_CUSTOM_TAG
     # push container as-is
