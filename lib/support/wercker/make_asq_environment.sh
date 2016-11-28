@@ -97,7 +97,7 @@ chmod +x /etc/service/asq/run
 ############### CLEANUP ASQ ENVIRONMENT SETUP ###############
 # TODO: evaluate if we can remove other build time dependencies
 # NOTE: default-jre is installed, because needed by pdf2htmlEX during the compilation process
-apt-get remove -y --purge build-essential default-jre
+apt-get remove -y --purge default-jre
 apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
 apt-get clean autoclean
 apt-get autoremove -y

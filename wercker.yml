@@ -246,7 +246,7 @@ build-pro:
         - script:
             name: remove ASQ build dependencies needed up to here in the workflow
             code: |
-                  apt-get remove -y --purge git
+                  apt-get remove -y --purge git build-essential
                   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
                   apt-get clean autoclean
                   apt-get autoremove -y
