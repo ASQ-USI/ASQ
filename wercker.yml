@@ -360,7 +360,10 @@ push-pro-release:
             name: generate $WERCKER_GIT_BRANCH/$SHORT_WERCKER_GIT_COMMIT as custom tag
             code: |
                   SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
-                  export DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"/"$SHORT_WERCKER_GIT_COMMIT
+                  echo $SHORT_WERCKER_GIT_COMMIT
+                  DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"/"$SHORT_WERCKER_GIT_COMMIT
+                  echo $DOCKER_IMAGE_CUSTOM_TAG
+                  export DOCKER_IMAGE_CUSTOM_TAG
     # push container as-is
     - internal/docker-push:
         author: Vincenzo FERME <info@vincenzoferme.it>
