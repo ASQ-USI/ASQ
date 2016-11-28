@@ -267,7 +267,7 @@ build:
         - script:
             name: inspect Wercker cache and MD5
             code: |
-                  ls -R ${WERCKER_CACHE_DIR}/asq_private_dependencies_build
+                  ls ${WERCKER_CACHE_DIR}
                   md5_current=($(md5sum "$WERCKER_SOURCE_DIR/lib/support/wercker/install_private_dependencies.sh"))
                   md5_cached=($(md5sum "$WERCKER_CACHE_DIR/asq_private_dependencies_build/install_private_dependencies.sh"))
                   echo "Current MD5: "$md5_current
@@ -293,6 +293,15 @@ build:
                   else
                      echo 'Skipping step, because not authorized'
                   fi
+         # TODO: remove, here for inspection
+        - script:
+            name: inspect Wercker cache and MD5
+            code: |
+                  ls -R ${WERCKER_CACHE_DIR}/asq_private_dependencies_build
+                  md5_current=($(md5sum "$WERCKER_SOURCE_DIR/lib/support/wercker/install_private_dependencies.sh"))
+                  md5_cached=($(md5sum "$WERCKER_CACHE_DIR/asq_private_dependencies_build/install_private_dependencies.sh"))
+                  echo "Current MD5: "$md5_current
+                  echo "Cached MD5: "$md5_cached
  
 # Must depend on: build-pro (currently build)
 push-pro-release:
