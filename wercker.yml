@@ -265,7 +265,7 @@ push-pro-release:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
-     - script:
+    - script:
             name: move ASQ to the /ASQ folder
             code: |
                   export ASQDIR=/ASQ
