@@ -378,7 +378,7 @@ push-pro-release:
         password: $DOCKER_HUB_PASSWORD
         tag: $WERCKER_GIT_BRANCH,$DOCKER_IMAGE_CUSTOM_TAG
         ports: "80, 443, 3000"
-        volumes: "/var/cache/nginx, /ASQ/slides"
+        volumes: "/mnt, /var/cache/nginx, /ASQ/slides"
         working-dir: /ASQ
         env: "ASQDIR=/ASQ"
         cmd: /sbin/my_init
