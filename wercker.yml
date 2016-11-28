@@ -362,6 +362,9 @@ push-pro-release:
                   echo $WERCKER_GIT_BRANCH
                   echo $WERCKER_GIT_COMMIT
                   echo $SHORT_WERCKER_GIT_COMMIT
+                  DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"_"$SHORT_WERCKER_GIT_COMMIT
+                  echo $DOCKER_IMAGE_CUSTOM_TAG
+                  export DOCKER_IMAGE_CUSTOM_TAG 
 
     # SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
                   # echo $SHORT_WERCKER_GIT_COMMIT
