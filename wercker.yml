@@ -358,6 +358,11 @@ push-pro-release:
             code: |
                   rm -Rf /report /pipeline
                   env
+                  SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
+                  echo $WERCKER_GIT_BRANCH
+                  echo $WERCKER_GIT_COMMIT
+                  echo $SHORT_WERCKER_GIT_COMMIT
+
     # SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
                   # echo $SHORT_WERCKER_GIT_COMMIT
                   # DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"_"$SHORT_WERCKER_GIT_COMMIT
