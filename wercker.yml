@@ -322,6 +322,7 @@ push-pro-release:
             name: move ASQ to the /ASQ folder
             code: |
                   export ASQDIR=/ASQ
+                  [ -d "$ASQDIR" ] || mkdir -p "$ASQDIR"
                   mv -f ${WERCKER_SOURCE_DIR}/* ${ASQDIR}
     - script:
             name: remove Wercker assets
