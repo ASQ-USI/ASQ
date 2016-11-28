@@ -225,6 +225,7 @@ build:
             name: build ASQ
             cwd: $WERCKER_SOURCE_DIR
             code: |
+                  export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
                   npm run build
         # TODO: in case we need to use the copy alternative, refer to:
         #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
