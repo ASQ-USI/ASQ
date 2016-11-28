@@ -6,6 +6,8 @@ box:
 # TODO: add .werckerignore, when this it is gonna be supported (https://github.com/wercker/wercker/issues/62)
 # TODO: evaluate if there is a way to avoid duplication across pipelines
 
+####### THE FOLLOWING PIPELINES ARE AVAILABLE FOR LOCAL DEVELOPMENT #######
+
 dev:
     services:
       - name: mongo
@@ -24,6 +26,7 @@ dev:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+        # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
         - wercker/npm-install@1.1.4:
             use-cache: true
             clear-cache-on-failed: false
@@ -65,22 +68,24 @@ dev:
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
-        # - internal/watch:
-        #     code: npm run start-dev
-        #     reload: false
+        - internal/watch:
+            code: npm run start-dev
+            reload: false
         # - internal/shell
         # - internal/store-container
 
 # NOTE: the following pipeline assumes you already built the ASQ container using the dev pipeline
-#       and npm install, bower have been correctly executed.
+#       and npm install, and bower have been correctly executed.
 #       By assuming what stated above, we speed up the execution time of the pipeline
-dev-test:
-    services:
-      - name: mongo
-        id: mongo:3.2.11
-      - name: redis
-        id: redis:3.2.5-alpine
-        cmd: redis-server
+# Depends on: dev
+dev-tests:
+    # TODO: enable when they are needed by the tests
+    # services:
+    #   - name: mongo
+    #     id: mongo:3.2.11
+    #   - name: redis
+    #     id: redis:3.2.5-alpine
+    #     cmd: redis-server
     steps:
         - script:
             # If you want to update environment dependencies, refer to the ENV
@@ -128,16 +133,12 @@ dev-test:
         #           fi
         - wercker/npm-test@0.0.3
 
+####### THE FOLLOWING PIPELINES ARE DEFINED FOR WERCKER CLOUD #######
+
 # TODO: improve the pipelines to build minimal base image, then separate different
 #       builds, tests pipeline where we add the dependencies dedicated to the tasks
-#       Ref: 
-build:
-    # services:
-    #   - name: mongo
-    #     id: mongo:3.2.11
-    #   - name: redis
-    #     id: redis:3.2.5-alpine
-    #     cmd: redis-server
+#       Ref: http://blog.wercker.com/introducing-wercker-workflows
+build-initial:
     steps:
         - script:
             # If you want to update environment dependencies, refer to the ENV
@@ -149,10 +150,11 @@ build:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+        # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
         - wercker/npm-install@1.1.4:
             use-cache: true
             clear-cache-on-failed: false
-            options: --unsafe-perm
+            options: --unsafe-perm --production
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -162,6 +164,63 @@ build:
             # Declare we want to install the bower dependencies using the cache,
             # and the folders in which the bower.json files are defined
             code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
+
+# Depends on: build-initial
+build-execute-tests:
+    # services:
+    #   - name: mongo
+    #     id: mongo:3.2.11
+    #   - name: redis
+    #     id: redis:3.2.5-alpine
+    #     cmd: redis-server
+    steps:
+        # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
+        # - wercker/npm-install@1.1.4:
+        #     use-cache: true
+        #     clear-cache-on-failed: false
+        #     options: --unsafe-perm
+        # TODO: START move to the dev for testing, after "setting up environment"
+        - wercker/npm-test@0.0.3
+
+# Must depend on: build-execute-tests
+build-clean:
+    steps:
+        # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
+        - script:
+            name: build ASQ
+            cwd: $WERCKER_SOURCE_DIR
+            code: |
+                  npm run build
+        # TODO: in case we need to use the copy alternative, refer to:
+        #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
+        #TODO@triglian: check if we should exclude other files     
+        # - script:
+        #     name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
+        #     code: |
+        #           export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
+        #           export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
+        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
+        # NOTE: does not remove the following folders, because the code might be needed by
+        #       subsequent pipelines: lib/support/wercker lib/support/docker
+        - script:
+            name: remove files not needed for deploy
+            cwd: $WERCKER_SOURCE_DIR
+            code: |
+                  rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        # TODO (if step used): remove rsync, because it is installed by the wercker/copy-to-output@0.0.5 step
+        # - wercker/copy-to-output@0.0.5:
+        #     exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+        # - script:
+        #     name: restore default Wercker output dir
+        #     code: |
+        #           export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
+
+# Depend on: build-clean
+build-pro:
+    steps:
+        - wercker/install-packages@1.0.0:
+            packages: git
+            clear-cache: false
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -183,100 +242,62 @@ build:
                   else
                      echo 'Skipping step, because not authorized'
                   fi
+        # Remove build dependencies
         - script:
-            name: setting up environment
+            name: remove ASQ Pro build dependencies
             code: |
-                  export MONGO_DB_NAME=asq
-                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
-                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
-                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
-        # TODO: START move to the dev for testing, after "setting up environment"
-        - wercker/npm-test@0.0.3
-        # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
-        - script:
-            name: build ASQ
-            code: |
-                  npm run build
-        - script:
-            name: uninstall ASQ dev/build dependencies
-            code: |
-                  npm prune --production
-        # TODO: in case I need to use the copy alternative, refer to:
-        #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
-        #TODO@triglian: check if we should exclude other files     
-        # - script:
-        #     name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
-        #     code: |
-        #           export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
-        #           export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
-        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
-        - script:
-            name: remove files not needed for deploy
-            code: |
-                  rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
-        # - wercker/copy-to-output@0.0.5:
-        #     exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides log benchmark doc lib/support/wercker lib/support/docker wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
-        # - script:
-        #     name: restore default Wercker output dir
-        #     code: |
-        #           export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
-        # TODO: evaluate if I can move the following step above (maybe but the rsync for now),
-        #       evaluating with @triglian if some of these dependency are needed by npm install
-        #       This way, we can cache also after this step (or the environment step)
-        - script:
-            name: uninstall environment dev/build dependencies
-            # TODO: evaluate if we can remove other build time dependencies
-            # NOTE: rsync is installed by the wercker/copy-to-output@0.0.5 step
-            # NOTE: default-jre is installed, because needed by pdf2htmlEX during the compilation process
-            code: |
-                  apt-get remove -y --purge python build-essential rsync default-jre
+                  apt-get remove -y --purge git
                   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
                   apt-get clean autoclean
                   apt-get autoremove -y
                   rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
-        # TODO: move output to the expected asq folder /asq (also setting it in ASQDIR)
-        # TODO: END move to the dev for testing, after "setting up environment"
-        # push container as-is
-        - script:
-                name: generate $WERCKER_GIT_BRANCH_$WERCKER_GIT_COMMIT as custom tag
-                code: |
-                      export WERCKER_GIT_BRANCH_WERCKER_GIT_COMMIT=$WERCKER_GIT_BRANCH"_"$WERCKER_GIT_COMMIT
-        - internal/docker-push:
-            author: Vincenzo FERME <info@vincenzoferme.it>
-            disable-sync: false
-            repository: asqlive/asq-pro
-            email: $DOCKER_HUB_EMAIL
-            username: $DOCKER_HUB_USERNAME
-            password: $DOCKER_HUB_PASSWORD
-            tag: $WERCKER_GIT_BRANCH,$WERCKER_GIT_BRANCH_WERCKER_GIT_COMMIT
-            ports: "80, 443, 3000"
-            volumes: "/var/cache/nginx, /ASQ/slides"
-            working-dir: /ASQ
-            cmd: /sbin/my_init
+ 
+# Must depend on: build-pro
+push-pro-release:
+  steps:
+    - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: make ASQ environment
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, setup the environment, and the folder we want to cache
+            code: |
+                  export ASQDIR=${WERCKER_SOURCE_DIR}
+                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+     - script:
+            name: move ASQ to the /ASQ folder
+            code: |
+                  export ASQDIR=/ASQ
+                  mv -f ${WERCKER_SOURCE_DIR}/* ${ASQDIR}
+    - script:
+            name: remove Wercker assets
+            cwd: /
+            code: rm -Rf /mnt/* /report /pipeline  
+    - script:
+            name: generate $WERCKER_GIT_BRANCH/$SHORT_WERCKER_GIT_COMMIT as custom tag
+            code: |
+                  SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
+                  export WERCKER_GIT_BRANCH_SHORT_WERCKER_GIT_COMMIT=$WERCKER_GIT_BRANCH"/"$SHORT_WERCKER_GIT_COMMIT
+    # push container as-is
+    - internal/docker-push:
+        author: Vincenzo FERME <info@vincenzoferme.it>
+        disable-sync: false
+        repository: asqlive/asq-pro
+        email: $DOCKER_HUB_EMAIL
+        username: $DOCKER_HUB_USERNAME
+        password: $DOCKER_HUB_PASSWORD
+        tag: $WERCKER_GIT_BRANCH,$WERCKER_GIT_BRANCH_SHORT_WERCKER_GIT_COMMIT
+        ports: "80, 443, 3000"
+        volumes: "/var/cache/nginx, /ASQ/slides"
+        working-dir: /ASQ
+        env: "ASQDIR=/ASQ"
+        cmd: /sbin/my_init
 
 # TODO: define the deploy section, refer to http://devcenter.wercker.com/docs/steps/internal-steps
-# TODO: define the push for the community edition (after building it without the private deps)
-#       referring to a shared base image, and a splitting workflow    
-# push-releases:
-#   steps:
-#     # push container as-is
-#     - script:
-#             name: generate $WERCKER_GIT_BRANCH_$WERCKER_GIT_COMMIT as custom tag
-#             code: |
-#                   export WERCKER_GIT_BRANCH_WERCKER_GIT_COMMIT=$WERCKER_GIT_BRANCH"_"$WERCKER_GIT_COMMIT
-#     - internal/docker-push:
-#         author: Vincenzo FERME <info@vincenzoferme.it>
-#         disable-sync: false
-#         repository: asqlive/asq-pro
-#         email: $DOCKER_HUB_EMAIL
-#         username: $DOCKER_HUB_USERNAME
-#         password: $DOCKER_HUB_PASSWORD
-#         tag: $WERCKER_GIT_BRANCH,$WERCKER_GIT_BRANCH_WERCKER_GIT_COMMIT
-#         ports: "80, 443, 3000"
-#         volumes: "/var/cache/nginx, /ASQ/slides"
-#         working-dir: /ASQ
-#         cmd: /sbin/my_init
+# TODO: define the push for the community edition 
 
+# TODO: decide how to control the selective push. On Travis is:
 # script:
 # - docker run -t --name asq $DOCKER_HUB_USERNAME/asq:test npm test
 # - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && ( [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "devel" ] || [[ $TRAVIS_BRANCH =~ ^feat-* ]] ); then
