@@ -52,7 +52,7 @@ mkdir -p /etc/nginx/ssl/
 
 ############### ASQ DEPENDENCIES ###############
 # Setup System Dependencies
-apt-get install -y -q --no-install-recommends python \
+apt-get install -y -q --no-install-recommends python git \
 build-essential software-properties-common cmake make default-jre unzip
 
 # Adds pdf2htmlEX

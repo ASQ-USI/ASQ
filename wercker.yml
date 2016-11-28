@@ -218,9 +218,9 @@ build-clean:
 # Depend on: build-clean
 build-pro:
     steps:
-        - wercker/install-packages@1.0.0:
-            packages: git
-            clear-cache: false
+        # - wercker/install-packages@1.0.0:
+        #     packages: git
+        #     clear-cache: false
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -244,7 +244,7 @@ build-pro:
                   fi
         # Remove build dependencies
         - script:
-            name: remove ASQ Pro build dependencies
+            name: remove ASQ build dependencies needed up to here in the workflow
             code: |
                   apt-get remove -y --purge git
                   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
