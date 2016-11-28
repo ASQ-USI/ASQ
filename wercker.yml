@@ -327,7 +327,8 @@ push-pro-release:
     - script:
             name: remove Wercker assets
             cwd: /
-            code: rm -Rf /mnt/* /report /pipeline  
+            # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
+            code: rm -Rf /report /pipeline  
     - script:
             name: generate $WERCKER_GIT_BRANCH/$SHORT_WERCKER_GIT_COMMIT as custom tag
             code: |
