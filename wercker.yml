@@ -263,7 +263,7 @@ build:
         #     code: |
         #           export ASQDIR=${WERCKER_SOURCE_DIR}
         #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
-        # TODO: remove, here for inspection
+        # TODO: remove, here for inspection (now the cache should be there)
         - script:
             name: inspect Wercker cache and MD5
             code: |
