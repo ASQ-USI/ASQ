@@ -298,17 +298,15 @@ push-pro-release:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
-    # TODO: remove
-    - script:
-            name: (REMOVE) inspect log
-            code: ls /usr/bin
     # Remove build dependencies
+    # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
     - script:
             name: remove ASQ build dependencies needed up to here in the workflow
             code: |
+                  apt-get update -q
                   apt-get remove -y --purge git build-essential
                   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
-                  apt-get clean autoclean
+                  apt-get clean autoclean -y
                   apt-get autoremove -y
                   rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
     - script:

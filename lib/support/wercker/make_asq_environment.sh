@@ -101,4 +101,6 @@ apt-get remove -y --purge default-jre
 apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
 apt-get clean autoclean
 apt-get autoremove -y
-rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+# NOTE: do not delete system folders, to avoid messing up apt for next steps
+#	      /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ 
+rm -rf /tmp/* /var/tmp/*
