@@ -52,7 +52,7 @@ mkdir -p /etc/nginx/ssl/
 
 ############### ASQ DEPENDENCIES ###############
 # Setup System Dependencies
-apt-get install -y -q --no-install-recommends git python \
+apt-get install -y -q --no-install-recommends python \
 build-essential software-properties-common cmake make default-jre unzip
 
 # Adds pdf2htmlEX
@@ -75,6 +75,7 @@ make
 make install
 cd $current_folder
 rm -Rf pdf2htmlEX
+
 ############### ASQ EXPECTED FOLDERS AND CONFIGURATIONS ###############
 # Creates log folder
 mkdir -p $ASQDIR/log/.keep
@@ -92,3 +93,12 @@ chmod +x /etc/service/nginx/run
 mkdir /etc/service/asq
 cp runit/asq-$RUNIT_ASQ_SERVICE_VERSION.sh /etc/service/asq/run
 chmod +x /etc/service/asq/run
+
+############### CLEANUP ASQ ENVIRONMENT SETUP ###############
+# TODO: evaluate if we can remove other build time dependencies
+# NOTE: default-jre is installed, because needed by pdf2htmlEX during the compilation process
+apt-get remove -y --purge build-essential default-jre
+apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
+apt-get clean autoclean
+apt-get autoremove -y
+rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
