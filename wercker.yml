@@ -298,6 +298,15 @@ push-pro-release:
             code: |
                   export ASQDIR=${WERCKER_SOURCE_DIR}
                   ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+    # TODO: remove, here for inspection
+    - script:
+            name: inspect Wercker cache and MD5
+            code: |
+                  ls -R ${WERCKER_CACHE}
+                  md5_current=($(md5sum "$WERCKER_SOURCE_DIR/lib/support/wercker/make_asq_environment.sh"))
+                  md5_cached=($(md5sum "$WERCKER_CACHE_DIR/asq_environment/make_asq_environment.sh"))
+                  echo "Current MD5: "$md5_current
+                  echo "Cached MD5: "$md5_cached
     # Remove build dependencies
     # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
     - script:
