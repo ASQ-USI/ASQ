@@ -166,6 +166,8 @@ build-initial:
             code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
 
 # Depends on: build-initial
+# TODO: since we have to reload the environment, evaluate if it is better to collapse
+#       some steps, to save time. Or just install the dependency we need for the pipeline (if faster)
 build-execute-tests:
     # services:
     #   - name: mongo
@@ -174,25 +176,38 @@ build-execute-tests:
     #     id: redis:3.2.5-alpine
     #     cmd: redis-server
     steps:
-        # install the dependencies for this pipeline
-        - wercker/install-packages@1.0.0:
-            packages: npm
-            clear-cache: false
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: make ASQ environment
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, setup the environment, and the folder we want to cache
+            code: |
+                  export ASQDIR=${WERCKER_SOURCE_DIR}
+                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
-        # - wercker/npm-install@1.1.4:
-        #     use-cache: true
-        #     clear-cache-on-failed: false
-        #     options: --unsafe-perm
-        # TODO: START move to the dev for testing, after "setting up environment"
+        - wercker/npm-install@1.1.4:
+            use-cache: true
+            clear-cache-on-failed: false
+            options: --unsafe-perm
         - wercker/npm-test@0.0.3
 
 # Must depend on: build-execute-tests
+# TODO: since we have to reload the environment, evaluate if it is better to collapse
+#       some steps, to save time. Or just install the dependency we need for the pipeline (if faster)
 build-clean:
     steps:
-        # install the dependencies for this pipeline
-        - wercker/install-packages@1.0.0:
-            packages: npm
-            clear-cache: false
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: make ASQ environment
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, setup the environment, and the folder we want to cache
+            code: |
+                  export ASQDIR=${WERCKER_SOURCE_DIR}
+                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
         - script:
             name: build ASQ
@@ -224,15 +239,24 @@ build-clean:
         #           export WERCKER_OUTPUT_DIR=$OLD_OUTPUT_DIR
 
 # Depend on: build-clean
+# TODO: since we have to reload the environment, evaluate if it is better to collapse
+#       some steps, to save time. Or just install the dependency we need for the pipeline (if faster)
 build-pro:
     steps:
         # - wercker/install-packages@1.0.0:
         #     packages: git
         #     clear-cache: false
         # install the dependencies for this pipeline
-        - wercker/install-packages@1.0.0:
-            packages: npm
-            clear-cache: false
+        - script:
+            # If you want to update environment dependencies, refer to the ENV
+            # variables set on top of the references script
+            name: make ASQ environment
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
+            # Declare we want to use a cache, setup the environment, and the folder we want to cache
+            code: |
+                  export ASQDIR=${WERCKER_SOURCE_DIR}
+                  ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
