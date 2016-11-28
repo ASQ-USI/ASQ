@@ -204,6 +204,14 @@ build:
         #     clear-cache-on-failed: false
         #     options: --unsafe-perm
         - wercker/npm-test@0.0.3
+        # TODO: improve this 
+        - script:
+            name: install ASQ pluginf
+            code: |
+                  export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
+                  npm run plugins
+# 
+# export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
 # 
 # Depends on: build-initial
 # TODO: since we have to reload the environment, we collapsed some pipelines
@@ -225,7 +233,6 @@ build:
             name: build ASQ
             cwd: $WERCKER_SOURCE_DIR
             code: |
-                  export PLUGIN_DIR=$WERCKER_SOURCE_DIR/plugins
                   npm run build
         # TODO: in case we need to use the copy alternative, refer to:
         #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
