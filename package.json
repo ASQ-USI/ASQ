@@ -55,7 +55,9 @@
     "w-local-dev": "npm run w-dev -- --docker-local",
     "w-local-dev-tests": "npm run w-dev-tests -- --docker-local",
     "w-local-v-start-dev": "npm run w-start-dev -- --docker-local --verbose",
-    "w-local-build": "npm run w-build -- --docker-local"
+    "w-local-build": "npm run w-build -- --docker-local",
+    "//": "Evaluate if adding the following. I would need an internal/store step",
+    "//": "wercker --verbose --environment=wercker.env pull <build_id> --branch <branch_name> --load"
   },
   "dependencies": {
     "archiver": "^1.1.0",
