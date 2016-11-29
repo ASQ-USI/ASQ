@@ -42,7 +42,10 @@
     "db": "tasks/db",
     "watch": "parallelshell 'npm run webpack:dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack:prod && npm run js-vendor-prod && npm run static && npm run less-prod && npm run dust-prod",
-    "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'"
+    "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'",
+    "//": "DevOps commands",
+    "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=wercker.env dev",
+    "w-local-start-dev": "npm run w-start-dev -- --docker-local"
   },
   "dependencies": {
     "archiver": "^1.1.0",
