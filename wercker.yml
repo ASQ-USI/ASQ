@@ -296,7 +296,7 @@ push-dev-release:
                   mv -f ${WERCKER_SOURCE_DIR}/* ${ASQDIR}
     # TODO: separate the following steps. Currently they are merged for a strange error on Wercker
     - script:
-            name: remove Wercker assets AND generate branch_commit as custom tag
+            name: remove CI assets AND generate branch_commit as custom tag
             cwd: /
             # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
             code: |
