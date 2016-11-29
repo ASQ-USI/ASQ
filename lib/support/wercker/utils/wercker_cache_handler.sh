@@ -30,6 +30,14 @@ work_with_cache() {
 	else
   	cache_status=$(check_cache_validity $1 $2)
 
+  	# Debug echoes
+  	# NOTE: The comment are here, because they do not get printed on
+  	#       Wercker if inside the subshell call
+  	md5_current=($(md5sum "$2"))
+		md5_cached=($(md5sum "$WERCKER_CACHE_DIR/$1/$2"))
+		echo "Cached MD5 for "$2" is "$md5_cached
+		echo "Current MD5 for "$2" is "$md5_current
+
   	# if the cache it is not valid
   	if [ "$cache_status" = "invalid" ]; then
   		echo "Cache is invalid for "$1
@@ -181,10 +189,6 @@ adds_file_invalidating_the_cache() {
 check_cache_validity() {
 	# disable case matching
 	shopt -s nocasematch
-	md5_current=($(md5sum "$2"))
-	md5_cached=($(md5sum "$WERCKER_CACHE_DIR/$1/$2"))
-	echo "Cached MD5 for "$2" is "$md5_cached
-	echo "Current MD5 for "$2" is "$md5_current
 
 	# compare the md5sum of the cached file, with the one of the current file
 	# if they are different we invalidate the cache
