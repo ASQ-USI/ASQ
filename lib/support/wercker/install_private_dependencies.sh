@@ -21,5 +21,7 @@ cd ${WERCKER_SOURCE_DIR}
 CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies
 cd $current_folder
 
-# Clean up folders
-rm -Rf $slide2htmlDir/.git $uiDir/.git $cockpitDir/.git
+# Clean up folders if in CI (so we cache only the needed files)
+if [ "$CI" = true ]; then
+	rm -Rf $slide2htmlDir/.git $uiDir/.git $cockpitDir/.git
+fi
