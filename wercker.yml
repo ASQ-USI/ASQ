@@ -296,17 +296,11 @@ push-dev-release:
                   mv -f ${WERCKER_SOURCE_DIR}/* ${ASQDIR}
     # TODO: separate the following steps. Currently they are merged for a strange error on Wercker
     - script:
-            name: remove CI assets
+            name: remove Wercker assets AND generate branch_commit as custom tag
             cwd: /
             # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
             code: |
                   rm -Rf /report /pipeline
-    # TODO: separate the following steps. Currently they are merged for a strange error on Wercker
-    - script:
-            name: generate branch_commit as custom tag
-            cwd: /
-            # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
-            code: |
                   SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
                   echo $WERCKER_GIT_BRANCH
                   echo $WERCKER_GIT_COMMIT
