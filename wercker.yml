@@ -238,6 +238,7 @@ build:
         #     code: |
         #           export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
         #           export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
+        # It only delete assets if executed in CI
         # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
         # NOTE: does not remove the following folders, because the code might be needed by
         #       subsequent pipelines: lib/support/wercker lib/support/docker
@@ -245,7 +246,11 @@ build:
             name: remove files not needed for deployment
             cwd: $WERCKER_SOURCE_DIR
             code: |
-                  rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
+                  if [ "$CI" = true ]; then
+                    rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .gitignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile
+                  else
+                    echo 'Skipping step, because not needed for local execution'
+                  fi
         # TODO (if step used): remove rsync, because it is installed by the wercker/copy-to-output@0.0.5 step
         # - wercker/copy-to-output@0.0.5:
         #     exclude: .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
