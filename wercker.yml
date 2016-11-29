@@ -83,7 +83,7 @@ dev:
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
         # - internal/shell
         - internal/watch:
-            code: npm run start-dev
+            code: $NPM_RUN_COMMAND
             reload: false
         # - internal/store-container
 
