@@ -79,8 +79,8 @@ rm -Rf pdf2htmlEX
 ############### ASQ EXPECTED FOLDERS AND CONFIGURATIONS ###############
 # Creates log folder
 mkdir -p $ASQDIR/log/
-# Makes sure the directory get copied as non empty
-touch $ASQDIR/log/.keep
+# Creates the expected log file
+touch $ASQDIR/log/app.log
 # CONFIGURE NGINX, RUNIT
 # CONFIGURE NGINX
 # Copy custom configuration file from the current directory
