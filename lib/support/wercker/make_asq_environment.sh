@@ -5,7 +5,7 @@ set -ex
 # Configure ENV variables
 export NPM_CONFIG_LOGLEVEL=info
 export NODE_VERSION=6.9.1
-export NGINX_VERSION=1.9.7-1~trusty
+export NGINX_VERSION=1.10.2-1~jessie
 export PDF2HTMLEX_VERSION=v0.14.6
 export NGINX_CONFIG_VERSION=0.1.0
 export NGINX_ASQ_CONFIG_VERSION=0.1.0
@@ -26,13 +26,20 @@ rm "/tmp/node-v$NODE_VERSION-linux-x64.tar.gz"
 ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
 ############### NGINX ###############
-# Nginx 1.9.7-1 (Adapted for ubuntu 14.04 used in the FROM baseimage, 
-# original: https://github.com/nginxinc/docker-nginx/blob/08eeb0e3f0a5ee40cbc2bc01f0004c2aa5b78c15/Dockerfile)
+# Nginx 1.10.2-1~jessie, customized for ASQ
+# original: https://github.com/nginxinc/docker-nginx/blob/master/stable/jessie/Dockerfile
 apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
-echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list
-
+echo "deb http://nginx.org/packages/debian/ jessie nginx" >> /etc/apt/sources.list
 apt-get update -q
-apt-get install -y --allow-unauthenticated --no-install-recommends ca-certificates nginx=${NGINX_VERSION}
+apt-get install --no-install-recommends --allow-unauthenticated --no-install-suggests -y \
+						ca-certificates \
+						nginx=${NGINX_VERSION} \
+						nginx-module-xslt \
+						nginx-module-geoip \
+						nginx-module-image-filter \
+						nginx-module-njs \
+						gettext-base
+
 # We only use sites-available and sites-enabled
 rm -Rf /etc/nginx/conf.d/*
 
