@@ -44,8 +44,15 @@
     "build": "npm run webpack:prod && npm run js-vendor-prod && npm run static && npm run less-prod && npm run dust-prod",
     "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'",
     "//": "DevOps commands",
-    "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=wercker.env dev",
-    "w-local-start-dev": "npm run w-start-dev -- --docker-local"
+    "//": "TODO: work for reducing code duplication, if I can parametrize the commands",
+    "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=wercker.env dev --expose-ports",
+    "w-local-start-dev": "npm run w-start-dev -- --docker-local",
+    "w-dev": "export X_NPM_RUN_COMMAND='npm run dev' && wercker --environment=wercker.env dev --expose-ports",
+    "w-local-dev": "npm run w-dev -- --docker-local",
+    "w-dev-tests": "wercker --environment=wercker.env dev --pipeline=dev-tests",
+    "w-start": "export X_NPM_RUN_COMMAND='npm run start' && wercker --environment=wercker.env dev --expose-ports",
+    "w-local-start": "npm run w-start -- --docker-local",
+    "w-local-dev-tests": "npm run w-dev-tests -- --docker-local"
   },
   "dependencies": {
     "archiver": "^1.1.0",
