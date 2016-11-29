@@ -72,7 +72,7 @@ dev:
                       ./utils/wercker_cache_handler.sh "asq_private_dependencies_dev" \
                       "install_private_dependencies.sh" ""
                   else
-                     echo 'Skipping step, because not authorized'
+                     echo 'Skipping step, because you are not authorized'
                   fi
         - script:
             name: setting up environment
@@ -228,7 +228,7 @@ build:
                       ./utils/wercker_cache_handler.sh "asq_private_dependencies_build" \
                       "install_private_dependencies.sh" "slide2html public/ui public/cockpit"
                   else
-                     echo 'Skipping step, because not authorized'
+                     echo 'Skipping step, because you are not authorized'
                   fi
         # TODO: in case we need to use the copy alternative, refer to:
         #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
@@ -242,7 +242,7 @@ build:
         # NOTE: does not remove the following folders, because the code might be needed by
         #       subsequent pipelines: lib/support/wercker lib/support/docker
         - script:
-            name: remove files not needed for deploy
+            name: remove files not needed for deployment
             cwd: $WERCKER_SOURCE_DIR
             code: |
                   rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .travis.yml .gitignore .dockerignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile Dockerfile.ci Dockerfile
@@ -295,7 +295,7 @@ push-dev-release:
             name: remove ASQ build dependencies needed up to here in the workflow
             code: |
                   apt-get update -q
-                  apt-get remove -y --purge git build-essential
+                  apt-get remove -y --purge build-essential
                   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
                   apt-get clean autoclean -y
                   apt-get autoremove -y
