@@ -46,13 +46,16 @@
     "//": "DevOps commands",
     "//": "TODO: work for reducing code duplication, if I can parametrize the commands",
     "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=wercker.env dev --expose-ports",
-    "w-local-start-dev": "npm run w-start-dev -- --docker-local",
-    "w-dev": "export X_NPM_RUN_COMMAND='npm run dev' && wercker --environment=wercker.env dev --expose-ports",
-    "w-local-dev": "npm run w-dev -- --docker-local",
-    "w-dev-tests": "wercker --environment=wercker.env dev --pipeline=dev-tests",
     "w-start": "export X_NPM_RUN_COMMAND='npm run start' && wercker --environment=wercker.env dev --expose-ports",
+    "w-dev": "export X_NPM_RUN_COMMAND='npm run dev' && wercker --environment=wercker.env dev --expose-ports",
+    "w-dev-tests": "wercker --environment=wercker.env dev --pipeline=dev-tests",
+    "w-build": "export X_CI='false' && wercker --environment=wercker.env build",
+    "w-local-start-dev": "npm run w-start-dev -- --docker-local",
     "w-local-start": "npm run w-start -- --docker-local",
-    "w-local-dev-tests": "npm run w-dev-tests -- --docker-local"
+    "w-local-dev": "npm run w-dev -- --docker-local",
+    "w-local-dev-tests": "npm run w-dev-tests -- --docker-local",
+    "w-local-v-start-dev": "npm run w-start-dev -- --docker-local --verbose",
+    "w-local-build": "npm run w-build -- --docker-local"
   },
   "dependencies": {
     "archiver": "^1.1.0",
