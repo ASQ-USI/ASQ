@@ -124,8 +124,9 @@ handle_multiple_folder_cache() {
 	  		# just copy all the cache back
 	  		# TODO: exclude file used for managing the cache invalidation
 	  		# TODO: evaluate if adding --ignore-command-error
+	  		# NOTE: Better to use the overwrite behavior, because we change symbolic links
 	  		[ -d "${DST}" ] || mkdir -p "${DST}"
-	  		tar --keep-old-files --warning=no-timestamp --exclude="${SRC}/${2}/${directory_name_with_underscore}.tar.gz" -pxf "${SRC}/${2}/${directory_name_with_underscore}.tar.gz" -C "${DST}"
+	  		tar --overwrite --warning=no-timestamp --exclude="${SRC}/${2}/${directory_name_with_underscore}.tar.gz" -pxf "${SRC}/${2}/${directory_name_with_underscore}.tar.gz" -C "${DST}"
 	  	fi
 	  	
 	  fi
@@ -165,7 +166,8 @@ handle_single_folder_cache() {
   		# just copy all the cache back
   		# TODO: exclude file used for managing the cache invalidation
   		# TODO: evaluate if adding --ignore-command-error
-  		tar --keep-old-files --warning=no-timestamp --exclude="${SRC}/${2}.tar.gz" -pxf "${SRC}/${2}/${2}.tar.gz" -C "${DST}"
+  		# NOTE: Better to use the overwrite behavior, because we change symbolic links
+  		tar --overwrite --warning=no-timestamp --exclude="${SRC}/${2}.tar.gz" -pxf "${SRC}/${2}/${2}.tar.gz" -C "${DST}"
   	fi
   	
   fi
