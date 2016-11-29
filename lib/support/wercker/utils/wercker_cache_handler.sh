@@ -191,10 +191,12 @@ adds_file_invalidating_the_cache() {
 check_cache_validity() {
 	# disable case matching
 	shopt -s nocasematch
+	md5_current=($(md5sum "$2"))
+	md5_cached=($(md5sum "$WERCKER_CACHE_DIR/$1/$2"))
 
 	# compare the md5sum of the cached file, with the one of the current file
 	# if they are different we invalidate the cache
-	if [[ $md5_current != $md5_cached ]]; then
+	if [[ "$md5_current" != "$md5_cached" ]]; then
 		echo "invalid";
 	else
 		echo "valid";
