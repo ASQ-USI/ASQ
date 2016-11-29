@@ -32,7 +32,7 @@ apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6A
 echo "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list
 
 apt-get update -q
-apt-get install -y ca-certificates nginx=${NGINX_VERSION}
+apt-get install -y --allow-unauthenticated --no-install-recommends ca-certificates nginx=${NGINX_VERSION}
 # We only use sites-available and sites-enabled
 rm -Rf /etc/nginx/conf.d/*
 
@@ -52,7 +52,7 @@ mkdir -p /etc/nginx/ssl/
 
 ############### ASQ DEPENDENCIES ###############
 # Setup System Dependencies
-apt-get install -y -q --no-install-recommends python git \
+apt-get install -y -q --allow-unauthenticated --no-install-recommends python git \
 build-essential software-properties-common cmake make default-jre unzip
 
 # Adds pdf2htmlEX
@@ -62,7 +62,7 @@ apt-get update -qq
 add-apt-repository ppa:fontforge/fontforge --yes
 add-apt-repository ppa:delayargentina/delayx --yes
 apt-get update -qq
-apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -q --no-install-recommends libpoppler-dev \
+apt-get install -y --allow-unauthenticated --allow-downgrades --allow-remove-essential --allow-change-held-packages -q --no-install-recommends libpoppler-dev \
 libpoppler-private-dev libspiro-dev libcairo-dev libpango1.0-dev libfreetype6-dev \
 libltdl-dev libfontforge-dev python-imaging python-pip
 [ -d "pdf2htmlEX/" ] && rm -Rf "pdf2htmlEX/"
