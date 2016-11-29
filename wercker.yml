@@ -104,6 +104,8 @@ dev-tests:
 # TODO: improve the pipelines to build minimal base image, then separate different
 #       builds, tests pipeline where we add the dependencies dedicated to the tasks
 #       Ref: http://blog.wercker.com/introducing-wercker-workflows
+#       NOTE: if I split take into account that as fast we can report ASQ builds correctly,
+#             better it is
 # NOTE: since we have to reload the environment, we collapsed some pipelines
 #       , to save time. TODO:  Try to just install the dependency we need for 
 #       the pipeline (if it is faster)
