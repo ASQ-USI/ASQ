@@ -183,8 +183,8 @@ check_cache_validity() {
 	shopt -s nocasematch
 	md5_current=($(md5sum "$2"))
 	md5_cached=($(md5sum "$WERCKER_CACHE_DIR/$1/$2"))
-	echo "Cached MD5 for "$2" "$md5_cached
-	echo "Current MD5 for "$2" "$md5_current
+	echo "Cached MD5 for "$2" is "$md5_cached
+	echo "Current MD5 for "$2" is "$md5_current
 
 	# compare the md5sum of the cached file, with the one of the current file
 	# if they are different we invalidate the cache
