@@ -1,3 +1,4 @@
+# Spin up ASQ relying on the Docker bridge network
 version: '2'
 services:
   asq:
