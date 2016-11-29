@@ -21,7 +21,7 @@ cache() {
 #$3 = space separated list of folders we want to cache
 work_with_cache() {
 	# if it is the first time we are using the cache
-	if [ ! -d "$WERCKER_CACHE_DIR/$1" || ! -f "$WERCKER_CACHE_DIR/$1/$2"  ]; then
+	if [ ! -d "$WERCKER_CACHE_DIR/$1" ] || [ ! -f "$WERCKER_CACHE_DIR/$1/$2" ]; then
 		echo "First time initialization of the cache for "$1
 		setup_cache $1 $2;
 		execute_file $2;
