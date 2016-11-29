@@ -284,7 +284,9 @@ build:
                   echo "Cached MD5: "$md5_cached
  
 # Must depend on: build-pro (currently build)
-push-pro-release:
+# NOTE: we configured Wercker so that it pushes images for the following branches:
+#       master devel release-* feat-* fix-* hotfix-* 
+push-dev-release:
   steps:
     # TODO: remove, here for inspection (now the cache should be there)
     - script:
@@ -349,7 +351,7 @@ push-pro-release:
     - internal/docker-push:
         author: Vincenzo FERME <info@vincenzoferme.it>
         disable-sync: false
-        repository: asqlive/asq-pro
+        repository: asqhub/asq-dev
         email: $DOCKER_HUB_EMAIL
         username: $DOCKER_HUB_USERNAME
         password: $DOCKER_HUB_PASSWORD
@@ -362,17 +364,6 @@ push-pro-release:
  
 # TODO: define the deploy section, refer to http://devcenter.wercker.com/docs/steps/internal-steps
 # TODO: define the push for the community edition 
-
-# TODO: decide how to control the selective push. On Travis is:
-# script:
-# - docker run -t --name asq $DOCKER_HUB_USERNAME/asq:test npm test
-# - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && ( [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "devel" ] || [[ $TRAVIS_BRANCH =~ ^feat-* ]] ); then
-#   sed -i.bak s/BASE_IMAGE_TAG/${TRAVIS_BRANCH}/g Dockerfile;
-#   docker build -t $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH --build-arg CI_USER_TOKEN="${CI_USER_TOKEN}" -f Dockerfile .;
-#   fi
-# after_success:
-# - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && ( [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "devel" ] || [[ $TRAVIS_BRANCH =~ ^feat-* ]] ); then
-#   docker login -u="$DOCKER_HUB_USERNAME" -p="$DOCKER_HUB_PASSWORD"; docker push $DOCKER_HUB_USERNAME/asq:$TRAVIS_BRANCH;
-#   fi
+# TODO: define the push for the pro edition 
 
 # TODO: define the continuous deployment pipeline
