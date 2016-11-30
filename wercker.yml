@@ -1,5 +1,4 @@
-box: 
-  # id: phusion/baseimage:0.9.19
+box:
   id: asqslide/wercker-box-asq:0.1.0
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
@@ -19,16 +18,6 @@ dev:
         id: redis:3.2.5-alpine
         cmd: redis-server
     steps:
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: make ASQ environment
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
-        #     code: |
-        #           export ASQDIR=${WERCKER_SOURCE_DIR}
-        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
         #       Maybe also evaluation Yarn
         - wercker/npm-install@1.1.4:
@@ -102,16 +91,6 @@ dev-tests:
     #     id: redis:3.2.5-alpine
     #     cmd: redis-server
     steps:
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: make ASQ environment
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
-        #     code: |
-        #           export ASQDIR=${WERCKER_SOURCE_DIR}
-        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         - wercker/npm-test@0.0.3
 
 ####### THE FOLLOWING PIPELINES ARE DEFINED FOR WERCKER CLOUD #######
@@ -127,16 +106,6 @@ dev-tests:
 # NOTE: Name when split: build-initial:
 build:
     steps:
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: make ASQ environment
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
-        #     code: |
-        #           export ASQDIR=${WERCKER_SOURCE_DIR}
-        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
         # NOTE: install all the dependencies, now that the pipelines are collapsed
         # - wercker/npm-install@1.1.4:
@@ -166,16 +135,7 @@ build:
     #     id: redis:3.2.5-alpine
     #     cmd: redis-server
     # steps:
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: make ASQ environment
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
-        #     code: |
-        #           export ASQDIR=${WERCKER_SOURCE_DIR}
-        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
         # - wercker/npm-install@1.1.4:
         #     use-cache: true
@@ -197,16 +157,7 @@ build:
 #       , to save time. Or just install the dependency we need for the pipeline (if faster)
 # NOTE: Name when split: build-clean:
 #     steps:
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: make ASQ environment
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
-        #     code: |
-        #           export ASQDIR=${WERCKER_SOURCE_DIR}
-        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+
         # TODO: evaluate if we can also cache some of the following steps, e.g., partially using https://github.com/mitel/step-webpack
         - script:
             name: build ASQ
@@ -233,6 +184,11 @@ build:
                   else
                      echo 'Skipping step, because you are not authorized'
                   fi
+        - script:
+            name: prune development dependencies
+            # Set the working folder, so we can refer to files in that context
+            cwd: $WERCKER_SOURCE_DIR
+            code: npm prune --production
         # TODO: in case we need to use the copy alternative, refer to:
         #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
         #TODO@triglian: check if we should exclude other files     
@@ -271,32 +227,13 @@ build:
         #     packages: git
         #     clear-cache: false
         # install the dependencies for this pipeline
-        # - script:
-        #     # If you want to update environment dependencies, refer to the ENV
-        #     # variables set on top of the references script
-        #     name: make ASQ environment
-        #     # Set the working folder, so we can refer to files in that context
-        #     cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-        #     # Declare we want to use a cache, setup the environment, and the folder we want to cache
-        #     code: |
-        #           export ASQDIR=${WERCKER_SOURCE_DIR}
-        #           ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
+
  
 # Must depend on: build-pro (currently build)
 # NOTE: we configured Wercker so that it pushes images for the following branches:
 #       master devel release-* feat-* fix-* hotfix-* 
 push-dev-release:
   steps:
-    # - script:
-    #         # If you want to update environment dependencies, refer to the ENV
-    #         # variables set on top of the references script
-    #         name: make ASQ environment
-    #         # Set the working folder, so we can refer to files in that context
-    #         cwd: $WERCKER_SOURCE_DIR/lib/support/wercker/
-    #         # Declare we want to use a cache, setup the environment, and the folder we want to cache
-    #         code: |
-    #               export ASQDIR=${WERCKER_SOURCE_DIR}
-    #               ./utils/wercker_cache_handler.sh "asq_environment" "make_asq_environment.sh" "/"
     # Remove build dependencies
     # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
     - script:
