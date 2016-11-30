@@ -24,6 +24,12 @@ dev:
             use-cache: true
             clear-cache-on-failed: false
             options: --unsafe-perm
+        # TODO: continue working from here to add Yarn support
+        # 1) add yarn as a ASQ env dependency, apply changes also in install-private..
+        # 2) have a better organize cache management
+        # - nicka/yarn@1.0.0:
+        #     production: false
+        #     cache: true
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
