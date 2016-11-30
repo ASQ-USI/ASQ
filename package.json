@@ -48,8 +48,10 @@
     "watch": "parallelshell 'npm run webpack:dev' 'npm run dust-dev' 'npm run less-dev'",
     "build": "npm run webpack:prod && npm run js-vendor-prod && npm run static && npm run less-prod && npm run dust-prod",
     "dev": "NODE_ENV=development npm run js-vendor-dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'",
+    
     "//": "DevOps commands",
     "//": "TODO: work for reducing code duplication, if I can parametrize the commands",
+    
     "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=wercker.env dev --expose-ports",
     "w-start": "export X_NPM_RUN_COMMAND='npm run start' && wercker --environment=wercker.env dev --expose-ports",
     "w-dev": "export X_NPM_RUN_COMMAND='npm run dev' && wercker --environment=wercker.env dev --expose-ports",
@@ -61,10 +63,12 @@
     "w-local-dev-tests": "npm run w-dev-tests -- --docker-local",
     "w-local-v-start-dev": "npm run w-start-dev -- --docker-local --verbose",
     "w-local-build": "npm run w-build -- --docker-local",
+    
     "//": "Evaluate if adding the following. I would need an internal/store step",
     "//": "wercker --verbose --environment=wercker.env pull <build_id> --branch <branch_name> --load",
     "//": "Commands used for managing GitHub branch deletion. You can set the branch by passing a configuration: --asq:git_branch=<branch_name>",
     "//": "TODO: check again if the Docker Hub add DELETE API, to conclude the work. See: https://github.com/docker/hub-feedback/issues/496",
+    
     "delete-remote-branch": "npm run git-delete-remote-branch $npm_package_config_git_branch && npm run docker-delete-registry-image $npm_package_config_git_branch",
     "git-delete-remote-branch": "git push origin --delete $npm_package_config_git_branch",
     "docker-delete-registry-image": ""
