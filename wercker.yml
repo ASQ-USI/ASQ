@@ -1,6 +1,8 @@
 box: 
   # id: phusion/baseimage:0.9.19
   id: asqslide/wercker-box-asq:0.1.0
+  username: $DOCKER_HUB_BOX_USERNAME
+  password: $DOCKER_HUB_BOX_PASSWORD
   ports:
     - "3000:3000"
 
