@@ -45,6 +45,10 @@ log/
 **/dump.rdb
 test/acceptance-reports
 
+# Yarn #
+#################
+/yarn.lock
+
 # IDE Files #
 #############
 *.sublime-project
