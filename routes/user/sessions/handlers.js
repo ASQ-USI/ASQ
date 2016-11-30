@@ -1,21 +1,21 @@
-require('when/monitor/console');
-;
-var _         = require('lodash');
-var gen         = require('when/generator');
-var moment      = require('moment');
-var errorTypes  = require('../../../errors/errorTypes');
-var lib         = require('../../../lib');
-var sockAuth    = require('../../../lib/socket/authentication');
-var logger      = require('logger-asq');
-var stats       = require('../../../lib/stats/stats');
-var Rubric      = db.model('Rubric');
-var Session     = db.model('Session');
-var User        = db.model('User');
+
+const _ = require('lodash');
+const Promise = require('bluebird');
+const coroutine = Promise.coroutine;
+const moment = require('moment');
+const errorTypes = require('../../../errors/errorTypes');
+const lib = require('../../../lib');
+const sockAuth = require('../../../lib/socket/authentication');
+const logger = require('logger-asq');
+const stats = require('../../../lib/stats/stats');
+const Rubric = db.model('Rubric');
+const Session = db.model('Session');
+const User  = db.model('User');
 
 
 
 /* Stats */
-exports.getSessionStats = gen.lift(function *getSessionStatsGen(req, res, next) {
+exports.getSessionStats = coroutine(function *getSessionStatsGen(req, res, next) {
   var session ;
   try{
     var session = yield Session.findById(req.params.sessionId).exec();
