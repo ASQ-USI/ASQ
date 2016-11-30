@@ -257,23 +257,15 @@ push-dev-release:
                   export ASQDIR=/ASQ
                   mkdir -p $ASQDIR/log/
                   touch $ASQDIR/log/app.log
-    # TODO: separate the following steps. Currently they are merged for a strange error on Wercker
     - script:
-            name: remove Wercker assets AND generate branch_commit as custom tag
+            name: remove Wercker assets
             cwd: /
             # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
+            code: rm -Rf /report /pipeline
+     - script:
+            name: generate branch_commit as custom tag
             code: |
-                  rm -Rf /report /pipeline
-                  SHORT_WERCKER_GIT_COMMIT=$(echo $WERCKER_GIT_COMMIT | cut -c1-6)
-                  echo $WERCKER_GIT_BRANCH
-                  echo $WERCKER_GIT_COMMIT
-                  echo $SHORT_WERCKER_GIT_COMMIT
-                  DOCKER_IMAGE_CUSTOM_TAG=$WERCKER_GIT_BRANCH"_"$SHORT_WERCKER_GIT_COMMIT
-                  echo $DOCKER_IMAGE_CUSTOM_TAG
-                  export DOCKER_IMAGE_CUSTOM_TAG
-    # - script:
-    #         name: generate branch_commit as custom tag
-    #         code: |     
+                  export DOCKER_IMAGE_CUSTOM_TAG=${WERCKER_GIT_BRANCH}"_"${WERCKER_GIT_COMMIT:0:6}
     # push container as-is
     - internal/docker-push:
         author: Vincenzo FERME <info@vincenzoferme.it>
@@ -282,7 +274,8 @@ push-dev-release:
         email: $DOCKER_HUB_EMAIL
         username: $DOCKER_HUB_USERNAME
         password: $DOCKER_HUB_PASSWORD
-        tag: $WERCKER_GIT_BRANCH,${WERCKER_GIT_BRANCH}"_"${WERCKER_GIT_COMMIT:0:6}
+        # NOTE: first we push the commit specific image, then the image for the branch
+        tag: $DOCKER_IMAGE_CUSTOM_TAG,$WERCKER_GIT_BRANCH
         ports: "80, 443, 3000"
         volumes: "/mnt, /var/cache/nginx, /ASQ/slides"
         working-dir: /ASQ
