@@ -282,7 +282,7 @@ push-dev-release:
         email: $DOCKER_HUB_EMAIL
         username: $DOCKER_HUB_USERNAME
         password: $DOCKER_HUB_PASSWORD
-        tag: $WERCKER_GIT_BRANCH,$DOCKER_IMAGE_CUSTOM_TAG
+        tag: $WERCKER_GIT_BRANCH,${WERCKER_GIT_BRANCH}"_"${WERCKER_GIT_COMMIT:0:6}
         ports: "80, 443, 3000"
         volumes: "/mnt, /var/cache/nginx, /ASQ/slides"
         working-dir: /ASQ
