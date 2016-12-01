@@ -1,8 +1,6 @@
-# Settings
-wercker_box_asq_version: &WBOXV 0.1.0
-
+# TODO: if Wercker is gonna support aliases, we can define the version in a settings section
 box:
-  id: asqslide/wercker-box-asq:*WBOXV
+  id: asqslide/wercker-box-asq:0.1.0
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
@@ -245,7 +243,7 @@ push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
     box:
-      id: asqslide/wercker-box-asq:*WBOXV
+      id: asqslide/wercker-box-asq:0.1.0
       username: $DOCKER_HUB_BOX_USERNAME
       password: $DOCKER_HUB_BOX_PASSWORD
     steps:
