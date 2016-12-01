@@ -7,7 +7,7 @@ box:
     - "3000:3000"
 
 # TODO: add .werckerignore, when this it is gonna be supported (https://github.com/wercker/wercker/issues/62)
-# TODO: evaluate if there is a way to avoid duplication across pipelines
+# TODO: evaluate if there is a way to avoid duplication across pipelines 
 
 ####### THE FOLLOWING PIPELINES ARE AVAILABLE FOR LOCAL DEVELOPMENT #######
 
