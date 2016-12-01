@@ -1,5 +1,8 @@
+# Settings
+wercker_box_asq_version: &WBOXV 0.1.0
+
 box:
-  id: asqslide/wercker-box-asq:0.1.0
+  id: asqslide/wercker-box-asq:*WBOXV
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
@@ -239,7 +242,13 @@ build:
 # NOTE: we configured Wercker so that it pushes images for the following branches:
 #       master devel release-* feat-* fix-* hotfix-* 
 push-dev-release:
-  steps:
+    # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
+    #       and all the changes we apply in the steps, happen in the source folder
+    box:
+      id: asqslide/wercker-box-asq:*WBOXV
+      username: $DOCKER_HUB_BOX_USERNAME
+      password: $DOCKER_HUB_BOX_PASSWORD
+    steps:
     # Remove build dependencies
     # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
     - script:
@@ -269,7 +278,7 @@ push-dev-release:
             cwd: /
             # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
             code: |
-                  rm -Rf /report /pipeline
+                  # rm -Rf /report /pipeline
                   export DOCKER_IMAGE_CUSTOM_TAG=${WERCKER_GIT_BRANCH}"_"${WERCKER_GIT_COMMIT:0:6}
     # - script:
     #         name: generate branch_commit as custom tag
