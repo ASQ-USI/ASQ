@@ -276,7 +276,7 @@ push-dev-release:
             cwd: /
             # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
             code: |
-                  # rm -Rf /report /pipeline
+                  rm -Rf /report /pipeline
                   export DOCKER_IMAGE_CUSTOM_TAG=${WERCKER_GIT_BRANCH}"_"${WERCKER_GIT_COMMIT:0:6}
     # - script:
     #         name: generate branch_commit as custom tag
