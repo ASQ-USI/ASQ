@@ -249,6 +249,7 @@ push-dev-release:
     steps:
     # Remove build dependencies
     # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
+    # TODO (Decide): we can avoid the following step, if we have two different base boxes (dev and release)
     - script:
             name: remove ASQ build dependencies needed up to here in the workflow
             code: |
