@@ -14,7 +14,9 @@
   },
   "config": {
     "docker": {
-      "tag": ""
+      "tag": "",
+      "devuser": "asqhub",
+      "devrepo": "asq-dev"
     }
   },
   "scripts": {
@@ -60,11 +62,11 @@
     "w-local-v-start-dev": "npm run w-start-dev -- --docker-local --verbose",
     "w-local-build": "npm run w-build -- --docker-local",
     "//": "In case of errors, just run the command again. See: https://github.com/docker/compose/issues/4109",
-    "dc-asq-up": "DOCKER_HUB_REPO=asqhub\/asq-dev DOCKER_HUB_IMAGE_TAG=$npm_package_config_docker_tag COMPOSE_HTTP_TIMEOUT=120 docker-compose up; docker-compose stop; docker-compose rm -f -v",
+    "dc-asq-up": "DOCKER_HUB_REPO=$npm_package_config_docker_devuser\/$npm_package_config_docker_devrepo DOCKER_HUB_IMAGE_TAG=$npm_package_config_docker_tag COMPOSE_HTTP_TIMEOUT=120 docker-compose up; docker-compose stop; docker-compose rm -f -v",
     "d-rm-containers": "echo 'Removed:' && docker rm -f -v $(docker ps -a -q)",
     "d-rm-images-none": "echo 'Removed:' && docker rmi $(docker images | grep '<none>' | awk '{print $3}')",
     "d-rm-images-all": "echo 'Removed:' && docker rmi $(docker images | grep -v 'IMAGE' | awk '{print $3}')",
-    "docker-delete-registry-image": "",
+    "docker-delete-registry-image": "DOCKER_HUB_DEV_REPO=$npm_package_config_docker_devrepo node lib/support/docker/hub/delete-tags.js",
     "//": "Evaluate if adding the following. I would need an internal/store step",
     "//": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load"
   },
@@ -162,12 +164,15 @@
   },
   "devDependencies": {
     "autoless": "^0.1.7",
+    "bluebird": "^2.7.1",
     "bower": "^1.4.1",
     "browserify": "~2.35.1",
     "bunyan": "^1.4.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^5.0.0",
     "css-loader": "^0.14.4",
+    "docker-hub-api": "^0.5.1",
+    "dotenv": "~2.0.0",
     "dust-loader": "^1.0.1",
     "exports-loader": "^0.6.2",
     "less": "^2.5.1",
