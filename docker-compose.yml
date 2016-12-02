@@ -1,19 +1,18 @@
 # Spin up ASQ relying on the Docker bridge network
-version: '2'
+version: '2.1'
 services:
   asq:
-    image: asqhub/asq:<DOCKER_HUB_IMAGE_TAG>
+    image: ${DOCKER_HUB_REPO:-asqhub/asq}:${DOCKER_HUB_IMAGE_TAG:-master}
     container_name: asq
     environment:
-      HOST: <YOUR_HOST_NAME>
+      HOST: ${HOST:-127.0.0.1}
       MONGO_DB_NAME: asq
       MONGO_HOST: mongo
       REDIS_HOST: redis
-      REVERSE_PROXY_HOST: <YOUR_HOST_NAME>
+      REVERSE_PROXY_HOST: ${HOST:-127.0.0.1}
       REVERSE_PROXY_SECURE: 'false'
       USE_REVERSE_PROXY: 'true'
       NGINX_CLIENT_MAX_BODY_SIZE: '100m'
-    tty: true
     ports:
       - 80:3000
     networks:
