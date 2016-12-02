@@ -15,6 +15,9 @@
   "config": {
     "git": {
       "branch": ""
+    },
+    "docker": {
+      "tag": ""
     }
   },
   "scripts": {
@@ -59,6 +62,11 @@
     "w-local-dev-tests": "npm run w-dev-tests -- --docker-local",
     "w-local-v-start-dev": "npm run w-start-dev -- --docker-local --verbose",
     "w-local-build": "npm run w-build -- --docker-local",
+    "//": "In case of errors, just run the command again. See: https://github.com/docker/compose/issues/4109",
+    "dc-asq-up": "DOCKER_HUB_REPO=asqhub\/asq-dev DOCKER_HUB_IMAGE_TAG=$npm_package_config_docker_tag COMPOSE_HTTP_TIMEOUT=120 docker-compose up; docker-compose stop; docker-compose rm -f -v",
+    "d-rm-containers": "echo 'Removed:' && docker rm -f -v $(docker ps -a -q)",
+    "d-rm-images-none": "echo 'Removed:' && docker rmi $(docker images | grep '<none>' | awk '{print $3}')",
+    "d-rm-images-all": "echo 'Removed:' && docker rmi $(docker images | grep -v 'IMAGE' | awk '{print $3}')",
     "//": "Evaluate if adding the following. I would need an internal/store step",
     "//": "wercker --verbose --environment=wercker.env pull <build_id> --branch <branch_name> --load",
     "//": "Commands used for managing GitHub branch deletion. You can set the branch by passing a configuration: --asq:git_branch=<branch_name>",
