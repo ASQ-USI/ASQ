@@ -13,9 +13,6 @@
     "test": "test"
   },
   "config": {
-    "git": {
-      "branch": ""
-    },
     "docker": {
       "tag": ""
     }
@@ -51,11 +48,11 @@
     "//": "DevOps commands",
     "//": "TODO: work for reducing code duplication, if I can parametrize the commands",
     "//": "TODO: check again if the Docker Hub add DELETE API, to conclude the work. See: https://github.com/docker/hub-feedback/issues/496",
-    "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=wercker.env dev --expose-ports",
-    "w-start": "export X_NPM_RUN_COMMAND='npm run start' && wercker --environment=wercker.env dev --expose-ports",
-    "w-dev": "export X_NPM_RUN_COMMAND='npm run dev' && wercker --environment=wercker.env dev --expose-ports",
-    "w-dev-tests": "wercker --environment=wercker.env dev --pipeline=dev-tests",
-    "w-build": "export X_CI='false' && wercker --environment=wercker.env build",
+    "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=devops.env dev --expose-ports",
+    "w-start": "export X_NPM_RUN_COMMAND='npm run start' && wercker --environment=devops.env dev --expose-ports",
+    "w-dev": "export X_NPM_RUN_COMMAND='npm run dev' && wercker --environment=devops.env dev --expose-ports",
+    "w-dev-tests": "wercker --environment=devops.env dev --pipeline=dev-tests",
+    "w-build": "export X_CI='false' && wercker --environment=devops.env build",
     "w-local-start-dev": "npm run w-start-dev -- --docker-local",
     "w-local-start": "npm run w-start -- --docker-local",
     "w-local-dev": "npm run w-dev -- --docker-local",
@@ -67,13 +64,9 @@
     "d-rm-containers": "echo 'Removed:' && docker rm -f -v $(docker ps -a -q)",
     "d-rm-images-none": "echo 'Removed:' && docker rmi $(docker images | grep '<none>' | awk '{print $3}')",
     "d-rm-images-all": "echo 'Removed:' && docker rmi $(docker images | grep -v 'IMAGE' | awk '{print $3}')",
+    "docker-delete-registry-image": "",
     "//": "Evaluate if adding the following. I would need an internal/store step",
-    "//": "wercker --verbose --environment=wercker.env pull <build_id> --branch <branch_name> --load",
-    "//": "Commands used for managing GitHub branch deletion. You can set the branch by passing a configuration: --asq:git_branch=<branch_name>",
-    "//": "TODO: check again if the Docker Hub add DELETE API, to conclude the work. See: https://github.com/docker/hub-feedback/issues/496",
-    "delete-remote-branch": "npm run git-delete-remote-branch $npm_package_config_git_branch && npm run docker-delete-registry-image $npm_package_config_git_branch",
-    "git-delete-remote-branch": "git push origin --delete $npm_package_config_git_branch",
-    "docker-delete-registry-image": ""
+    "//": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load"
   },
   "dependencies": {
     "archiver": "^1.1.0",

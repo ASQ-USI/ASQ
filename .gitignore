@@ -89,6 +89,7 @@ Thumbs.db
 ##################
 /lib/support/liveApp/bower_components
 
-# Wercker #
+# Wercker and DevOps #
 ##################
 /wercker.env
+/devops.env
