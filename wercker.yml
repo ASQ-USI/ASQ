@@ -238,7 +238,7 @@ build:
  
 # Must depend on: build-pro (currently build)
 # NOTE: we configured Wercker so that it pushes images for the following branches:
-#       master devel release-* feat-* fix-* hotfix-* 
+#       master devel release-* feat-* pr-* fix-* hotfix-* 
 push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
