@@ -203,7 +203,7 @@ check_cache_validity() {
 		# Copies the file invalidating the cache, to the cache every time, so we 
 		# keep it fresh if it is not changes. This is due to the fact that Wercker 
 		# deletes the cache after 14 days: http://devcenter.wercker.com/docs/pipelines/wercker-cache
-		adds_file_invalidating_the_cache() $1 $2
+		adds_file_invalidating_the_cache $1 $2;
 	fi
 }
 
