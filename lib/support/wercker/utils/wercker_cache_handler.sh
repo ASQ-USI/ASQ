@@ -187,7 +187,7 @@ adds_file_invalidating_the_cache() {
 
 #$1 = cache_folder_name
 #$2 = file based on which we decide if invalidate the cache, and that has to be run
-#returns: "0" if the cache is valid, "1" if the cache is not valid
+#returns: "valid" if the cache is valid, "invalid" if the cache is not valid
 check_cache_validity() {
 	# disable case matching
 	shopt -s nocasematch
@@ -200,6 +200,10 @@ check_cache_validity() {
 		echo "invalid";
 	else
 		echo "valid";
+		# Copies the file invalidating the cache, to the cache every time, so we 
+		# keep it fresh if it is not changes. This is due to the fact that Wercker 
+		# deletes the cache after 14 days: http://devcenter.wercker.com/docs/pipelines/wercker-cache
+		adds_file_invalidating_the_cache() $1 $2
 	fi
 }
 
