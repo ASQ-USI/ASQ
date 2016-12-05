@@ -1,4 +1,5 @@
 #!/bin/bash
+# MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 # SETUP ASQ PLUGINS
 # NOTE: by changing this file, you invalidate the plugin cache
 # "asq": {

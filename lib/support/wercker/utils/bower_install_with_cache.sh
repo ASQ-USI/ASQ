@@ -1,4 +1,5 @@
 #!/bin/bash
+# MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 # HANDLES CACHE FOR BOWER DEPENDENCIES
 
 # Partially inspired by: https://bitbucket.org/ryanharper007/wercker-bower-install

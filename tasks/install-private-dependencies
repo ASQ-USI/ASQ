@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-// Download, install and build slide2html
+// MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
+// Download, install and build ASQ private dependencies
 'use strict';
 
 // TODO: refactor to remove code duplication

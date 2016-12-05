@@ -1,4 +1,5 @@
 # TODO: if Wercker is gonna support aliases, we can define the version in a settings section
+# MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 box:
   id: asqslide/wercker-box-asq:0.1.0
   username: $DOCKER_HUB_BOX_USERNAME

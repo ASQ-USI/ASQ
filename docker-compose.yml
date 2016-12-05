@@ -1,4 +1,5 @@
 # Spin up ASQ relying on the Docker bridge network
+# MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 version: '2.1'
 services:
   asq:

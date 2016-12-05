@@ -1,4 +1,5 @@
 #!/bin/bash
+# MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 # SETUP ASQ PRIVATE DEPENDENCIES
 set -ex
 
