@@ -8,18 +8,18 @@ set -e
 # TODO: improve command output colors using the Wercker library to do so 
 # TODO: make it more generic, especially the methods handling store/restore of the cache
 #				because now they somehow are designed specifically for the use we to in ASQ,
-#	      especially for what concern the excluded folders
+#	      especially for what concern the excluded directories
 
-#$1 = cache_folder_name
+#$1 = cache_directory_name
 #$2 = file based on which we decide if invalidate the cache, and that has to be run
-#$3 = space separated list of folders we want to cache
+#$3 = space separated list of directories we want to cache
 cache() {
 	work_with_cache $1 $2 "$3";
 }
 
-#$1 = cache_folder_name
+#$1 = cache_directory_name
 #$2 = file based on which we decide if invalidate the cache, and that has to be run
-#$3 = space separated list of folders we want to cache
+#$3 = space separated list of directories we want to cache
 work_with_cache() {
 	# if it is the first time we are using the cache
 	if [ ! -d "$WERCKER_CACHE_DIR/$1" ] || [ ! -f "$WERCKER_CACHE_DIR/$1/$2" ]; then
@@ -32,7 +32,7 @@ work_with_cache() {
   	cache_status=$(check_cache_validity $1 $2)
 
   	# Debug echoes
-  	# NOTE: The comment are here, because they do not get printed on
+  	# NOTE: The comments are here, because they do not get printed on
   	#       Wercker if inside the subshell call
   	md5_current=($(md5sum "$2"))
 		md5_cached=($(md5sum "$WERCKER_CACHE_DIR/$1/$2"))
@@ -56,7 +56,7 @@ work_with_cache() {
 
 }
 
-#$1 = cache_folder_name
+#$1 = cache_directory_name
 setup_cache() {
 
 	echo "Setting up the cache for "$1
@@ -72,24 +72,24 @@ setup_cache() {
 }
 
 #$1 = action: store or restore
-#$2 = cache_folder_name
-#$3 = space separated list of folders we want to cache
+#$2 = cache_directory_name
+#$3 = space separated list of directories we want to cache
 handle_cache() {
-	folders_array=($3)
-	number_of_folders=${#folders_array[*]}
+	directories_array=($3)
+	number_of_directories=${#directories_array[*]}
 
-	if [ "$number_of_folders" -eq "1" ]; then
-		handle_single_folder_cache $1 $2 "$3";
+	if [ "$number_of_directories" -eq "1" ]; then
+		handle_single_directory_cache $1 $2 "$3";
 	else
-		handle_multiple_folder_cache $1 $2 "$3";
+		handle_single_directories_cache $1 $2 "$3";
 	fi
 }
 
 # TODO: refactor to remove duplicated code across methods handling the cache
 #$1 = action: store or restore
-#$2 = cache_folder_name
-#$3 = space separated list of folders we want to cache
-handle_multiple_folder_cache() {
+#$2 = cache_directory_name
+#$3 = space separated list of directories we want to cache
+handle_single_directories_cache() {
 	for directory in $3; do
 
 		directory_name_with_underscore=${directory//\//\_}
@@ -112,16 +112,16 @@ handle_multiple_folder_cache() {
 	  	# excludes system dirs: proc, sys, dev
 	  	# excludes Wercker dirs: pipeline, $2
 	  	if [ $1 == "store" ]; then
-	  		echo "Storing Cache for "$2" and folder "$SRC
+	  		echo "Storing Cache for "$2" and directory "$SRC
 	  		# TODO: improve the way the stdout and stderr are redirected
 	  		# TODO: evaluate if adding --ignore-failed-read
-	  		current_folder=$(pwd)
+	  		current_directory=$(pwd)
 	  		cd $SRC
 	  		tar --same-owner -zcf "${DST}/${2}/${directory_name_with_underscore}.tar.gz" . > /dev/null 2>&1
-	  		cd $current_folder
+	  		cd $current_directory
 	  	# restores the cache, only if we saved some files
 	  	elif test -f "${SRC}/${2}/${directory_name_with_underscore}.tar.gz"; then
-	  		echo "Restoring Cache for "$2" and folder "$DST
+	  		echo "Restoring Cache for "$2" and directory "$DST
 	  		# just copy all the cache back
 	  		# TODO: exclude file used for managing the cache invalidation
 	  		# TODO: evaluate if adding --ignore-command-error
@@ -136,9 +136,9 @@ handle_multiple_folder_cache() {
 
 # TODO: refactor to remove duplicated code across methods handling the cache
 #$1 = action: store or restore
-#$2 = cache_folder_name
-#$3 = space separated list of folders we want to cache
-handle_single_folder_cache() {
+#$2 = cache_directory_name
+#$3 = space separated list of directories we want to cache
+handle_single_directory_cache() {
 	case $1 in
     "store")
       SRC=$3
@@ -174,7 +174,7 @@ handle_single_folder_cache() {
   fi
 }
 
-#$1 = cache_folder_name
+#$1 = cache_directory_name
 #$2 = file based on which we decide if invalidate the cache, and that has to be run
 adds_file_invalidating_the_cache() {
 
@@ -186,7 +186,7 @@ adds_file_invalidating_the_cache() {
 	echo "Added file invalidating the cache for "$1
 }
 
-#$1 = cache_folder_name
+#$1 = cache_directory_name
 #$2 = file based on which we decide if invalidate the cache, and that has to be run
 #returns: "valid" if the cache is valid, "invalid" if the cache is not valid
 check_cache_validity() {
@@ -208,7 +208,7 @@ check_cache_validity() {
 	fi
 }
 
-#$1 = cache_folder_name
+#$1 = cache_directory_name
 clear_cache() {
   echo 'Clearing '$WERCKER_CACHE_DIR'/'$1
   rm -R "$WERCKER_CACHE_DIR/$1"
