@@ -1,6 +1,7 @@
 #!/bin/bash
 # MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 # HANDLES CACHE FOR BOWER DEPENDENCIES
+set -e
 
 # Partially inspired by: https://bitbucket.org/ryanharper007/wercker-bower-install
 export BOWER_STORAGE__CACHE="${WERCKER_CACHE_DIR}/wercker/bower"

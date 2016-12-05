@@ -1,4 +1,5 @@
 #!/bin/bash
+set +e
 # MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 # HANDLES CACHE FOR BOWER DEPENDENCIES
 
@@ -9,7 +10,6 @@ mkdir -p $BOWER_STORAGE_CACHE/.bower-cache
 mkdir -p $BOWER_STORAGE_CACHE/.bower-registry
 mkdir -p $BOWER_STORAGE_CACHE/.bower-tmp
 
-set +e
 bower install \
     --config.interactive=false \
     --config.storage.packages=$BOWER_STORAGE_CACHE/.bower-cache \
@@ -17,7 +17,6 @@ bower install \
     --config.tmp=$BOWER_STORAGE_CACHE/.bower-tmp \
     --allow-root
 result="$?"
-set -e 
 
 # Fail if it is not a success or warning
 if [[ result -ne 0 && result -ne 6 ]]
