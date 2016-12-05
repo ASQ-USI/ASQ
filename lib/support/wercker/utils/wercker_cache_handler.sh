@@ -3,6 +3,7 @@
 # HANDLES CACHE FOR SYSTEM LEVEL DEPENDENCIES
 set -e
 
+# TODO: Check the "Be prepared for spaces in filenames" section here: http://www.davidpashley.com/articles/writing-robust-shell-scripts/
 # TODO: invalidate cache in case of errors
 # TODO: make somehow independent from the operating system, installing the tools we use
 # TODO: improve command output colors using the Wercker library to do so 
