@@ -4,11 +4,11 @@
 set -e
 
 # Partially inspired by: https://bitbucket.org/ryanharper007/wercker-bower-install
-export BOWER_STORAGE__CACHE="${WERCKER_CACHE_DIR}/wercker/bower"
-mkdir -p $BOWER_STORAGE__CACHE
-mkdir -p $BOWER_STORAGE__CACHE/.bower-cache
-mkdir -p $BOWER_STORAGE__CACHE/.bower-registry
-mkdir -p $BOWER_STORAGE__CACHE/.bower-tmp
+export BOWER_STORAGE_CACHE="${WERCKER_CACHE_DIR}/wercker/bower"
+mkdir -p $BOWER_STORAGE_CACHE
+mkdir -p $BOWER_STORAGE_CACHE/.bower-cache
+mkdir -p $BOWER_STORAGE_CACHE/.bower-registry
+mkdir -p $BOWER_STORAGE_CACHE/.bower-tmp
 
 # return 1 if local npm package is installed at ${WERCKER_SOURCE_DIR}/node_modules, else 0
 # example
@@ -46,9 +46,9 @@ for directory in $1; do
   set +e
   $bower_command install \
       --config.interactive=false \
-      --config.storage.packages=$BOWER_STORAGE__CACHE/.bower-cache \
-      --config.storage.registry=$BOWER_STORAGE__CACHE/.bower-registry \
-      --config.tmp=$BOWER_STORAGE__CACHE/.bower-tmp \
+      --config.storage.packages=$BOWER_STORAGE_CACHE/.bower-cache \
+      --config.storage.registry=$BOWER_STORAGE_CACHE/.bower-registry \
+      --config.tmp=$BOWER_STORAGE_CACHE/.bower-tmp \
       --allow-root
   result="$?"
   set -e
