@@ -82,7 +82,7 @@ handle_cache() {
 	if [ "$number_of_directories" -eq "1" ]; then
 		handle_single_directory_cache $1 $2 "$3";
 	else
-		handle_single_directories_cache $1 $2 "$3";
+		handle_multiple_directories_cache $1 $2 "$3";
 	fi
 }
 
@@ -90,7 +90,7 @@ handle_cache() {
 #$1 = action: store or restore
 #$2 = cache_directory_name
 #$3 = space separated list of directories we want to cache
-handle_single_directories_cache() {
+handle_multiple_directories_cache() {
 	for directory in $3; do
 
 		directory_name_with_underscore=${directory//\//\_}
