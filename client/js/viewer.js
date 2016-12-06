@@ -194,6 +194,13 @@ this.subscribeToEvents= function (){
     // asi.setBounce (that.sessionFlow == 'self')
   }.bind(this));
 
+  eventBus.on('asq:question_type', function(evt){
+    debug.log(evt)
+  })
+  eventBus.on('asq-plugin', function(evt){
+    connection.socket.emit('asq-plugin', evt);
+  });
+
   //asq-elements events
   eventBus
   .on('asq-exercise:submit', function(evt){
