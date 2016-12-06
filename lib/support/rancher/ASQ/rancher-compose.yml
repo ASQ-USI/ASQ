@@ -11,23 +11,25 @@ services:
       interval: 2000
       strategy: recreate
       reinitializing_timeout: 60000
-  lb:
-    scale: 1
-    lb_config:
-      certs: []
-      config: balance source
-      port_rules:
-      - priority: 1
-        protocol: http
-        service: ASQ/asq
-        source_port: 80
-        target_port: 80
-    health_check:
-      response_timeout: 2000
-      healthy_threshold: 2
-      port: 42
-      unhealthy_threshold: 3
-      interval: 2000
+  # TODO: check if Rancher will enable the possibility to import a LB and have it working
+  # See: https://github.com/rancher/rancher/issues/6516, and https://github.com/rancher/rancher/issues/6075
+  # lb:
+  #   scale: 1
+  #   lb_config:
+  #     certs: []
+  #     config: balance source
+  #     port_rules:
+  #     - priority: 1
+  #       protocol: http
+  #       service: ASQ/asq
+  #       source_port: 80
+  #       target_port: 80
+  #   health_check:
+  #     response_timeout: 2000
+  #     healthy_threshold: 2
+  #     port: 42
+  #     unhealthy_threshold: 3
+  #     interval: 2000
   redis:
     scale: 1
     health_check:
