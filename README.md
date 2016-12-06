@@ -28,7 +28,7 @@ You can find the ASQ docker image on the [Docker Hub](https://hub.docker.com/r/a
    - Change the `${HOST}` variable passed to the ASQ service to match your host name, the same way as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable. The default is `127.0.0.1`.
    
 The provided `docker-compose.yml` file uses the [Docker Compose Version 2.1 format](https://docs.docker.com/compose/compose-file/#/versioning) thus it requires [**Docker Engine 1.12.0+**](https://docs.docker.com/engine/installation/) and [**Docker Compose 1.9.0+**](https://docs.docker.com/compose/install/).
-Moreover it relies on the bridge network provided by Docker. Refer to the [Docker Compose file reference](https://docs.docker.com/compose/compose-file/) to customise the deployment for your settings.
+Moreover it relies on [local Docker volumes](https://docs.docker.com/engine/reference/commandline/volume_create/) and on the bridge network provided by Docker. Refer to the [Docker Compose file reference](https://docs.docker.com/compose/compose-file/) to customise the deployment for your settings.
 
 Getting started
 ----------------

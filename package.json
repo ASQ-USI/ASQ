@@ -62,7 +62,7 @@
     "w-local-v-start-dev": "npm run w-start-dev -- --docker-local --verbose",
     "w-local-build": "npm run w-build -- --docker-local",
     "//": "In case of errors, just run the command again. See: https://github.com/docker/compose/issues/4109",
-    "dc-asq-up": "DOCKER_HUB_REPO=$npm_package_config_docker_devuser\/$npm_package_config_docker_devrepo DOCKER_HUB_IMAGE_TAG=$npm_package_config_docker_tag COMPOSE_HTTP_TIMEOUT=120 docker-compose up; docker-compose stop; docker-compose rm -f -v",
+    "dc-asq-up": "DOCKER_HUB_REPO=$npm_package_config_docker_devuser\/$npm_package_config_docker_devrepo DOCKER_HUB_IMAGE_TAG=$npm_package_config_docker_tag COMPOSE_HTTP_TIMEOUT=120 docker-compose up; docker-compose stop; docker-compose rm -f -v; docker volume rm asq_ASQSlide asq_ASQNginx asq_ASQRedisData asq_ASQMongoData",
     "d-rm-containers": "echo 'Removed:' && docker rm -f -v $(docker ps -a -q)",
     "d-rm-images-none": "echo 'Removed:' && docker rmi $(docker images | grep '<none>' | awk '{print $3}')",
     "d-rm-images-all": "echo 'Removed:' && docker rmi $(docker images | grep -v 'IMAGE' | awk '{print $3}')",
