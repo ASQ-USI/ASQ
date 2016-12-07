@@ -140,7 +140,7 @@ process.stdout.write('done!\n');
 // with the default settings
 process.stdout.write('Creating local .bowerrc...');
 let bowerrcContents = `{
-  "directory": "bower_components"
+  'directory': 'bower_components'
 }`;
 fs.writeFileSync(`${uiDir}/.bowerrc`, bowerrcContents);
 process.stdout.write('done!\n');
@@ -225,7 +225,7 @@ process.stdout.write('done!\n');
 // with the default settings
 process.stdout.write('Creating local .bowerrc...');
 bowerrcContents = `{
-  "directory": "bower_components"
+  'directory': 'bower_components'
 }`;
 fs.writeFileSync(`${cockpitDir}/.bowerrc`, bowerrcContents);
 process.stdout.write('done!\n');
