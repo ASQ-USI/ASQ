@@ -1,0 +1,41 @@
+version: '2'
+services:
+  logzio:
+    privileged: true
+    image: logzio/logzio-docker:latest
+    stdin_open: true
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    tty: true
+    logging:
+      driver: json-file
+    pid: host
+    command:
+    - -a
+    - env=${ENVIRONMENT_NAME}
+    - -t
+    - ${LOGZIO_TOKEN}
+    - -j
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: 'true'
+  dd-agent:
+    privileged: true
+    image: datadog/docker-dd-agent:latest
+    environment:
+      API_KEY: ${DATADOG_API_KEY}
+      DD_HOSTNAME: ${ENVIRONMENT_NAME}
+      LOG_LEVEL: INFO
+    stdin_open: true
+    network_mode: host
+    volumes:
+    - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+    - /proc/:/host/proc/:ro
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    tty: true
+    logging:
+      driver: json-file
+    pid: host
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: 'true'
