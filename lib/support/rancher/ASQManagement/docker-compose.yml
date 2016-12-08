@@ -2,7 +2,7 @@ version: '2'
 services:
   cleanup:
     privileged: true
-    image: meltwater/docker-cleanup:1.4.0
+    image: meltwater/docker-cleanup:1.8.0
     environment:
       CLEAN_PERIOD: '3600'
       DELAY_TIME: '900'
