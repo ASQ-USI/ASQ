@@ -11,7 +11,7 @@ services:
     logging:
       driver: json-file
     labels:
-      io.rancher.scheduler.affinity:host_label: environment-name=${HOST_ENVIRONMENT_NAME}
+      io.rancher.scheduler.affinity:host_label: host-name=${HOST_NAME}
   # TODO: check if Rancher will enable the possibility to import a LB and have it working
   # See: https://github.com/rancher/rancher/issues/6516, and https://github.com/rancher/rancher/issues/6075
   # lb:
@@ -31,7 +31,7 @@ services:
     logging:
       driver: json-file
     labels:
-      io.rancher.scheduler.affinity:host_label: environment-name=${HOST_ENVIRONMENT_NAME}
+      io.rancher.scheduler.affinity:host_label: host-name=${HOST_NAME}
   asq:
     image: ${DOCKER_HUB_REPO:-asqhub/asq}:${DOCKER_HUB_IMAGE_TAG:-master}
     environment:
@@ -55,4 +55,4 @@ services:
     logging:
       driver: json-file
     labels:
-      io.rancher.scheduler.affinity:host_label: environment-name=${HOST_ENVIRONMENT_NAME}
+      io.rancher.scheduler.affinity:host_label: host-name=${HOST_NAME}
