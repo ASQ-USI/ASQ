@@ -4,7 +4,7 @@ const pdfFile = require('path').resolve(__dirname + '/../assets/samplepresentati
 module.exports = {
   'upload zip' : function (browser) {
     browser
-      .loginUser('t', 'Tt123456')
+      .login('t', 'Tt123456')
       .url(browser.launchUrl + '/upload/')
       .waitForElementVisible('body', 500)
       .assert.elementPresent('form#le-dropzone')
@@ -21,7 +21,7 @@ module.exports = {
   },
   'upload pdf' : function (browser) {
     browser
-      .loginUser('t', 'Tt123456')
+      .login('t', 'Tt123456')
       .url(browser.launchUrl + '/upload/')
       .waitForElementVisible('body', 500)
       .assert.elementPresent('form#le-dropzone')
@@ -39,7 +39,7 @@ module.exports = {
   },
   'remove dragged file' : function (browser) {
     browser
-      .loginUser('t', 'Tt123456')
+      .login('t', 'Tt123456')
       .url(browser.launchUrl + '/upload/')
       .waitForElementVisible('body', 500)
       .dragAndDropFile(zipFile)

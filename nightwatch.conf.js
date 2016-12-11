@@ -1,9 +1,12 @@
+require('dotenv').config();
+
 module.exports = {
   "src_folders" : ["./test/acceptance"],
   "output_folder" : "./test/acceptance-reports",
   "custom_commands_path" : "./test/acceptance/custom-commands",
   "custom_assertions_path" : "",
-  "globals_path" : "",
+  "globals_path" : "./test/acceptance/globals.js",
+  "page_objects_path" : "./test/acceptance/pages",
   
   "selenium" : {
     "start_process" : true,

@@ -1,4 +1,4 @@
-exports.command = function(file2Upload, callback) {
+exports.command = function dragAndDropFile(file2Upload, callback) {
   var browser = this;
 
   browser
