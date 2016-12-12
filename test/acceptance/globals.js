@@ -1,7 +1,10 @@
 module.exports = {
   users: {
     normalUser : {
-      username: 't',
+      firstname: 'testFirstName',
+      lastname: 'testLastName',
+      username: 'c',
+      email: 'test@testc.com',
       password: 'Tt123456'
     }
   }
