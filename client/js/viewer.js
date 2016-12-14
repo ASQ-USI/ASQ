@@ -57,6 +57,8 @@ this.init = function(event) {
   dialog.style.pointerEvents = 'auto';
   document.body.appendChild(dialog);
 
+  this.subscribeToEvents();
+
   //let asq-elements get their eventEmitter instance
   var event = new CustomEvent('asq-ready', { 'detail': {asqEventBus : eventBus} });
   document.dispatchEvent(event);
@@ -70,7 +72,6 @@ this.init = function(event) {
   this.connect();
   this.initPresentationFramework(si.presentationFramework);
 
-  this.subscribeToEvents();
   this.userAwake();
 
 }
