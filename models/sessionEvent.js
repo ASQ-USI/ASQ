@@ -2,13 +2,13 @@
     @description the SessionEvent Model
 */
 
-var mongoose   = require('mongoose')
-var Schema     = mongoose.Schema;
-var ObjectId   = Schema.ObjectId;
-var logger     = require('logger-asq');
-var modelBus  = require('../lib/model/pubsub');
+const logger = require('logger-asq');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const modelBus = require('../lib/model/pubsub');
 
-var sessionEventSchema = new Schema({
+const sessionEventSchema = new Schema({
   session            : { type: ObjectId, ref: 'Session', required: true },
   type               : { type: String, required: true },
   data               : { type: Object },
@@ -16,7 +16,7 @@ var sessionEventSchema = new Schema({
 });
 
 
-sessionEventSchema.post("save", function(doc){
+sessionEventSchema.post('save', function(doc){
   modelBus.emit('sessionEventCreated', {
     data:{
       sessionEvent: doc.toObject()

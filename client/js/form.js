@@ -244,6 +244,8 @@ function signupFormBinder(){
   $(function(){
     var inputSelectors = 'input[type=text], input[type=email], input[type=password]';
 
+    var hasTypedPasswordRepeat = false;
+
     var validateFn = {
       'inputFirstname' : function checkFirstname() {
         defaultValidate('inputFirstname', validation.getErrorFirstname);
@@ -314,6 +316,10 @@ function signupFormBinder(){
               $el.siblings('div.sidetip').children('p.isaok').addClass('active');
               isValid.inputPassword = true;
             }
+
+            // do not validate confirm password if the user hasn't typed anything
+            if(!hasTypedPasswordRepeat) return;
+
             var repeat = $('#inputRepeatPassword');
             var errRepeat = validation.getErrorPasswordRepeat(repeat.val(), $el.val());
             repeat.siblings('div.sidetip').children().removeClass('active');
@@ -325,6 +331,7 @@ function signupFormBinder(){
       },
 
       'inputRepeatPassword' : function checkPasswordRepeat() {
+        hasTypedPasswordRepeat = true;
         isValid.inputRepeatPassword = false;
         var $el = $('#inputRepeatPassword');
         $el.val($.trim($el.val()));

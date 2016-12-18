@@ -1,34 +1,34 @@
-var mongoose=require('mongoose');
+const mongoose=require('mongoose');
 db = mongoose.createConnection('localhost', 'benchmark');
 
-var gen = require('when/generator')
-  , when = require('when')
-  , models = require('../../models') // load all models
-  , mongooseFixtures  = require('../util/mongoose-fixtures')
-  , assManager =  require('../../lib/assessment/assessment')
-  , Session = db.model('Session')
-  , Exercise = db.model('Exercise')
-  , Question = db.model('Question')
-  , Answer = db.model('Answer')
-  , WhitelistEntry = db.model('WhitelistEntry')
-  , util = require('util')
-  , mode="avg"
-  , viewerNum = 100
-  , jobCounters={}
-  , totalCounter = 0
-  , totalAssessments = viewerNum * (viewerNum -1)
-  , lamda = viewerNum/2000;  //initial value
+const Promise = require('bluebird');
+const coroutine; = Promise.coroutine;;
+const models = require('../../models'); // load all models
+const mongooseFixtures  = require('../util/mongoose-fixtures');
+const assManager =  require('../../lib/assessment/assessment');
+const Session = db.model('Session');
+const Exercise = db.model('Exercise');
+const Question = db.model('Question');
+const Answer = db.model('Answer');
+const WhitelistEntry = db.model('WhitelistEntry');
+const util = require('util');
+let mode='avg';
+let viewerNum = 100;
+const jobCounters={};
+let totalCounter = 0;
+let totalAssessments = viewerNum * (viewerNum -1);
+let lamda = viewerNum/2000;  //initial value
 
 
 //process command line args:
 var args = {};
 process.argv.slice(2).forEach(function(clarg){
-  var splitted = clarg.split("=");
+  var splitted = clarg.split('=');
   args[splitted[0]] = (1 in splitted)? splitted[1] : '' 
 })
 
 //check for --users=<number> argument
-if("undefined" != typeof args['--users']){
+if('undefined' != typeof args['--users']){
   viewerNum= + args['--users']
 }
 
@@ -38,7 +38,7 @@ lamda = viewerNum/1000 //viewer submissions every 10 minutes
 
 //check for --mode=<value> argument
 // value= 'worst', 'avg'
-if("undefined" != typeof args['--mode']){
+if('undefined' != typeof args['--mode']){
   var value = args['--mode'];
   if(['worst', 'avg'].indexOf(value) >= 0) mode = value;
 }
@@ -62,17 +62,17 @@ var fixtureObj = require('./fixtures')(viewerNum)
 function *startJobGen(job, exercise, assessor){
    if(! job){
 
-    // console.log("No assessment #%d for assessor %s",
+    // console.log('No assessment #%d for assessor %s',
     //   jobCounters[assessor._id], assessor.screenName);
 
     return;
    }
 
    try{
-    job.status = "active";
+    job.status = 'active';
     yield job.save();
     
-    // console.log("Assigned assessment #%d to user %s",
+    // console.log('Assigned assessment #%d to user %s',
     // jobCounters[assessor._id] , assessor.screenName);
 
     setTimeout(submitJob, ~~expSample(lamda), job, exercise, assessor);
@@ -81,7 +81,7 @@ function *startJobGen(job, exercise, assessor){
    }        
 }
 
-var startJob = gen.lift(startJobGen);
+var startJob = coroutine(startJobGen);
 
 /**
 * Generator function that runs the benchmark
@@ -122,13 +122,13 @@ function *runGen(){
       answers = yield Answer.create(answers);
 
       //populate question field
-      yield when.map(answers, gen.lift(function *populateQuestions(answer){
+      yield Promisemap(answers, coroutine(function *populateQuestions(answer){
         yield answer.populate('question').execPopulate();
       }));
      
       var startAssessmentCreation = new Date;
       result = yield assManager.enqueue(session._id, exercise, answers)
-      // console.log ( "Created assessments in %s ms for user %s",
+      // console.log ( 'Created assessments in %s ms for user %s',
       //  new Date - startAssessmentCreation, whitelistEntry.screenName );
       // console.log('after queue:Using %s of memory', bytesToSize(process.memoryUsage().heapUsed));
 
@@ -138,15 +138,15 @@ function *runGen(){
       // find next assessment job for each of the viewers
       var nextJob = yield assManager.getNextAssessmentJob(session._id, exercise, whitelistEntry._id);
 
-      console.log("Searched for assessment #%d in %d ms for \
-user %d of %d %s",jobCounters[whitelistEntry._id], (new Date - start), i+1, l, whitelistEntry.screenName);
+      console.log('Searched for assessment #%d in %d ms for \
+user %d of %d %s',jobCounters[whitelistEntry._id], (new Date - start), i+1, l, whitelistEntry.screenName);
 
       yield startJob(nextJob, exercise, whitelistEntry);
 
       var nextJobs = yield assManager.getNextJobForIdleViewers(session._id, exercise);
       
       //start jobs for idle users in parallell, no need to wait with a yield
-      when.map(nextJobs, function(job){
+      Promisemap(nextJobs, function(job){
         return startJob(job, exercise, job.assessor)
       }).catch(function(err){
         console.log(err.stack)
@@ -165,7 +165,7 @@ user %d of %d %s",jobCounters[whitelistEntry._id], (new Date - start), i+1, l, w
   
   return result;
 }
-start = gen.lift(runGen);
+start = coroutine(runGen);
 
 
 //Main work starts here
@@ -182,7 +182,7 @@ function dataLoaded(err){
   console.log('Using %s of memory', bytesToSize(process.memoryUsage().heapUsed));
  
   start().then(function(){
-    console.log("Answer submissions have ended")
+    console.log('Answer submissions have ended')
     console.log('after Answer submissions have ended: Using %s of memory', bytesToSize(process.memoryUsage().heapUsed));
   });
 }
@@ -194,7 +194,7 @@ function dataLoaded(err){
 * @param {WhitelistEntry} assessor Assessor of the assessment job
 */
 function submitJob(job, exercise, assessor){
-  job.status = "finished";
+  job.status = 'finished';
   job.save(function(err, saved){
     if(err) throw err;
     console.log('Submitted assessment #%d for user',
@@ -213,8 +213,8 @@ function submitJob(job, exercise, assessor){
 
     assManager.getNextAssessmentJob(job.session, exercise, assessor)
       .then(function(nextJob){
-         console.log("Searched for assessment #%d in %d ms for \
-user %s", jobCounters[assessor._id] , (new Date - start), assessor.screenName);
+         console.log('Searched for assessment #%d in %d ms for \
+user %s', jobCounters[assessor._id] , (new Date - start), assessor.screenName);
         startJob(nextJob, exercise, assessor)
       })
       .catch(function(err){
@@ -253,9 +253,9 @@ function expSample(lamda){
 * @returns {Promise} A promise that will fulfill with true the val milliseconds have elapsed
 */
 function wait(val){
-  var deferred = when.defer();
-  setTimeout(function(){
-    deferred.resolve(true)
-  }, val)
-  return deferred.promise;
+  return new Promise(function(resolve, reject){
+    setTimeout(function(){
+      resolve(true);
+    }, val)
+  });
 }
