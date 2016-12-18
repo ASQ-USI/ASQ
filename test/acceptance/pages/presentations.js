@@ -21,6 +21,9 @@ module.exports = {
     viewerViewButtons: {
       selector: 'a.btn-viewer-view'
     },
+    convertingFromPDFLabels: {
+      selector: '.thumb-conversion-status-label'
+    },
     notLivePresentations: {
       selector: '.thumb:not(.thumb-live)'
     },

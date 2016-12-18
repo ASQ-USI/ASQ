@@ -8,9 +8,13 @@ const viewer = 'viewer';
 
 module.exports = {
   before : function(browser) {
+    // open one `beamer` and one `viewer` view
+
     browser
-      .login('t', 'Tt123456')
-      .url(browser.launchUrl + '/t/presentations/')
+      .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password)
+      .page.presentations().navigate();
+
+    browser
       .waitForElementVisible('body', 500)
       .execute(function(){
         const bUrl = document.querySelector('.thumb-live  .btn-beamer-view').href;
@@ -37,7 +41,7 @@ module.exports = {
       }).window_handles(function(result) {
         beamerWindow = result.value[1];
         viewerWindow = result.value[2];
-        // wait until presenter and viwer are initialized
+        // wait until presenter and viewer are initialized
         browser
           .switchWindow(beamerWindow)
           .waitForPresentationInitialized(5000)
@@ -46,18 +50,26 @@ module.exports = {
       });
   },
   'can navigate the presentation' : function (browser) {
+    const livePage = browser.page.live();
     browser
-      .switchWindow(beamerWindow)
-      .waitForElementVisible('asq-welcome', 10000)
+      .switchWindow(beamerWindow);
+
+    livePage
+      .waitForElementVisible('@asqWelcome', 10000);
+
+    browser
       .execute(function(data){
         const steps = document.querySelectorAll('.step');
         return [...steps].map(step => step.id);
       }, [null], function(res){
         testData.stepIds = res.value;
-      })
-      .click('#impress')
-      .keys([browser.Keys.RIGHT_ARROW])
-      .pause(1100)
+      });
+
+    livePage
+      .clickPresentationElement()
+
+    livePage
+      .goToNext()
       .url(function(result){
         const url = result.value
         browser.assert.equal(url.endsWith(`#/${testData.stepIds[1]}`), true, 
@@ -69,11 +81,11 @@ module.exports = {
         browser.assert.equal(url.endsWith(`#/${testData.stepIds[1]}`), true, 
           'Pressing the left arrow key should navigate the viewer to the second slide')
       })
-      .switchWindow(beamerWindow)
-      .keys([browser.Keys.LEFT_ARROW])
-      .pause(500)
-      .keys([browser.Keys.LEFT_ARROW])
-      .pause(1100)
+      .switchWindow(beamerWindow);
+
+    livePage.goToPrev();
+    livePage
+      .goToPrev()
       .url(function(result){
         const url = result.value
         browser.assert.equal(url.endsWith(`#/${testData.stepIds[testData.stepIds.length -1]}`), true, 

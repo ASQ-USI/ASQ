@@ -3,7 +3,7 @@ module.exports = {
     normalUser : {
       firstname: 'testFirstName',
       lastname: 'testLastName',
-      username: 'c',
+      username: 't',
       email: 'test@testc.com',
       password: 'Tt123456'
     }

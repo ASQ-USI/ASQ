@@ -3,51 +3,65 @@ const pdfFile = require('path').resolve(__dirname + '/../assets/samplepresentati
 
 module.exports = {
   'upload zip' : function (browser) {
+    const uploadPage = browser.page.upload();
+
     browser
-      .login('t', 'Tt123456')
-      .url(browser.launchUrl + '/upload/')
+      .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password)
+      .page.upload().navigate()
       .waitForElementVisible('body', 500)
-      .assert.elementPresent('form#le-dropzone')
-      .assert.hidden('#upload-details')
-      .pause(500)
-      .dragAndDropFile(zipFile)
-      .pause(500)
-      .assert.hidden('.dz-message')
-      .assert.value('input[name=title]', 'samplepresentation', 'Set title from presentation filename.')
-      .click('button#upload-btn')
-      .pause(3000)
-      .assert.elementPresent('body[data-view-name="presentations"]')
-      .end();
+
+    uploadPage
+      .assert.elementPresent('@uploadForm')
+      .assert.hidden('@uploadDetails')
+      .dragAndDropFile(zipFile);
+
+    browser.pause(500);
+    uploadPage
+      .assert.hidden('@uploadMessage')
+      .assert.value('@presentationTitleInput', 'samplepresentation', 'Set title from presentation filename.')
+      .click('@uploadBtn');
+
+    browser.page.presentations()
+      .waitForElementVisible('@presentationsBody', 5000, 'After the upload it should redirect to the presentations page');
+    browser.end();
   },
   'upload pdf' : function (browser) {
+    const uploadPage = browser.page.upload();
+
     browser
-      .login('t', 'Tt123456')
-      .url(browser.launchUrl + '/upload/')
-      .waitForElementVisible('body', 500)
-      .assert.elementPresent('form#le-dropzone')
-      .assert.hidden('#upload-details')
-      .pause(500)
-      .dragAndDropFile(pdfFile)
-      .pause(500)
-      .assert.hidden('.dz-message')
-      .assert.value('input[name=title]', 'samplepresentation.pdf', 'Set title from presentation filename.')
-      .click('button#upload-btn')
-      .pause(3000)
-      .assert.elementPresent('body[data-view-name="presentations"]')
-      .assert.elementPresent('.thumb-conversion-status-label', 'Testing if conversion has started')
-      .end();
+      .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password);
+    
+    uploadPage.navigate();
+    browser.waitForElementVisible('body', 500);
+
+    uploadPage.dragAndDropFile(pdfFile);
+    browser.pause(500);
+    uploadPage
+      .assert.hidden('@uploadMessage')
+      .assert.value('@presentationTitleInput', 'samplepresentation.pdf', 'Set title from presentation filename.')
+      .click('@uploadBtn'); 
+    browser.page.presentations()
+      .waitForElementVisible('@presentationsBody', 5000, 'After the upload it should redirect to the presentations page')
+      .assert.elementPresent('@convertingFromPDFLabels', 'Testing if conversion has started')
+    browser.end();
   },
   'remove dragged file' : function (browser) {
+    const uploadPage = browser.page.upload();
+
     browser
-      .login('t', 'Tt123456')
-      .url(browser.launchUrl + '/upload/')
-      .waitForElementVisible('body', 500)
-      .dragAndDropFile(zipFile)
-      .pause(500)
-      .click('a.data-dz-remove')
-      .pause(500)
-      .assert.visible('.dz-message')
-      .assert.hidden('#upload-details')
-      .end();
+      .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password);
+    
+    uploadPage.navigate();
+    browser.waitForElementVisible('body', 500);
+    uploadPage.dragAndDropFile(pdfFile);
+    browser.pause(500);
+    
+    uploadPage.click('@removeFileBtn');
+    browser.pause(500);
+
+    uploadPage
+      .assert.visible('@uploadMessage')
+      .assert.hidden('@uploadDetails');
+    browser.end();
   },
 };

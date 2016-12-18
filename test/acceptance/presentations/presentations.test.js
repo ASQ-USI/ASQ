@@ -2,7 +2,7 @@ const zipFile = require('path').resolve(__dirname + '/../assets/samplepresentati
 const testData = {};
 
 module.exports = {
-  "Presentations page" : ' '+ function (browser) {
+  "Presentations page" : function (browser) {
     const presentationsPage = browser.page.presentations();
 
     browser
@@ -16,7 +16,7 @@ module.exports = {
      presentationsPage.assert.visible('@presentationsBody', 'should be at `presentations` page')
      browser.end();
   },
-  'start presentation' : ' '+ function (browser) {
+  'start presentation' : function (browser) {
     const presentationsPage = browser.page.presentations();
 
     browser
@@ -31,7 +31,7 @@ module.exports = {
   },
 
   // The following tests depending on having an uploaded and started presentation
-  'visit beamer view' : ' '+ function (browser) {
+  'visit beamer view' : function (browser) {
     const presentationsPage = browser.page.presentations();
 
     browser
@@ -43,7 +43,7 @@ module.exports = {
       .visitFirstLivePresentationsBeamerView()
       .end();
   },
-  'visit cockpit view' : ' '+ function (browser) {
+  'visit cockpit view' : function (browser) {
     const presentationsPage = browser.page.presentations();
 
     browser
@@ -55,7 +55,7 @@ module.exports = {
       .visitFirstLivePresentationsCockpitView()
       .end();
   },
-  'visit viewer view' : ' '+ function (browser) {
+  'visit viewer view' : function (browser) {
     const presentationsPage = browser.page.presentations();
 
     browser
@@ -68,7 +68,7 @@ module.exports = {
       .end();
   },
 
-  'stop presentation' : ' '+ function (browser) {
+  'stop presentation' : function (browser) {
     const presentationsPage = browser.page.presentations();
 
     browser

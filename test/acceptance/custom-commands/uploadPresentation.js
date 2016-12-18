@@ -1,12 +1,10 @@
-exports.command = function(zipFile) {
+exports.command = function(file) {
   var browser = this;
 
   browser
-     .url(browser.launchUrl + '/upload/')
-     .waitForElementVisible('body', 500)
-     .dragAndDropFile(zipFile)
-     .click('button#upload-btn')
-     .pause(3000)
+     .page.upload().navigate();
+   browser
+     .page.upload().presentationUpload(file)
 
-  return this;
+  return browser;
 };

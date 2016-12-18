@@ -5,5 +5,5 @@ exports.command = function login(username, password, callback) {
       .page.login().navigate();
     browser
       .page.login().loginUser('t', 'Tt123456')
-  return this;
+  return browser;
 };
