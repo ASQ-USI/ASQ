@@ -188,7 +188,7 @@ build:
                   fi
         - nicka/yarn@1.0.0:
             name: prune development dependencies
-            options: --ignore-engines --force
+            options: --ignore-engines
             production: true
             cache: true
         # TODO: in case we need to use the copy alternative, refer to:
