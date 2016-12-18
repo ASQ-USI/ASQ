@@ -1,40 +1,67 @@
-var file2Upload = require('path').resolve(__dirname + '/../assets/presentation.zip')
+const zipFile = require('path').resolve(__dirname + '/../assets/samplepresentation.zip')
+const pdfFile = require('path').resolve(__dirname + '/../assets/samplepresentation.pdf')
 
 module.exports = {
-  'upload test' : function (browser) {
-    browser
-      .loginUser('t', 'Tt123456')
-      .url(browser.launchUrl + '/upload/')
-      .waitForElementVisible('body', 500)
-      .assert.elementPresent('form#le-dropzone')
-      .assert.hidden('#upload-details')
-      .pause(500)
-      .dragAndDropFile(file2Upload)
-      .pause(500)
-      .assert.hidden('.dz-message')
-      .assert.value('input[name=title]', 'presentation', 'Set title from presentation filename.')
-      
-      /* triglian: a bug in chrome-webdriver (https://bugs.chromium.org/p/chromedriver/issues/detail?id=915)
-       * doesn't pass "application/zip" as the
-       * mime type for the upload so the form won't work. Uncomment the next lines
-       * when it's fixed. */
+  'upload zip' : function (browser) {
+    const uploadPage = browser.page.upload();
 
-      // .click('button#upload-btn')
-      // .pause(2000)
-      // .assert.containsText('.alert', 'presentation uploaded successfully!')
-      .end();
+    browser
+      .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password)
+      .page.upload().navigate()
+      .waitForElementVisible('body', 500)
+
+    uploadPage
+      .assert.elementPresent('@uploadForm')
+      .assert.hidden('@uploadDetails')
+      .dragAndDropFile(zipFile);
+
+    browser.pause(500);
+    uploadPage
+      .assert.hidden('@uploadMessage')
+      .assert.value('@presentationTitleInput', 'samplepresentation', 'Set title from presentation filename.')
+      .click('@uploadBtn');
+
+    browser.page.presentations()
+      .waitForElementVisible('@presentationsBody', 5000, 'After the upload it should redirect to the presentations page');
+    browser.end();
+  },
+  'upload pdf' : function (browser) {
+    const uploadPage = browser.page.upload();
+
+    browser
+      .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password);
+    
+    uploadPage.navigate();
+    browser.waitForElementVisible('body', 500);
+
+    uploadPage.dragAndDropFile(pdfFile);
+    browser.pause(500);
+    uploadPage
+      .assert.hidden('@uploadMessage')
+      .assert.value('@presentationTitleInput', 'samplepresentation.pdf', 'Set title from presentation filename.')
+      .click('@uploadBtn'); 
+    browser.page.presentations()
+      .waitForElementVisible('@presentationsBody', 5000, 'After the upload it should redirect to the presentations page')
+      .assert.elementPresent('@convertingFromPDFLabels', 'Testing if conversion has started')
+    browser.end();
   },
   'remove dragged file' : function (browser) {
+    const uploadPage = browser.page.upload();
+
     browser
-      .loginUser('t', 'Tt123456')
-      .url(browser.launchUrl + '/upload/')
-      .waitForElementVisible('body', 500)
-      .dragAndDropFile(file2Upload)
-      .pause(500)
-      .click('a.data-dz-remove')
-      .pause(500)
-      .assert.visible('.dz-message')
-      .assert.hidden('#upload-details')
-      .end();
+      .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password);
+    
+    uploadPage.navigate();
+    browser.waitForElementVisible('body', 500);
+    uploadPage.dragAndDropFile(pdfFile);
+    browser.pause(500);
+    
+    uploadPage.click('@removeFileBtn');
+    browser.pause(500);
+
+    uploadPage
+      .assert.visible('@uploadMessage')
+      .assert.hidden('@uploadDetails');
+    browser.end();
   },
 };

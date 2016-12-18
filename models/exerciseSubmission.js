@@ -2,13 +2,13 @@
     @description the ExerciseSubmission Model
 */
 
-var mongoose      = require('mongoose')
-var Schema        = mongoose.Schema
-var ObjectId      = Schema.ObjectId
-var logger        = require('logger-asq');
-var SessionEvent  = db.model('SessionEvent');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const logger = require('logger-asq');
+const SessionEvent = db.model('SessionEvent');
 
-var exerciseSubmissionSchema = new Schema({
+const exerciseSubmissionSchema = new Schema({
   exercise   : { type: ObjectId, ref: 'Exercise', required: true },
   answeree   : { type: ObjectId, ref: 'WhitelistEntry', required: true },
   session    : { type: ObjectId, ref: 'Session', required: true },

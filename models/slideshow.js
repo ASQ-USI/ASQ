@@ -4,37 +4,36 @@
 
 'use strict';
 
-var mongoose            = require('mongoose');
-var Schema              = mongoose.Schema;
-var ObjectId            = Schema.ObjectId;
-var when                = require('when');
-var path                = require('path');
-var Promise             = require("bluebird");
-var coroutine           = Promise.coroutine;
-var logger              = require('logger-asq');
-var Question            = db.model('Question');
-
-var Exercises           = db.model('Exercise');
-var User                = db.model('User');
-var config              = require('../config');
-var assessmentTypes     = require('./assessmentTypes.js');
-var slideflowTypes      = require('./slideflowTypes.js') ;
-
+const logger = require('logger-asq');
 var _ = require('lodash');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const path = require('path');
+const Promise = require('bluebird');
+const coroutine = Promise.coroutine;
+const Question = db.model('Question');
 
-var presentationSettingSchema = require('./presentationSetting.js');
+const Exercises = db.model('Exercise');
+const User = db.model('User');
+const config = require('../config');
+const assessmentTypes = require('./assessmentTypes.js');
+const slideflowTypes = require('./slideflowTypes.js') ;
 
-var questionsPerSlideSchema = new Schema({
+
+const presentationSettingSchema = require('./presentationSetting.js');
+
+const questionsPerSlideSchema = new Schema({
   slideHtmlId : { type: String, required: true },
   questions   : { type: [{ type: ObjectId, ref: 'Question' }], required: true }
 }, { _id: false });
 
-var statsPerSlideSchema = new Schema({
+const statsPerSlideSchema = new Schema({
   slideHtmlId   : { type: String, required: true },
   statQuestions : { type: [{ type: ObjectId, ref: 'Question'}], required: true }
 }, { _id: false });
 
-var slideshowSchema = new Schema({
+const slideshowSchema = new Schema({
   title             : { type: String, required: true },
   course            : { type: String, required: true, default: 'General' },
   originalFile      : { type: String, default: '' },
@@ -44,7 +43,7 @@ var slideshowSchema = new Schema({
   owner             : { type: ObjectId, ref: 'User', required: true },
   presentationFramework : {
                             type: String,
-                            default: "impress.js",
+                            default: 'impress.js',
                             enum: ['impress.js', 'reveal.js']
                           },
   slidesTree        : { type: Object, default:{}},
@@ -94,34 +93,32 @@ slideshowSchema.pre('save', true, function checkOwnerOnSave(next, done) {
 slideshowSchema.pre('save', true, function checkQuestionsOnSave(next, done) {
   next();
 
-  var self = this;
-  if (self.questions.length === 0) { return done(); }
+  if (this.questions.length === 0) { return done(); }
   
-  Question.find({_id : {$in: this.questions}}, function(err, questions) {
+  Question.find({_id : {$in: this.questions}}, (err, questions) => {
     if (err) { done(err); }
 
-    else if (questions.length !== self.questions.length) {
+    else if (questions.length !== this.questions.length) {
       let err = new Error(
         'All question items should have a real Question _id');
       logger.error({
             err: err,
             'presentation_id': this._id,
             'questions_length': questions.length,
-            'self_questions_length': self.questions.length,
+            'this_questions_length': this.questions.length,
           }, 'error on saving presentation');
       return done(err);
     }
     done();
-  }.bind(this));
+  });
 });
 
 //check if questionsPerSlide are valid
 slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
   next();
 
-  var self            = this
-  , questions         = self.questions
-  , questionsPerSlide =  self.questionsPerSlide;
+  const questions = this.questions;
+  const questionsPerSlide =  this.questionsPerSlide;
 
   //maybe we have no questions
   if (questions.length === 0) {
@@ -175,9 +172,8 @@ slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
 slideshowSchema.pre('save', true, function checkStatPerSlideOnSave(next, done) {
   next();
 
-  var self        = this
-  , questions     = self.questions
-  , statsPerSlide =  self.statsPerSlide;
+  const questions     = this.questions;
+  const statsPerSlide =  this.statsPerSlide;
 
   //maybe we have no questions
   if (questions.length === 0) {
@@ -208,7 +204,7 @@ slideshowSchema.pre('save', true, function checkStatPerSlideOnSave(next, done) {
 // we want this to execute serial before we start
 // deleting stuff
 slideshowSchema.pre('remove', function checkLiveOnRemove(next) {
-  var Session = db.model('Session');
+  const Session = db.model('Session');
   Session.findOne({
     slides  : this._id,
     endDate : null
@@ -265,7 +261,7 @@ slideshowSchema.methods.removeQuestions =  coroutine(function *removeQuestionsGe
 
   this.questions = [];
   this.questionsPerSlide = {};
-  this.markModified("questionsPerSlide")
+  this.markModified('questionsPerSlide')
   return this.save();
 });
 
@@ -280,7 +276,7 @@ slideshowSchema.methods.removeExercises =  coroutine(function *removeExercisesGe
 
   this.exercises = [];
   this.exercisesPerSlide = {};
-  this.markModified("exercisesPerSlide")
+  this.markModified('exercisesPerSlide')
   return this.save();
 });
 
@@ -292,7 +288,7 @@ slideshowSchema.methods.addQuestions = function(arr, cb) {
 
 // gets all the questions for a specific slide html id
 slideshowSchema.methods.getQuestionsForSlide = function(slideHtmlId) {
-  for (var i=0; i < this.questionsPerSlide.length; i++) {
+  for (let i=0; i < this.questionsPerSlide.length; i++) {
     if (this.questionsPerSlide[i].slideHtmlId === slideHtmlId) {
       return this.questionsPerSlide[i].questions;
     }
@@ -303,7 +299,7 @@ slideshowSchema.methods.getQuestionsForSlide = function(slideHtmlId) {
 // gets all the questions used for stats for a specific slide html id
 slideshowSchema.methods.getStatQuestionsForSlide = function(slideHtmlId) {
 
-  for (var i=0; i < this.statsPerSlide.length; i++) {
+  for (let i=0; i < this.statsPerSlide.length; i++) {
     if (this.statsPerSlide[i].slideHtmlId === slideHtmlId) {
       return this.statsPerSlide[i].statQuestions;
     }
@@ -311,29 +307,9 @@ slideshowSchema.methods.getStatQuestionsForSlide = function(slideHtmlId) {
   return [];
 }
 
-// saves object and returns a promise
-slideshowSchema.methods.saveWithPromise = function() {
-  //we cant use mongoose promises because the
-  // save operation returns undefined
-  // see here: https://github.com/LearnBoost/mongoose/issues/1431
-  // so we construct our own promise
-  // to maintain code readability
-
-  var deferred = when.defer();
-  this.save(function(err, doc) {
-    if (err) {
-      deferred.reject(err);
-      return;
-    }
-    deferred.resolve(doc);
-  });
-
-  return deferred.promise;
-}
-
 slideshowSchema.methods.setQuestionsPerSlide = function(questions) {
-  var qPerSlidesObj = {};
-  var i, max;
+  const qPerSlidesObj = {};
+  let i, max;
   for (i = 0, max = questions.length; i < max; i++) {
     if (! qPerSlidesObj[questions[i].slideHtmlId]) {
       qPerSlidesObj[questions[i].slideHtmlId] = [];
@@ -342,16 +318,16 @@ slideshowSchema.methods.setQuestionsPerSlide = function(questions) {
   }
 
   //convert to array
-  var qPerSlidesArray = [];
-  for (var key in qPerSlidesObj) {
+  const qPerSlidesArray = [];
+  for (let key in qPerSlidesObj) {
     qPerSlidesArray.push({ slideHtmlId : key, questions : qPerSlidesObj[key] });
   }
   this.questionsPerSlide = qPerSlidesArray;
 }
 
 slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
-  var sPerSlidesObj = {};
-  var i, max;
+  const sPerSlidesObj = {};
+  let i, max;
   for (i = 0, max = statsForQuestions.length; i < max; i++) {
     if (! sPerSlidesObj[statsForQuestions[i].slideHtmlId]) {
       sPerSlidesObj[statsForQuestions[i].slideHtmlId] = [];
@@ -361,8 +337,8 @@ slideshowSchema.methods.setStatsPerSlide =  function(statsForQuestions) {
   }
 
   //convert to array
-  var sPerSlidesArray = [];
-  for (var key in sPerSlidesObj) {
+  const sPerSlidesArray = [];
+  for (let key in sPerSlidesObj) {
     sPerSlidesArray.push({
       slideHtmlId   : key,
       statQuestions : sPerSlidesObj[key]
@@ -376,8 +352,8 @@ slideshowSchema.methods.listSettings = function() {
 }
 
 slideshowSchema.methods.readSetting = function(key) {
-  var settings = this.settings.toObject();
-  for ( var i in settings ) {
+  const settings = this.settings.toObject();
+  for ( let i in settings ) {
     if ( settings[i].key === key ) {
       return settings[i].value
     }
@@ -387,11 +363,11 @@ slideshowSchema.methods.readSetting = function(key) {
 }
 
 slideshowSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
-  for ( var i in this.settings.toObject() ) {
-    var key = this.settings[i].key;
+  for ( let i in this.settings.toObject() ) {
+    const key = this.settings[i].key;
     if ( setting.key === key ) {
       if ( this.settings[i].value !== setting.value ) {
-        var old = this.settings[i].value;
+        const old = this.settings[i].value;
         this.settings[i].value = setting.value;
 
         try{
@@ -409,7 +385,7 @@ slideshowSchema.methods.updateSetting = coroutine(function* updateSettingsGen(se
 }),
 
 slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(settings) {
-  var flatten = {}
+  const flatten = {}
   if ( _.isArray(settings) ) {
     settings.forEach(function(setting) {
       flatten[setting.key] = setting.value;
@@ -420,8 +396,8 @@ slideshowSchema.methods.updateSettings = coroutine(function* updateSettingsGen(s
 
 
   if ( this.settings.toObject().length > 0) {
-    for ( var i in this.settings.toObject() ) {
-      var key = this.settings[i].key;
+    for ( let i in this.settings.toObject() ) {
+      const key = this.settings[i].key;
       if ( flatten.hasOwnProperty(key) ) {
         if ( this.settings[i].value !== flatten[key] ) {
           this.settings[i].value = flatten[key];

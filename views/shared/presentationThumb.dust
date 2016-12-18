@@ -1,10 +1,10 @@
-<div class="thumb{^thumbnails} no-steps{/thumbnails}" id="{_id}" data-sort-position="{position}" >
+<div class="thumb{^thumbnails} no-steps{/thumbnails}{?live} thumb-live{/live}" id="{_id}" data-sort-position="{position}" >
 
   <a href="#remove" class="remove show-on-thumb-hover" data-toggle="tooltip" data-target="/{params.username}/presentations/{_id}" data-placement="left" title="Delete presentation">&times;</a>
 
    {?live}
    <div class='thumb-live-container hide-on-thumb-hover'>
-     <div class='thumb-live'>live</div>
+     <div class='thumb-live-banner'>live</div>
    </div>
    {/live}
 
@@ -29,11 +29,11 @@
     {?live}
       <a class="btn-thumb btn-stop btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Stop presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-stop"></i></a>
 
-      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/cockpit"  data-toggle="tooltip" data-placement="top" title="Go to cockpit"><i class="fa fa-dashboard"></i></a>
+      <a class="btn-thumb btn-cockpit-view show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/cockpit"  data-toggle="tooltip" data-placement="top" title="Go to cockpit"><i class="fa fa-dashboard"></i></a>
 
-      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation"  data-toggle="tooltip" data-placement="top" title="Go to beamer view"><i class="fa fa-picture-o"></i></a>
+      <a class="btn-thumb btn-beamer-view show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=presenter&view=presentation"  data-toggle="tooltip" data-placement="top" title="Go to beamer view"><i class="fa fa-picture-o"></i></a>
 
-      <a class="btn-thumb show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=viewer&view=presentation"  data-toggle="tooltip" data-placement="top" title="Join as viewer"><i class="fa fa-group"></i></a>
+      <a class="btn-thumb btn-viewer-view show-on-thumb-hover1" href="/{params.username}/presentations/{_id}/live/{live}/?role=viewer&view=presentation"  data-toggle="tooltip" data-placement="top" title="Join as viewer"><i class="fa fa-group"></i></a>
     {:else}
       <a class="btn-thumb btn-start btn-thumb-playback"  data-toggle="tooltip" data-placement="top" title="Start presentation" href="#" data-username="{params.username}" data-id="{_id}" data-authLevel="public"><i class="fa fa-play"></i></a>
 {!       
