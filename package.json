@@ -20,7 +20,11 @@
     }
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
+    "//": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
+    "test:e2e": "npm run seedSampleData && nightwatch",
+    "seedSampleData": "tasks/seedSampleData",
     "start-dev": "NODE_ENV=development nodemon app.js dotenv_config_silent=true| bunyan",
     "start": "NODE_ENV=production node -r dotenv/config app.js dotenv_config_silent=true",
     "install-private-dep": "CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies",
@@ -52,9 +56,6 @@
     "build:pro": "npm run webpack:prod && npm run js-vendor:prod && npm run static && npm run less-prod && npm run dust:prod",
     "build:dev": "npm run webpack:dev-no-watch && npm run js-vendor:dev && npm run static && npm run less-prod && npm run dust:prod",
     "dev": "NODE_ENV=development npm run js-vendor:dev && npm run static && parallelshell 'npm run watch' 'npm run start-dev'",
-    "//": "DevOps commands",
-    "//": "TODO: work for reducing code duplication, if I can parametrize the commands",
-    "//": "TODO: check again if the Docker Hub add DELETE API, to conclude the work. See: https://github.com/docker/hub-feedback/issues/496",
     "w-start-dev": "export X_NPM_RUN_COMMAND='npm run start-dev' && wercker --environment=devops.env dev --expose-ports",
     "w-start": "export X_NPM_RUN_COMMAND='npm run start' && wercker --environment=devops.env dev --expose-ports",
     "w-dev": "export X_NPM_RUN_COMMAND='npm run dev' && wercker --environment=devops.env dev --expose-ports",
@@ -66,14 +67,11 @@
     "w-local-dev-tests": "npm run w-dev-tests -- --docker-local",
     "w-local-v-start-dev": "npm run w-start-dev -- --docker-local --verbose",
     "w-local-build": "npm run w-build -- --docker-local",
-    "//": "In case of errors, just run the command again. See: https://github.com/docker/compose/issues/4109",
-    "dc-asq-up": "DOCKER_HUB_REPO=$npm_package_config_docker_devuser\/$npm_package_config_docker_devrepo DOCKER_HUB_IMAGE_TAG=$npm_package_config_docker_tag COMPOSE_HTTP_TIMEOUT=120 docker-compose up; docker-compose stop; docker-compose rm -f -v; docker volume rm asq_ASQSlide asq_ASQNginx asq_ASQRedisData asq_ASQMongoData",
+    "dc-asq-up": "DOCKER_HUB_REPO=$npm_package_config_docker_devuser/$npm_package_config_docker_devrepo DOCKER_HUB_IMAGE_TAG=$npm_package_config_docker_tag COMPOSE_HTTP_TIMEOUT=120 docker-compose up; docker-compose stop; docker-compose rm -f -v; docker volume rm asq_ASQSlide asq_ASQNginx asq_ASQRedisData asq_ASQMongoData",
     "d-rm-containers": "echo 'Removed:' && docker rm -f -v $(docker ps -a -q)",
     "d-rm-images-none": "echo 'Removed:' && docker rmi $(docker images | grep '<none>' | awk '{print $3}')",
     "d-rm-images-all": "echo 'Removed:' && docker rmi $(docker images | grep -v 'IMAGE' | awk '{print $3}')",
-    "docker-delete-registry-image": "DOCKER_HUB_DEV_REPO=$npm_package_config_docker_devrepo node lib/support/docker/hub/delete-tags.js",
-    "//": "Evaluate if adding the following. I would need an internal/store step",
-    "//": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load"
+    "docker-delete-registry-image": "DOCKER_HUB_DEV_REPO=$npm_package_config_docker_devrepo node lib/support/docker/hub/delete-tags.js"
   },
   "dependencies": {
     "archiver": "^1.1.0",
@@ -96,7 +94,7 @@
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.2",
-    "bluebird": "^2.7.1",
+    "bluebird": "^3.4.6",
     "body-parser": "^1.12.2",
     "boom": "^4.1.0",
     "bows": "^1.1.2",
