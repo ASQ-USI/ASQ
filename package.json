@@ -23,7 +23,7 @@
     "//": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
-    "test:e2e": "NODE_ENV=test node tasks/seedSampleData.js && ",
+    "test:e2e": "NODE_ENV=test node tasks/seedSampleData.js && nighwatch",
     "seedSampleData": "tasks/seedSampleData",
     "start-dev": "NODE_ENV=development nodemon app.js dotenv_config_silent=true| bunyan",
     "start": "NODE_ENV=production node -r dotenv/config app.js dotenv_config_silent=true",
