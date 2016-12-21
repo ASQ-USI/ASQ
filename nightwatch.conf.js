@@ -10,12 +10,12 @@ module.exports = {
   
   "selenium" : {
     "start_process" : true,
-    "server_path" : "/Users/vassilis/bin/selenium-server-standalone-2.53.0.jar",
+    "server_path" : "/usr/local/bin/selenium-server-standalone-2.53.0.jar",
     "log_path" : "",
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {
-      "webdriver.chrome.driver" : "/Users/vassilis/bin/chromedriver"
+      "webdriver.chrome.driver" : "/usr/local/bin/chromedriver"
     }  
   },
   
@@ -23,7 +23,7 @@ module.exports = {
     "default" : {
       "launch_url" : require('./config').rootUrl,
       "selenium_port"  : 4444,
-      "selenium_host"  : "localhost",
+      "selenium_host"  : "127.0.0.1",
       "silent": true,
       "screenshots" : {
         "enabled" : false,
