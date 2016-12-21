@@ -20,8 +20,11 @@
     }
   },
   "scripts": {
+    "//": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load",
+    "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
     "test:e2e": "NODE_ENV=test node tasks/seedSampleData.js && ",
+    "seedSampleData": "tasks/seedSampleData",
     "start-dev": "NODE_ENV=development nodemon app.js dotenv_config_silent=true| bunyan",
     "start": "NODE_ENV=production node -r dotenv/config app.js dotenv_config_silent=true",
     "install-private-dep": "CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies",
@@ -100,7 +103,7 @@
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.2",
-    "bluebird": "^2.7.1",
+    "bluebird": "^3.4.6",
     "body-parser": "^1.12.2",
     "boom": "^4.1.0",
     "bows": "^1.1.2",
