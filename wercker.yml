@@ -24,6 +24,7 @@ dev:
         # 1) apply changes also in install-private..
         # 2) have a better organized cache management
         # 3) check if they solve the following issue and remove --force https://github.com/yarnpkg/yarn/issues/1848
+        # 4) check if the follow the following issue or find a workaround using my cache mechanism based on the yarn.lock fine - https://github.com/yarnpkg/yarn/issues/1496
         - nicka/yarn@1.0.0:
             name: install dependencies
             options: --ignore-engines --force
@@ -87,16 +88,78 @@ dev:
 # NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
 #       By assuming what stated above, we speed up the execution time of the pipeline
 # Depends on: dev
-dev-tests:
-    # TODO: enable when they are needed by the tests
-    # services:
-    #   - name: mongo
-    #     id: mongo:3.2.11
-    #   - name: redis
-    #     id: redis:3.2.5-alpine
-    #     cmd: redis-server
+dev-start-asq:
+      services:
+        - name: mongo
+          id: mongo:3.2.11
+        - name: redis
+          id: redis:3.2.5-alpine
+          cmd: redis-server
+      steps:
+        - script:
+            name: setting up environment
+            code: |
+                  export MONGO_DB_NAME=asq
+                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
+                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        # - internal/shell
+        - internal/watch:
+            code: $NPM_RUN_COMMAND
+            reload: false
+        # - internal/store-container
+
+# NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
+#       By assuming what stated above, we speed up the execution time of the pipeline
+# Depends on: dev
+dev-unit-tests:
     steps:
         - wercker/npm-test@0.0.3
+
+# NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
+#       By assuming what stated above, we speed up the execution time of the pipeline
+# Depends on: dev
+dev-e2e-tests:
+    services:
+      - name: mongo
+        id: mongo:3.2.11
+      - name: redis
+        id: redis:3.2.5-alpine
+        cmd: redis-server
+    steps:
+        - script:
+            name: indentify distribution
+            code: cat /etc/lsb-release
+        # use curl if not installed
+        - install-packages:
+            packages: wget default-jre
+        - script:
+            name: add Google Chrome repository
+            code: |
+              wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
+              sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+              sudo apt-get update
+        - install-packages:
+            packages: xvfb firefox google-chrome-stable
+        - script:
+            name: start xvfb and sleep 3 seconds
+            code: |
+              # Start xvfb which gives the context an virtual display
+              # which is required for tests that require an GUI
+              export DISPLAY=:99.0
+              start-stop-daemon --start --quiet --pidfile /tmp/xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset
+              # Give xvfb time to start. 3 seconds is the default for all xvfb-run commands.
+              sleep 3
+              xdpyinfo -display :0 >/dev/null 2>&1 && echo "xvfb in use" || echo "xvfb free"
+        # Need to start ASQ for e2e tests
+        - script:
+            name: start ASQ and sleep 10 seconds
+            code: |
+              npm run start > /dev/null & 
+              sleep 10
+        - script:
+            name: seed sample data and run nightwatch
+            code: npm run seedSampleData && nightwatch
 
 ####### THE FOLLOWING PIPELINES ARE DEFINED FOR WERCKER CLOUD #######
 
@@ -249,7 +312,7 @@ push-dev-release:
             name: remove ASQ build dependencies needed up to here in the workflow
             code: |
                   apt-get update -q
-                  apt-get remove -y --purge build-essential
+                  apt-get remove -y --purge build-essential xvfb firefox google-chrome-stable
                   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
                   apt-get clean autoclean -y
                   apt-get autoremove -y
