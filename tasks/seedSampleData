@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-require('dotenv').config();
+// require('dotenv').config();
 const conf = require('../config');
 const Promise = require('bluebird');
 const coroutine = Promise.coroutine;
