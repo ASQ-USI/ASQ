@@ -21,7 +21,7 @@
   },
   "scripts": {
     "//1": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit",
     "test:unit": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
     "test:e2e": "NODE_ENV=test node tasks/seedSampleData.js && nighwatch",
     "seedSampleData": "tasks/seedSampleData",
