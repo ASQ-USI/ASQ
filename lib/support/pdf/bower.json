@@ -6,7 +6,7 @@
   "keywords": [ "ASQ" ],
   "dependencies": {
     "asq-elements": "ASQ-USI-Elements/asq-elements#master",
-    "asq-live-app": "https://github.com/ASQ-USI/live-app-asq.git#master",
+    "asq-live-app": "https://github.com/ASQ-USI/live-app-asq.git#feat-student-question-events",
     "webcomponentsjs": "*"
   }
 }
