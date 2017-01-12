@@ -263,16 +263,23 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
       author: req.user._id,
       data: {
         description: 'Implicit question placeholder for live app student questions',
-        type: 'implicit-student-question'
+        type: 'implicit-student-question',
+        session: newSession._id,
       },
     };
-    
+
     const implicitQuestion = new Question(implicitQuestionData);
+    const dummyExerciseData = {
+      stem: 'dummyExercise',
+      questions: [implicitQuestion._id],     
+    };
+    const dummyExercise = new Exercise(dummyExerciseData);
     yield Promise.all([
       slideshow.save(),
       newSession.save(),
       userPromise,
       implicitQuestion.save(),
+      dummyExercise.save(),
     ]);
 
     const pFn = Promise.promisify(presUtils.generateWhitelist[newSession.authLevel]);
