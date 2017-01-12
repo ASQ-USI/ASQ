@@ -9,7 +9,7 @@
     "ASQ"
   ],
   "dependencies": {
-    "asq-live-app": "https://github.com/ASQ-USI/live-app-asq.git#master"
+    "asq-live-app": "https://github.com/ASQ-USI/live-app-asq.git#feat-student-question-events"
   },
   "resolutions": {
     "asq-base": "master"

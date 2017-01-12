@@ -26,6 +26,7 @@ const answerSchema = new Schema({
   session    : { type: ObjectId, ref: 'Session', required: true },
   // TODO: enum answerTypes
   type : { type: String, required: true },
+  answerStartTime : { type: Date, required: true, default: Date.now },
   submitDate : { type: Date, required: true, default: Date.now },
   // submission : [],
   submission : { type: Schema.Types.Mixed },

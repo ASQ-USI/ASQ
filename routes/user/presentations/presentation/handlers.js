@@ -16,6 +16,7 @@ const Slideshow = db.model('Slideshow');
 const Exercise = db.model('Exercise');
 const User = db.model('User', schemas.userSchema);
 const Session = db.model('Session');
+const Question = db.model('Question');
 const stats = require('../../../../lib/stats/stats');
 const settings  = lib.settings.presentationSettings;
 const presentationApi = require('../../../../lib/api/presentations.js');
@@ -257,11 +258,21 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
         // user.liveSessions.addToSet(newSession._id)
         return user.save()
       });
-
+    const implicitQuestionData = {
+      type: 'asq-text-input-q',
+      author: req.user._id,
+      data: {
+        description: 'Implicit question placeholder for live app student questions',
+        type: 'implicit-student-question'
+      },
+    };
+    
+    const implicitQuestion = new Question(implicitQuestionData);
     yield Promise.all([
       slideshow.save(),
       newSession.save(),
-      userPromise
+      userPromise,
+      implicitQuestion.save(),
     ]);
 
     const pFn = Promise.promisify(presUtils.generateWhitelist[newSession.authLevel]);
