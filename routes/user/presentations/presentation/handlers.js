@@ -267,7 +267,7 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
         session: newSession._id,
       },
     };
-
+    
     const implicitQuestion = new Question(implicitQuestionData);
     const dummyExerciseData = {
       stem: 'dummyExercise',
