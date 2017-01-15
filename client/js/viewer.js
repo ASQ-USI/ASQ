@@ -126,7 +126,8 @@ this.connect = function(){
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
     "asq-plugin",
-    "liveApp"
+    "liveApp",
+    "share-student-question-folo",
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -216,6 +217,11 @@ this.subscribeToEvents= function (){
       connection.socket.emit('liveApp', evt.detail);
     }
   })
+  eventBus.on('share-student-question-folo', function (question) {
+    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
+    app.showQuestion(question);
+    // utils.emitToRoles('share-student-question', question, question.session, 'folo');
+  });
 
   // snitch events
   var snitchEvents = [
