@@ -104,7 +104,10 @@ this.connect = function(){
     "asq:question_type",
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
-    "asq-plugin"
+    "asq-plugin",
+    "liveApp",
+    "share-student-question",
+    "student-question-rated"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -139,6 +142,22 @@ this.subscribeToEvents= function (){
     // this.sessionFlow = evt.sessionFlow
     // asi.setBounce (that.sessionFlow == 'self')
   }.bind(this));
+
+  document.addEventListener('liveApp', function(evt){
+    if (evt.target.tagName == "ASQ-LIVE-APP"){
+      connection.socket.emit('liveApp', evt.detail);
+    }
+  });
+
+  eventBus.on('share-student-question', function (question) {
+    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
+    app.showQuestion(question);
+  });
+
+  eventBus.on('student-question-rated', function (evt) {
+    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
+    app.showQuestion(evt.data.question);
+  });
 
 }
 
