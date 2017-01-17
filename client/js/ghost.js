@@ -151,6 +151,7 @@ this.subscribeToEvents= function (){
       connection.socket.emit('live-app', evt.detail);
     }
   })
+
   eventBus.on('share-student-question', function (question) {
     const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
     app.showQuestion(question);
