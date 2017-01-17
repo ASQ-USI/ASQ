@@ -32,7 +32,9 @@ var answerSchema = new Schema({
   // submission : [],
   submission : { type: Schema.Types.Mixed },
   confidence : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
-  logData    : [answerLogSchema]
+  logData    : [answerLogSchema],
+  upvotes    : { type: [{ type: ObjectId, ref: 'WhitelistEntry' }], default: [] },
+  downvotes  : { type: [{ type: ObjectId, ref: 'WhitelistEntry' }], default: [] }
 });
 
 answerSchema.index({ session: 1, answeree: 1, exercise: 1, submitDate: 1 });
@@ -47,7 +49,7 @@ answerSchema.post('save', function(answer){
       answer: answer._id
     }
   })
-})
+});
 
 
 // Saves an automatic assessment for a user submited answer asynchronously
