@@ -31,7 +31,8 @@ var sessionSchema = new Schema({
   activeQuestions      : { type: [{ type: ObjectId, ref: 'Question' }],
                            default: [] },
   activeStatsQuestions : { type: [{ type: ObjectId, ref: 'Question' }],
-                           default: [] }
+                           default: [] },
+  data : {type: Schema.Types.Mixed}
 });
 
 sessionSchema.virtual('isTerminated').get(function() {

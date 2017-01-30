@@ -108,7 +108,8 @@ this.connect = function(){
     "live-app",
     "share-student-question",
     "student-question-rated",
-    'update-student-questions'
+    'update-student-questions',
+    'close-modal'
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -164,7 +165,11 @@ this.subscribeToEvents= function (){
     const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
     app.updateQuestions(questions);
   });
-
+  
+  eventBus.on('close-modal', function (evt) {
+    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
+    app.closeModal();
+  });
 }
 
 var webComponentsSupported = (
