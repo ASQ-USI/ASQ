@@ -1,0 +1,58 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:3.2.11
+    volume_driver: local
+    stdin_open: true
+    volumes:
+    - ASQMongoData:/data/configdb
+    - ASQMongoData:/data/db
+    tty: true
+    logging:
+      driver: json-file
+    labels:
+      io.rancher.scheduler.affinity:host_label: host-name=${HOST_NAME}
+  # TODO: check if Rancher will enable the possibility to import a LB and have it working
+  # See: https://github.com/rancher/rancher/issues/6516, and https://github.com/rancher/rancher/issues/6075
+  # lb:
+  #   image: rancher/lb-service-haproxy:v0.4.2
+  #   ports:
+  #   - 80:80/tcp
+  #   labels:
+  #     io.rancher.container.agent.role: environmentAdmin
+  #     io.rancher.container.create_agent: 'true'
+  redis:
+    image: redis:3.2.5-alpine
+    volume_driver: local
+    stdin_open: true
+    volumes:
+    - ASQRedisData:/data
+    tty: true
+    logging:
+      driver: json-file
+    labels:
+      io.rancher.scheduler.affinity:host_label: host-name=${HOST_NAME}
+  asq:
+    image: ${DOCKER_HUB_REPO:-asqhub/asq}:${DOCKER_HUB_IMAGE_TAG:-master}
+    environment:
+      HOST: ${HOST}
+      MONGO_DB_NAME: ${MONGO_DB_NAME:-asq}
+      MONGO_HOST: mongo
+      NGINX_CLIENT_MAX_BODY_SIZE: 100m
+      REDIS_HOST: redis
+      REVERSE_PROXY_HOST: ${REVERSE_PROXY_HOST}
+      REVERSE_PROXY_SECURE: 'false'
+      USE_REVERSE_PROXY: 'true'
+    volume_driver: local
+    stdin_open: true
+    links:
+    - mongo:mongo
+    - redis:redis
+    volumes:
+    - ASQSlide:/ASQ/slides
+    - ASQNginx:/var/cache/nginx
+    tty: true
+    logging:
+      driver: json-file
+    labels:
+      io.rancher.scheduler.affinity:host_label: host-name=${HOST_NAME}

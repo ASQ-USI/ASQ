@@ -1,9 +1,9 @@
-var mongoose  = require('mongoose');
-var Schema    = mongoose.Schema;
-var ObjectId  = Schema.ObjectId;
-var logger    = require('logger-asq');
+const logger = require('logger-asq');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-var assessmentSchema = new Schema({
+const assessmentSchema = new Schema({
   session    : { type: ObjectId, ref: 'Session', required: '{PATH} is required.' },
   exercise   : { type: ObjectId, ref: 'Exercise', required: '{PATH} is required.' },
   question   : { type: ObjectId, ref: 'Question', required: '{PATH} is required.' },

@@ -3,35 +3,33 @@
  * @description the Questions Model
  **/
 
-var mongoose               = require('mongoose');
-var Schema                 = mongoose.Schema;
-var ObjectId               = Schema.ObjectId;
-var when                   = require('when');
-var wkeys                  = require('when/keys');
-var Answer                 = db.model('Answer');
-var abstractQuestionSchema = require('./abstractQuestionSchema');
-var assessmentTypes        = require('./assessmentTypes');
-var logger                 = require('logger-asq');
-var Promise                = require("bluebird");
-var coroutine              = Promise.coroutine;
-var _ = require('lodash');
-var presentationSettingSchema = require('./presentationSetting.js');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const Answer = db.model('Answer');
+const abstractQuestionSchema = require('./abstractQuestionSchema');
+const assessmentTypes = require('./assessmentTypes');
+const logger = require('logger-asq');
+const Promise = require("bluebird");
+const coroutine = Promise.coroutine;
+const _ = require('lodash');
+const presentationSettingSchema = require('./presentationSetting.js');
 
-var questionOptionSchema = new Schema({
+const questionOptionSchema = new Schema({
   text      : { type: String, required: true },
   classList : { type: String, required: true, default: '' },
   correct   : { type: Boolean, required: true }
 }, { _id: false }); //Prevent creation of id for subdocuments.
 
-var questionSchema = abstractQuestionSchema.extend({
-  body            : {type: String, default: ''},
-  questionOptions : { type: [questionOptionSchema] },
-  correctAnswer   : { type: String },
-  assessment      : { type: [{ type: String, enum: assessmentTypes }],
-                      default: [] }
-});
+// const questionSchema = abstractQuestionSchema.extend({
+//   body            : {type: String, default: ''},
+//   questionOptions : { type: [questionOptionSchema] },
+//   correctAnswer   : { type: String },
+//   assessment      : { type: [{ type: String, enum: assessmentTypes }],
+//                       default: [] }
+// });
 
-var questionSchema = new Schema({
+const questionSchema = new Schema({
   // TODO: enum questionTypes
   type : { type: String, required: true },
   author : { type: ObjectId, ref: 'User', required: false },
@@ -56,9 +54,9 @@ questionSchema.pre('remove', true, function preRemoveHook(next,done) {
 
 //Returns array with solution
 questionSchema.methods.getSolution = function(){
-	var result = [];
+	const result = [];
 	if (this.questionType === 'multi-choice') {
-    var i, max;
+    let i, max;
 		for (i = 0, max =this.questionOptions.length; i <  max; i++) {
 	  		result.push(this.questionOptions[i].correct);
 		}
@@ -78,8 +76,8 @@ questionSchema.methods.listSettings = function() {
 }
 
 questionSchema.methods.readSetting = function(key) {
-  var settings = this.settings.toObject();
-  for ( var i in settings ) {
+  const settings = this.settings.toObject();
+  for ( let i in settings ) {
     if ( settings[i].key === key ) {
       return settings[i].value
     }
@@ -90,11 +88,11 @@ questionSchema.methods.readSetting = function(key) {
 
 
 questionSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
-  for ( var i in this.settings.toObject() ) {
-    var key = this.settings[i].key;
+  for ( let i in this.settings.toObject() ) {
+    const key = this.settings[i].key;
     if ( setting.key === key ) {
       if ( this.settings[i].value !== setting.value ) {
-        var old = this.settings[i].value;
+        const old = this.settings[i].value;
         this.settings[i].value = setting.value;
 
         try{
@@ -112,7 +110,7 @@ questionSchema.methods.updateSetting = coroutine(function* updateSettingsGen(set
 }),
 
 questionSchema.methods.updateSettings = coroutine(function* updateSettingsGen(settings) {
-  var flatten = {}
+  const flatten = {}
   if ( _.isArray(settings) ) {
     settings.forEach(function(setting) {
       flatten[setting.key] = setting.value;
@@ -123,8 +121,8 @@ questionSchema.methods.updateSettings = coroutine(function* updateSettingsGen(se
 
 
   if ( this.settings.toObject().length > 0) {
-    for ( var i in this.settings.toObject() ) {
-      var key = this.settings[i].key;
+    for ( let i in this.settings.toObject() ) {
+      const key = this.settings[i].key;
       if ( flatten.hasOwnProperty(key) ) {
         if ( this.settings[i].value !== flatten[key] ) {
           this.settings[i].value = flatten[key];

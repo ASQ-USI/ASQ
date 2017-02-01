@@ -1,0 +1,277 @@
+#!/usr/bin/env node
+
+// MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
+// Download, install and build ASQ private dependencies
+'use strict';
+
+// TODO: refactor to remove code duplication
+// TODO: improve to have distinct management for each dependency (for targeted cache management)
+// TODO: evaluate if there is a way to manage the cache correctly, while defining the 
+// versions as variables in the package.json using https://docs.npmjs.com/misc/config
+// and passing them to this script using ENV variables
+// TODO: think about parallelizing the setup
+
+const fs = require('fs-extra');
+const config = require('../config');
+const spawnSync = require('child_process').spawnSync;
+const timeout = 300000; // 5 mins
+
+const slide2htmlDir = process.env.slide2htmlDir;
+const slide2htmlBranch = process.env.slide2htmlBranch;
+const slide2htmlCommit = process.env.slide2htmlCommit;
+const uiDir = process.env.uiDir;
+const uiBranch = process.env.uiBranch;
+const uiCommit = process.env.uiCommit;
+const cockpitDir = process.env.cockpitDir;
+const cockpitBranch = process.env.cockpitBranch;
+const cockpitCommit = process.env.cockpitCommit;
+
+/* ------------ Shared functions ------------ */
+
+function ifOKPrintIfErrPrintAndExit(spawnPs){
+  if(spawnPs.status > 0){
+    process.stderr.write(spawnPs.stderr.toString() + '\n');
+    process.exit(1);
+  }
+  // TODO: understand why the following blocks the task logs
+  // else {
+  //   process.stdout.write(spawnPs.stdout.toString() + '\n');
+  // }
+}
+
+/* ------------ Shared functions ------------ */
+
+let out =null;
+
+/* ------------ slide2html ------------ */
+
+//clean
+process.stdout.write('Cleaning slide2html dir...');
+fs.removeSync(slide2htmlDir);
+process.stdout.write('done!\n');
+
+// download
+process.stdout.write('Downloading ' + slide2htmlBranch + ' branch for slide2html...');
+out = spawnSync('git', [
+  'clone',
+  '-b',
+  slide2htmlBranch,
+  'https://' + process.env.CI_USER_TOKEN + ':x-oauth-basic@github.com/ASQ-USI/slide2html.git',
+  slide2htmlDir
+],{
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// check out specific commit
+process.stdout.write('Checking out commit ' + slide2htmlCommit + ' for slide2html...');
+out = spawnSync('git', [
+  'checkout',
+  slide2htmlCommit
+],{
+  cwd: slide2htmlDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// install npm deps
+process.stdout.write('Installing npm dependencies for slide2html...');
+out = spawnSync('npm', [
+  'install',
+  '--unsafe-perm',
+  '--production'
+], {
+  cwd: slide2htmlDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+/* ------------ slide2html ------------ */
+
+/* ------------ ui ------------ */
+
+//clean
+process.stdout.write('Cleaning ui-asq dir...');
+fs.removeSync(uiDir);
+process.stdout.write('done!\n');
+
+// download
+process.stdout.write('Downloading ' + uiBranch + ' branch for ui-asq...');
+out = spawnSync('git', [
+  'clone',
+  '-b',
+  uiBranch,
+  'https://' + process.env.CI_USER_TOKEN + ':x-oauth-basic@github.com/ASQ-USI/ui-asq.git',
+  uiDir
+],{
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// check out specific commit
+process.stdout.write('Checking out commit ' + uiCommit + ' for ui-asq...');
+out = spawnSync('git', [
+  'checkout',
+  uiCommit
+],{
+  cwd: uiDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// install npm deps
+process.stdout.write('Installing npm dependencies for ui-asq...');
+out = spawnSync('npm', [
+  'install',
+  '--unsafe-perm'
+], {
+  cwd: uiDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// avoid using root .bowerrc by creating a local one
+// with the default settings
+process.stdout.write('Creating local .bowerrc...');
+let bowerrcContents = `{
+  "directory": "bower_components"
+}`;
+fs.writeFileSync(`${uiDir}/.bowerrc`, bowerrcContents);
+process.stdout.write('done!\n');
+
+// install bower deps
+process.stdout.write('Installing bower dependencies for ui-asq...');
+out = spawnSync('bower',[
+  'install',
+  '--allow-root'
+  ], {
+  cwd: uiDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// create .env for configuration
+process.stdout.write('Creating local .env..');
+const envContents = `ASQ=${config.rootUrl}`;
+fs.writeFileSync(`${uiDir}/.env`, envContents);
+process.stdout.write('done!\n');
+
+// build
+process.stdout.write('Building ui-asq...');
+out = spawnSync('npm',[
+  'run',
+  'build'
+  ], {
+  cwd: uiDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+/* ------------ ui ------------ */
+
+/* ------------ cockpit ------------ */
+
+process.stdout.write('Cleaning cockpit-asq dir...');
+fs.removeSync(cockpitDir);
+process.stdout.write('done!\n');
+
+// download
+process.stdout.write('Downloading ' + cockpitBranch + ' branch for cockpit-asq...');
+out = spawnSync('git', [
+  'clone',
+  '-b',
+  cockpitBranch,
+  'https://' + process.env.CI_USER_TOKEN + ':x-oauth-basic@github.com/ASQ-USI/cockpit-asq.git',
+  cockpitDir
+],{
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// check out specific commit
+process.stdout.write('Checking out commit ' + cockpitCommit + ' for cockpit-asq...');
+out = spawnSync('git', [
+  'checkout',
+  cockpitCommit
+],{
+  cwd: cockpitDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// install npm deps
+process.stdout.write('Installing npm dependencies for cockpit-asq...');
+out = spawnSync('npm', [
+  'install',
+  '--unsafe-perm'
+], {
+  cwd: cockpitDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// avoid using root .bowerrc by creating a local one
+// with the default settings
+process.stdout.write('Creating local .bowerrc...');
+bowerrcContents = `{
+  "directory": "bower_components"
+}`;
+fs.writeFileSync(`${cockpitDir}/.bowerrc`, bowerrcContents);
+process.stdout.write('done!\n');
+
+// install bower deps
+process.stdout.write('Installing bower dependencies for cockpit-asq...');
+out = spawnSync('bower',[
+  'install',
+  '--allow-root'
+  ], {
+  cwd: cockpitDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+// create .env for configuration
+// process.stdout.write('Creating local .env..');
+// const envContents = `ASQ=${config.rootUrl}`;
+// fs.writeFileSync(`${cockpitDir}/.env`, envContents);
+// process.stdout.write('done!\n');
+
+// build
+process.stdout.write('Building cockpit-asq...');
+out = spawnSync('npm',[
+  'run',
+  'build'
+  ], {
+  cwd: cockpitDir,
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+
+/* ------------ cockpit ------------ */
+
+// TODO: optimize the way we decide if we need to copy or not the plugins.
+//       Currently we always copy them
+/* ------------ plugins ------------ */
+process.stdout.write('Copying plugins...');
+out = spawnSync('npm', [
+  'run',
+  'plugins',
+], {
+  timeout: timeout
+});
+ifOKPrintIfErrPrintAndExit(out);
+process.stdout.write('done!\n');
+/* ------------ plugins ------------ */

@@ -5,18 +5,18 @@
 
 'use strict';
 
-var mongoose   = require('mongoose')
-var Schema     = mongoose.Schema;
-var ObjectId   = Schema.ObjectId;
-var Promise    = require('bluebird');
-var coroutine  = Promise.coroutine;
-var _          = require('lodash');
-var logger     = require('logger-asq');
+const logger = require('logger-asq');
+const _ = require('lodash');
+const mongoose = require('mongoose')
+const Promise = require('bluebird');
+const coroutine = Promise.coroutine;
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-var InvalidSettingError  = require('../errors').InvalidSettingError;
+const InvalidSettingError  = require('../errors').InvalidSettingError;
 
 
-var kinds = [ 'string',   
+const kinds = [ 'string',   
               'number',   
               'date',     
               'boolean',  
@@ -26,12 +26,12 @@ var kinds = [ 'string',
             ];
 
 
-var levels = [ 'presentation',
+const levels = [ 'presentation',
                'exercise',
                'question'
              ];
 
-var presentationSettingSchema = new Schema({
+const presentationSettingSchema = new Schema({
     key       : { type : String, required : true},
     value     : { type : {} },
     kind      : { type : String, required: true, enum: kinds},
@@ -57,12 +57,12 @@ presentationSettingSchema.pre('save', true, function checkParams(next, done){
   }
 
   if(validatorFn.hasOwnProperty(this.kind)){
-    var r = validatorFn[this.kind].bind(this)();
+    const r = validatorFn[this.kind].bind(this)();
     if ( !r.valid ) {
       return done(new InvalidSettingError(this.key));
     }
   } else {
-    var message = '`Kind` ' + this.kind + ' is not valid.';
+    const message = '`Kind` ' + this.kind + ' is not valid.';
     return done(new Error(message));
   }
 
@@ -70,8 +70,8 @@ presentationSettingSchema.pre('save', true, function checkParams(next, done){
 })
 
 
-var isValidNumber = function(value) {
-  var valid = false;
+const isValidNumber = function(value) {
+  let valid = false;
   if ( _.isNumber(value) ) 
     valid = true;
   else {
@@ -81,26 +81,26 @@ var isValidNumber = function(value) {
   return valid
 }
 
-var contains = function(array, value) {
-  for (var x of array) {
+const contains = function(array, value) {
+  for (let x of array) {
     if ( x === value ) return true
   }
   return false
 }
 
-var validatorFn = {
+const validatorFn = {
   'string' : function stringValidator(){ 
-    var valid = _.isString(this.value);
-    var message = valid ? 'OK' : 'Field `value` should be a string.'
+    const valid = _.isString(this.value);
+    const message = valid ? 'OK' : 'Field `value` should be a string.'
     return {
       valid: valid,
       message: message
     };
   },   
   'number' : function numberValidator(){ 
-    var valid = isValidNumber(this.value);
+    const valid = isValidNumber(this.value);
 
-    var message = '';
+    const message = '';
     if (!valid) return {
       valid: valid,
       message : 'Field `value(' + this.value +'`) should be a number.' 
@@ -112,28 +112,28 @@ var validatorFn = {
     }
   },   
   'date'   : function dateValidator(){ 
-    var valid = _.isDate(this.value);
-    var message = valid ? 'OK' : 'Field `value` should be a Date object.'
+    const valid = _.isDate(this.value);
+    const message = valid ? 'OK' : 'Field `value` should be a Date object.'
     return {
       valid: valid,
       message: message
     };
   },     
   'boolean': function booleanValidator(){ 
-    var regexTrue = /^true$/i;
-    var regexFalse = /^false$/i;
-    var valid = _.isBoolean(this.value) || regexTrue.test(this.value) || regexFalse.test(this.value); 
-    var message = valid ? 'OK' : 'Field `value` should be a boolean.'
+    const regexTrue = /^true$/i;
+    const regexFalse = /^false$/i;
+    const valid = _.isBoolean(this.value) || regexTrue.test(this.value) || regexFalse.test(this.value); 
+    const message = valid ? 'OK' : 'Field `value` should be a boolean.'
     return {
       valid: valid,
       message: message
     };
   },  
   'select' : function selectValidator(){
-    // var defaultPresentationSettings = getDefaultPresentationSettings();
+    // const defaultPresentationSettings = getDefaultPresentationSettings();
 
-    var valid = _.isString(this.value);
-    var message = '';
+    let valid = _.isString(this.value);
+    let message = '';
     if (!valid) return {
       valid: valid,
       message : 'Field `value` should be a string.'
@@ -147,7 +147,7 @@ var validatorFn = {
       valid: valid,
       message: message
     };
-    for ( var i in this.params.options) {
+    for ( let i in this.params.options) {
       if ( !_.isString(this.params.options[i]) ) {
         return {
           valid: false,
@@ -179,9 +179,9 @@ var validatorFn = {
 
   },
   'range'  : function rangeValidator(){ 
-    var valid = isValidNumber(this.value);
+    let valid = isValidNumber(this.value);
 
-    var message = '';
+    let message = '';
     if (!valid) return {
       valid: valid,
       message : 'Field `value` should be a number.'
@@ -218,8 +218,8 @@ var validatorFn = {
 
   },
   'ObjectId' : function objectIdValidator(){
-    var valid = mongoose.Types.ObjectId.isValid(this.value);
-    var message = valid ? 'OK' : 'Field `value` should be a valid ObjectId.'
+    const valid = mongoose.Types.ObjectId.isValid(this.value);
+    const message = valid ? 'OK' : 'Field `value` should be a valid ObjectId.'
     return {
       valid: valid,
       message: message

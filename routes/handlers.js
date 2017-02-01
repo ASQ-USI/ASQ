@@ -1,11 +1,11 @@
-var _               = require('lodash');
-var when            = require('when');
-var signupMessages = require('../lib/forms/signup/messages');
-var completeRegistrationMessages = require('../lib/forms/completeRegistration/messages');
-var validation = require('../shared/validation');
-var logger     = require('logger-asq');
-var User       = db.model('User');
-var utils      = require('../lib/utils/routes');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const logger = require('logger-asq');
+const signupMessages = require('../lib/forms/signup/messages');
+const completeRegistrationMessages = require('../lib/forms/completeRegistration/messages');
+const validation = require('../shared/validation');
+const User       = db.model('User');
+const utils      = require('../lib/utils/routes');
 
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
@@ -21,27 +21,27 @@ function getHomePage(req, res) {
 }
 
 function getCompleteRegistration(req, res, next) {
-  var username = req.user.ldap.cn ||  req.flash('username') ;
-  if("undefined" == typeof username || username.length ==0){
+  const username = req.user.ldap.cn ||  req.flash('username') ;
+  if('undefined' == typeof username || username.length ==0){
     res.render('completeRegistration', {
       tipMessages : completeRegistrationMessages,
-      info : req.flash("info"),
-      error : req.flash("error"),
+      info : req.flash('info'),
+      error : req.flash('error'),
     });
   }else{
     User.count({ username: username, _type: 'User' }).exec()
     .then(
       function onCount(count) {
-        var activate = {};
-        var asqUsername = null;
+        const activate = {};
+        let asqUsername = null;
         if (count === 0 && username) {
           asqUsername = username;
           activate.username = 'ok';
         }
         res.render('completeRegistration', {
           tipMessages : completeRegistrationMessages,
-          info : req.flash("info"),
-          error : req.flash("error"),
+          info : req.flash('info'),
+          error : req.flash('error'),
           asqUsername : asqUsername,
           activate : activate
         });
@@ -51,14 +51,14 @@ function getCompleteRegistration(req, res, next) {
 }
 
 function postCompleteRegistration(req, res) {
-  var data ={
+  const data ={
     username : req.body.signupusername
   }
 
-  var errs = validation.getErrorsSignupCampus(data);
+  const errs = validation.getErrorsSignupCampus(data);
 
   errUsername = (!!errs.username)
-    ? when.resolve(true)
+    ? Promise.resolve(true)
     : User.count({ username: data.username, _type: 'User' }).exec();
 
   errUsername.then(
@@ -68,7 +68,7 @@ function postCompleteRegistration(req, res) {
       }
       for (var err in errs) {
         if (!! errs[err]) {
-          return when.reject(errs);
+          return Promise.reject(errs);
         }
       }
 
@@ -76,16 +76,7 @@ function postCompleteRegistration(req, res) {
       req.user.username = data.username;
       req.user.regComplete = true;
 
-      var deferred = when.defer();
-      req.user.save(function onSaveUser(err, savedUser) {
-        if (err) {
-          deferred.reject(err)
-        } else {
-          deferred.resolve(savedUser);
-        }
-      });
-
-      return deferred.promise;
+      return req.user.save();
   }).then(
     function onNewUser(user) {
       logger.info('Ldap user registration completed: %s (%s)', user.username, user.ldap.cn);
@@ -139,7 +130,7 @@ function postSignup(req, res, next) {
     ? true
     : User.count({ username: data.username, _type: 'User' }).exec();
 
-  when.join(errEmail, errUsername)
+  Promise.join(errEmail, errUsername)
   .then(
     function onDbCheck(dbErrs) {
       if (!errs.email) {
@@ -150,7 +141,7 @@ function postSignup(req, res, next) {
       }
       for (var err in errs) {
         if (!! errs[err]) {
-          return when.reject(errs);
+          return Promise.reject(errs);
         }
       }
 
@@ -158,15 +149,7 @@ function postSignup(req, res, next) {
       //users from main form give all the information we need
       newUser.regComplete = true;
 
-      var deferred = when.defer();
-      newUser.save(function(err, savedUser) {
-        if (err) {
-          throw err;
-        } else {
-          deferred.resolve(savedUser);
-        }
-      });
-      return deferred.promise;
+      return newUser.save();
   }).then(
     function onNewUser(user) {
       logger.info('New user registered: %s (%s)', user.username, user.email);
@@ -219,7 +202,7 @@ function getLoginCampus(req, res) {
   var alert ={}
     , error = req.flash('error')
 
-  if("undefined" != typeof error){
+  if('undefined' != typeof error){
     alert.error = error
   }
 

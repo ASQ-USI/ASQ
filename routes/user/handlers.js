@@ -3,9 +3,8 @@
 */
 'use strict';
 
-var when        = require('when');
-var lib         = require('../../lib');
 var logger      = require('logger-asq');
+var lib         = require('../../lib');
 var dustHelpers = lib.dustHelpers;
 var Slideshow   = db.model('Slideshow');
 var User        = db.model('User');

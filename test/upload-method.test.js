@@ -11,16 +11,16 @@
 /* global  describe: true */
 /* global  __dirname: true */
 
-var chai    = require('chai')
-, sinon     = require('sinon')
-, sinonChai = require('sinon-chai')
-, expect    = chai.expect
-, mongoose  = require('mongoose')
-, config    = require('../config')
-, dust      = require('dustjs-linkedin')
-, fs        = require('fs-extra')
-, path      = require('path')
-, when      = require('when');
+const chai    = require('chai');
+const sinon     = require('sinon');
+const sinonChai = require('sinon-chai');
+const expect    = chai.expect;
+const mongoose  = require('mongoose');
+const config    = require('../config');
+const dust      = require('dustjs-linkedin');
+const fs        = require('fs-extra');
+const path      = require('path');
+const Promise = require('bluebird');
 
 
 db = mongoose.createConnection(config.mongo.mongoUri);
@@ -48,24 +48,24 @@ dustHelpers(dust);
 microformat.templates(dust);
 
 function defaultSetUp() {
-  var deferred = when.defer();
-  // var fixtures = ['Question', 'Rubric', 'Slideshow', 'User'];
-  mongooseFixtures.load(fixtures, db, function(err){
-    if (err) { deferred.reject(err); }
-    else { deferred.resolve(true); }
+  return new Promise(function(resolve, reject){
+    // var fixtures = ['Question', 'Rubric', 'Slideshow', 'User'];
+    mongooseFixtures.load(fixtures, db, function(err){
+      if (err) { reject(err); }
+      else { resolve(true); }
+    });
   });
-  return deferred.promise;
 }
 
 function defaultTearDown() {
-  var deferred = when.defer();
-  var models = fixtures;
-  var dir = app.get('uploadDir');
-  mongooseFixtures.clear(models, db, function(err){
-    if (err) { deferred.reject(err); }
-    else { deferred.resolve(true); }
+  return new Promise(function(resolve, reject){
+    var models = fixtures;
+    models.Assessment = {}; // Also clear assessments
+    mongooseFixtures.clear(models, db, function(err){
+      if (err) { reject(err); }
+      else { resolve(true); }
+    });
   });
-  return deferred.promise;
 }
 
 function copySlideArchive(source, target, done) {

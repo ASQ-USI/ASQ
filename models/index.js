@@ -5,20 +5,20 @@
 // Order is important here!!
 
 module.exports = {
-  sessionEventModel       : require('./sessionEvent'),
-  assessmentModel         : require('./assessment'),
-  answerProgressModel     : require('./answerProgress'),
-  answerModel             : require('./answer'),
-  settingModel            : require('./setting'),
+  sessionEventModel : require('./sessionEvent'),
+  assessmentModel : require('./assessment'),
+  answerProgressModel : require('./answerProgress'),
+  answerModel : require('./answer'),
+  settingModel : require('./setting'),
   presentationSettingModel : require('./presentationSetting'),
-  exerciseModel           : require('./exercise'),
+  exerciseModel : require('./exercise'),
   exerciseSubmissionModel : require('./exerciseSubmission'),
-  questionModel           : require('./question'),
-  rubricModel             : require('./rubric'),
-  userModel               : require('./user'),
-  slideshowModel          : require('./slideshow'),
-  sessionModel            : require('./session'),
-  whitelistModel          : require('./whitelist'),
-  pluginModel             : require('./plugin'),
+  questionModel : require('./question'),
+  rubricModel : require('./rubric'),
+  userModel : require('./user'),
+  slideshowModel : require('./slideshow'),
+  sessionModel : require('./session'),
+  whitelistModel : require('./whitelist'),
+  pluginModel : require('./plugin'),
   cockpitModels : require('./cockpit')
 };

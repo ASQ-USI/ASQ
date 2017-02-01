@@ -2,22 +2,22 @@
     @description the User Model
 */
 
-var mongoose         = require('mongoose');
-var generateName     = require('sillyname');
-var Schema           = mongoose.Schema;
-var ObjectId         = Schema.ObjectId;
-var extend           = require('mongoose-schema-extend');
-var bcrypt           = require('bcrypt');
-var SALT_WORK_FACTOR = 10;
-var logger           = require('logger-asq');
+const logger = require('logger-asq');
+const mongoose = require('mongoose');
+const generateName = require('sillyname');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const extend = require('mongoose-schema-extend');
+const bcrypt = require('bcrypt');
+const SALT_WORK_FACTOR = 10;
 
 
-var baseUserSchema = new Schema({
+const baseUserSchema = new Schema({
   screenName: {type: String, default: function defName() {return generateName();} , required: true}
 },
   { collection: 'users', discriminatorKey: '_type' });
 
-var registeredUserSchema = baseUserSchema.extend({
+const registeredUserSchema = baseUserSchema.extend({
   username    : { type: String, unique: true, sparse: true, required: false
                 , lowercase: true },
   password    : { type: String, required: false },
@@ -48,7 +48,7 @@ registeredUserSchema.methods.isValidPassword = function isValidPassword(candidat
 };
 
 registeredUserSchema.statics.isValidUser = function(username, password, done) {
-  var errMsg = 'Incorrect username/email and password combination.'
+  const errMsg = 'Incorrect username/email and password combination.'
     , criteria = (username.indexOf('@') === -1)
       ? {username: username , password: { $exists: true}}
       : {email: username , password: { $exists: true}};
@@ -75,8 +75,8 @@ registeredUserSchema.statics.createOrAuthenticateLdapUser = function(ldapUser, d
     } else {
       // will create user but registration is
       // incomplete without an ASQ username
-      var User    = db.model('User', schemas.registeredUserSchema)
-        , newUser = new User();
+      const User    = db.model('User', schemas.registeredUserSchema);
+      const newUser = new User();
 
       newUser.ldap.dn             = ldapUser.dn;
       // newUser.ldap.sAMAccountName = ldapUser.sAMAccountName;
@@ -93,25 +93,23 @@ registeredUserSchema.statics.createOrAuthenticateLdapUser = function(ldapUser, d
 };
 
 registeredUserSchema.pre('save', function(next) {
-  var user = this;
-
   // return if the password was not modified.
-  if (!user.isModified('password')) { return next(); }
+  if (!this.isModified('password')) { return next(); }
 
-  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+  bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
       if (err) { return next(err); }
 
-      bcrypt.hash(user.password, salt, function(err, hash) {
-          if (err) { return next(err); }
+      bcrypt.hash(this.password, salt, (err, hash) => {
+        if (err) { return next(err); }
 
-          user.password = hash;
-          next();
+        this.password = hash;
+        next();
       });
   });
 });
 
 // Temporary user with public sessions
-var guestUserSchema = baseUserSchema.extend({
+const guestUserSchema = baseUserSchema.extend({
   browserSessionId : { type: String }, //Express cookie (for now...)
   createdAt: {type: Date, default: Date.now, expires: 2592000000 } //TTL of 30 days for guest users
 });

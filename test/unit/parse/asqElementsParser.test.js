@@ -107,12 +107,14 @@ describe("asqElementsParser.js", function(){
     before(function(){
       sinon.stub(this.AsqElementsParser.prototype, "injectServerInfo");
       sinon.stub(this.AsqElementsParser.prototype, "injectScripts");
+      sinon.stub(this.AsqElementsParser.prototype, "injectLiveApp");
       sinon.stub(this.AsqElementsParser.prototype, "injectRoleInfo");
     });
 
     beforeEach(function(){
       this.AsqElementsParser.prototype.injectServerInfo.reset();
       this.AsqElementsParser.prototype.injectScripts.reset();
+      this.AsqElementsParser.prototype.injectLiveApp.reset();
       this.AsqElementsParser.prototype.injectRoleInfo.reset();
       this.parser =  new this.AsqElementsParser();
       this.parser.injectRoleInfo(this.simpleHtml);
@@ -121,6 +123,7 @@ describe("asqElementsParser.js", function(){
     after(function(){
       this.AsqElementsParser.prototype.injectServerInfo.restore();
       this.AsqElementsParser.prototype.injectScripts.restore();
+      this.AsqElementsParser.prototype.injectLiveApp.restore();
       this.AsqElementsParser.prototype.injectRoleInfo.restore();
     });
 
@@ -129,6 +132,10 @@ describe("asqElementsParser.js", function(){
     });
 
     it("should call injectScripts() ", function(){
+      this.AsqElementsParser.prototype.injectRoleInfo.calledOnce.should.equal(true);
+    });
+
+    it("should call injectLiveApp() ", function(){
       this.AsqElementsParser.prototype.injectRoleInfo.calledOnce.should.equal(true);
     });
 
@@ -230,6 +237,44 @@ describe("asqElementsParser.js", function(){
     });
   });
 
+  describe("prototype.injectLiveApp()",function(){
+
+    beforeEach(function(){
+      this.parser =  new this.AsqElementsParser();
+      this.$ = cheerio.load(this.simpleHtml);
+      this.head = '<link rel="import" href="bower_components/asq-live-app/asq-live-app.html">';
+      this.divImpress = '<div id="impress"></div>';
+      this.divReveal = '<div id="reveal"></div>';
+      this.liveApp = '<asq-live-app></asq-live-app>';
+    });
+
+    it("should inject the liveApp if `framework==\"impress.js\"`", function(){
+      this.$('body').append(this.divImpress);
+      this.parser.injectLiveApp(this.$,"impress.js");
+      var x = this.$.root().html().toString();
+      expect(x.includes(this.head)).to.be.true;
+      expect(x.includes(this.liveApp)).to.be.true;
+    });
+
+    it("should inject the liveApp if `framework==\"reveal.js\"`", function(){
+      this.$('body').append(this.divReveal);
+      this.parser.injectLiveApp(this.$,"reveal.js");
+      var x = this.$.root().html().toString();
+      expect(x.includes(this.head)).to.be.true;
+      expect(x.includes(this.liveApp)).to.be.true;
+    });
+
+    
+    it("should throw an error if the framework is empty", function(){
+      expect(this.parser.injectLiveApp.bind(this.parser, this.$))
+        .to.throw(/missing or unknown framework/);
+    });
+
+    it("should throw an error if the framework is unknown", function(){
+      expect(this.parser.injectLiveApp.bind(this.parser, this.$, "unknown.js"))
+        .to.throw(/missing or unknown framework/);
+    });
+  });
   describe("prototype.injectRoleInfo()", function(){
     before(function(){
       this.eids = ['uid1','uid4'];
