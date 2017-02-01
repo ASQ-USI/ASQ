@@ -6,6 +6,7 @@
 const fs = require('fs-extra');
 const spawnSync = require('child_process').spawnSync;
 const LiveAppSupportDir = 'lib/support/liveApp';
+const bower_components = LiveAppSupportDir + '/bower_components'
 const timeout = 120000; // 2 mins
 
 function ifErrPrintAndExit(spawnPs){
@@ -14,7 +15,9 @@ function ifErrPrintAndExit(spawnPs){
     process.exit(1);
   }
 }
-
+process.stdout.write('Deleting bower_components folder...');
+fs.removeSync(bower_components);
+process.stdout.write('done!\n');
 // install bower deps
 process.stdout.write('Installing bower dependencies for live app support...');
 const out = spawnSync('bower',[
