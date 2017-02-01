@@ -246,7 +246,12 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
       .indexOf(req.body.flow) > -1 ) ? req.body.flow : 'ctrl';
     newSession.authLevel = ( Session.schema.path('authLevel').enumValues
       .indexOf(req.body.authLevel) > -1 ) ? req.body.authLevel : 'public';
+    newSession.data = {
+      activeViewerQuestion: null,
+      questions: [],
+    };
 
+    newSession.markModified('data');
     const userPromise = User
       .findById(req.user._id)
       .exec()
