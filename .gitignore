@@ -45,6 +45,10 @@ log/
 **/dump.rdb
 test/acceptance-reports
 
+# Yarn #
+#################
+/yarn.lock
+
 # IDE Files #
 #############
 *.sublime-project
@@ -78,6 +82,14 @@ Thumbs.db
 /components
 
 # ASQ Components for PDF uploaded presentations #
+##################
 /lib/support/pdf/bower_components
+
 # ASQ Components for live app #
+##################
 /lib/support/liveApp/bower_components
+
+# Wercker and DevOps #
+##################
+/wercker.env
+/devops.env

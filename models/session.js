@@ -2,18 +2,17 @@
     @description the Session Model
 */
 
-var mongoose   = require('mongoose')
-var Schema     = mongoose.Schema;
-var ObjectId   = Schema.ObjectId;
-var when       = require('when');
-var logger     = require('logger-asq');
-var User       = db.model('User');
-var Slideshow  = db.model('Slideshow');
-var Promise     = require("bluebird");
-var coroutine   = Promise.coroutine;
-var socketPubSub = require('../lib/socket/pubsub');
+const logger = require('logger-asq');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const User = db.model('User');
+const Slideshow = db.model('Slideshow');
+const Promise = require('bluebird');
+const coroutine = Promise.coroutine;
+const socketPubSub = require('../lib/socket/pubsub');
 
-var sessionSchema = new Schema({
+const sessionSchema = new Schema({
   presenter            : { type: ObjectId, ref: 'User', required: true },
   slides               : { type: ObjectId, ref: 'Slideshow', required: true },
   flow                 : { type: String, required: true, default: 'ctrl',
@@ -68,40 +67,40 @@ sessionSchema.pre('save', true, function checkPresenterOnSave(next, done){
 });
 
 sessionSchema.statics.getLiveSessions = function(userId, callback) {
-  var deferred = when.defer();
-  this.find({ presenter: userId, endDate: null},
-  function onLiveSessions(err, sessions) {
-    if (callback & (typeof (callback) === 'function')) {
-      callback(err, sessions);
-      return
-    } else if (err) {
-      deferred.reject(err);
-    } else {
-    deferred.resolve(sessions);
-    }
+  return new Promise( (resolve, reject) => {
+    this.find({ presenter: userId, endDate: null},
+    function onLiveSessions(err, sessions) {
+      if (callback & (typeof (callback) === 'function')) {
+        callback(err, sessions);
+        return
+      } else if (err) {
+        reject(err);
+      } else {
+      resolve(sessions);
+      }
+    });
   });
-  return deferred.promise;
 }
 
 sessionSchema.statics.getLiveSessionIds = function(userId, callback) {
-  var deferred = when.defer();
-  this.find({ presenter: userId, endDate: null}, '_id',
-  function onLiveSessions(err, sessions) {
-    if (callback & (typeof (callback) === 'function')) {
-      callback(err, sessions);
-      return
-    } else if (err) {
-      deferred.reject(err);
-    } else {
-    deferred.resolve(sessions);
-    }
+  return new Promise( (resolve, reject) => {
+    this.find({ presenter: userId, endDate: null}, '_id',
+    function onLiveSessions(err, sessions) {
+      if (callback & (typeof (callback) === 'function')) {
+        callback(err, sessions);
+        return
+      } else if (err) {
+        deferred.reject(err);
+      } else {
+      deferred.resolve(sessions);
+      }
+    });
   });
-  return deferred.promise;
 }
 
 sessionSchema.statics.terminateAllSessionsForPresentation = coroutine(function *terminateAllSessionsForPresentationGen(userId, presentationId) {
-  var terminatedSessions = [];
-  var sessions = this.find({
+  const terminatedSessions = [];
+  const sessions = this.find({
       presenter: userId,
       slides: presentationId,
       endDate: null
@@ -127,7 +126,7 @@ sessionSchema.statics.terminateAllSessionsForPresentation = coroutine(function *
 });
 
 sessionSchema.statics.terminateSession = coroutine(function *terminateSessionGen(userId, sessionId) {
-  var session = yield this.findOne({
+  const session = yield this.findOne({
       presenter: userId,
       _id: sessionId,
       endDate: null
@@ -151,33 +150,27 @@ sessionSchema.statics.terminateSession = coroutine(function *terminateSessionGen
       namespaces: ['ctrl', 'folo', 'ghost', 'stat']
     });
 
-  return session
+  return session;
 });
 
 sessionSchema.methods.questionsForSlide = function(slideHtmlId) {
-  var deferred = when.defer();
-  Slideshow.findById(this.slides).exec()
+  return Slideshow.findById(this.slides).exec()
     .then(function(slideshow){
       deferred.resolve(slideshow.getQuestionsForSlide(slideHtmlId));
     }
-   ,function(err, slideshow) {
+   , function(err, slideshow) {
       throw err;
   });
-
-  return deferred.promise;
 }
 
 sessionSchema.methods.statQuestionsForSlide = function(slideHtmlId) {
-  var deferred = when.defer();
-  Slideshow.findById(this.slides).exec()
+  return Slideshow.findById(this.slides).exec()
     .then(function(slideshow){
       deferred.resolve(slideshow.getStatQuestionsForSlide(slideHtmlId));
     }
    ,function(err, slideshow) {
       deferred.reject(err);
   });
-
-  return deferred.promise;
 }
 
 /**
@@ -186,17 +179,15 @@ sessionSchema.methods.statQuestionsForSlide = function(slideHtmlId) {
 * with an id of slideHtmlId, in the session;
 */
 sessionSchema.methods.isQuestionInSlide = function(slideHtmlId, questionId) {
-  var deferred = when.defer();
-  this.questionsForSlide(slideHtmlId)
+  return this.questionsForSlide(slideHtmlId)
     .then(function(questions){
       for (var i=0; i<questions.length; i++){
         if (questions[i]== questionId){
-           deferred.resolve(true);
+           return Promise.resolve(true);
         }
       }
-      deferred.resolve(false);
+      return Promise.resolve(false);
     })
-  return deferred.promise;
 }
 
 // Export virtual fields as well

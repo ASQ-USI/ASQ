@@ -5,16 +5,15 @@
 
 'use strict';
 
-var mongoose   = require('mongoose')
-var Schema     = mongoose.Schema;
-var ObjectId   = Schema.ObjectId;
-var Promise    = require('bluebird');
-var coroutine  = Promise.coroutine;
-var _          = require('lodash');
-var logger     = require('logger-asq');
+const logger     = require('logger-asq');
+const mongoose   = require('mongoose');
+const Schema     = mongoose.Schema;
+const ObjectId   = Schema.ObjectId;
+const Promise    = require('bluebird');
+const coroutine  = Promise.coroutine;
+const _          = require('lodash');
 
-var defaultSettings;
-
+let defaultSettings;
 
 
 // adopted from https://github.com/TryGhost/Ghost
@@ -22,7 +21,7 @@ var defaultSettings;
 // It's much easier for us to work with it as a single level
 // instead of iterating those categories every time
 function parseDefaultSettings() {
-    var defaultSettingsInCategories = require('../data/defaultSettings.json'),
+    const defaultSettingsInCategories = require('../data/defaultSettings.json'),
         defaultSettingsFlattened = {};
 
     _.each(defaultSettingsInCategories, function (settings, categoryName) {
@@ -49,7 +48,7 @@ function getDefaultSettings() {
     return defaultSettings;
 }
 
-var kinds = [ 'string',   
+const kinds = [ 'string',   
               'number',   
               'date',     
               'boolean',  
@@ -58,7 +57,7 @@ var kinds = [ 'string',
               'ObjectId'
             ];
 
-var settingSchema = new Schema({
+const settingSchema = new Schema({
     key       : { type : String, required : true},
     value     : { type : {} },
     kind      : { type : String, required: true, enum: kinds},
@@ -76,16 +75,16 @@ var settingSchema = new Schema({
 // adopted from https://github.com/TryGhost/Ghost/
 settingSchema.statics.populateDefaults = coroutine(function *populateDefaultsGen() {
 
-  var allSettings = yield this.find({}).lean().exec();
+  const allSettings = yield this.find({}).lean().exec();
 
-  var usedKeys = allSettings.map(function (setting) { return setting.key; });
-  var insertOperations = [];
+  const usedKeys = allSettings.map(function (setting) { return setting.key; });
+  const insertOperations = [];
 
   _.each(getDefaultSettings(), function (defaultSetting, defaultSettingKey) {
-    var isMissingFromDB = usedKeys.indexOf(defaultSettingKey) === -1;
+    const isMissingFromDB = usedKeys.indexOf(defaultSettingKey) === -1;
 
     if (isMissingFromDB) {
-      var newSetting = {
+      const newSetting = {
         key: defaultSettingKey,
         value: defaultSetting.value,
         category: defaultSetting.category,

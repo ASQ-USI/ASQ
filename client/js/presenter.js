@@ -38,19 +38,20 @@ this.init = function(event) {
   dialog.style.pointerEvents = 'auto';
   document.body.appendChild(dialog);
 
-  //let asq-elements get their eventEmitter instance
-  var event = new CustomEvent('asq-ready', { 'detail': {asqEventBus : eventBus} });
-  document.dispatchEvent(event);
-
   this.userId = document.body.dataset.asqUserSessionId;
 
   var si = this.readSessionInfo();
-  eventBus.emit('asq:sessionInfo', si);
 
   this.setupASQElements(si.role);
   this.connect();
   this.initPresentationFramework(si.presentationFramework);
   this.subscribeToEvents();
+  
+  //let asq-elements get their eventEmitter instance
+  var event = new CustomEvent('asq-ready', { 'detail': {asqEventBus : eventBus} });
+  document.dispatchEvent(event);
+
+  eventBus.emit('asq:sessionInfo', si);
 }
 
 this.readSessionInfo = function(){

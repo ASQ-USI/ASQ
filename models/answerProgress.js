@@ -1,10 +1,9 @@
-var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
-var when     = require('when');
-var logger   = require('logger-asq');
+const logger   = require('logger-asq');
+const mongoose = require('mongoose');
+const Schema   = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-var answerProgressSchema = new Schema({
+const answerProgressSchema = new Schema({
   session      : { type: ObjectId, ref: 'Session', required: true },
   exercise     : { type: ObjectId, ref: 'Exercise', required: true },
   answers      : { type: Number, min: 0, default: 0 },
@@ -18,7 +17,6 @@ var answerProgressSchema = new Schema({
 answerProgressSchema.index({ session : -1, exercise: 1 }, { unique: true });
 
 answerProgressSchema.statics.update = function (session, exercise, update) {
-  var that = this;
   if (typeof update.answers !== 'number' || update.answers < 0) {
     update.answers = 0;
   }
@@ -39,10 +37,10 @@ answerProgressSchema.statics.update = function (session, exercise, update) {
   }
   return this.findOne({session: session, exercise: exercise}).exec()
   .then(
-    function onFind(progress) {
+    (progress) => {
       if (!progress) {
-        var AnswerProgress = mongoose.model('AnswerProgress');
-        progress = new that({
+        const AnswerProgress = mongoose.model('AnswerProgress');
+        progress = new this({
           session     : session,
           exercise    : exercise,
           answers     : update.answers,
@@ -71,14 +69,7 @@ answerProgressSchema.statics.update = function (session, exercise, update) {
         progress.discPeer += update.discPeer;
         if (progress.discPeer < 0) { progress.discPeer = 0; }
       }
-      var defer = when.defer();
-      progress.save(function onSave(err) {
-        if (err) { defer.reject(err); }
-        else { defer.resolve(progress); }
-      });
-      return defer.promise;
-  }, function onError(err) {
-    return when.reject(err);
+      return progress.save();
   });
 }
 
@@ -96,7 +87,7 @@ answerProgressSchema.statics.update = function (session, exercise, update) {
  *         executed when returned, you must manually call .exec() afterwards.
  */
 answerProgressSchema.statics.getUpdateQuery = function(session, exercise, update, options) {
-  var obj = {}
+  const obj = {}
   , ops   = { new: true, upsert: false},
   hasOwn  = Object.prototype.hasOwnProperty;
 
@@ -107,21 +98,21 @@ answerProgressSchema.statics.getUpdateQuery = function(session, exercise, update
   // Update Object
   if (!! update) {
     // Answers
-    var validAnswersUpdate = hasOwn.call(update, 'answers') &&
+    const validAnswersUpdate = hasOwn.call(update, 'answers') &&
       (update.answers === 1 || update.answers === -1);
     if (validAnswersUpdate) {
       obj.answers = update.answers;
     }
 
     // Self
-    var validSelfUpdate = hasOwn.call(update, 'self') &&
+    const validSelfUpdate = hasOwn.call(update, 'self') &&
       (update.self === 1 || update.self === -1);
     if (validSelfUpdate) {
       obj.self = update.self;
     }
 
     // Peer
-    var validPeerUpdate = hasOwn.call(update, 'peer') &&
+    const validPeerUpdate = hasOwn.call(update, 'peer') &&
       (update.peer === 1 || update.peer === -1);
     if (validPeerUpdate) {
       obj.peer = update.peer;
@@ -131,25 +122,25 @@ answerProgressSchema.statics.getUpdateQuery = function(session, exercise, update
   // Options object
   if (!! options) {
     // Create (upsert)
-    var validUpsert = hasOwn.call(options, 'upsert');
+    const validUpsert = hasOwn.call(options, 'upsert');
     if (validUpsert) {
       ops.upsert = options.upsert;
     }
 
     // New
-    var validNew = hasOwn.call(options, 'new');
+    const validNew = hasOwn.call(options, 'new');
     if (validNew) {
       ops.new = options.new;
     }
 
     // Sort
-    var validSort = hasOwn.call(options, 'sort');
+    const validSort = hasOwn.call(options, 'sort');
     if (validSort) {
       ops.sort = options.sort;
     }
 
     // Select
-    var validSelect = hasOwn.call(options, 'select');
+    const validSelect = hasOwn.call(options, 'select');
     if (validSelect) {
       ops.select = options.select;
     }

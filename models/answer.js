@@ -2,17 +2,16 @@
     @description the Answers Model
 */
 
-var mongoose      = require('mongoose');
+const logger = require('logger-asq');
+const mongoose = require('mongoose');
  // , questionModel = require('./question') // Can't call question from answer because question call answers...
-var Schema        = mongoose.Schema;
-var ObjectId      = Schema.ObjectId;
-var when          = require('when');
-var arrayEqual    = require('../lib/utils/stats').arrayEqual;
-var logger        = require('logger-asq');
-var Assessment    = db.model('Assessment');
-var SessionEvent  = db.model('SessionEvent');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const arrayEqual = require('../lib/utils/stats').arrayEqual;
+const Assessment = db.model('Assessment');
+const SessionEvent = db.model('SessionEvent');
 
-var answerLogSchema = new Schema({
+const answerLogSchema = new Schema({
   startTime:{},
   endTime:{},
   totalTime:{},
@@ -20,7 +19,7 @@ var answerLogSchema = new Schema({
   pageactive:{}
 });
 
-var answerSchema = new Schema({
+const answerSchema = new Schema({
   exercise   : { type: ObjectId, ref: 'Exercise', required: true },
   question   : { type: ObjectId, ref: 'Question', required: true },
   answeree   : { type: ObjectId, ref: 'WhitelistEntry', required: true },
@@ -78,40 +77,6 @@ answerSchema.post('save', function(answer){
 //     assessment.save(function onSave(err) { done(err); });
 //   });
 // })
-
-// // saves object and returns a promise
-// answerSchema.methods.saveWithPromise = function(){
-//   //we cant use mongoose promises because the
-//   // save operation returns undefined
-//   // see here: https://github.com/LearnBoost/mongoose/issues/1431
-//   // so we construct our own promise
-//   // to maintain code readability
-
-//   var that = this;
-//   var deferred = when.defer(),
-
-//   Question = db.model('Question', questionModel.questionSchema);
-//   Question.findById(that.question, function(err, question){
-//     if(err){
-//       deffered.reject(err);
-//     }
-
-//     if(arrayEqual(that.submission, question.getSolution(question))){
-//       that.correctness = 100;
-//     }else{
-//       that.correctness = 0;
-//     }
-
-//     that.save(function(err, doc){
-//       if (err) {
-//         deferred.reject(err);
-//         return;
-//       } deferred.resolve(doc);
-//     });
-
-//   });
-//     return deferred.promise;
-// };
 
 logger.debug('Loading Answer model');
 mongoose.model('Answer', answerSchema);

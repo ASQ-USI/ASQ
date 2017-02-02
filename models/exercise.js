@@ -4,17 +4,17 @@
  **/
 
 
-var mongoose         = require('mongoose');
-var Schema           = mongoose.Schema;
-var ObjectId         = Schema.ObjectId;
-var Promise          = require("bluebird");
-var coroutine        = Promise.coroutine;
-var assessmentTypes  = require('./assessmentTypes');
-var logger           = require('logger-asq');
-var presentationSettingSchema = require('./presentationSetting.js');
-var _ = require('lodash');
+const logger = require('logger-asq');
+const _ = require('lodash');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const Promise = require("bluebird");
+const coroutine = Promise.coroutine;
+const assessmentTypes = require('./assessmentTypes');
+const presentationSettingSchema = require('./presentationSetting.js');
 
-var exerciseSchema = new Schema({
+const exerciseSchema = new Schema({
   stem      : { type: String, default: '' },
   questions : { type: [{ type: ObjectId, ref: 'Question' }], default: [] },
   settings  : [ presentationSettingSchema ],
@@ -37,11 +37,11 @@ exerciseSchema.methods.readSetting = function(key) {
 
 
 exerciseSchema.methods.updateSetting = coroutine(function* updateSettingsGen(setting) {
-  for ( var i in this.settings.toObject() ) {
-    var key = this.settings[i].key;
+  for ( let i in this.settings.toObject() ) {
+    const key = this.settings[i].key;
     if ( setting.key === key ) {
       if ( this.settings[i].value !== setting.value ) {
-        var old = this.settings[i].value;
+        const old = this.settings[i].value;
         this.settings[i].value = setting.value;
 
         try{
@@ -70,8 +70,8 @@ exerciseSchema.methods.updateSettings = coroutine(function* updateSettingsGen(se
 
 
   if ( this.settings.toObject().length > 0) {
-    for ( var i in this.settings.toObject() ) {
-      var key = this.settings[i].key;
+    for ( let i in this.settings.toObject() ) {
+      const key = this.settings[i].key;
       if ( flatten.hasOwnProperty(key) ) {
         if ( this.settings[i].value !== flatten[key] ) {
           this.settings[i].value = flatten[key];

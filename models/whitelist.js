@@ -1,10 +1,10 @@
-var check   = require('validator').check;
-var mongoose  = require('mongoose');
-var Schema    = mongoose.Schema;
-var ObjectId  = Schema.ObjectId;
-var logger     = require('logger-asq');
+const logger = require('logger-asq');
+const check = require('validator').check;
+const mongoose  = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-var roles = {};
+const roles = {};
 roles.banned    = 0;
 roles.viewer    = 1;
 roles.assistant = 2;
@@ -12,7 +12,7 @@ roles.presenter = 3;
 roles.ghost     = 4;
 
 
-var whitelistEntrySchema = new Schema({
+const whitelistEntrySchema = new Schema({
 	session          : { type: ObjectId, ref: 'Session', required: true },
   sessionData      : { type: {} },
 	user             : { type: ObjectId, ref: 'User', required: true },
