@@ -147,7 +147,8 @@ this.subscribeToEvents= function (){
 
   // Live App Events
   document.addEventListener('live-app', function(evt){
-    if (evt.target.tagName == "ASQ-LIVE-APP"){
+    const normalizedEvent = Polymer.dom(evt);
+    if (normalizedEvent.localTarget.tagName == "ASQ-LIVE-APP"){
       connection.socket.emit('live-app', evt.detail);
     }
   })
