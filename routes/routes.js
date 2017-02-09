@@ -58,6 +58,9 @@ module.exports.setUp = function setUp(app, middleware) {
   // Check username availability
   app.get('/username_available/', handlers.usernameAvailable);
 
+  // Update live_viewer details
+  app.put('/live_viewer', handlers.putLiveViewer);
+
   //Set up routes starting with /:user/*
   user.setUp(app, middleware);
 

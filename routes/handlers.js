@@ -1,10 +1,12 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
+const coroutine = Promise.coroutine;
 const logger = require('logger-asq');
 const signupMessages = require('../lib/forms/signup/messages');
 const completeRegistrationMessages = require('../lib/forms/completeRegistration/messages');
 const validation = require('../shared/validation');
 const User       = db.model('User');
+const GuestUser  = db.model('GuestUser');
 const utils      = require('../lib/utils/routes');
 
 function getHomePage(req, res) {
@@ -340,6 +342,53 @@ function usernameAvailable(req, res) {
   });
 }
 
+ const putLiveViewer = coroutine(function *putLiveViewerGen(req, res){
+  try{
+    const username = req.body.viewerUsername;
+    const email    = req.body.viewerEmail;
+
+    //Find user
+    let user
+    if (req.isAuthenticated()){
+      user = req.user;
+    } else {
+      user = yield GuestUser.findOne({ browserSessionId :  req.sessionID }).exec();
+    }
+
+    if(!user) {
+      return res.status(404).json({
+        error: true,
+        type:'invalid_request_error',
+        message: "User doesn't exist"
+      })
+    }
+
+    user.screenName = username || user.screenName;
+    user.email = email || user.email;
+
+    yield user.save()
+
+    res.json({
+      error: false,
+      message: "user updated"
+    });
+  }catch(err){
+
+    if(err.name == "MongoError" && err.code == "1100"){
+      return res.json({
+        error: true,
+        message: "email should be unique"
+      });
+    }else{
+      return res.json({
+        error: true,
+        message: err.message
+      });
+    }
+  }
+  
+});
+
 module.exports = {
   getHomePage       : getHomePage,
   getCompleteRegistration  : getCompleteRegistration,
@@ -353,5 +402,6 @@ module.exports = {
   logout            : logout,
   getUploadForm     : getUploadForm,
   emailAvailable    : emailAvailable,
-  usernameAvailable : usernameAvailable
+  usernameAvailable : usernameAvailable,
+  putLiveViewer: putLiveViewer
 }
