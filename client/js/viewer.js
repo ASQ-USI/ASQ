@@ -230,9 +230,13 @@ this.subscribeToEvents= function (){
     app.questionRated(evt.data.question);
   });
 
-  eventBus.on('update-student-questions', function (questions) {
+  eventBus.on('update-student-questions', function (evt) {
     const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.updateQuestions(questions);
+    if (evt && evt.data !== undefined) {
+      const questions = evt.data.questions;
+      app.updateQuestions(questions);
+    }
+
   });
 
   eventBus.on('close-modal', function (evt) {
