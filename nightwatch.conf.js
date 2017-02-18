@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 
 module.exports = {
   "src_folders" : ["./test/acceptance"],
@@ -10,20 +10,17 @@ module.exports = {
   
   "selenium" : {
     "start_process" : true,
-    "server_path" : "/usr/local/bin/selenium-server-standalone-2.53.0.jar",
+    "server_path" : "node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-3.0.1.jar",
+    "start_session" : true,
     "log_path" : "",
-    "host" : "127.0.0.1",
-    "port" : 4444,
     "cli_args" : {
-      "webdriver.chrome.driver" : "/usr/local/bin/chromedriver"
+      "webdriver.chrome.driver" : "node_modules/chromedriver/lib/chromedriver/chromedriver"
     }  
   },
   
   "test_settings" : {
     "default" : {
       "launch_url" : require('./config').rootUrl,
-      "selenium_port"  : 4444,
-      "selenium_host"  : "127.0.0.1",
       "silent": true,
       "screenshots" : {
         "enabled" : false,
@@ -32,6 +29,8 @@ module.exports = {
       "exclude" : ["custom-commands/*.js","edit/*.js"],
       "desiredCapabilities": {
         "browserName": "chrome",
+        // See http://stackoverflow.com/questions/29540320/unable-to-execute-nightwatch-tests-on-chrome-using-linux
+        "chromeOptions" : { "args" : ["--no-sandbox"] },
         "javascriptEnabled": true,
         "acceptSslCerts": true
       }
