@@ -1,7 +1,7 @@
 # TODO: if Wercker is gonna support aliases, we can define the version in a settings section
 # MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 box:
-  id: asqslide/wercker-box-asq:0.3.0
+  id: asqslide/wercker-box-asq:0.4.2-dev
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
@@ -119,7 +119,7 @@ dev-unit-tests:
 # NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
 #       By assuming what stated above, we speed up the execution time of the pipeline
 # Depends on: dev
-dev-e2e-tests:
+dev-e2e-tests: 
     services:
       - name: mongo
         id: mongo:3.2.11
@@ -127,20 +127,6 @@ dev-e2e-tests:
         id: redis:3.2.5-alpine
         cmd: redis-server
     steps:
-        - script:
-            name: indentify distribution
-            code: cat /etc/lsb-release
-        # use curl if not installed
-        - install-packages:
-            packages: wget default-jre
-        - script:
-            name: add Google Chrome repository
-            code: |
-              wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
-              sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-              sudo apt-get update
-        - install-packages:
-            packages: xvfb firefox google-chrome-stable
         - script:
             name: start xvfb and sleep 3 seconds
             code: |
@@ -151,15 +137,24 @@ dev-e2e-tests:
               # Give xvfb time to start. 3 seconds is the default for all xvfb-run commands.
               sleep 3
               xdpyinfo -display :0 >/dev/null 2>&1 && echo "xvfb in use" || echo "xvfb free"
+        - script:
+            name: setting up environment
+            code: |
+                  export MONGO_DB_NAME=asq
+                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
+                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
         # Need to start ASQ for e2e tests
         - script:
-            name: start ASQ and sleep 10 seconds
+            name: start ASQ and sleep 20 seconds
             code: |
+              # TODO: define a programmatic way to start ASQ and check for its availability
               npm run start > /dev/null & 
-              sleep 10
+              sleep 20
+        # - internal/shell
         - script:
             name: seed sample data and run nightwatch
-            code: npm run seedSampleData && nightwatch
+            code: DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
 
 ####### THE FOLLOWING PIPELINES ARE DEFINED FOR WERCKER CLOUD #######
 
@@ -301,22 +296,12 @@ push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
     box:
-      id: asqslide/wercker-box-asq:0.3.0
+      id: asqslide/wercker-box-asq:0.4.2-prod
       username: $DOCKER_HUB_BOX_USERNAME
       password: $DOCKER_HUB_BOX_PASSWORD
+      ports:
+        - "3000:3000"
     steps:
-    # Remove build dependencies
-    # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
-    # TODO (Decide): we can avoid the following step, if we have two different base boxes (dev and release)
-    - script:
-            name: remove ASQ build dependencies needed up to here in the workflow
-            code: |
-                  apt-get update -q
-                  apt-get remove -y --purge build-essential xvfb firefox google-chrome-stable
-                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
-                  apt-get clean autoclean -y
-                  apt-get autoremove -y
-                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
     - script:
             name: move ASQ to the /ASQ folder
             code: |
