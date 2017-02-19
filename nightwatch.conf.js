@@ -12,7 +12,7 @@ module.exports = {
     "start_process" : true,
     "server_path" : "node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-3.0.1.jar",
     "start_session" : true,
-    "log_path" : "",
+    "log_path" : "./test/acceptance-reports",
     "cli_args" : {
       "webdriver.chrome.driver" : "node_modules/chromedriver/lib/chromedriver/chromedriver"
     }  
