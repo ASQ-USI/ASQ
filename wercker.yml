@@ -149,7 +149,8 @@ dev-e2e-tests:
             name: start ASQ and sleep 20 seconds
             code: |
               # TODO: define a programmatic way to start ASQ and check for its availability
-              npm run start > /dev/null & 
+              # TODO: control also the nginx log to reduce the logged data
+              LOG_APPLICATION_LEVEL="error" LOG_APPLICATION_FILE="/dev/null" npm run start > /dev/stdout &
               sleep 20
         # - internal/shell
         - script:
