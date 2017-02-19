@@ -1,5 +1,5 @@
 {
-  "name": "asq",
+  "name": "asq", 
   "version": "0.3.0-alpha",
   "description": "Synchronous slideshow mixed with a classroom clicker.",
   "author": "Jacques DAFFLON <jacques.dafflon@gmail.com>, Margarita GRINVALD <grinvalm@student.ethz.ch>, Max VON BUELOW, Vasileios Triglianos <vasileios.triglianos@usi.ch>",
@@ -23,7 +23,8 @@
     "//1": "wercker --verbose --environment=devops.env pull <build_id> --branch <branch_name> --load",
     "test": "npm run test:unit",
     "test:unit": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
-    "test:e2e": "NODE_ENV=test npm run seedSampleData && nightwatch --config ./nightwatch.conf",
+    "//1.1": "TODO: find a better way to cleanup tmp file left by selenium in case of errors",
+    "test:e2e": "NODE_ENV=test npm run seedSampleData && nightwatch --config ./nightwatch.conf; rm -Rf pulse* .com.google.Chrome* .org.chromium.Chromium* slides/*.*",
     "seedSampleData": "tasks/seedSampleData",
     "start-dev": "NODE_ENV=development nodemon app.js dotenv_config_silent=true| bunyan",
     "start": "NODE_ENV=production node -r dotenv/config app.js dotenv_config_silent=true",
