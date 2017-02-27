@@ -15,7 +15,7 @@ services:
       REVERSE_PROXY_SECURE: 'true'
       USE_REVERSE_PROXY: 'true'
       NGINX_CLIENT_MAX_BODY_SIZE: '100m'
-      ENABLE_LDAP: ${ENABLE_LDAP:-'false'}
+      ENABLE_LDAP: ${ENABLE_LDAP:-false}
       LDAP_URL: ${LDAP_URL}
       LDAP_SEARCH_FILTER: ${LDAP_SEARCH_FILTER}
       LDAP_SEARCH_BASE: ${LDAP_SEARCH_BASE:-'o=example'}
@@ -26,7 +26,7 @@ services:
       - ${HOST_CERTIFICATE_FOLDER_ABSOLUTE_PATH}/${CERTIFICATE_NAME}.crt:/etc/nginx/ssl/key.crt:ro
       - ${HOST_CERTIFICATE_FOLDER_ABSOLUTE_PATH}/${CERTIFICATE_NAME}.key:/etc/nginx/ssl/key.key:ro
     ports:
-      - 443:3000
+      - 443:443
     networks:
       - asq
     depends_on:
