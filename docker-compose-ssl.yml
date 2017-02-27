@@ -12,11 +12,10 @@ services:
       REDIS_HOST: redis
       REVERSE_PROXY_HOST: ${HOST:-127.0.0.1}
       SERVER_NAME: ${SERVER_NAME:-_}
-      REVERSE_PROXY_SECURE: 'false'
+      REVERSE_PROXY_SECURE: 'true'
       USE_REVERSE_PROXY: 'true'
       NGINX_CLIENT_MAX_BODY_SIZE: '100m'
       ENABLE_LDAP: ${ENABLE_LDAP:-'false'}
-      # Remove the following four variables if not needed for your deployment
       LDAP_URL: ${LDAP_URL}
       LDAP_SEARCH_FILTER: ${LDAP_SEARCH_FILTER}
       LDAP_SEARCH_BASE: ${LDAP_SEARCH_BASE:-'o=example'}
@@ -24,8 +23,10 @@ services:
     volumes:
       - ASQSlide:/ASQ/slides
       - ASQNginx:/var/cache/nginx
+      - ${HOST_CERTIFICATE_FOLDER_ABSOLUTE_PATH}/${CERTIFICATE_NAME}.crt:/etc/nginx/ssl/key.crt:ro
+      - ${HOST_CERTIFICATE_FOLDER_ABSOLUTE_PATH}/${CERTIFICATE_NAME}.key:/etc/nginx/ssl/key.key:ro
     ports:
-      - 80:3000
+      - 443:3000
     networks:
       - asq
     depends_on:
@@ -49,11 +50,11 @@ services:
       - ASQRedisData:/data
     networks:
       - asq
-
+ 
 networks:
   asq:
       driver: bridge
-
+ 
 volumes:
   ASQSlide:
     driver: local
