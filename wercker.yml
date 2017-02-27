@@ -305,8 +305,6 @@ push-dev-release:
       id: asqslide/wercker-box-asq:0.7.0-prod
       username: $DOCKER_HUB_BOX_USERNAME
       password: $DOCKER_HUB_BOX_PASSWORD
-      ports:
-        - "3000:3000"
     steps:
     - script:
             name: move ASQ to the /ASQ folder
