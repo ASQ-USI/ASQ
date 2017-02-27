@@ -249,7 +249,7 @@ push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
     box:
-      id: asqslide/wercker-box-asq:0.7.0-prod
+      id: asqslide/wercker-box-asq:0.7.1-prod
       username: $DOCKER_HUB_BOX_USERNAME
       password: $DOCKER_HUB_BOX_PASSWORD
     steps:
