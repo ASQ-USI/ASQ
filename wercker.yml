@@ -1,7 +1,7 @@
 # TODO: if Wercker is gonna support aliases, we can define the version in a settings section
 # MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 box:
-  id: asqslide/wercker-box-asq:0.5.0-dev
+  id: asqslide/wercker-box-asq:0.7.0-dev
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
@@ -297,7 +297,7 @@ push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
     box:
-      id: asqslide/wercker-box-asq:0.5.0-prod
+      id: asqslide/wercker-box-asq:0.7.0-prod
       username: $DOCKER_HUB_BOX_USERNAME
       password: $DOCKER_HUB_BOX_PASSWORD
       ports:
@@ -338,7 +338,7 @@ push-dev-release:
         # NOTE: first we push the commit specific image, then the image for the branch
         tag: $DOCKER_IMAGE_CUSTOM_TAG,$WERCKER_GIT_BRANCH
         ports: "80, 443, 3000"
-        volumes: "/mnt, /var/cache/nginx, /ASQ/slides"
+        volumes: "/mnt, /var/cache/nginx, /etc/nginx/ssl, /ASQ/slides"
         working-dir: /ASQ
         env: "ASQDIR=/ASQ"
         cmd: /sbin/my_init
