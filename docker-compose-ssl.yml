@@ -23,8 +23,8 @@ services:
     volumes:
       - ASQSlide:/ASQ/slides
       - ASQNginx:/var/cache/nginx
-      - ${HOST_CERTIFICATE_FOLDER_ABSOLUTE_PATH}/${CERTIFICATE_NAME}.crt:/etc/nginx/ssl/key.crt:ro
-      - ${HOST_CERTIFICATE_FOLDER_ABSOLUTE_PATH}/${CERTIFICATE_NAME}.key:/etc/nginx/ssl/key.key:ro
+      - ${HOST_SSL_CERTIFICATE_ABSOLUTE_PATH}:/etc/nginx/ssl/key.crt:ro
+      - ${HOST_SSL_KEY_ABSOLUTE_PATH}:/etc/nginx/ssl/key.key:ro
     ports:
       - 443:443
     networks:
