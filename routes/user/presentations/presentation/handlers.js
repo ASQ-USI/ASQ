@@ -246,6 +246,10 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
       .indexOf(req.body.flow) > -1 ) ? req.body.flow : 'ctrl';
     newSession.authLevel = ( Session.schema.path('authLevel').enumValues
       .indexOf(req.body.authLevel) > -1 ) ? req.body.authLevel : 'public';
+
+    /* 
+      This is needed for the live app, since we need to store the active viewer question (the question that it's displayed to the users)
+    */
     newSession.data = {
       activeViewerQuestion: null,
       questions: [],
@@ -274,17 +278,17 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
     };
 
     const implicitQuestion = new Question(implicitQuestionData);
-    const dummyExerciseData = {
-      stem: 'dummyExercise',
+    const viewerQuestionExerciseData = {
+      stem: 'viewerQuestionExercise',
       questions: [implicitQuestion._id],     
     };
-    const dummyExercise = new Exercise(dummyExerciseData);
+    const viewerQuestionExercise = new Exercise(viewerQuestionExerciseData);
     yield Promise.all([
       slideshow.save(),
       newSession.save(),
       userPromise,
       implicitQuestion.save(),
-      dummyExercise.save(),
+      viewerQuestionExercise.save(),
     ]);
 
     const pFn = Promise.promisify(presUtils.generateWhitelist[newSession.authLevel]);
