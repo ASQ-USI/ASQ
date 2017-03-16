@@ -31,6 +31,9 @@ function isEmpty(val){
   return !val;
 }
 
+function retrieveElementBySelector(selector) {
+  return document.querySelector(selector);
+}
 // Save current question id;
 var questionId = null, socket, session;
 var client = null;
@@ -104,7 +107,12 @@ this.connect = function(){
     "asq:question_type",
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
-    "asq-plugin"
+    "asq-plugin",
+    "live-app",
+    "share-student-question",
+    "student-question-rated",
+    'update-student-questions',
+    'close-modal'
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -140,6 +148,43 @@ this.subscribeToEvents= function (){
     // asi.setBounce (that.sessionFlow == 'self')
   }.bind(this));
 
+  // Live App Events
+  document.addEventListener('live-app', function(evt){
+    const normalizedEvent = Polymer.dom(evt);
+    if (normalizedEvent.localTarget.tagName == "ASQ-LIVE-APP"){
+      connection.socket.emit('live-app', evt.detail);
+    }
+  })
+  eventBus.on('share-student-question', function (question) {
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (app !== undefined) 
+      app.showQuestion(question);
+  });
+
+  eventBus.on('student-question-rated', function (evt) {
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (app !== undefined)  
+      app.questionRated(evt.data.question);
+  });
+
+  eventBus.on('update-student-questions', function (evt) {
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (evt && evt.data !== undefined && app !== undefined) {
+      const questions = evt.data.questions;
+      app.updateQuestions(questions);
+    }
+
+  });
+
+  eventBus.on('close-modal', function (evt) {
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (app !== undefined) 
+      app.closeModal();
+  });
 }
 
 var webComponentsSupported = (

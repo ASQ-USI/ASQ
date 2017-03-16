@@ -13,12 +13,12 @@ export uiBranch=master
 export uiCommit=94d3b15481b416a987553adfbe8a3af99587cdb5
 
 export cockpitDir=public/cockpit
-export cockpitBranch=feat-use-polymer-build
-export cockpitCommit=1cace88d4dff32e3366c1b6c97a3c4b350a6d81f
+export cockpitBranch=feat-student-question-events
+export cockpitCommit=9ab5af531e4ff0ea51d7c2cc14a7a6f9aa11b33e
 
 # Execute the pipeline
 current_folder=$(pwd)
-cd ${WERCKER_SOURCE_DIR}
+# cd ${WERCKER_SOURCE_DIR}
 CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies
 cd $current_folder
 
