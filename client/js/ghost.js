@@ -31,6 +31,9 @@ function isEmpty(val){
   return !val;
 }
 
+function retrieveElementBySelector(selector) {
+  return document.querySelector(selector);
+}
 // Save current question id;
 var questionId = null, socket, session;
 var client = null;
@@ -153,26 +156,34 @@ this.subscribeToEvents= function (){
     }
   })
   eventBus.on('share-student-question', function (question) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.showQuestion(question);
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (app !== undefined) 
+      app.showQuestion(question);
   });
 
   eventBus.on('student-question-rated', function (evt) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.questionRated(evt.data.question);
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (app !== undefined)  
+      app.questionRated(evt.data.question);
   });
 
   eventBus.on('update-student-questions', function (evt) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    if (evt && evt.data !== undefined) {
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (evt && evt.data !== undefined && app !== undefined) {
       const questions = evt.data.questions;
       app.updateQuestions(questions);
     }
+
   });
-  
+
   eventBus.on('close-modal', function (evt) {
-    const app = document.getElementsByTagName('ASQ-LIVE-APP')[0];
-    app.closeModal();
+    const selector = 'ASQ-LIVE-APP';
+    const app = retrieveElementBySelector(selector);
+    if (app !== undefined) 
+      app.closeModal();
   });
 }
 
