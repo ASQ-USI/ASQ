@@ -18,7 +18,7 @@ export cockpitCommit=06cabec7c6f42ec93a1d7779056381382ff9d6dd
 
 # Execute the pipeline
 current_folder=$(pwd)
-cd ${WERCKER_SOURCE_DIR}
+# cd ${WERCKER_SOURCE_DIR}
 CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies
 cd $current_folder
 
