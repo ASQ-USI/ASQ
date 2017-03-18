@@ -1,13 +1,20 @@
 {
   "ignore": [
     ".git",
-    "node_modules/**/node_modules",
-    "test/*","client/*",
-    "slides/*",
-    "log/*",
-    "plugins/*/node_modules/*"
+    ".wercker",
+    "node_modules",
+    "test",
+    "benchmark",
+    "client",
+    "data",
+    "slides",
+    "lib/support",
+    "log",
+    "plugins/*/node_modules/*",
+    "plugins/*/test/*",
+    "plugins/*/demo/*"
   ],
-  "watch": [ "app.js", "config/*", "lib/*", "models/*", "shared/*", "views/*", "routes/*", "plugins/*"],
+  "watch": [ "app.js", "config", "lib", "models", "shared", "views", "routes", "plugins"],
   "execMap": {
     "js": "node -r dotenv/config --stack-trace-limit=1000 --stack-size=1024"
   }
