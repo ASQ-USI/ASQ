@@ -87,9 +87,9 @@ dev:
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
         # - internal/shell
-        - internal/watch:
+        - script:
+            name: start ASQ
             code: $NPM_RUN_COMMAND
-            reload: false
         # - internal/store-container
 
 # NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
