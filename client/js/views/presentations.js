@@ -233,7 +233,7 @@ module.exports = {
     var username = btn.dataset.username;
     var presentationId = btn.dataset.id;
     var authLevel = btn.dataset.authlevel;
-    var flow = btn.dataset.flow || 'ctrl';
+    var flow = btn.dataset.flow || 'selfNextOnly';
     var data = {authLevel : authLevel, flow: flow}
     var url = ['/', username, '/presentations/', presentationId, '/live'].join('');
     debug('POST ' + url);

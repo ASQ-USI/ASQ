@@ -14,7 +14,7 @@ var Hammer = require('hammerjs');
 var connection = require('./connection.js');
 var EventEmitter2 = require('eventemitter2');
 var elements = require('./elements.js');
-var eventBus = new EventEmitter2({delimiter: ':',  maxListeners: 100});
+var eventBus = new EventEmitter2({delimiter: ':',  maxListeners: 200});
 var snitch = require('./snitch')(eventBus);
 var $body, userId, socket, session, client, idleTimeout;
 var client = null;
@@ -72,7 +72,6 @@ this.init = function(event) {
 
   this.subscribeToEvents();
   this.userAwake();
-
 }
 
 this.readSessionInfo = function(){
@@ -198,17 +197,21 @@ this.subscribeToEvents= function (){
   eventBus
   .on('asq-exercise:submit', function(evt){
     connection.socket.emit('asq:exerciseSubmission', evt);
-  })
+  });
 
   document.addEventListener('asq-submit', function(evt){
     if (evt.target.tagName == "ASQ-EXERCISE"){
       eventBus.emit('asq-exercise:submit', evt.detail);
     }
-  })
+  });
+
+  document.addEventListener('quiztimedout', function(evt){
+    connection.socket.emit('asq-plugin', evt.detail);
+  });
 
   eventBus.on('asq:session-terminated', function(){
     this.displaySessionOverDialog();
-  }.bind(this))
+  }.bind(this));
 
 
   // snitch events

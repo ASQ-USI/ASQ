@@ -16,7 +16,7 @@ const sessionSchema = new Schema({
   presenter            : { type: ObjectId, ref: 'User', required: true },
   slides               : { type: ObjectId, ref: 'Slideshow', required: true },
   flow                 : { type: String, required: true, default: 'ctrl',
-                           enum: ['ctrl', 'self'] },
+                           enum: ['ctrl', 'self', 'selfNextOnly'] },
   authLevel            : { type: String, required: true, default: 'public',
                            enum: ['public', 'anonymous', 'private'] },
   activeSlide          : { type: String, required: true, default: '0' },
