@@ -123,7 +123,7 @@ slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
   //maybe we have no questions
   if (questions.length === 0) {
     if (Object.keys(questionsPerSlide).length === 0) {
-      //mo questions no questionsPerSlide, we're ok
+      //no questions no questionsPerSlide, we're ok
       return done();
     } else {
       return done(new Error(
@@ -132,13 +132,15 @@ slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
   }
 
   // or maybe we have questions but no questionsPerSlide
-  if (Object.keys(questionsPerSlide).length === 0) {
-    return done(new Error(
-      'There are questions: there must be at least a slide with a question.'));
-  }
+  // WARNING: this is commented out for the ECTEL2017 experiment
+  // TODO: consider if it's needed
+  // if (Object.keys(questionsPerSlide).length === 0) {
+  //   return done(new Error(
+  //     'There are questions: there must be at least a slide with a question.'));
+  // }
 
 
-  //check if all questionsPerSlide are  present in the questions array
+  //check if all questionsPerSlide are present in the questions array
   var totalQuestions = [];
 
   Object.keys(questionsPerSlide).forEach(function (key) {
@@ -156,12 +158,14 @@ slideshowSchema.pre('save', true, function checkQuesPerSlideOnSave(next, done) {
   });
 
   //check if all questions are  present in the questionsPerSlide array
-  questions.forEach(function(q) {
-     if (totalQuestions.indexOf(q.toString()) === -1) {
-        return done(new Error(q +
-          ' was found in questions but not in the questionsPerSlide array'));
-      }
-  });
+  // WARNING: this is commented out for the ECTEL2017 experiment
+  // TODO: consider if it's needed
+  // questions.forEach(function(q) {
+  //    if (totalQuestions.indexOf(q.toString()) === -1) {
+  //       return done(new Error(q +
+  //         ' was found in questions but not in the questionsPerSlide array'));
+  //     }
+  // });
 
   //everything ok
   done();
