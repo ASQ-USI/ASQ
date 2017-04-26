@@ -8,16 +8,16 @@
 
 [Your first presentation](#your-first-presentation)
 
-##Installation
+## Installation
 Make sure you have install ASQ following our [installation guide](../install/installation.md)
 
-##Creating an account
+## Creating an account
 1. Visit the root URL of your installation.
 2. Click 'sign up for ASQ'.
 3. Fill in the form and the then click 'Create account'.
 You have successfully created your first user.
 
-##Installing and activating question type plugins
+## Installing and activating question type plugins
 By default enabled plugins are:
 
 * [asq-buckets-q](https://github.com/ASQ-USI-Elements/asq-buckets-q/)
