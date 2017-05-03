@@ -320,7 +320,10 @@ clean-up-for-release:
             name: remove files not needed for deployment
             cwd: $WERCKER_SOURCE_DIR
             code: |
-                  if [ "$CI" = true ]; then
+                  # Determine if we are in a CI environment (for now the Wercker Cloud) or not
+                  # Although Wercker suggests to use the CI or WERCKER variables (http://devcenter.wercker.com/docs/environment-variables/available-env-vars)
+                  # , those are true also locally, somehow. WERCKER_STARTED_BY is only set in the Wercker Cloud
+                  if [ -z "$WERCKER_STARTED_BY" ]; then
                     rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .gitignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile
                   else
                     echo 'Skipping step, because not needed for local execution'
