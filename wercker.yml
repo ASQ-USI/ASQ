@@ -267,7 +267,7 @@ build:
         # e2e tests, currently a copy of the dev-e2e-tests pipeline
         # we run e2e tests on ASQ after all the steps that make it ready for delivery
         - script:
-            name: start xvfb and sleep 3 seconds
+            name: e2e - start xvfb and sleep 3 seconds
             code: |
               # Start xvfb which gives the context an virtual display
               # which is required for tests that require an GUI
@@ -277,7 +277,7 @@ build:
               sleep 3
               xdpyinfo -display :0 >/dev/null 2>&1 && echo "xvfb in use" || echo "xvfb free"
         - script:
-            name: setting up environment
+            name: e2e - setting up environment
             code: |
                   export MONGO_DB_NAME=asq
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
@@ -285,7 +285,7 @@ build:
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
         # Need to start ASQ for e2e tests
         - script:
-            name: start ASQ and sleep 20 seconds
+            name: e2e - start ASQ and sleep 20 seconds
             code: |
               # TODO: define a programmatic way to start ASQ and check for its availability
               # TODO: control also the nginx log to reduce the logged data
@@ -293,7 +293,7 @@ build:
               sleep 20
         # - internal/shell
         - script:
-            name: seed sample data and run nightwatch
+            name: e2e - seed sample data and run nightwatch
             code: DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
 
 # It is a separate step from push-dev-release because we need the dev wercker box
