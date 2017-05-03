@@ -16,9 +16,13 @@ dev:
     services:
       - name: mongo
         id: mongo:3.2.11
+        ports:
+          - "27018:27017"
       - name: redis
         id: redis:3.2.5-alpine
         cmd: redis-server
+        ports:
+          - "6380:6379"
     steps:
         # TODO: continue working from here to add Yarn support
         # 1) apply changes also in install-private..
@@ -250,6 +254,8 @@ build:
                   else
                      echo 'Skipping step, because you are not authorized'
                   fi
+
+clean-up-for-release:
         - nicka/yarn@1.0.0:
             name: prune development dependencies
             options: --ignore-engines
