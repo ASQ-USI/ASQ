@@ -16,6 +16,7 @@ var EventEmitter2 = require('eventemitter2');
 var elements = require('./elements.js');
 var eventBus = new EventEmitter2({delimiter: ':',  maxListeners: 100});
 var snitch = require('./snitch')(eventBus);
+var uxr = require('./uxr');
 var $body, userId, socket, session, client, idleTimeout;
 var client = null;
 // Save current question id;
@@ -271,6 +272,9 @@ this.subscribeToEvents= function (){
           type: item.type,
           data: evt
         });
+
+        var uxrEvent = uxr.createUXREvent(this.sessionId, this.userId, item.type, evt);
+        uxr.sendToUxr(uxrEvent);
       }
     }.bind(this));
   }.bind(this));
