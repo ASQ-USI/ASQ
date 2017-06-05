@@ -264,37 +264,7 @@ build:
                   else
                      echo 'Skipping step, because you are not authorized'
                   fi
-        # e2e tests, currently a copy of the dev-e2e-tests pipeline
-        # we run e2e tests on ASQ after all the steps that make it ready for delivery
-        - script:
-            name: e2e - start xvfb and sleep 3 seconds
-            code: |
-              # Start xvfb which gives the context an virtual display
-              # which is required for tests that require an GUI
-              export DISPLAY=:99.0
-              start-stop-daemon --start --quiet --pidfile /tmp/xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset
-              # Give xvfb time to start. 3 seconds is the default for all xvfb-run commands.
-              sleep 3
-              xdpyinfo -display :0 >/dev/null 2>&1 && echo "xvfb in use" || echo "xvfb free"
-        - script:
-            name: e2e - setting up environment
-            code: |
-                  export MONGO_DB_NAME=asq
-                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
-                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
-                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
-        # Need to start ASQ for e2e tests
-        - script:
-            name: e2e - start ASQ and sleep 20 seconds
-            code: |
-              # TODO: define a programmatic way to start ASQ and check for its availability
-              # TODO: control also the nginx log to reduce the logged data
-              LOG_APPLICATION_LEVEL="error" LOG_APPLICATION_FILE="/dev/null" npm run start > /dev/stdout &
-              sleep 20
-        # - internal/shell
-        - script:
-            name: e2e - seed sample data and run nightwatch
-            code: DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
+       
 
 # It is a separate step from push-dev-release because we need the dev wercker box
 clean-up-for-release:
