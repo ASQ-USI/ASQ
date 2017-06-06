@@ -162,7 +162,7 @@ this.initReveal = function(adapter){
 this.setupASQElements = function(role) {
   assert(true, (isString(role) && !!role), 'role should be a non empty string');
   elements.setRole(role);
-  Polymer && Polymer.dom().flush()
+  Polymer &&  Polymer.dom.flush && Polymer.dom.flush()
 }
 
 /**
