@@ -1,7 +1,7 @@
 # TODO: if Wercker is gonna support aliases, we can define the version in a settings section
 # MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 box:
-  id: asqslide/wercker-box-asq:0.5.0-dev
+  id: asqslide/wercker-box-asq:0.7.2-dev
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
@@ -16,22 +16,24 @@ dev:
     services:
       - name: mongo
         id: mongo:3.2.11
+        ports:
+          - "27018:27017"
       - name: redis
         id: redis:3.2.5-alpine
         cmd: redis-server
+        ports:
+          - "6380:6379"
     steps:
-        # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
-        #       Maybe also evaluation Yarn
-        - wercker/npm-install@1.1.4:
-            use-cache: true
-            clear-cache-on-failed: false
-            options: --unsafe-perm
         # TODO: continue working from here to add Yarn support
-        # 1) add yarn as a ASQ env dependency, apply changes also in install-private..
-        # 2) have a better organize cache management
-        # - nicka/yarn@1.0.0:
-        #     production: false
-        #     cache: true
+        # 1) apply changes also in install-private..
+        # 2) have a better organized cache management
+        # 3) check if they solve the following issue and remove --force https://github.com/yarnpkg/yarn/issues/1848
+        # 4) check if the follow the following issue or find a workaround using my cache mechanism based on the yarn.lock fine - https://github.com/yarnpkg/yarn/issues/1496
+        - nicka/yarn@1.0.0:
+            name: install dependencies
+            options: --ignore-engines --force
+            production: false
+            cache: true
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -53,6 +55,11 @@ dev:
             # NOTE: we do not need to store folders, because they are already part
             #       of the source code, after the installation
             code: ./utils/wercker_cache_handler.sh "asq_plugins" "cache_asq_plugins.sh" ""
+        # TODO: improve the following step, if slow, to cache the build results
+        - script:
+            name: build ASQ
+            cwd: $WERCKER_SOURCE_DIR
+            code: npm run build:dev
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -90,16 +97,78 @@ dev:
 # NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
 #       By assuming what stated above, we speed up the execution time of the pipeline
 # Depends on: dev
-dev-tests:
-    # TODO: enable when they are needed by the tests
-    # services:
-    #   - name: mongo
-    #     id: mongo:3.2.11
-    #   - name: redis
-    #     id: redis:3.2.5-alpine
-    #     cmd: redis-server
+dev-start-asq:
+      services:
+        - name: mongo
+          id: mongo:3.2.11
+          ports:
+            - "27018:27017"
+        - name: redis
+          id: redis:3.2.5-alpine
+          cmd: redis-server
+          ports:
+            - "6380:6379"
+      steps:
+        - script:
+            name: setting up environment
+            code: |
+                  export MONGO_DB_NAME=asq
+                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
+                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        # - internal/shell
+        - internal/watch:
+            code: $NPM_RUN_COMMAND
+            reload: false
+        # - internal/store-container
+
+# NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
+#       By assuming what stated above, we speed up the execution time of the pipeline
+# Depends on: dev
+dev-unit-tests:
     steps:
         - wercker/npm-test@0.0.3
+
+# NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
+#       By assuming what stated above, we speed up the execution time of the pipeline
+# Depends on: dev
+dev-e2e-tests: 
+    services:
+      - name: mongo
+        id: mongo:3.2.11
+      - name: redis
+        id: redis:3.2.5-alpine
+        cmd: redis-server
+    steps:
+        - script:
+            name: start xvfb and sleep 3 seconds
+            code: |
+              # Start xvfb which gives the context an virtual display
+              # which is required for tests that require an GUI
+              export DISPLAY=:99.0
+              start-stop-daemon --start --quiet --pidfile /tmp/xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset
+              # Give xvfb time to start. 3 seconds is the default for all xvfb-run commands.
+              sleep 3
+              xdpyinfo -display :0 >/dev/null 2>&1 && echo "xvfb in use" || echo "xvfb free"
+        - script:
+            name: setting up environment
+            code: |
+                  export MONGO_DB_NAME=asq
+                  export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
+                  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+                  export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        # Need to start ASQ for e2e tests
+        - script:
+            name: start ASQ and sleep 20 seconds
+            code: |
+              # TODO: define a programmatic way to start ASQ and check for its availability
+              # TODO: control also the nginx log to reduce the logged data
+              LOG_APPLICATION_LEVEL="error" LOG_APPLICATION_FILE="/dev/null" npm run start > /dev/stdout &
+              sleep 20
+        # - internal/shell
+        - script:
+            name: seed sample data and run nightwatch
+            code: DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
 
 ####### THE FOLLOWING PIPELINES ARE DEFINED FOR WERCKER CLOUD #######
 
@@ -113,17 +182,19 @@ dev-tests:
 #       the pipeline (if it is faster)
 # NOTE: Name when split: build-initial:
 build:
+    services:
+      - name: mongo
+        id: mongo:3.2.11
+      - name: redis
+        id: redis:3.2.5-alpine
+        cmd: redis-server
     steps:
-        # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
         # NOTE: install all the dependencies, now that the pipelines are collapsed
-        # - wercker/npm-install@1.1.4:
-        #     use-cache: true
-        #     clear-cache-on-failed: false
-        #     options: --unsafe-perm --production
-        - wercker/npm-install@1.1.4:
-            use-cache: true
-            clear-cache-on-failed: false
-            options: --unsafe-perm
+        - nicka/yarn@1.0.0:
+            name: install dependencies
+            options: --ignore-engines --force
+            production: false
+            cache: true
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -145,10 +216,11 @@ build:
     # steps:
 
         # TODO: evaluate, after pinning the dependencies, if the following step can be further improved
-        # - wercker/npm-install@1.1.4:
-        #     use-cache: true
-        #     clear-cache-on-failed: false
-        #     options: --unsafe-perm
+        # - nicka/yarn@1.0.0:
+        #     name: prune development dependencies
+        #     options: --ignore-engines --force
+        #     production: false
+        #     cache: true
         - wercker/npm-test@0.0.3
         # TODO: improve the following step, if slow, to store the plugin folder
         #       and use the cache. 
@@ -170,7 +242,7 @@ build:
         - script:
             name: build ASQ
             cwd: $WERCKER_SOURCE_DIR
-            code: npm run build
+            code: npm run build:pro
         - script:
             # If you want to update environment dependencies, refer to the ENV
             # variables set on top of the references script
@@ -192,11 +264,16 @@ build:
                   else
                      echo 'Skipping step, because you are not authorized'
                   fi
-        - script:
+       
+
+# It is a separate step from push-dev-release because we need the dev wercker box
+clean-up-for-release:
+    steps:
+        - nicka/yarn@1.0.0:
             name: prune development dependencies
-            # Set the working folder, so we can refer to files in that context
-            cwd: $WERCKER_SOURCE_DIR
-            code: npm prune --production
+            options: --ignore-engines
+            production: true
+            cache: true
         # TODO: in case we need to use the copy alternative, refer to:
         #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
         #TODO@triglian: check if we should exclude other files     
@@ -213,7 +290,10 @@ build:
             name: remove files not needed for deployment
             cwd: $WERCKER_SOURCE_DIR
             code: |
-                  if [ "$CI" = true ]; then
+                  # Determine if we are in a CI environment (for now the Wercker Cloud) or not
+                  # Although Wercker suggests to use the CI or WERCKER variables (http://devcenter.wercker.com/docs/environment-variables/available-env-vars)
+                  # , those are true also locally, somehow. WERCKER_STARTED_BY is only set in the Wercker Cloud
+                  if [ -z "$WERCKER_STARTED_BY" ]; then
                     rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .gitignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile
                   else
                     echo 'Skipping step, because not needed for local execution'
@@ -244,22 +324,10 @@ push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
     box:
-      id: asqslide/wercker-box-asq:0.5.0-prod
+      id: asqslide/wercker-box-asq:0.7.2-prod
       username: $DOCKER_HUB_BOX_USERNAME
       password: $DOCKER_HUB_BOX_PASSWORD
     steps:
-    # Remove build dependencies
-    # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
-    # TODO (Decide): we can avoid the following step, if we have two different base boxes (dev and release)
-    - script:
-            name: remove ASQ build dependencies needed up to here in the workflow
-            code: |
-                  apt-get update -q
-                  apt-get remove -y --purge build-essential
-                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
-                  apt-get clean autoclean -y
-                  apt-get autoremove -y
-                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
     - script:
             name: move ASQ to the /ASQ folder
             code: |
@@ -295,7 +363,7 @@ push-dev-release:
         # NOTE: first we push the commit specific image, then the image for the branch
         tag: $DOCKER_IMAGE_CUSTOM_TAG,$WERCKER_GIT_BRANCH
         ports: "80, 443, 3000"
-        volumes: "/mnt, /var/cache/nginx, /ASQ/slides"
+        volumes: "/mnt, /var/cache/nginx, /etc/nginx/ssl, /ASQ/slides"
         working-dir: /ASQ
         env: "ASQDIR=/ASQ"
         cmd: /sbin/my_init

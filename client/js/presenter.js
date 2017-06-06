@@ -121,7 +121,7 @@ this.initPresentationFramework = function(presentationFramework){
 
       case 'reveal.js':
         require.ensure([], function(){
-          var adapter = require('./reveal-asq-fork-asq-adapter.js')
+          var adapter = require('reveal-asq-adapter');
          this.initReveal(adapter);
         }.bind(this))
         break;
@@ -154,7 +154,7 @@ this.initReveal = function(adapter){
     var offset = getUrlVars().offset || 0
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
     // var x = require('./presentationAdapter/adapters');
-    adapter(asi, null, false, offset);
+    adapter.adapter(asi, null, false, offset, 'presenter');
   }catch(err){
     debug(err.toString + err.stack)
   }
@@ -163,7 +163,7 @@ this.initReveal = function(adapter){
 this.setupASQElements = function(role) {
   assert(true, (isString(role) && !!role), 'role should be a non empty string');
   elements.setRole(role);
-  Polymer && Polymer.dom().flush()
+  Polymer &&  Polymer.dom.flush && Polymer.dom.flush()
 }
 
 /**
