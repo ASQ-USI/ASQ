@@ -10,11 +10,11 @@ export slide2htmlCommit=7e572868ebbd1b96b04f53a40c0bfebe9e34a16e
 
 export uiDir=public/ui
 export uiBranch=master
-export uiCommit=94d3b15481b416a987553adfbe8a3af99587cdb5
+export uiCommit=fef1138c3e3cc530c46d2d3cada140e71392bd63
 
 export cockpitDir=public/cockpit
-export cockpitBranch=feat-use-polymer-build
-export cockpitCommit=1cace88d4dff32e3366c1b6c97a3c4b350a6d81f
+export cockpitBranch=master
+export cockpitCommit=c4052a007fd4dc366540f0f14ddfb44bcf710e2c
 
 # Execute the pipeline
 current_folder=$(pwd)
