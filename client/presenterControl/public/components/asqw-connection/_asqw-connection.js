@@ -17,6 +17,7 @@ Polymer({
   ],
 
   events2Forward: [
+    "asq:sessionEventBeamer",
     "asq:sessionFlow",
     "asq:sessionEventPC",
     "asq:folo-connected",
