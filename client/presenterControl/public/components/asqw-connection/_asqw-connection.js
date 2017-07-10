@@ -3,7 +3,7 @@ var debug = require('bows')("asqw-connection")
 
 Polymer({
   is: 'asqw-connection',
-  
+
   socket: null,
   eventBus : null,
 
@@ -17,7 +17,6 @@ Polymer({
   ],
 
   events2Forward: [
-    "asq:sessionEventBeamer",
     "asq:sessionFlow",
     "asq:sessionEventPC",
     "asq:folo-connected",
@@ -50,8 +49,8 @@ Polymer({
     this.eventBus = eventBus;
 
     var socketUrl =  protocol + '//' + host + ":" + port + '/' + namespace;
-    this.socket = io.connect(socketUrl, { 
-      'query': 'token=' + token+'&asq_sid=' + session 
+    this.socket = io.connect(socketUrl, {
+      'query': 'token=' + token+'&asq_sid=' + session
     });
 
     // events related to socket.io
@@ -70,7 +69,7 @@ Polymer({
       }.bind(this));
     }.bind(this));
 
-    // 
+    //
     this.eventBus.on('socket-request', function(evt){
        this.socket.emit(evt.name, evt.detail)
     }.bind(this))

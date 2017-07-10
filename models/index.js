@@ -21,5 +21,5 @@ module.exports = {
   whitelistModel : require('./whitelist'),
   pluginModel : require('./plugin'),
   cockpitModels : require('./cockpit'),
-  sessionEventBeamerModel : require('./beamer')
+  sessionEventBeamerModels : require('./beamer')
 };
