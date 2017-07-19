@@ -21,14 +21,14 @@ module.exports = {
     goToNext: function() {
       this.api
         .keys([this.api.Keys.RIGHT_ARROW])
-        .pause(2000)
+        .pause(3000)
 
       return this.api;
     },
     goToPrev: function() {
       this.api
         .keys([this.api.Keys.LEFT_ARROW])
-        .pause(2000)
+        .pause(3000)
 
       return this.api;
     },

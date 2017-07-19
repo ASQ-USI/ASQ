@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+// require('dotenv').config();
+const conf = require('../config');
+const Promise = require('bluebird');
+const coroutine = Promise.coroutine;
+const path = require('path');
+const mongoose = require('mongoose');
+mongoose.Promise = Promise;
+
+const extractZipArchive = require('../lib/upload/archive').extractZipArchive;
+const data = require('../data/sampleData.js');
+
+
+const dropDb = coroutine(function *dropDbGen(){
+  try{
+    yield mongoose.connect(conf.mongo.mongoUri);
+    console.log(`Dropping database: ${conf.mongo.dbName} ...`);
+    yield mongoose.connection.dropDatabase();
+    console.log('Done!');
+  }catch(err){
+    console.log(err);
+    process.exit(1);
+  }
+});
+
+const populateModels = coroutine(function *populateModelsGen(){
+  try{
+    console.log(`Connecting to ${conf.mongo.dbName} ...`);
+    global.db = mongoose.createConnection(conf.mongo.mongoUri);
+    console.log('Done!')
+
+    const models = require('../models');
+    const order = ['User', 'Slideshow', 'Session', 'WhitelistEntry']
+    yield Promise.mapSeries(order, function(model){
+      console.log(`Creating documents for the ${model} model`);
+      const Model = mongoose.model(model);
+      return Model.create(data[model]).then(function(){
+        console.log(`Model ${model} done!`);
+      });
+    });
+  }catch(err){
+    console.log(err);
+    process.exit(1);
+  }
+});
+
+const copySamplePresentation = coroutine(function *populateModelsGen(){
+  try{
+    // read first slideshow id so that we know the dir name to excreate the preprocessed
+    // presentation
+    const sId = data.Slideshow[0]._id
+
+    const source = path.resolve(__dirname, '../data/samplepresentationprocessed.zip');
+    const destination = path.resolve(__dirname, `../slides/${sId}`);
+    
+    return Promise.promisify(extractZipArchive)(source, destination);
+  }catch(err){
+    console.log(err);
+    process.exit(1);
+  }
+});
+
+const main = coroutine(function *mainGen(){
+  yield dropDb();
+  yield Promise.all([
+    populateModels(),
+    copySamplePresentation()
+  ]);
+
+  process.exit(0);
+})
+
+// async
+main();
