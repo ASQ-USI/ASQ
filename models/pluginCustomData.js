@@ -1,5 +1,5 @@
 /**
- * @module models/pluginInfo
+ * @module models/pluginCustomData
  * @description the mode for additional information created by plugins
 */
 
@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
-const pluginInfoSchema = new Schema({
+const pluginCustomDataSchema = new Schema({
     pluginName : { type: String, required: true },
     type : { type: String, required: true },
     session : { type: ObjectId, ref: 'Session' },
@@ -19,6 +19,6 @@ const pluginInfoSchema = new Schema({
 });
 
 logger.debug('Loading plugins model');
-mongoose.model('PluginInfo', pluginInfoSchema, 'pluginInfos');
+mongoose.model('PluginCustomData', pluginCustomDataSchema, 'pluginCustomDatas');
 
-module.exports = mongoose.model('PluginInfo');
+module.exports = mongoose.model('PluginCustomData');
