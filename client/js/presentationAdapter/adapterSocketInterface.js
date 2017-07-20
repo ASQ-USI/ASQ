@@ -13,11 +13,18 @@
 module.exports = function(asqSocket, bounce){
   bounce = bounce || false
   var debug = require('bows')("adapterSocketInterface")
-  var cbs = [];
+  var goto_cbs = [];
+  var addSlide_cbs = [];
 
   asqSocket.on("asq:goto", function onSocketGoto(evt){
     debug("Reveived goto event:", evt);
     onGotoReceived(evt);
+  });
+
+  asqSocket.on("asq:addSlide", function onSocketAddSlide(evt){
+    console.log("client: received addSlide in socket interface");
+    debug("Reveived addSlide event:", evt);
+    onAddSlideReceived(evt);
   });
 
   var setBounce =  function(val){
@@ -25,10 +32,22 @@ module.exports = function(asqSocket, bounce){
   }
 
   var onGotoReceived = function(evt){
-    for(var i=0, l=cbs.length; i<l; i++){
+    for(var i=0, l=goto_cbs.length; i<l; i++){
       //don't let one bad function affect the rest of them
       try{
-        cbs[i].call(null, evt.data);
+        goto_cbs[i].call(null, evt.data);
+      }catch(err){
+        debug(err.toString() + err.stack);
+      }
+    }
+  }
+
+  var onAddSlideReceived = function(evt) {
+    console.log("onAddSlideReceived in socket interface");
+    for(var i=0, l=addSlide_cbs.length; i<l; i++){
+      //don't let one bad function affect the rest of them
+      try{
+        addSlide_cbs[i].call(null, evt.data);
       }catch(err){
         debug(err.toString() + err.stack);
       }
@@ -39,8 +58,17 @@ module.exports = function(asqSocket, bounce){
     if("function" !== typeof cb){
       throw new Error("cb should be a function")
     }
-    cbs.push(cb)
+    goto_cbs.push(cb)
   }
+
+  var onAddSlide = function(cb) {
+    if("function" !== typeof cb){
+      throw new Error("cb should be a function")
+    }
+    console.log("client: onAddSlide in Socket interface");
+    addSlide_cbs.push(cb)
+  }
+
 
   var emitGoto = function(data){
     debug("Emitting goto data:", data);
@@ -59,6 +87,7 @@ module.exports = function(asqSocket, bounce){
   return{
     setBounce : setBounce,
     onGoto : onGoto,
-    emitGoto: (bounce? bounceGoto: emitGoto)
+    emitGoto: (bounce? bounceGoto: emitGoto),
+    onAddSlide : onAddSlide
   }
 }

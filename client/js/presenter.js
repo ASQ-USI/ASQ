@@ -6,12 +6,12 @@
 
 'use strict';
 
-var debug = require('bows')("presenter")
-  , $ = require('jquery')
-  , EventEmitter2 = require('eventemitter2')
+var debug = __webpack_require__(/*! bows */ 2)("presenter")
+  , $ = __webpack_require__(/*! jquery */ 6)
+  , EventEmitter2 = __webpack_require__(/*! eventemitter2 */ 214)
   // , manager = require('asq-visualization').Manager()
-  , connection = require('./connection.js')
-  , elements = require('./elements.js')
+  , connection = __webpack_require__(/*! ./connection.js */ 213)
+  , elements = __webpack_require__(/*! ./elements.js */ 226)
   , eventBus = new EventEmitter2({delimiter: ':', maxListeners: 100})
   , ASQ = {}; //object that will be passed to components
 
@@ -31,7 +31,6 @@ function isEmpty(val){
 }
 
 this.init = function(event) {
-
   // dialog to display messages
   var dialog = document.createElement('paper-dialog');
   dialog.id="app-dialog";
@@ -102,7 +101,8 @@ this.connect = function(){
     "asq:question_type",
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
-    "asq-plugin"
+    "asq-plugin",
+    "asq:addSlide"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -112,15 +112,15 @@ this.initPresentationFramework = function(presentationFramework){
   try{
     switch(presentationFramework){
       case 'impress.js':
-        require.ensure([], function(){
-          var adapter = require('impress-asq-fork-asq-adapter');
+        __webpack_require__.e/* nsure */(2/* duplicate */, function(){
+          var adapter = __webpack_require__(/*! impress-asq-fork-asq-adapter */ 69);
           this.initImpress(adapter);
         }.bind(this))
         break;
 
       case 'reveal.js':
-        require.ensure([], function(){
-          var adapter = require('reveal-asq-adapter');
+        __webpack_require__.e/* nsure */(3/* duplicate */, function(){
+          var adapter = __webpack_require__(/*! reveal-asq-adapter */ 73);
          this.initReveal(adapter);
         }.bind(this))
         break;
@@ -137,10 +137,10 @@ this.initImpress = function(adapter){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0
-    var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
+    var asi = __webpack_require__(/*! ./presentationAdapter/adapterSocketInterface */ 67)(connection.socket);
     // require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
     adapter.adapter(asi, null, false, offset);
-    var impress = require('./impress-asq');
+    var impress = __webpack_require__(/*! ./impress-asq */ 227);
     impress().init();
   }catch(err){
     debug(err.toString + err.stack)
@@ -151,7 +151,7 @@ this.initReveal = function(adapter){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0
-    var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
+    var asi = __webpack_require__(/*! ./presentationAdapter/adapterSocketInterface */ 67)(connection.socket);
     // var x = require('./presentationAdapter/adapters');
     adapter.adapter(asi, null, false, offset, 'presenter');
   }catch(err){
@@ -214,6 +214,11 @@ this.subscribeToEvents= function (){
   })
   .on('asq-plugin', function(evt){
     connection.socket.emit('asq-plugin', evt);
+  })
+
+  .on('asq:addSlide', function(evt) {
+    console.log("client: got add slide on presenter.js");
+    connection.socket.emit('asq:addSlide', evt);
   });
 }
 
@@ -256,11 +261,11 @@ if (!webComponentsSupported) {
 // function connect(host, port, session, mode){
 //   debug('Connecting to socket server');
 //   var socketUrl =  window.location.protocol + '//' + host + '/ctrl';
-//   var socket = io.connect(socketUrl, { 
-//     'query': 'asq_sid=' + session 
+//   var socket = io.connect(socketUrl, {
+//     'query': 'asq_sid=' + session
 //   });
 
-  
+
 //   //init presentation adapter
 //   try{
 //     var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
@@ -275,7 +280,7 @@ if (!webComponentsSupported) {
 //     // socket.emit('asq:admin', { //unused
 //     //  session : session
 //     // });
-    
+
 
 //     $('.connected-viewers-number').text("0 viewers connected")
 
@@ -618,7 +623,7 @@ if (!webComponentsSupported) {
 //       }
 //     }
 //   }
-//   else if($question.hasClass('text-input') 
+//   else if($question.hasClass('text-input')
 //     || $question.hasClass('asq-css-select')
 //     || $question.hasClass('asq-js-function-body')){
 //     requestDistinct(questionId)
@@ -705,4 +710,3 @@ if (!webComponentsSupported) {
 // module.exports={
 //   connect: connect
 // }
-
