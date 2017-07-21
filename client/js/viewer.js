@@ -192,8 +192,7 @@ this.subscribeToEvents= function (){
   })
 
   .on('asq:addSlide', function(evt) {
-  evt.data.noStore = true;
-  connection.socket.emit('asq:addSlide', evt);
+    connection.socket.emit('asq:addSlide', evt);
   })
 
   .on('asq:sessionFlow', function(evt) {
