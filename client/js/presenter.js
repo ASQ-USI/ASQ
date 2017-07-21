@@ -217,7 +217,6 @@ this.subscribeToEvents= function (){
   })
 
   .on('asq:addSlide', function(evt) {
-    console.log("client: got add slide on presenter.js");
     connection.socket.emit('asq:addSlide', evt);
   });
 }

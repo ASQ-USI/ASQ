@@ -1,31 +1,31 @@
 /**
-*  @fileoverview adapterSocketInterface.js
-*  @description  provides presentation adapters with methods to interface
-* with ASQ sockets
-*
-*/
+	*  @fileoverview adapterSocketInterface.js
+	*  @description  provides presentation adapters with methods to interface
+	* with ASQ sockets
+	*
+	*/
 
 
 /**
-* @param {Object} asqSocket the client side asq socket
-*/
+	* @param {Object} asqSocket the client side asq socket
+	*/
 
 module.exports = function(asqSocket, bounce){
   bounce = bounce || false
-  var debug = require('bows')("adapterSocketInterface")
+  var debug = __webpack_require__(/*! bows */ 2)("adapterSocketInterface")
   var goto_cbs = [];
-  var addSlide_cbs = [];
+	var addSlide_cbs = [];
 
-  asqSocket.on("asq:goto", function onSocketGoto(evt){
-    debug("Reveived goto event:", evt);
-    onGotoReceived(evt);
-  });
+	asqSocket.on("asq:goto", function onSocketGoto(evt){
+		debug("Reveived goto event:", evt);
+		onGotoReceived(evt);
+	});
 
-  asqSocket.on("asq:addSlide", function onSocketAddSlide(evt){
-    console.log("client: received addSlide in socket interface");
-    debug("Reveived addSlide event:", evt);
-    onAddSlideReceived(evt);
-  });
+	asqSocket.on("asq:addSlide", function onSocketAddSlide(evt){
+		debug("Reveived addSlide event:", evt);
+		onAddSlideReceived(evt);
+	});
+
 
   var setBounce =  function(val){
     bounce = !! val;
@@ -42,17 +42,17 @@ module.exports = function(asqSocket, bounce){
     }
   }
 
-  var onAddSlideReceived = function(evt) {
-    console.log("onAddSlideReceived in socket interface");
-    for(var i=0, l=addSlide_cbs.length; i<l; i++){
-      //don't let one bad function affect the rest of them
-      try{
-        addSlide_cbs[i].call(null, evt.data);
-      }catch(err){
-        debug(err.toString() + err.stack);
-      }
-    }
-  }
+	var onAddSlideReceived = function(evt) {
+		for(var i=0, l=addSlide_cbs.length; i<l; i++){
+			//don't let one bad function affect the rest of them
+			try{
+				addSlide_cbs[i].call(null, evt.data);
+			}catch(err){
+				debug(err.toString() + err.stack);
+			}
+		}
+	}
+
 
   var onGoto = function(cb){
     if("function" !== typeof cb){
@@ -61,14 +61,12 @@ module.exports = function(asqSocket, bounce){
     goto_cbs.push(cb)
   }
 
-  var onAddSlide = function(cb) {
-    if("function" !== typeof cb){
-      throw new Error("cb should be a function")
-    }
-    console.log("client: onAddSlide in Socket interface");
-    addSlide_cbs.push(cb)
-  }
-
+	var onAddSlide = function(cb) {
+		if("function" !== typeof cb){
+			throw new Error("cb should be a function")
+		}
+		addSlide_cbs.push(cb);
+	}
 
   var emitGoto = function(data){
     debug("Emitting goto data:", data);
@@ -84,10 +82,10 @@ module.exports = function(asqSocket, bounce){
     debug("Data was bounced:");
   }
 
-  return{
+  return {
     setBounce : setBounce,
     onGoto : onGoto,
     emitGoto: (bounce? bounceGoto: emitGoto),
-    onAddSlide : onAddSlide
+		onAddSlide : onAddSlide
+		}
   }
-}
