@@ -1,5 +1,5 @@
-/** @module models/presenterControl/sessionEventCockpit
-    @description a SessionEvent Model to hold denormalized sessionEvents for presenter control
+/** @module models/cockpit/sessionEventCockpit
+    @description a SessionEvent Model to hold denormalized sessionEvents for the cockpit
 */
 
 var mongoose   = require('mongoose')

@@ -1,9 +1,7 @@
-/** @module models/presenterControl/index
-    @description Exposes modules under models/presenterControl
+/** @module models/cockpit/index
+    @description Exposes modules under models/cockpit
 */
 
-// Order is important here!!
-
 module.exports = {
-  sessionEventCockpitModel       : require('./sessionEventCockpit')
+  sessionEventCockpitModel: require('./sessionEventCockpit')
 };
