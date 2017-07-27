@@ -6,12 +6,13 @@
 
 'use strict';
 
-var debug = __webpack_require__(/*! bows */ 2)("presenter")
-  , $ = __webpack_require__(/*! jquery */ 6)
-  , EventEmitter2 = __webpack_require__(/*! eventemitter2 */ 214)
+var debug = require('bows')("presenter")
+  , $ = require('jquery')
+  , EventEmitter2 = require('eventemitter2')
   // , manager = require('asq-visualization').Manager()
-  , connection = __webpack_require__(/*! ./connection.js */ 213)
-  , elements = __webpack_require__(/*! ./elements.js */ 226)
+  , connection = require('./connection.js')
+  , elements = require('./elements.js')
+
   , eventBus = new EventEmitter2({delimiter: ':', maxListeners: 100})
   , ASQ = {}; //object that will be passed to components
 
@@ -112,15 +113,17 @@ this.initPresentationFramework = function(presentationFramework){
   try{
     switch(presentationFramework){
       case 'impress.js':
-        __webpack_require__.e/* nsure */(2/* duplicate */, function(){
-          var adapter = __webpack_require__(/*! impress-asq-fork-asq-adapter */ 69);
+        require.ensure([], function(){
+          var adapter = require('impress-asq-fork-asq-adapter');
+
           this.initImpress(adapter);
         }.bind(this))
         break;
 
       case 'reveal.js':
-        __webpack_require__.e/* nsure */(3/* duplicate */, function(){
-          var adapter = __webpack_require__(/*! reveal-asq-adapter */ 73);
+        require.ensure([], function(){
+          var adapter = require('reveal-asq-adapter');
+
          this.initReveal(adapter);
         }.bind(this))
         break;
@@ -137,10 +140,10 @@ this.initImpress = function(adapter){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0
-    var asi = __webpack_require__(/*! ./presentationAdapter/adapterSocketInterface */ 67)(connection.socket);
+    var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
     // require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
     adapter.adapter(asi, null, false, offset);
-    var impress = __webpack_require__(/*! ./impress-asq */ 227);
+    var impress = require('./impress-asq');
     impress().init();
   }catch(err){
     debug(err.toString + err.stack)
@@ -151,7 +154,7 @@ this.initReveal = function(adapter){
   //init presentation adapter
   try{
     var offset = getUrlVars().offset || 0
-    var asi = __webpack_require__(/*! ./presentationAdapter/adapterSocketInterface */ 67)(connection.socket);
+    var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
     // var x = require('./presentationAdapter/adapters');
     adapter.adapter(asi, null, false, offset, 'presenter');
   }catch(err){

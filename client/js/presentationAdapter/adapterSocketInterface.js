@@ -11,8 +11,8 @@
 	*/
 
 module.exports = function(asqSocket, bounce){
-  bounce = bounce || false
-  var debug = __webpack_require__(/*! bows */ 2)("adapterSocketInterface")
+  bounce = bounce || false;
+  var debug = require('bows')("adapterSocketInterface");
   var goto_cbs = [];
 	var addSlide_cbs = [];
 
