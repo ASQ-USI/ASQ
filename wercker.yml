@@ -1,7 +1,11 @@
 # TODO: if Wercker is gonna support aliases, we can define the version in a settings section
 # MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 box:
+<<<<<<< HEAD
   id: asqslide/wercker-box-asq:0.8.0-dev
+=======
+  id: asqslide/wercker-box-asq:0.7.2-dev
+>>>>>>> cbba18a... Bumps Dev Wercker Box to 0.7.2
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
