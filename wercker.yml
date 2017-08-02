@@ -5,7 +5,7 @@ box:
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
-    - "3000:3000"
+    - "80:80"
 
 # TODO: add .werckerignore, when this it is gonna be supported (https://github.com/wercker/wercker/issues/62)
 # TODO: evaluate if there is a way to avoid duplication across pipelines 
@@ -88,9 +88,19 @@ dev:
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
-        # - internal/shell
+                  export HOST='0.0.0.0'
+                  export REVERSE_PROXY_HOST='0.0.0.0'
+                  export REVERSE_PROXY_SECURE='false'
+                  export USE_REVERSE_PROXY='true'
+        - internal/shell
+        # Resemble production settings of ASQ
         - internal/watch:
-            code: $NPM_RUN_COMMAND
+            code: |
+              $NPM_RUN_COMMAND
+              sleep 20
+              # rely on the script used by runit to start nginx
+              /etc/service/nginx/run &
+              sleep 10
             reload: false
         # - internal/store-container
 
@@ -116,6 +126,13 @@ dev-start-asq:
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        # Resemble production settings of ASQ
+        - script:
+            name: start nginx and sleep 10 seconds
+            # rely on the script used by runit to start nginx
+            code: |
+              /etc/service/nginx/run > /dev/stdout &
+              sleep 10
         # - internal/shell
         - internal/watch:
             code: $NPM_RUN_COMMAND
@@ -131,6 +148,7 @@ dev-unit-tests:
 
 # NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
 #       By assuming what stated above, we speed up the execution time of the pipeline
+# NOTE: this pipeline start ASQ in a production like setting, relying on nginx
 # Depends on: dev
 dev-e2e-tests: 
     services:
@@ -157,13 +175,23 @@ dev-e2e-tests:
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        # Resemble production settings of ASQ
+        - script:
+            name: start nginx and sleep 10 seconds
+            # rely on the script used by runit to start nginx
+            code: |
+              /etc/service/nginx/run > /dev/stdout &
+              sleep 10
+        # - internal/shell
         # Need to start ASQ for e2e tests
         - script:
             name: start ASQ and sleep 20 seconds
             code: |
               # TODO: define a programmatic way to start ASQ and check for its availability
               # TODO: control also the nginx log to reduce the logged data
-              LOG_APPLICATION_LEVEL="error" LOG_APPLICATION_FILE="/dev/null" npm run start > /dev/stdout &
+              # rely on the script used by runit to start asq
+              export ASQDIR=$(pwd)
+              LOG_APPLICATION_LEVEL="error" LOG_APPLICATION_FILE="/dev/null" /etc/service/asq/run > /dev/stdout &
               sleep 20
         # - internal/shell
         - script:
@@ -283,13 +311,23 @@ build:
                   export MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
                   export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
                   export NGINX_CLIENT_MAX_BODY_SIZE='100m'
+        # Resemble production settings of ASQ
+        - script:
+            name: e2e - start nginx and sleep 10 seconds
+            # rely on the script used by runit to start nginx
+            code: |
+              /etc/service/nginx/run > /dev/stdout &
+              sleep 10
+        # - internal/shell
         # Need to start ASQ for e2e tests
         - script:
             name: e2e - start ASQ and sleep 20 seconds
             code: |
               # TODO: define a programmatic way to start ASQ and check for its availability
               # TODO: control also the nginx log to reduce the logged data
-              LOG_APPLICATION_LEVEL="error" LOG_APPLICATION_FILE="/dev/null" npm run start > /dev/stdout &
+              # rely on the script used by runit to start asq
+              export ASQDIR=$(pwd)
+              LOG_APPLICATION_LEVEL="error" LOG_APPLICATION_FILE="/dev/null" /etc/service/asq/run > /dev/stdout &
               sleep 20
         # - internal/shell
         - script:
@@ -354,7 +392,7 @@ push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
     box:
-      id: asqslide/wercker-box-asq:0.7.0-prod
+      id: asqslide/wercker-box-asq:0.7.2-prod
       username: $DOCKER_HUB_BOX_USERNAME
       password: $DOCKER_HUB_BOX_PASSWORD
     steps:
