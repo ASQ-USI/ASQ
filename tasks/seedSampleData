@@ -31,7 +31,7 @@ const populateModels = coroutine(function *populateModelsGen(){
     console.log('Done!')
 
     const models = require('../models');
-    const order = ['User', 'Slideshow', 'Session', 'WhitelistEntry']
+    const order = ['User', 'Question', 'Exercise', 'Slideshow', 'Session', 'WhitelistEntry']
     yield Promise.mapSeries(order, function(model){
       console.log(`Creating documents for the ${model} model`);
       const Model = mongoose.model(model);
