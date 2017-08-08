@@ -142,9 +142,9 @@ this.initImpress = function(adapter){
     var offset = getUrlVars().offset || 0
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
     // require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
-    adapter.adapter(asi, null, false, offset);
     var impress = require('./impress-asq');
     impress().init();
+    adapter.adapter(asi, null, false, offset, impress().newStep);
   }catch(err){
     debug(err.toString + err.stack)
   }
