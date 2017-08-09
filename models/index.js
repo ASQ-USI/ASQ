@@ -20,5 +20,6 @@ module.exports = {
   sessionModel : require('./session'),
   whitelistModel : require('./whitelist'),
   pluginModel : require('./plugin'),
-  cockpitModels : require('./cockpit')
+  cockpitModels : require('./cockpit'),
+  pluginCustomDataModel : require('./pluginCustomData'),
 };
