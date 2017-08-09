@@ -310,9 +310,9 @@ this.initImpress = function(adapter){
     var offset = getUrlVars().offset || 0
     // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    adapter.adapter(asi, null, false, offset);
     var impress = require('./impress-asq');
     impress().init();
+    adapter.adapter(asi, null, false, offset, impress().newStep);
   }catch(err){
     debug(err.toString + err.stack)
   }
