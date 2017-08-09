@@ -15,6 +15,7 @@ module.exports = function(asqSocket, bounce){
   var debug = require('bows')("adapterSocketInterface");
   var goto_cbs = [];
 	var addSlide_cbs = [];
+  var removeSlide_cbs = [];
 
 	asqSocket.on("asq:goto", function onSocketGoto(evt){
 		debug("Reveived goto event:", evt);
@@ -26,6 +27,11 @@ module.exports = function(asqSocket, bounce){
 		onAddSlideReceived(evt);
 	});
 
+  asqSocket.on("asq:removeSlide", function onSocketRemoveSlide(evt){
+    debug("Reveived removeSlide event:", evt);
+    onRemoveSlideReceived(evt);
+  });
+
 
   var setBounce =  function(val){
     bounce = !! val;
@@ -36,7 +42,8 @@ module.exports = function(asqSocket, bounce){
       //don't let one bad function affect the rest of them
       try{
         goto_cbs[i].call(null, evt.data);
-      }catch(err){
+      }
+      catch(err){
         debug(err.toString() + err.stack);
       }
     }
@@ -47,12 +54,24 @@ module.exports = function(asqSocket, bounce){
 			//don't let one bad function affect the rest of them
 			try{
 				addSlide_cbs[i].call(null, evt.data);
-			}catch(err){
+			}
+      catch(err){
 				debug(err.toString() + err.stack);
 			}
 		}
 	}
 
+  var onRemoveSlideReceived = function(evt) {
+    for(var i=0, l=removeSlide_cbs.length; i<l; i++){
+      //don't let one bad function affect the rest of them
+      try{
+        removeSlide_cbs[i].call(null, evt.data);
+      }
+      catch(err){
+        debug(err.toString() + err.stack);
+      }
+    }
+  }
 
   var onGoto = function(cb){
     if("function" !== typeof cb){
@@ -67,6 +86,13 @@ module.exports = function(asqSocket, bounce){
 		}
 		addSlide_cbs.push(cb);
 	}
+
+  var onRemoveSlide = function(cb) {
+    if("function" !== typeof cb){
+      throw new Error("cb should be a function")
+    }
+    removeSlide_cbs.push(cb);
+  }
 
   var emitGoto = function(data){
     debug("Emitting goto data:", data);
@@ -83,9 +109,10 @@ module.exports = function(asqSocket, bounce){
   }
 
   return {
-    setBounce : setBounce,
-    onGoto : onGoto,
-    emitGoto: (bounce? bounceGoto: emitGoto),
-		onAddSlide : onAddSlide
+      setBounce : setBounce,
+      onGoto : onGoto,
+      emitGoto: (bounce? bounceGoto: emitGoto),
+  		onAddSlide : onAddSlide,
+      onRemoveSlide : onRemoveSlide
 		}
   }
