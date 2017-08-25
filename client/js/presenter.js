@@ -86,6 +86,7 @@ this.readSessionInfo = function(){
 
 this.connect = function(){
   var events2Forward = [
+    "asq:sessionEventBeamer",
     "asq:sessionFlow",
     "asq:folo-connected",
     "asq:ctrl-connected",
@@ -256,11 +257,11 @@ if (!webComponentsSupported) {
 // function connect(host, port, session, mode){
 //   debug('Connecting to socket server');
 //   var socketUrl =  window.location.protocol + '//' + host + '/ctrl';
-//   var socket = io.connect(socketUrl, { 
-//     'query': 'asq_sid=' + session 
+//   var socket = io.connect(socketUrl, {
+//     'query': 'asq_sid=' + session
 //   });
 
-  
+
 //   //init presentation adapter
 //   try{
 //     var asi = require('./presentationAdapter/adapterSocketInterface')(socket);
@@ -275,7 +276,7 @@ if (!webComponentsSupported) {
 //     // socket.emit('asq:admin', { //unused
 //     //  session : session
 //     // });
-    
+
 
 //     $('.connected-viewers-number').text("0 viewers connected")
 
@@ -618,7 +619,7 @@ if (!webComponentsSupported) {
 //       }
 //     }
 //   }
-//   else if($question.hasClass('text-input') 
+//   else if($question.hasClass('text-input')
 //     || $question.hasClass('asq-css-select')
 //     || $question.hasClass('asq-js-function-body')){
 //     requestDistinct(questionId)
@@ -705,4 +706,3 @@ if (!webComponentsSupported) {
 // module.exports={
 //   connect: connect
 // }
-
