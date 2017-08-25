@@ -20,7 +20,7 @@ module.exports = {
           .setValue('@usernameField', username)
           .setValue('@passwordField', [password, this.api.Keys.ENTER]);
           this.api.pause(200);
-          this.waitForElementPresent('body', 1000);
+          this.waitForElementPresent('body', 10000);
 
       return this.api;
     },
@@ -31,7 +31,7 @@ module.exports = {
           .setValue('@passwordField', password)
           .click('@submit');
           this.api.pause(200);
-          this.waitForElementPresent('body', 1000);
+          this.waitForElementPresent('body', 10000);
 
       return this.api;
     }
