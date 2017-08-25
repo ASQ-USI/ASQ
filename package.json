@@ -183,7 +183,7 @@
     "bunyan": "^1.4.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^5.0.0",
-    "chromedriver": "^2.26.1",
+    "chromedriver": "^2.31.0",
     "css-loader": "^0.14.4",
     "docker-hub-api": "^0.5.1",
     "dotenv": "~2.0.0",
