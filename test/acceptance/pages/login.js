@@ -16,7 +16,7 @@ module.exports = {
   commands: [{
     loginUserWithEnterKey: function(username, password) {
       this
-          .waitForElementVisible('body', 1000)
+          .waitForElementVisible('body', 10000)
           .setValue('@usernameField', username)
           .setValue('@passwordField', [password, this.api.Keys.ENTER]);
           this.api.pause(200);
@@ -26,7 +26,7 @@ module.exports = {
     },
     loginUser: function(username, password) {
       this
-          .waitForElementVisible('body', 1000)
+          .waitForElementVisible('body', 10000)
           .setValue('@usernameField', username)
           .setValue('@passwordField', password)
           .click('@submit');
