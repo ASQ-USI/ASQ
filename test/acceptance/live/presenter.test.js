@@ -9,7 +9,6 @@ const viewer = 'viewer';
 module.exports = {
   before : function(browser) {
     // open one `beamer` and one `viewer` view
-
     browser
       .login(browser.globals.users.normalUser.username, browser.globals.users.normalUser.password)
       .page.presentations().navigate();
@@ -44,9 +43,9 @@ module.exports = {
         // wait until presenter and viewer are initialized
         browser
           .switchWindow(beamerWindow)
-          .waitForPresentationInitialized(5000)
+          .waitForPresentationInitialized(30000)
           .switchWindow(viewerWindow)
-          .waitForPresentationInitialized(5000);
+          .waitForPresentationInitialized(30000);
       });
   },
   'can navigate the presentation' : function (browser) {
@@ -55,7 +54,7 @@ module.exports = {
       .switchWindow(beamerWindow);
 
     livePage
-      .waitForElementVisible('@asqWelcome', 10000);
+      .waitForElementVisible('@asqWelcome', 30000);
 
     browser
       .execute(function(data){

@@ -23,6 +23,7 @@ logger.initialize({
   ]
 });
 
+
 // Globals : mongoose, db, and schemas
 var Promise         = require('bluebird');
 global.mongoose   = require('mongoose');
@@ -111,6 +112,14 @@ var init = coroutine(function *initGen () {
   process.on ('SIGTERM', gracefulShutdown);
   // listen for INT signal e.g. Ctrl-C
   process.on ('SIGINT', gracefulShutdown); 
+
+  process.on('uncaughtException', (err) => {
+    logger.error({
+      err: err,
+      stacktrace: err.stack
+    }, "uncaught error");
+    gracefulShutdown();
+  });
 });
 
 
