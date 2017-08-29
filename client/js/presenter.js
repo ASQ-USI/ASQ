@@ -144,8 +144,9 @@ this.initImpress = function(adapter){
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
     // require('./presentationAdapter/adapters').impressAsqFork.adapter(asi, null, false, offset);
     var impress = require('./impress-asq');
-    impress().init();
-    adapter.adapter(asi, null, false, offset, impress().newStep);
+    var printing = window.location.search.match(/print-pdf/gi);
+    if (!printing) impress().init();
+    adapter.adapter(asi, null, false, offset, impress().newStep, printing);
   }catch(err){
     debug(err.toString + err.stack)
   }
