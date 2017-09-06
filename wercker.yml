@@ -96,11 +96,19 @@ dev:
         # Resemble production settings of ASQ
         - internal/watch:
             code: |
-              $NPM_RUN_COMMAND
-              sleep 20
+              # Resemble production configuration
+              ln -s /pipeline/source /ASQ
               # rely on the script used by runit to start nginx
-              /etc/service/nginx/run &
-              sleep 10
+              env
+              # TODO: @VF debug why it is not selecting the right nginx configuration and apply to all the cases
+              # /etc/service/nginx/run &
+              dockerize -template /etc/nginx/tmp/asq.template:/etc/nginx/sites-available/default.conf
+              ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+              # Tweak nginx to match the workers to cpu's
+              procs=$(cat /proc/cpuinfo | grep processor | wc -l) && sed -i -e "s/worker_processes 1;/worker_processes $procs;/" /etc/nginx/nginx.conf
+              nginx &
+              sleep 20
+              $NPM_RUN_COMMAND
             reload: false
         # - internal/store-container
 
@@ -131,8 +139,12 @@ dev-start-asq:
             name: start nginx and sleep 10 seconds
             # rely on the script used by runit to start nginx
             code: |
-              /etc/service/nginx/run > /dev/stdout &
-              sleep 10
+              # Resemble production configuration
+              ln -s /pipeline/source /ASQ
+              # rely on the script used by runit to start nginx
+              /etc/service/nginx/run &
+              sleep 20
+              $NPM_RUN_COMMAND
         # - internal/shell
         - internal/watch:
             code: $NPM_RUN_COMMAND
@@ -180,8 +192,12 @@ dev-e2e-tests:
             name: start nginx and sleep 10 seconds
             # rely on the script used by runit to start nginx
             code: |
-              /etc/service/nginx/run > /dev/stdout &
-              sleep 10
+              # Resemble production configuration
+              ln -s /pipeline/source /ASQ
+              # rely on the script used by runit to start nginx
+              /etc/service/nginx/run &
+              sleep 20
+              $NPM_RUN_COMMAND
         # - internal/shell
         # Need to start ASQ for e2e tests
         - script:
