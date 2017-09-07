@@ -14,7 +14,7 @@ function WaitForPresentationInitialized(){
 util.inherits(WaitForPresentationInitialized, events.EventEmitter);
 
 /**
- * Waits a given time in milliseconds for the prsentation to be initialized in the page before performing any other commands or assertions.
+ * Waits a given time in milliseconds for the presentation to be initialized in the page before performing any other commands or assertions.
  *
  * If the presentation fails to be initialized in the specified amount of time, the test fails. You can change this by setting `abortOnFailure` to `false`.
  *
