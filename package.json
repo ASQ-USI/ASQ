@@ -24,7 +24,7 @@
     "test": "npm run test:unit",
     "test:unit": "NODE_ENV=test mocha --reporter spec --bail --check-leaks test/unit/*",
     "//1.1": "TODO: find a better way to cleanup tmp file left by selenium in case of errors",
-    "test:e2e": "NODE_ENV=test npm run seedSampleData && nightwatch --config ./nightwatch.conf; test_exit_code=$?; rm -Rf pulse* .com.google.Chrome* .org.chromium.Chromium* slides/*; exit \"$test_exit_code\"",
+    "test:e2e": "NODE_ENV=test npm run seedSampleData && nightwatch --config ./nightwatch.conf; test_exit_code=$?; rm -Rf pdf2htmlEX* pulse* .com.google.Chrome* .org.chromium.Chromium* slides/*; exit \"$test_exit_code\"",
     "seedSampleData": "tasks/seedSampleData",
     "start-dev": "NODE_ENV=development nodemon app.js dotenv_config_silent=true| bunyan",
     "start": "NODE_ENV=production node -r dotenv/config app.js dotenv_config_silent=true",
