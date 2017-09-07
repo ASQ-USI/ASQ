@@ -21,8 +21,10 @@ module.exports = {
       .assert.value('@presentationTitleInput', 'samplepresentation', 'Set title from presentation filename.')
       .click('@uploadBtn');
 
+    browser.pause(10000);
+
     browser.page.presentations()
-      .waitForElementVisible('@presentationsBody', 5000, 'After the upload it should redirect to the presentations page');
+      .waitForElementVisible('@presentationsBody', 10000, 'After the upload it should redirect to the presentations page');
     browser.end();
   },
   'upload pdf' : function (browser) {
