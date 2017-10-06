@@ -253,8 +253,8 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
     newSession.data = {
       activeViewerQuestion: null,
       questions: [],
+      studentQuestionsEnabled: false,
     };
-
     newSession.markModified('data');
     const userPromise = User
       .findById(req.user._id)

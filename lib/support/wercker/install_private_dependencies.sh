@@ -10,11 +10,11 @@ export slide2htmlCommit=7e572868ebbd1b96b04f53a40c0bfebe9e34a16e
 
 export uiDir=public/ui
 export uiBranch=master
-export uiCommit=94d3b15481b416a987553adfbe8a3af99587cdb5
+export uiCommit=07f7c55f7f82f5777a5351ff848fb22abc62fb1e
 
 export cockpitDir=public/cockpit
-export cockpitBranch=feat-student-question-events
-export cockpitCommit=9ab5af531e4ff0ea51d7c2cc14a7a6f9aa11b33e
+export cockpitBranch=feat-student-question-events-rebased
+export cockpitCommit=6fd94538e9b2708f30fd29989a269b06f6fa1051
 
 # Execute the pipeline
 current_folder=$(pwd)
