@@ -108,12 +108,7 @@ this.connect = function(){
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
     "asq-plugin",
-    "live-app",
-    "share-student-question",
-    "student-question-rated",
-    'update-student-questions',
-    'close-modal',
-    'toggle-student-questions'
+    "asq:live-app",
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -155,46 +150,6 @@ this.subscribeToEvents= function (){
     if (normalizedEvent.localTarget.tagName == "ASQ-LIVE-APP"){
       connection.socket.emit('live-app', evt.detail);
     }
-  })
-  eventBus.on('share-student-question', function (question) {
-    const selector = 'ASQ-LIVE-APP';
-    const app = retrieveElementBySelector(selector);
-    if (app !== undefined) 
-      app.showQuestion(question);
-  });
-
-  eventBus.on('student-question-rated', function (evt) {
-    const selector = 'ASQ-LIVE-APP';
-    const app = retrieveElementBySelector(selector);
-    if (app !== undefined)  
-      app.questionRated(evt.data.question);
-  });
-
-  eventBus.on('update-student-questions', function (evt) {
-    const selector = 'ASQ-LIVE-APP';
-    const app = retrieveElementBySelector(selector);
-    if (evt && evt.data !== undefined && app !== undefined) {
-      const questions = evt.data.questions;
-      app.updateQuestions(questions);
-    }
-
-  });
-
-  eventBus.on('toggle-student-questions', function (evt) {
-    const selector = 'ASQ-LIVE-APP';
-    const studentQuestionsEnabled = evt.studentQuestionsEnabled;
-    const app = retrieveElementBySelector(selector);
-    if (studentQuestionsEnabled !== undefined && app !== undefined) {
-      app.updateQuestionsStatus(studentQuestionsEnabled);
-    }
-
-  });
-
-  eventBus.on('close-modal', function (evt) {
-    const selector = 'ASQ-LIVE-APP';
-    const app = retrieveElementBySelector(selector);
-    if (app !== undefined) 
-      app.closeModal();
   });
 }
 
