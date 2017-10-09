@@ -37,9 +37,6 @@ function isEmpty(val){
   return !val;
 }
 
-function retrieveElementBySelector(selector) {
-  return document.querySelector(selector);
-}
 
 this.userAwake = function() {
   if (idleTimeout) clearTimeout(idleTimeout);
