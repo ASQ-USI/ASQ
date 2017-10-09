@@ -14,7 +14,7 @@ export uiCommit=07f7c55f7f82f5777a5351ff848fb22abc62fb1e
 
 export cockpitDir=public/cockpit
 export cockpitBranch=feat-student-question-events-rebased
-export cockpitCommit=3e1f0124b82fdf72c40b772f589c26852f09aecb
+export cockpitCommit=b3d17454563fbfcc6f93b1cfc60166be642550ab
 
 # Execute the pipeline
 current_folder=$(pwd)
