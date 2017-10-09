@@ -31,9 +31,6 @@ function isEmpty(val){
   return !val;
 }
 
-function retrieveElementBySelector(selector) {
-  return document.querySelector(selector);
-}
 // Save current question id;
 var questionId = null, socket, session;
 var client = null;
