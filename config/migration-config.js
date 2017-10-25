@@ -1,7 +1,7 @@
-var config = require('./index.js')
+const config = require('./index.js').mongo
 
 module.exports = {
-  dbSettings: {
+  mongoAppDb: {
     host: config.host,
     port: config.port,
     db: config.dbName
