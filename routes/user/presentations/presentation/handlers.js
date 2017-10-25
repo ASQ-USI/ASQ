@@ -16,6 +16,7 @@ const Slideshow = db.model('Slideshow');
 const Exercise = db.model('Exercise');
 const User = db.model('User', schemas.userSchema);
 const Session = db.model('Session');
+const Question = db.model('Question');
 const stats = require('../../../../lib/stats/stats');
 const settings  = lib.settings.presentationSettings;
 const presentationApi = require('../../../../lib/api/presentations.js');
@@ -246,6 +247,15 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
     newSession.authLevel = ( Session.schema.path('authLevel').enumValues
       .indexOf(req.body.authLevel) > -1 ) ? req.body.authLevel : 'public';
 
+    /* 
+      This is needed for the live app, since we need to store the active viewer question (the question that it's displayed to the users)
+    */
+    newSession.data = {
+      activeViewerQuestion: null,
+      questions: [],
+      studentQuestionsEnabled: false,
+    };
+    newSession.markModified('data');
     const userPromise = User
       .findById(req.user._id)
       .exec()
@@ -257,11 +267,28 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
         // user.liveSessions.addToSet(newSession._id)
         return user.save()
       });
+    const implicitQuestionData = {
+      type: 'asq-text-input-q',
+      author: req.user._id,
+      data: {
+        description: 'Implicit question placeholder for live app student questions',
+        type: 'implicit-student-question',
+        session: newSession._id,
+      },
+    };
 
+    const implicitQuestion = new Question(implicitQuestionData);
+    const viewerQuestionExerciseData = {
+      stem: 'viewerQuestionExercise',
+      questions: [implicitQuestion._id],     
+    };
+    const viewerQuestionExercise = new Exercise(viewerQuestionExerciseData);
     yield Promise.all([
       slideshow.save(),
       newSession.save(),
-      userPromise
+      userPromise,
+      implicitQuestion.save(),
+      viewerQuestionExercise.save(),
     ]);
 
     const pFn = Promise.promisify(presUtils.generateWhitelist[newSession.authLevel]);

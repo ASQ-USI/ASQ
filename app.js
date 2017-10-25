@@ -1,4 +1,4 @@
-/** 
+/**
   * @module app
   * @description ASQ main file, initiliazes the server
 */
@@ -99,7 +99,7 @@ var init = coroutine(function *initGen () {
       logger.log("Closed out remaining connections.");
       process.exit()
     });
-    
+
      // if it hasn't stopped after 10 seconds kill it
      setTimeout(function() {
         logger.error("Could not close connections in time, forcefully shutting down");
@@ -107,10 +107,10 @@ var init = coroutine(function *initGen () {
     }, 10*1000);
   }
 
-  // listen for TERM signal .e.g. kill 
+  // listen for TERM signal .e.g. kill
   process.on ('SIGTERM', gracefulShutdown);
   // listen for INT signal e.g. Ctrl-C
-  process.on ('SIGINT', gracefulShutdown); 
+  process.on ('SIGINT', gracefulShutdown);
 });
 
 

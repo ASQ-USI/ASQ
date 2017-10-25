@@ -86,6 +86,7 @@ this.readSessionInfo = function(){
 
 this.connect = function(){
   var events2Forward = [
+    "asq:sessionEventBeamer",
     "asq:sessionFlow",
     "asq:folo-connected",
     "asq:ctrl-connected",
@@ -104,7 +105,8 @@ this.connect = function(){
     'asq:update_live_presentation_settings',
     "asq-plugin",
     "asq:addSlide",
-    "asq:removeSlide"
+    "asq:removeSlide",
+    "asq:live-app"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);

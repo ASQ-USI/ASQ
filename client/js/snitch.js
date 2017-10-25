@@ -32,7 +32,7 @@ module.exports = function(eventBus){
 
     document.addEventListener("focusin", function(evt) {
       var uid = evt.target.getAttribute('uid') || '';
-      var tagname = event.target.tagName.toLowerCase();
+      var tagname = evt.target.tagName.toLowerCase();
       var eventName = "tab" + document.visibilityState;
       eventBus.emit("focusin", {
         uid: uid,
@@ -43,7 +43,7 @@ module.exports = function(eventBus){
 
     document.addEventListener("focusout", function(evt) {
       var uid = evt.target.getAttribute('uid') || '';
-      var tagname = event.target.tagName.toLowerCase();
+      var tagname = evt.target.tagName.toLowerCase();
       var eventName = "tab" + document.visibilityState;
       eventBus.emit("focusout", {
         uid: uid,
@@ -54,7 +54,7 @@ module.exports = function(eventBus){
 
     document.addEventListener("input", function(evt) {
       var uid = evt.target.getAttribute('uid') || '';
-      var tagname = event.target.tagName.toLowerCase();
+      var tagname = evt.target.tagName.toLowerCase();
       var eventName = "tab" + document.visibilityState;
       eventBus.emit("input", {
         uid: uid,
@@ -66,7 +66,7 @@ module.exports = function(eventBus){
 
     document.addEventListener("questioninput", function(evt) {
       var uid = evt.target.getAttribute('uid') || '';
-      var tagname = event.target.tagName.toLowerCase();
+      var tagname = evt.target.tagName.toLowerCase();
       var eventName = "tab" + document.visibilityState;
       eventBus.emit("questioninput", {
         uid: uid,
@@ -78,7 +78,7 @@ module.exports = function(eventBus){
 
     document.addEventListener("exercise-edit", function(evt) {
       var uid = evt.target.getAttribute('uid') || '';
-      var tagname = event.target.tagName.toLowerCase();
+      var tagname = evt.target.tagName.toLowerCase();
       var eventName = "tab" + document.visibilityState;
       eventBus.emit("exercise-edit", {
         uid: uid,
@@ -162,17 +162,17 @@ module.exports = function(eventBus){
       eventBus.emit("touchstart", evt);
     });
 
-    document.addEventListener("impress:stepenter", function(evt){ 
+    document.addEventListener("impress:stepenter", function(evt){
       eventBus.emit("slideenter", {
         slide: evt.target.id,
-        clienttimestamp: new Date().toISOString() 
+        clienttimestamp: new Date().toISOString()
       })
     });
 
-    document.addEventListener("impress:stepleave", function(evt){ 
+    document.addEventListener("impress:stepleave", function(evt){
       eventBus.emit("slideleave", {
         slide: evt.target.id,
-        clienttimestamp: new Date().toISOString() 
+        clienttimestamp: new Date().toISOString()
       })
     });
   })

@@ -1,14 +1,14 @@
-/** @module models/cockpit/sessionEventCockpit
-    @description a SessionEvent Model to hold denormalized sessionEvents for the cockpit
+/** @module models/presenterControl/sessionEventBeamer
+    @description a SessionEvent Model to hold denormalized sessionEvents for presenter progress view
 */
 
-var mongoose   = require('mongoose')
+var mongoose   = require('mongoose');
 var Schema     = mongoose.Schema;
 var ObjectId   = Schema.ObjectId;
 var logger     = require('logger-asq');
 var socketEmitter  = require('../../lib/socket/pubsub');
 
-var sessionEventCockpitSchema = new Schema({
+var sessionEventBeamerSchema = new Schema({
   origSessionEvent   : { type: ObjectId, ref: 'SessionEvent', required: true },
   session            : { type: ObjectId, ref: 'Session', required: true },
   type               : { type: String, required: true },
@@ -16,9 +16,9 @@ var sessionEventCockpitSchema = new Schema({
 }, { strict: false });
 
 
-sessionEventCockpitSchema.post("save", function(doc){
+sessionEventBeamerSchema.post("save", function(doc){
   socketEmitter.emit('emitToRoles',{
-    evtName : 'asq:sessionEventCockpit',
+    evtName : 'asq:sessionEventBeamer',
     event : {
       data: {
         sessionEvent: doc.toObject()
@@ -29,10 +29,10 @@ sessionEventCockpitSchema.post("save", function(doc){
   });
 });
 
-sessionEventCockpitSchema.index({ session: 1, type: 1, time: 1 });
+sessionEventBeamerSchema.index({ session: 1, type: 1, time: 1 });
 
 
-logger.debug('Loading SessionEventCockpit model');
-mongoose.model('SessionEventCockpit', sessionEventCockpitSchema);
+logger.debug('Loading SessionEventBeamer model');
+mongoose.model('SessionEventBeamer', sessionEventBeamerSchema);
 
-module.exports = mongoose.model('SessionEventCockpit');
+module.exports = mongoose.model('SessionEventBeamer'); 

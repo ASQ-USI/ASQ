@@ -83,22 +83,23 @@
 	    "asq:question_type",
 	    "asq:session-terminated",
 	    "/user/presentation/thumbnails",
-	    "/user/presentation/fontfaces"
+	    "/user/presentation/fontfaces",
+			"asq:sessionEventBeamer"
 	  ],
-	
+
 	  emit: function() {
 	    this.socket.emit.apply(this.socket, arguments);
 	  },
-	
+
 	  // TODO: add asserts for the arguments
 	  connect: function(protocol, host, port, session, namespace, token, eventBus) {
 	    this.eventBus = eventBus;
-	
+
 	    var socketUrl =  protocol + '//' + host + ":" + port + '/' + namespace;
-	    this.socket = io.connect(socketUrl, { 
-	      'query': 'token=' + token+'&asq_sid=' + session 
+	    this.socket = io.connect(socketUrl, {
+	      'query': 'token=' + token+'&asq_sid=' + session
 	    });
-	
+
 	    // events related to socket.io
 	    this.socketEvents.forEach(function(eventName){
 	      this.socket

@@ -10,15 +10,15 @@ export slide2htmlCommit=7e572868ebbd1b96b04f53a40c0bfebe9e34a16e
 
 export uiDir=public/ui
 export uiBranch=master
-export uiCommit=fef1138c3e3cc530c46d2d3cada140e71392bd63
+export uiCommit=07f7c55f7f82f5777a5351ff848fb22abc62fb1e
 
 export cockpitDir=public/cockpit
-export cockpitBranch=master
-export cockpitCommit=c4052a007fd4dc366540f0f14ddfb44bcf710e2c
+export cockpitBranch=feat-student-question-events-rebased
+export cockpitCommit=624019ad92d11c62181bf3dcb0c4d1143f0070ae
 
 # Execute the pipeline
 current_folder=$(pwd)
-cd ${WERCKER_SOURCE_DIR}
+# cd ${WERCKER_SOURCE_DIR}
 CI_USER_TOKEN=${CI_USER_TOKEN} npm run install-private-dependencies
 cd $current_folder
 
