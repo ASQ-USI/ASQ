@@ -1,5 +1,5 @@
 
-var mongodb = require('mongodb');
+const mongodb = require('mongodb');
 
 exports.up = function(db, next){
     db.collection('slideshows').update({
