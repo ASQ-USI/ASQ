@@ -1,5 +1,4 @@
 var handlers   = require('./handlers');
-const live     = require('../../../../lib/live').live;
 var logger     = require('logger-asq');
 
 module.exports.setUp = function setUp(app, middleware) {
@@ -14,10 +13,10 @@ module.exports.setUp = function setUp(app, middleware) {
     handlers.editPresentation);
 
   app.post('/:user/presentations/:presentationId/live',
-    middleware.isRouteOwner, live.startPresentation);
+    middleware.isRouteOwner, handlers.startPresentation);
 
   app.delete('/:user/presentations/:presentationId/live',
-    middleware.isRouteOwner, live.terminatePresentation);
+    middleware.isRouteOwner, handlers.terminatePresentation);
 
   app.get('/:user/presentations/:presentationId/live/:liveId', 
     middleware.authorizeLiveSession, handlers.livePresentation);

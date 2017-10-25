@@ -22,7 +22,7 @@ const settings  = lib.settings.presentationSettings;
 const presentationApi = require('../../../../lib/api/presentations.js');
 const archive = require('../../../../lib/download/archive.js');
 const filenamify = require('filenamify');
-
+const live     = require('../../../../lib/live').live;
 
 function editPresentation(req, res) {
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
@@ -248,6 +248,105 @@ const getPresentationStats = coroutine(function *getPresentationStats(req, res, 
   
 });
 
+const startPresentation =  coroutine(function *startPresentationGen(req, res, next) {
+  try{
+    logger.debug('New session from ' + req.user.username);
+
+    const slidesId = req.params.presentationId
+    /* User data */
+    const user = req.user;
+    const userId = user._id;
+    const username = user.username;
+
+    /* Presentation data */
+    const presFlow = req.body.flow;
+    const authLevel = req.body.authLevel;
+
+    const slideshow = yield Slideshow.findOne({
+      _id   : slidesId,
+      owner : userId })
+    .exec();
+
+    if(!slideshow){
+      throw new Error('No slideshow with this id');
+    }  // FIXME: create proper error like in list presentations
+
+    slideshow.lastSession = new Date();
+
+    const slideshowId = slideshow._id;
+
+    /* Instantiate a new session */
+    const newSession = live.generateNewSession(userId, slideshowId, presFlow, authLevel);
+
+    /* Retrieve the user object (presenter)*/
+    const userPromise = live.retrieveUserByUserId(userId);
+
+    /* Instantiate new implicit question */
+    const implicitQuestion = live.generateImplicitQuestion(userId, newSession._id);
+
+    /* Instantiate viewer question Exercise */
+    const viewerQuestionExercise = live.generateViewerQuestionExercise(implicitQuestion._id);
+
+    yield Promise.all([
+      slideshow.save(),
+      newSession.save(),
+      userPromise,
+      implicitQuestion.save(),
+      viewerQuestionExercise.save(),
+    ]);
+
+    const pFn = Promise.promisify(presUtils.generateWhitelist[newSession.authLevel]);
+    yield pFn(newSession._id, user);
+
+    logger.info('Starting new ' + newSession.authLevel + ' session');
+    res.location(['/', username, '/presentations/', newSession.slides,
+      '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
+    res.sendStatus(201);
+  }catch(err){
+    next(err)
+  }
+});
+
+const terminatePresentation = coroutine(function *terminatePresentationGen(req, res, next) {
+
+
+  const userId = req.user._id;
+  const presentationId = req.params.presentationId
+  try{
+    logger.debug({
+      owner_id: userId,
+      slideshow: req.params.presentationId
+    }, 'Stopping session');
+
+    
+    const terminatedSessions = yield Session.terminateAllSessionsForPresentation(userId, presentationId)
+
+    // if sessions has zero length there was no live sessions
+    if (! terminatedSessions.length) {
+      const err404 = Error.http(404, 'No session found', {type:'invalid_request_error'});
+      throw err404;
+    }
+    
+    res.sendStatus(204);
+    
+    logger.log({
+      owner_id: userId,
+      slideshow: presentationId,
+      sessions: terminatedSessions.map( s => s._id.toString()),
+    }, "stopped session");
+
+  }catch(err){
+    logger.error({
+      err: err,
+      owner_id: userId,
+      sessions: terminatedSessions,
+    }, "error stopping session");
+
+    //let error middleware take care of it
+    next(err);
+  }
+});
+
 const getPresentationSettings = coroutine(function* getPresentationSettingsGen(req, res) {
 
   logger.debug({
@@ -325,6 +424,7 @@ const downloadPresentation = coroutine(function* downloadPresentationGen(req, re
   }
 })
 
+
 module.exports = {
   editPresentation,
   downloadPresentation,
@@ -333,4 +433,6 @@ module.exports = {
   livePresentationFiles,
   getPresentationStats,
   getPresentationSettings,
+  startPresentation,
+  terminatePresentation
 }
