@@ -53,7 +53,7 @@ describe('db.js', function(){
 
     it('should save new pluginSessionData if it does not already exist in the db', function(done){
       // we want findOneStub to return null
-      this.findOneStub = sinon.stub().returns(Promise.resolve(null));
+      this.findOneStub.returns(Promise.resolve(null));
       const payload = {
         'test' : 'payload'
       };
