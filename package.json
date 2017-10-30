@@ -73,7 +73,7 @@
   "dependencies": {
     "archiver": "^1.1.0",
     "asq-buckets-q": "ASQ-USI-Elements/asq-buckets-q#master",
-    "asq-canvas": "ASQ-USI-Elements/asq-canvas#master",
+    "asq-canvas": "ASQ-USI-Elements/asq-canvas#feat-new-canvas",
     "asq-code-q": "ASQ-USI-Elements/asq-code-q#master",
     "asq-css-select-q": "ASQ-USI-Elements/asq-css-select-q#master",
     "asq-exercise": "ASQ-USI-Elements/asq-exercise#master",
