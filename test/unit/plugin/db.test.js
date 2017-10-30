@@ -30,7 +30,7 @@ describe('db.js', function(){
    var findByIdAndUpdateStub = this.findByIdAndUpdateStub = sinon.stub().returns(exec);
 
    sinon.stub(db, 'model')
-   .withArgs('pluginCustomData').returns({
+   .withArgs('PluginCustomData').returns({
      'create' : createStub,
      'findOne': findOneStub
    })
