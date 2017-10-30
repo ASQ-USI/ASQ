@@ -84,8 +84,8 @@ function editPresentation(req, res) {
 * a) it checks the query string for `role` and `view` variables. Defaults
 * are `viewer` and `presentation` respectively.
 * b) It then does a authorization
-* check to see if the user has the `role` they claim. 
-* Notice that for the cockpit view, we redirect in order to get rid of 
+* check to see if the user has the `role` they claim.
+* Notice that for the cockpit view, we redirect in order to get rid of
 * the query string which causes trouble in the clientside routing lib of
 * the cockpit.
 */
@@ -169,7 +169,7 @@ function livePresentationFiles(req, res) {
   const presentation = req.liveSession.slides;
   const file = req.params[0];
 
-  if (presentation && file === presentation.originalFile) { 
+  if (presentation && file === presentation.originalFile) {
     res.redirect(301, ['/', req.user.username, '/presentations/',
         req.params.presentationId, '/live/', req.params.liveId,
         '/?view=presentation'].join(''));
@@ -196,7 +196,7 @@ function liveCockpit(req, res) {
   if(presentation.thumbnailsUpdated && (presentation.lastEdit - presentation.thumbnailsUpdated < 0 )){
     shouldGenerateThumbs = 'false';
   }
-  
+
   return res.render('../public/cockpit/build/bundled/dust/asq.dust', {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
@@ -247,7 +247,15 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
     newSession.authLevel = ( Session.schema.path('authLevel').enumValues
       .indexOf(req.body.authLevel) > -1 ) ? req.body.authLevel : 'public';
 
-    /* 
+
+    if(slideshow.slidesTree
+      && slideshow.slidesTree.steps
+      && slideshow.slidesTree.steps[0]){
+
+      newSession.activeSlide = slideshow.slidesTree.steps[0];
+    }
+
+    /*
       This is needed for the live app, since we need to store the active viewer question (the question that it's displayed to the users)
     */
     newSession.data = {
@@ -280,7 +288,7 @@ const startPresentation =  coroutine(function *startPresentationGen(req, res, ne
     const implicitQuestion = new Question(implicitQuestionData);
     const viewerQuestionExerciseData = {
       stem: 'viewerQuestionExercise',
-      questions: [implicitQuestion._id],     
+      questions: [implicitQuestion._id],
     };
     const viewerQuestionExercise = new Exercise(viewerQuestionExerciseData);
     yield Promise.all([
@@ -315,7 +323,7 @@ const terminatePresentation = coroutine(function *terminatePresentationGen(req, 
 
     const userId = req.user._id;
     const presentationId = req.params.presentationId;
-    
+
     const terminatedSessions = yield Session.terminateAllSessionsForPresentation(userId, presentationId)
 
     // if sessions has zero length there was no live sessions
@@ -323,9 +331,9 @@ const terminatePresentation = coroutine(function *terminatePresentationGen(req, 
       const err404 = Error.http(404, 'No session found', {type:'invalid_request_error'});
       throw err404;
     }
-    
+
     res.sendStatus(204);
-    
+
     logger.log({
       owner_id: req.user._id,
       slideshow: req.params.presentationId,
@@ -368,7 +376,7 @@ const getPresentationStats = coroutine(function *getPresentationStats(req, res, 
     logger.error(err.message, { err: err.stack });
     next(err)
   }
-  
+
 });
 
 const getPresentationSettings = coroutine(function* getPresentationSettingsGen(req, res) {
@@ -403,7 +411,7 @@ const getPresentationSettings = coroutine(function* getPresentationSettingsGen(r
       port                 : req.app.locals.urlPort,
       namespace            : '/',
       browserSesstionId    : req.sessionID,
-      
+
       title                : slideshow.title,
       username             : username,
       slideshowId          : slideshowId,
@@ -441,7 +449,7 @@ const downloadPresentation = coroutine(function* downloadPresentationGen(req, re
     });
 
    archiveStream.pipe(res);
-    
+
   }catch(err){
     console.log(err)
     next(err)
