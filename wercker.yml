@@ -1,14 +1,14 @@
 # TODO: if Wercker is gonna support aliases, we can define the version in a settings section
 # MAINTAINER: Vincenzo Ferme <info@vincenzoferme.it>
 box:
-  id: asqslide/wercker-box-asq:0.5.0-dev
+  id: asqslide/wercker-box-asq:0.8.0-dev
   username: $DOCKER_HUB_BOX_USERNAME
   password: $DOCKER_HUB_BOX_PASSWORD
   ports:
     - "3000:3000"
 
 # TODO: add .werckerignore, when this it is gonna be supported (https://github.com/wercker/wercker/issues/62)
-# TODO: evaluate if there is a way to avoid duplication across pipelines 
+# TODO: evaluate if there is a way to avoid duplication across pipelines
 
 ####### THE FOLLOWING PIPELINES ARE AVAILABLE FOR LOCAL DEVELOPMENT #######
 
@@ -114,7 +114,7 @@ dev-tests:
 #       NOTE: if I split take into account that as fast we can report ASQ builds correctly,
 #             better it is
 # NOTE: since we have to reload the environment, we collapsed some pipelines
-#       , to save time. TODO:  Try to just install the dependency we need for 
+#       , to save time. TODO:  Try to just install the dependency we need for
 #       the pipeline (if it is faster)
 # NOTE: Name when split: build-initial:
 build:
@@ -138,7 +138,7 @@ build:
             # Declare we want to install the bower dependencies using the cache,
             # and the folders in which the bower.json files are defined
             code: ./utils/bower_install_with_cache.sh "/ lib/support/pdf lib/support/liveApp"
-# 
+#
 # Depends on: build-initial
 # NOTE: Name when split: build-execute-tests:
     # services:
@@ -156,7 +156,7 @@ build:
         #     options: --unsafe-perm
         - wercker/npm-test@0.0.3
         # TODO: improve the following step, if slow, to store the plugin folder
-        #       and use the cache. 
+        #       and use the cache.
         - script:
             name: install ASQ plugins
             # Set the working folder, so we can refer to files in that context
@@ -204,14 +204,14 @@ build:
             code: npm prune --production
         # TODO: in case we need to use the copy alternative, refer to:
         #       http://devcenter.wercker.com/docs/faq/how-to-bypass-timeouts
-        #TODO@triglian: check if we should exclude other files     
+        #TODO@triglian: check if we should exclude other files
         # - script:
         #     name: set $WERCKER_OUTPUT_DIR/ASQ as a custom output dir for ASQ
         #     code: |
         #           export OLD_OUTPUT_DIR=$WERCKER_OUTPUT_DIR
         #           export WERCKER_OUTPUT_DIR=$WERCKER_OUTPUT_DIR/ASQ
         # It only delete assets if executed in CI
-        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well) 
+        # TODO: see if i can improve the source deletion instead of copying (in the build step, maybe it works well)
         # NOTE: does not remove the following folders, because the code might be needed by
         #       subsequent pipelines: lib/support/wercker lib/support/docker
         - script:
@@ -241,10 +241,10 @@ build:
         #     clear-cache: false
         # install the dependencies for this pipeline
 
- 
+
 # Must depend on: build-pro (currently build)
 # NOTE: we configured Wercker so that it pushes images for the following branches:
-#       master devel release-* feat-* pr-* fix-* hotfix-* 
+#       master devel release-* feat-* pr-* fix-* hotfix-*
 push-dev-release:
     # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
     #       and all the changes we apply in the steps, happen in the source folder
@@ -304,9 +304,9 @@ push-dev-release:
         working-dir: /ASQ
         env: "ASQDIR=/ASQ"
         cmd: /sbin/my_init
- 
+
 # TODO: define the deploy section, refer to http://devcenter.wercker.com/docs/steps/internal-steps
-# TODO: define the push for the community edition 
-# TODO: define the push for the pro edition 
+# TODO: define the push for the community edition
+# TODO: define the push for the pro edition
 
 # TODO: define the continuous deployment pipeline

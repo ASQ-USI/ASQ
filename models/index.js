@@ -21,5 +21,6 @@ module.exports = {
   whitelistModel : require('./whitelist'),
   pluginModel : require('./plugin'),
   cockpitModels : require('./cockpit'),
+  pluginCustomDataModel : require('./pluginCustomData'),
   sessionEventBeamerModels : require('./beamer')
 };
