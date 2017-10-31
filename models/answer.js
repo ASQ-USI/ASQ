@@ -33,9 +33,10 @@ const answerSchema = new Schema({
   confidence : { type: Number, min: 0, max: 5, default: 0 }, // 0 = not set
   upvotes    : { type: [{ type: ObjectId, ref: 'WhitelistEntry' }], default: [] },
   downvotes  : { type: [{ type: ObjectId, ref: 'WhitelistEntry' }], default: [] },
-  isCensored: { type: Boolean, default: false },
   isBookmarked: { type: Boolean, default: false },
+  isCensored: { type: Boolean, default: false },
   isCorrect: { type: Boolean },
+  isDisplayedOnBeamer: { type: Boolean, default: false },
   logData    : [answerLogSchema]
 });
 
