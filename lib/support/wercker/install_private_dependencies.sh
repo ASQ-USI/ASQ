@@ -14,7 +14,7 @@ export uiCommit=07f7c55f7f82f5777a5351ff848fb22abc62fb1e
 
 export cockpitDir=public/cockpit
 export cockpitBranch=feat-censor
-export cockpitCommit=f40f0b9ec078efb848ca05c5f3f01974cc3db1cf
+export cockpitCommit=8331bd96d5f9657968747951fd06f5cee3b86609
 
 # Execute the pipeline
 current_folder=$(pwd)
