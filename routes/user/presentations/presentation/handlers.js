@@ -248,61 +248,33 @@ const getPresentationStats = coroutine(function *getPresentationStats(req, res, 
   
 });
 
-const startPresentation =  coroutine(function *startPresentationGen(req, res, next) {
+const createLivePresentation =  coroutine(function *createLivePresentationGen(req, res, next) {
+  const presentationId = req.params.presentationId
+  /* User data */
+  const owner = req.user;
+  const ownerId = owner._id;
+
   try{
     logger.debug('New session from ' + req.user.username);
-
-    const slidesId = req.params.presentationId
-    /* User data */
-    const user = req.user;
-    const userId = user._id;
-    const username = user.username;
+    const username = owner.username;
 
     /* Presentation data */
     const presFlow = req.body.flow;
     const authLevel = req.body.authLevel;
 
-    const slideshow = yield Slideshow.findOne({
-      _id   : slidesId,
-      owner : userId })
-    .exec();
-
-    if(!slideshow){
-      throw new Error('No slideshow with this id');
-    }  // FIXME: create proper error like in list presentations
-
-    slideshow.lastSession = new Date();
-
-    const slideshowId = slideshow._id;
-
-    /* Instantiate a new session */
-    const newSession = live.generateNewSession(userId, slideshowId, presFlow, authLevel);
-
-    /* Retrieve the user object (presenter)*/
-    const userPromise = live.retrieveUserByUserId(userId);
-
-    /* Instantiate new implicit question */
-    const implicitQuestion = live.generateImplicitQuestion(userId, newSession._id);
-
-    /* Instantiate viewer question Exercise */
-    const viewerQuestionExercise = live.generateViewerQuestionExercise(implicitQuestion._id);
-
-    yield Promise.all([
-      slideshow.save(),
-      newSession.save(),
-      userPromise,
-      implicitQuestion.save(),
-      viewerQuestionExercise.save(),
-    ]);
-
-    const pFn = Promise.promisify(presUtils.generateWhitelist[newSession.authLevel]);
-    yield pFn(newSession._id, user);
+    const newSession = yield live.createLivePresentation(ownerId, presentationId, presFlow, authLevel);
 
     logger.info('Starting new ' + newSession.authLevel + ' session');
     res.location(['/', username, '/presentations/', newSession.slides,
       '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
     res.sendStatus(201);
   }catch(err){
+    logger.error({
+      err: err,
+      owner_id: ownerId,
+      presentation_id: presentationId,
+    }, "error starting presentation");
+
     next(err)
   }
 });
@@ -433,6 +405,6 @@ module.exports = {
   livePresentationFiles,
   getPresentationStats,
   getPresentationSettings,
-  startPresentation,
+  createLivePresentation,
   terminatePresentation
 }
