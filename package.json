@@ -88,7 +88,7 @@
     "asq-rating-q": "ASQ-USI-Elements/asq-rating-q#master",
     "asq-settings": "ASQ-USI-Elements/asq-settings#master",
     "asq-sqlite-q": "ASQ-USI-Elements/asq-sqlite-q#master",
-    "asq-text-input-q": "ASQ-USI-Elements/asq-text-input-q#master",
+    "asq-text-input-q": "ASQ-USI-Elements/asq-text-input-q#feat-censor-answers",
     "asq-visualization": "0.0.1",
     "async": "~0.2.9",
     "bcrypt": "^0.8.2",
