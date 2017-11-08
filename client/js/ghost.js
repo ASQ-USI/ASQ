@@ -82,7 +82,7 @@ this.readSessionInfo = function(){
     , 'namespace is required');
   assert(true, (isString(si.presentationFramework) && !!si.presentationFramework)
     , 'presentationFramework is required');
-  
+
   return si;
 }
 
@@ -117,7 +117,7 @@ this.setupASQElements = function(role) {
 }
 
 this.subscribeToEvents= function (){
-  
+
   //socket events
   eventBus
   .on('socket:connect', function(evt){
@@ -174,7 +174,7 @@ this.initPresentationFramework = function(presentationFramework){
 
       case 'reveal.js':
         require.ensure([], function(){
-          var adapter = require('./reveal-asq-fork-asq-adapter.js')
+          var adapter = require('reveal-asq-adapter');
          this.initReveal(adapter);
         }.bind(this))
         break;
@@ -196,9 +196,9 @@ this.initImpress = function(adapter){
     var offset = getUrlVars().offset || 0
     // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    adapter.adapter(asi, null, false, offset);
     var impress = require('./impress-asq');
     impress().init();
+    adapter.adapter(asi, null, false, offset, impress().newStep);
   }catch(err){
     debug(err.toString + err.stack)
   }
@@ -268,5 +268,3 @@ function getUrlVars()
     }
     return vars;
 }
-
-
