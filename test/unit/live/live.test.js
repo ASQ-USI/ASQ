@@ -42,9 +42,7 @@ context('lib/live.js', function() {
     this.Session.prototype.markModified = function (property) {
     	return 'mock return';
     }
-    const QuestionModel = this.QuestionModel = {
-      findById: sinon.stub().returns(execObject)
-    };
+    const Question = this.Question = function Question(data) {return data};
 
     const ExerciseModel = this.ExerciseModel = {
       findById: sinon.stub().returns(execObject)
@@ -52,8 +50,6 @@ context('lib/live.js', function() {
 
     this.resetStubs = function(){
       this.SlideshowModel.findOne.reset();
-      this.SessionModel.findById.reset();
-      this.QuestionModel.findById.reset();
       this.ExerciseModel.findById.reset();
     };
 
@@ -65,7 +61,7 @@ context('lib/live.js', function() {
           case 'Session':
             return Session;
           case 'Question':
-            return QuestionModel;
+            return Question;
           case 'Exercise':
             return ExerciseModel;
           default:
@@ -180,4 +176,17 @@ context('lib/live.js', function() {
 	  	});
   	});
   });
+
+
+  context('createImplicitQuestion',function() {
+  	describe('Given an owner identifier, and a session identifier', function () {
+	  	it('should the correct implicit question with the correct userId and sessionId', function() {
+	  		const ownerId = '123';
+	  		const sessionId = '456';
+	  		const implicitQuestion = this.live.createImplicitQuestion(ownerId, sessionId);
+	  		expect(implicitQuestion.author).to.be.deep.equal(ownerId);
+	  	});
+  	});
+  });
+
 });
