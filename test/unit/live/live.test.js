@@ -39,18 +39,13 @@ context('lib/live.js', function() {
       	}
       }
     };
-    this.Session.prototype.markModified = function (property) {
-    	return 'mock return';
-    }
-    const Question = this.Question = function Question(data) {return data};
+    this.Session.prototype.markModified = function (property) { return 'mock return'; };
+    const Question = this.Question = function Question(data) { return data };
 
-    const ExerciseModel = this.ExerciseModel = {
-      findById: sinon.stub().returns(execObject)
-    };
+    const Exercise = this.Exercise = function Exercise(data) { return data };
 
     this.resetStubs = function(){
       this.SlideshowModel.findOne.reset();
-      this.ExerciseModel.findById.reset();
     };
 
     this.db = {
@@ -63,7 +58,7 @@ context('lib/live.js', function() {
           case 'Question':
             return Question;
           case 'Exercise':
-            return ExerciseModel;
+            return Exercise;
           default:
             return undefined;
         }
@@ -180,7 +175,7 @@ context('lib/live.js', function() {
 
   context('createImplicitQuestion',function() {
   	describe('Given an owner identifier, and a session identifier', function () {
-	  	it('should the correct implicit question with the correct userId and sessionId', function() {
+	  	it('should return the correct implicit question with the correct userId and sessionId', function() {
 	  		const ownerId = '123';
 	  		const sessionId = '456';
 	  		const implicitQuestion = this.live.createImplicitQuestion(ownerId, sessionId);
@@ -189,4 +184,13 @@ context('lib/live.js', function() {
   	});
   });
 
+  context('createViewerQuestionExercise',function() {
+  	describe('Given an implicit question identifier', function () {
+	  	it('should return the correct implicit question with the correct userId and sessionId', function() {
+	  		const implicitQuestionId = '123';
+	  		const viewerQuestionExercise = this.live.createViewerQuestionExercise(implicitQuestionId);
+	  		expect(viewerQuestionExercise.questions).to.be.deep.equal([implicitQuestionId]);
+	  	});
+  	});
+  });
 });
