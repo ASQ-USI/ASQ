@@ -112,7 +112,7 @@ function livePresentation(req, res) {
   }
 
   //TMP until roles are defined more precisely
-  logger.debug('Select template for ' + role + ' ' + view);
+  logger.debug(`Select template for ${ role } ${ view }`);
 
   const renderOpts = (function getTemplate(role, view, presentation) {
     presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
@@ -227,7 +227,7 @@ const getPresentationStats = coroutine(function *getPresentationStats(req, res, 
   try{
     slideshow = yield Slideshow.findById(req.params.presentationId).exec();
   }catch(err){
-    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(`Presentation ${ req.params.presentationId } not found`);
     logger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
@@ -241,30 +241,30 @@ const getPresentationStats = coroutine(function *getPresentationStats(req, res, 
     statsObj.port = req.app.locals.urlPort;
     return res.render('presentationStats', statsObj);
   }catch(err){
-    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(`Presentation ${ req.params.presentationId } not found`);
     logger.error(err.message, { err: err.stack });
     next(err)
   }
   
 });
 
-const createLivePresentation =  coroutine(function *createLivePresentationGen(req, res, next) {
+const createLivePresentationSession =  coroutine(function *createLivePresentationSessionGen(req, res, next) {
   const presentationId = req.params.presentationId
   /* User data */
   const owner = req.user;
   const ownerId = owner._id;
 
   try{
-    logger.debug('New session from ' + req.user.username);
+    logger.debug(`New session from ${ req.user.username }`);
     const username = owner.username;
 
     /* Presentation data */
     const presFlow = req.body.flow;
     const authLevel = req.body.authLevel;
 
-    const newSession = yield live.createLivePresentation(owner, presentationId, presFlow, authLevel);
+    const newSession = yield live.createLivePresentationSession(owner, presentationId, presFlow, authLevel);
 
-    logger.info('Starting new ' + newSession.authLevel + ' session');
+    logger.info(`Starting new ${ newSession.authLevel } session`);
     res.location(['/', username, '/presentations/', newSession.slides,
       '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
     res.sendStatus(201);
@@ -405,6 +405,6 @@ module.exports = {
   livePresentationFiles,
   getPresentationStats,
   getPresentationSettings,
-  createLivePresentation,
+  createLivePresentationSession,
   terminatePresentation
 }
