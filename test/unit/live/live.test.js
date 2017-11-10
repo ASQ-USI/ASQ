@@ -116,24 +116,22 @@ context('lib/live.js', function() {
   	});
 
   	describe('Given a userId and a presentation', function () {
-	  	it('returns a new created session correctly', function() {
+	  	it('returns a newly created session correctly', function() {
 	  		const newSession = this.live.createNewLiveSession('123', {'_id': '234'});
 
-	  		expect(session.presenter).to.deep.equal(newSession.presenter);
-	  		expect(session.slides).to.deep.equal(newSession.slides);
+	  		expect(newSession.presenter).to.deep.equal(session.presenter);
+	  		expect(newSession.slides).to.deep.equal(session.slides);
 
-	  		expect(session.flow).to.not.deep.equal(newSession.flow);
-	  		expect(session.authLevel).to.not.deep.equal(newSession.authLevel);
-	  		expect('ctrl').to.deep.equal(newSession.flow);
-	  		expect('public').to.deep.equal(newSession.authLevel);
+	  		expect(newSession.flow).to.deep.equal('ctrl');
+	  		expect(newSession.authLevel).to.deep.equal('public');
 
-	  		expect(session.data).to.deep.equal(newSession.data);
+	  		expect(newSession.data).to.deep.equal(session.data);
 	  	});
 
   	});
 
   	describe('Given a userId and a presentation with slides tree steps', function () {
-	  	it('returns a new created session correctly, with the correct active slide', function() {
+	  	it('returns a newly created session correctly, with the correct active slide', function() {
 	  		const userId = '123';
 	  		const presentation = {
 	  			'_id': '234',
@@ -143,22 +141,20 @@ context('lib/live.js', function() {
 	  		};
 	  		const newSession = this.live.createNewLiveSession(userId, presentation);
 
-	  		expect(session.presenter).to.deep.equal(newSession.presenter);
-	  		expect(session.slides).to.deep.equal(newSession.slides);
+	  		expect(newSession.presenter).to.deep.equal(session.presenter);
+	  		expect(newSession.slides).to.deep.equal(session.slides);
 
-	  		expect(session.flow).to.not.deep.equal(newSession.flow);
-	  		expect(session.authLevel).to.not.deep.equal(newSession.authLevel);
-	  		expect('ctrl').to.deep.equal(newSession.flow);
-	  		expect('public').to.deep.equal(newSession.authLevel);
+	  		expect(newSession.flow).to.deep.equal('ctrl');
+	  		expect(newSession.authLevel).to.deep.equal('public');
 
-	  		expect(session.data).to.deep.equal(newSession.data);
-	  		expect(presentation.slidesTree.steps[0]).to.deep.equal(newSession.activeSlide);
+	  		expect(newSession.data).to.deep.equal(session.data);
+	  		expect(newSession.activeSlide).to.deep.equal(presentation.slidesTree.steps[0]);
 	  	});
 
   	});
 
   	describe('Given a userId, a presentation with slides tree steps, a flow and an authentication level', function () {
-	  	it('returns a new created session correctly, with the correct flow and authentication level', function() {
+	  	it('returns a newly created session correctly, with the correct flow and authentication level', function() {
 	  		const userId = '123';
 	  		const presentation = {
 	  			'_id': '234',
@@ -170,14 +166,14 @@ context('lib/live.js', function() {
 	  		const authLevel = 'authLevel';
 	  		const newSession = this.live.createNewLiveSession(userId, presentation, flow, authLevel);
 
-	  		expect(session.presenter).to.deep.equal(newSession.presenter);
-	  		expect(session.slides).to.deep.equal(newSession.slides);
+	  		expect(newSession.presenter).to.deep.equal(session.presenter);
+	  		expect(newSession.slides).to.deep.equal(session.slides);
 
-	  		expect(flow).to.deep.equal(newSession.flow);
-	  		expect(authLevel).to.deep.equal(newSession.authLevel);
+	  		expect(newSession.flow).to.deep.equal(flow);
+	  		expect(newSession.authLevel).to.deep.equal(authLevel);
 
-	  		expect(session.data).to.deep.equal(newSession.data);
-	  		expect(presentation.slidesTree.steps[0]).to.deep.equal(newSession.activeSlide);
+	  		expect(newSession.data).to.deep.equal(session.data);
+	  		expect(newSession.activeSlide).to.deep.equal(presentation.slidesTree.steps[0]);
 	  	});
   	});
   });
@@ -205,10 +201,10 @@ context('lib/live.js', function() {
   	});
   });
 
-  context('createLivePresentation',function() {
+  context('createLivePresentationSession',function() {
   	describe('Given the user is not defined', function () {
 	  	it('throws an error that no user was specified', function(done) {
-				this.live.createLivePresentation(undefined, {"_id": '123'})
+				this.live.createLivePresentationSession(undefined, {"_id": '123'})
 		      .then(function(res) {
 		        expect(res).to.be.equal(undefined);
 		        done();
@@ -223,7 +219,7 @@ context('lib/live.js', function() {
 
   	describe('Given the user is null', function () {
 	  	it('throws an error that no user was specified', function(done) {
-				this.live.createLivePresentation(null, {"_id": '123'})
+				this.live.createLivePresentationSession(null, {"_id": '123'})
 		      .then(function(res) {
 		        expect(res).to.be.equal(undefined);
 		        done();
@@ -239,7 +235,7 @@ context('lib/live.js', function() {
 
 		describe('Given the user without identifier', function () {
 	  	it('throws an error that no user was specified', function(done) {
-				this.live.createLivePresentation({}, {"_id": '123'})
+				this.live.createLivePresentationSession({}, {"_id": '123'})
 		      .then(function(res) {
 		        expect(res).to.be.equal(undefined);
 		        done();
@@ -255,7 +251,7 @@ context('lib/live.js', function() {
 
 		describe('Given a user and an invalid presentation', function () {
 			it('throws an error that the presentation is not found', function(done) {
-				this.live.createLivePresentation({"_id": '456'}, {})
+				this.live.createLivePresentationSession({"_id": '456'}, {})
 					.then(function(res) {
 						expect(res).to.be.equal(undefined);
 						done();
@@ -287,7 +283,7 @@ context('lib/live.js', function() {
 				this.lib.utils.presentation.generateWhitelist.public.reset();
 			});
 			it('does not throw an error', function(done) {
-				this.live.createLivePresentation({"_id": '456'}, {})
+				this.live.createLivePresentationSession({"_id": '456'}, {})
 					.then(function(res) {
 						expect(res).to.not.be.null;
 						expect(res).to.not.be.undefined;
