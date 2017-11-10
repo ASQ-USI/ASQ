@@ -125,7 +125,9 @@ this.connect = function(){
     "asq:session-terminated",
     'asq:update_live_presentation_settings',
     "asq-plugin",
-    "asq:live-app",
+    "asq:addSlide",
+    "asq:removeSlide",
+    "asq:live-app"
   ];
   connection.addEvents2Forward(events2Forward);
   connection.connect(this.protocol, this.host, this.port, this.sessionId, this.namespace, eventBus);
@@ -170,7 +172,7 @@ this.displaySessionOverDialog = function(){
 }
 
 this.subscribeToEvents= function (){
-  
+
   //socket events
   eventBus
   .on('socket:connect', function(evt){
@@ -189,6 +191,11 @@ this.subscribeToEvents= function (){
     console.log('socket error');
     debug.log(evt)
   })
+
+  .on('asq:addSlide', function(evt) {
+    connection.socket.emit('asq:addSlide', evt);
+  })
+
   .on('asq:sessionFlow', function(evt) {
     // this.sessionFlow = evt.sessionFlow
     // asi.setBounce (that.sessionFlow == 'self')
@@ -244,11 +251,11 @@ this.subscribeToEvents= function (){
   ];
 
   snitchEvents.forEach(function(item){
-    item.awakesUser = ( typeof item.awakesUser == "undefined" ) 
+    item.awakesUser = ( typeof item.awakesUser == "undefined" )
       ? true
       : item.awakesUser;
 
-    item.send2Server = ( typeof item.send2Server == "undefined" ) 
+    item.send2Server = ( typeof item.send2Server == "undefined" )
       ? true
       : item.send2Server;
 
@@ -290,8 +297,8 @@ this.initPresentationFramework = function(presentationFramework){
 
       case 'reveal.js':
         require.ensure([], function(){
-          var adapter = require('./reveal-asq-fork-asq-adapter.js')
-         this.initReveal(adapter);
+          var adapter = require('reveal-asq-adapter');
+          this.initReveal(adapter);
         }.bind(this))
         break;
 
@@ -309,9 +316,9 @@ this.initImpress = function(adapter){
     var offset = getUrlVars().offset || 0
     // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    adapter.adapter(asi, null, false, offset);
     var impress = require('./impress-asq');
     impress().init();
+    adapter.adapter(asi, null, false, offset, impress().newStep);
   }catch(err){
     debug(err.toString + err.stack)
   }
@@ -323,7 +330,7 @@ this.initReveal = function(adapter){
     var offset = getUrlVars().offset || 0;
     // var bounce = (that.sessionFlow == 'self') //used so that goto events are fast on self mode
     var asi = require('./presentationAdapter/adapterSocketInterface')(connection.socket);
-    adapter(asi, null, false, offset);
+    adapter.adapter(asi, null, false, offset, 'viewer');
   }catch(err){
     debug(err.toString + err.stack)
   }
@@ -403,8 +410,8 @@ function getUrlVars()
 //   this.isAssessing = false;
 //   var that = this;
 //   var socketUrl =  window.location.protocol + '//' + host + '/folo';
-//   var socket = this.socket = io.connect(socketUrl, { 
-//     'query': 'asq_sid=' + session 
+//   var socket = this.socket = io.connect(socketUrl, {
+//     'query': 'asq_sid=' + session
 //   });
 
 
@@ -559,7 +566,7 @@ function getUrlVars()
 //         });
 //     });
 
-    
+
 //     socket.on('asq:stat', function(evt) {
 //       for (var i = 0; i < evt.questions.length; i++) {
 //         var question = evt.questions[i];
@@ -616,7 +623,7 @@ function getUrlVars()
 
 //   /**
 //   *
-//   * jQuery doesn't work well with polymer event. 
+//   * jQuery doesn't work well with polymer event.
 //   * Use javascript here.
 //   * TODO: take care of the format.
 //   *
@@ -696,8 +703,8 @@ function getUrlVars()
 //   //     }
 //   //   });
 //   // });
-  
-  
+
+
 
 //   // Handler for assessment submission
 //   $(document).on('submit', '.asq-assessment-inner', function(evt) {
@@ -865,7 +872,7 @@ function getUrlVars()
 //       }
 //     }
 //   }
-//   else if($question.hasClass('text-input') 
+//   else if($question.hasClass('text-input')
 //     || $question.hasClass('asq-css-select')
 //     || $question.hasClass('asq-js-function-body')){
 //     requestDistinct(questionId)
@@ -1078,7 +1085,7 @@ function getUrlVars()
 //         impress().next();
 //       },2000);
 //     }
-   
+
 //   }catch(err){
 //     debug(err.message + ' ' + err.stack);
 //   }

@@ -1,35 +1,73 @@
 /**
-*  @fileoverview adapterSocketInterface.js
-*  @description  provides presentation adapters with methods to interface
-* with ASQ sockets
-*
-*/
+	*  @fileoverview adapterSocketInterface.js
+	*  @description  provides presentation adapters with methods to interface
+	* with ASQ sockets
+	*
+	*/
 
 
 /**
-* @param {Object} asqSocket the client side asq socket
-*/
+	* @param {Object} asqSocket the client side asq socket
+	*/
 
 module.exports = function(asqSocket, bounce){
-  bounce = bounce || false
-  var debug = require('bows')("adapterSocketInterface")
-  var cbs = [];
+  bounce = bounce || false;
+  var debug = require('bows')("adapterSocketInterface");
+  var goto_cbs = [];
+	var addSlide_cbs = [];
+  var removeSlide_cbs = [];
 
-  asqSocket.on("asq:goto", function onSocketGoto(evt){
-    debug("Reveived goto event:", evt);
-    onGotoReceived(evt);
+	asqSocket.on("asq:goto", function onSocketGoto(evt){
+		debug("Reveived goto event:", evt);
+		onGotoReceived(evt);
+	});
+
+	asqSocket.on("asq:addSlide", function onSocketAddSlide(evt){
+		debug("Reveived addSlide event:", evt);
+		onAddSlideReceived(evt);
+	});
+
+  asqSocket.on("asq:removeSlide", function onSocketRemoveSlide(evt){
+    debug("Reveived removeSlide event:", evt);
+    onRemoveSlideReceived(evt);
   });
+
 
   var setBounce =  function(val){
     bounce = !! val;
   }
 
   var onGotoReceived = function(evt){
-    for(var i=0, l=cbs.length; i<l; i++){
+    for(var i=0, l=goto_cbs.length; i<l; i++){
       //don't let one bad function affect the rest of them
       try{
-        cbs[i].call(null, evt.data);
-      }catch(err){
+        goto_cbs[i].call(null, evt.data);
+      }
+      catch(err){
+        debug(err.toString() + err.stack);
+      }
+    }
+  }
+
+	var onAddSlideReceived = function(evt) {
+		for(var i=0, l=addSlide_cbs.length; i<l; i++){
+			//don't let one bad function affect the rest of them
+			try{
+				addSlide_cbs[i].call(null, evt.data);
+			}
+      catch(err){
+				debug(err.toString() + err.stack);
+			}
+		}
+	}
+
+  var onRemoveSlideReceived = function(evt) {
+    for(var i=0, l=removeSlide_cbs.length; i<l; i++){
+      //don't let one bad function affect the rest of them
+      try{
+        removeSlide_cbs[i].call(null, evt.data);
+      }
+      catch(err){
         debug(err.toString() + err.stack);
       }
     }
@@ -39,7 +77,21 @@ module.exports = function(asqSocket, bounce){
     if("function" !== typeof cb){
       throw new Error("cb should be a function")
     }
-    cbs.push(cb)
+    goto_cbs.push(cb)
+  }
+
+	var onAddSlide = function(cb) {
+		if("function" !== typeof cb){
+			throw new Error("cb should be a function")
+		}
+		addSlide_cbs.push(cb);
+	}
+
+  var onRemoveSlide = function(cb) {
+    if("function" !== typeof cb){
+      throw new Error("cb should be a function")
+    }
+    removeSlide_cbs.push(cb);
   }
 
   var emitGoto = function(data){
@@ -56,9 +108,11 @@ module.exports = function(asqSocket, bounce){
     debug("Data was bounced:");
   }
 
-  return{
-    setBounce : setBounce,
-    onGoto : onGoto,
-    emitGoto: (bounce? bounceGoto: emitGoto)
+  return {
+      setBounce : setBounce,
+      onGoto : onGoto,
+      emitGoto: (bounce? bounceGoto: emitGoto),
+  		onAddSlide : onAddSlide,
+      onRemoveSlide : onRemoveSlide
+		}
   }
-}
