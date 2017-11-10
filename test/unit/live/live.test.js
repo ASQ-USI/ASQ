@@ -13,13 +13,16 @@ const modulePath = '../../../lib/live/live.js';
 
 context('lib/live.js', function() {
   before(function(){
-  	const execObject = {
+  	const execObject = this.execObject = {
       exec: function(){
-        return Promise.resolve(true);
+        return Promise.resolve(undefined);
       },
     };
 
-    const SlideshowModel = this.WhitelistEntryModel = {
+    const save = function save() {
+    	return Promise.resolve({});
+    }
+    const SlideshowModel = this.SlideshowModel = {
       findOne: sinon.stub().returns(execObject)
     };
 
@@ -39,10 +42,19 @@ context('lib/live.js', function() {
       	}
       }
     };
-    this.Session.prototype.markModified = function (property) { return 'mock return'; };
-    const Question = this.Question = function Question(data) { return data };
 
-    const Exercise = this.Exercise = function Exercise(data) { return data };
+    this.Session.prototype.markModified = function (property) { return 'mock return'; };
+    this.Session.prototype.save = save;
+
+    const Question = this.Question = function Question(data) { 
+    	data.save = save;
+    	return data 
+    };
+
+    const Exercise = this.Exercise = function Exercise(data) { 
+    	data.save = save;
+    	return data 
+    };
 
     this.resetStubs = function(){
       this.SlideshowModel.findOne.reset();
@@ -101,12 +113,10 @@ context('lib/live.js', function() {
 	  			authLevel: 'mockedAuthLevel',
 	  			data,
 	  		};
-  		// this.lib.utils.presentation.generateWhitelist.public.returns(Promise.resolve(undefined));
-  		// this.lib.utils.presentation.generateWhitelist.public.reset();
   	});
 
   	describe('Given a userId and a presentation', function () {
-	  	it('should return a new created session correctly', function() {
+	  	it('returns a new created session correctly', function() {
 	  		const newSession = this.live.createNewLiveSession('123', {'_id': '234'});
 
 	  		expect(session.presenter).to.deep.equal(newSession.presenter);
@@ -123,7 +133,7 @@ context('lib/live.js', function() {
   	});
 
   	describe('Given a userId and a presentation with slides tree steps', function () {
-	  	it('should return a new created session correctly, with the correct active slide', function() {
+	  	it('returns a new created session correctly, with the correct active slide', function() {
 	  		const userId = '123';
 	  		const presentation = {
 	  			'_id': '234',
@@ -148,7 +158,7 @@ context('lib/live.js', function() {
   	});
 
   	describe('Given a userId, a presentation with slides tree steps, a flow and an authentication level', function () {
-	  	it('should return a new created session correctly, with the correct flow and authentication level', function() {
+	  	it('returns a new created session correctly, with the correct flow and authentication level', function() {
 	  		const userId = '123';
 	  		const presentation = {
 	  			'_id': '234',
@@ -175,7 +185,7 @@ context('lib/live.js', function() {
 
   context('createImplicitQuestion',function() {
   	describe('Given an owner identifier, and a session identifier', function () {
-	  	it('should return the correct implicit question with the correct userId and sessionId', function() {
+	  	it('returns the correct implicit question with the correct userId and sessionId', function() {
 	  		const ownerId = '123';
 	  		const sessionId = '456';
 	  		const implicitQuestion = this.live.createImplicitQuestion(ownerId, sessionId);
@@ -183,6 +193,7 @@ context('lib/live.js', function() {
 	  	});
   	});
   });
+
 
   context('createViewerQuestionExercise',function() {
   	describe('Given an implicit question identifier', function () {
@@ -193,4 +204,104 @@ context('lib/live.js', function() {
 	  	});
   	});
   });
+
+  context('createLivePresentation',function() {
+  	describe('Given the user is not defined', function () {
+	  	it('throws an error that no user was specified', function(done) {
+				this.live.createLivePresentation(undefined, {"_id": '123'})
+		      .then(function(res) {
+		        expect(res).to.be.equal(undefined);
+		        done();
+		      }.bind(this))
+		      .catch(function(err) {
+		      	expect(err).to.not.be.null;
+		      	expect(err).to.not.be.undefined;
+						done()
+				});
+	  	});
+  	});
+
+  	describe('Given the user is null', function () {
+	  	it('throws an error that no user was specified', function(done) {
+				this.live.createLivePresentation(null, {"_id": '123'})
+		      .then(function(res) {
+		        expect(res).to.be.equal(undefined);
+		        done();
+		      }.bind(this))
+		      .catch(function(err) {
+		      	expect(err).to.not.be.null;
+		      	expect(err).to.not.be.undefined;
+		      	expect(err.message).to.be.equal('No user was given for creating a live presentation');
+						done()
+				});
+	  	});
+  	});
+
+		describe('Given the user without identifier', function () {
+	  	it('throws an error that no user was specified', function(done) {
+				this.live.createLivePresentation({}, {"_id": '123'})
+		      .then(function(res) {
+		        expect(res).to.be.equal(undefined);
+		        done();
+		      }.bind(this))
+		      .catch(function(err) {
+		      	expect(err).to.not.be.null;
+		      	expect(err).to.not.be.undefined;
+		      	expect(err.message).to.be.equal('No user was given for creating a live presentation');
+						done()
+				});
+	  	});
+  	});
+
+		describe('Given a user and an invalid presentation', function () {
+			it('throws an error that the presentation is not found', function(done) {
+				this.live.createLivePresentation({"_id": '456'}, {})
+					.then(function(res) {
+						expect(res).to.be.equal(undefined);
+						done();
+					}.bind(this))
+					.catch(function(err) {
+						expect(err).to.not.be.null;
+						expect(err).to.not.be.undefined;
+						expect(err.message).to.be.equal('No presentation with this id');
+						done()
+				});
+			});
+		});
+
+		describe('Given a valid user and a valid presentation', function () {
+			before(function() {
+				const execObject = {
+					exec: function(){
+						return Promise.resolve({
+							"_id": "dummyId",
+							save: function () {
+								return Promise.resolve({});
+							},
+						});
+					},
+				};
+				this.SlideshowModel.findOne = sinon.stub().returns(execObject);
+
+				this.lib.utils.presentation.generateWhitelist.public.returns(Promise.resolve(undefined));
+				this.lib.utils.presentation.generateWhitelist.public.reset();
+			});
+			it('does not throw an error', function(done) {
+				this.live.createLivePresentation({"_id": '456'}, {})
+					.then(function(res) {
+						expect(res).to.not.be.null;
+						expect(res).to.not.be.undefined;
+						done();
+					}.bind(this))
+					.catch(function(err) {
+						expect(err).to.be.null;
+						expect(err).to.be.undefined;
+						done()
+				});
+			});
+		});
+
+
+  });
+
 });
