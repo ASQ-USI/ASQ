@@ -102,22 +102,20 @@ function livePresentation(req, res) {
   const rootUrl = req.app.locals.rootUrl;
   const presentation = req.liveSession.slides;
   let presentationViewUrl = '';
-  const presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
+  const presenterLiveUrl = `${rootUrl}/${req.routeOwner.username}/live/`;
 
-  //bail out early if we need to renderthe cockpit
+  //bail out early if we need to render the cockpit
   if (view === 'cockpit' && role !== 'viewer') {
-    return  res.redirect(301, ['/', req.user.username, '/presentations/',
-        req.params.presentationId, '/live/', req.params.liveId,
-        '/cockpit'].join(''));
+    const redirectUrl = `/${req.user.username}/presentations/${req.params.presentationId}/live/${req.params.liveId}/cockpit`;
+    return  res.redirect(301, redirectUrl);
   }
 
   //TMP until roles are defined more precisely
   logger.debug(`Select template for ${ role } ${ view }`);
 
   const renderOpts = (function getTemplate(role, view, presentation) {
-    presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
-                               + presentation._id + '/live/' + req.liveSession.id
-                               + '/?role=' + role + '&view=presentation';
+    presentationViewUrl = `${rootUrl}/${req.routeOwner.username}/presentation/${presentation._id}/live/
+                           ${req.liveSession.id}/?role=${role}&view=presentation`;
 
    if (role === 'presenter' || role === 'assistant') {
       return {
@@ -169,10 +167,9 @@ function livePresentationFiles(req, res) {
   const presentation = req.liveSession.slides;
   const file = req.params[0];
 
-  if (presentation && file === presentation.originalFile) { 
-    res.redirect(301, ['/', req.user.username, '/presentations/',
-        req.params.presentationId, '/live/', req.params.liveId,
-        '/?view=presentation'].join(''));
+  if (presentation && file === presentation.originalFile) {
+    const redirectUrl = `/${req.user.username}/presentations/${req.params.presentationId}/live/${req.params.liveId}/?view=presentation`;
+    res.redirect(301, redirectUrl);
   } else if(presentation) {
     res.sendFile( path.join(presentation.path, file));
   } else {
@@ -265,8 +262,8 @@ const createLivePresentationSession =  coroutine(function *createLivePresentatio
     const newSession = yield live.createLivePresentationSession(owner, presentationId, presFlow, authLevel);
 
     logger.info(`Starting new ${ newSession.authLevel } session`);
-    res.location(['/', username, '/presentations/', newSession.slides,
-      '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
+    const locationUrl = `/${username}/presentations/${newSession.slides}/live/${newSession._id}/?role=presenter&view=ctrl`;
+    res.location(locationUrl);
     res.sendStatus(201);
   }catch(err){
     logger.error({
@@ -366,10 +363,10 @@ const getPresentationSettings = coroutine(function* getPresentationSettingsGen(r
 const downloadPresentation = coroutine(function* downloadPresentationGen(req, res, next){
   try{
     const presentation = yield presentationApi.read(req.params.presentationId);
-    const presentationPath = config.uploadDir + '/' + presentation.id;
+    const presentationPath = `${config.uploadDir}/${presentation.id}`;
 
     //set the archive name
-    const archiveName = filenamify(presentation.title) + '.zip';
+    const archiveName = `${filenamify(presentation.title)}.zip`;
     res.attachment(archiveName);
 
     const archiveStream = archive.createArchiveStream( presentationPath, presentation.asqFile, res)
@@ -377,7 +374,7 @@ const downloadPresentation = coroutine(function* downloadPresentationGen(req, re
     //on stream closed we can end the request
     archiveStream.on('end', function() {
       logger.log({
-      },'Archive wrote %d bytes', archiveStream.pointer());
+      },`Archive wrote ${archiveStream.pointer()} bytes`);
     });
 
     archiveStream.on('error', function(err) {
