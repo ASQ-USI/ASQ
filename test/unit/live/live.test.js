@@ -3,27 +3,35 @@ const Promise = require('bluebird');
 const SandboxedModule = require('sandboxed-module');
 const sinonChai = require('sinon-chai');
 const sinon = require('sinon');
-const should = chai.should();
 const expect = chai.expect;
+const should = chai.should();
 chai.use(sinonChai);
 require('sinon-as-promised')(Promise);
 
 const modulePath = '../../../lib/live/live.js';
 
 
+function createExecObject(returnValue){
+  return {
+    exec: function(){
+      return Promise.resolve(returnValue);
+    }
+  }
+}
+
 context('lib/live.js', function() {
   before(function(){
-  	const execObject = this.execObject = {
-      exec: function(){
-        return Promise.resolve(undefined);
-      },
-    };
 
     const save = function save() {
     	return Promise.resolve({});
-    }
+    };
+
     const SlideshowModel = this.SlideshowModel = {
-      findOne: sinon.stub().returns(execObject)
+      findOne: sinon.stub()
+    };
+
+    const UserModel = this.UserModel = {
+      findById: sinon.stub()
     };
 
     const Session = this.Session = function Session() {};
@@ -48,12 +56,12 @@ context('lib/live.js', function() {
 
     const Question = this.Question = function Question(data) { 
     	data.save = save;
-    	return data 
+    	return data;
     };
 
     const Exercise = this.Exercise = function Exercise(data) { 
     	data.save = save;
-    	return data 
+    	return data;
     };
 
     this.resetStubs = function(){
@@ -71,6 +79,8 @@ context('lib/live.js', function() {
             return Question;
           case 'Exercise':
             return Exercise;
+          case 'User':
+            return UserModel;
           default:
             return undefined;
         }
@@ -107,17 +117,15 @@ context('lib/live.js', function() {
 			    studentQuestionsEnabled: false,
 			  };
 	  		session = {
-	  			presenter: '123',
-	  			slides: '234',
-	  			flow: 'mockedFlow',
-	  			authLevel: 'mockedAuthLevel',
+	  			presenter: 'testPresenterId',
+	  			slides: 'testPresentationId',
 	  			data,
 	  		};
   	});
 
-  	describe('Given a userId and a presentation', function () {
+  	describe('Given a ownerId and a presentation', function () {
 	  	it('returns a newly created session correctly', function() {
-	  		const newSession = this.live.createNewLiveSession('123', {'_id': '234'});
+	  		const newSession = this.live.createNewLiveSession('testPresenterId', {'_id': 'testPresentationId'});
 
 	  		expect(newSession.presenter).to.deep.equal(session.presenter);
 	  		expect(newSession.slides).to.deep.equal(session.slides);
@@ -130,16 +138,16 @@ context('lib/live.js', function() {
 
   	});
 
-  	describe('Given a userId and a presentation with slides tree steps', function () {
+  	describe('Given a ownerId and a presentation with slides tree steps', function () {
 	  	it('returns a newly created session correctly, with the correct active slide', function() {
-	  		const userId = '123';
+	  		const ownerId = 'testPresenterId';
 	  		const presentation = {
-	  			'_id': '234',
+	  			'_id': 'testPresentationId',
 	  			slidesTree: {
 	  				steps: ['0'],
 	  			},
 	  		};
-	  		const newSession = this.live.createNewLiveSession(userId, presentation);
+	  		const newSession = this.live.createNewLiveSession(ownerId, presentation);
 
 	  		expect(newSession.presenter).to.deep.equal(session.presenter);
 	  		expect(newSession.slides).to.deep.equal(session.slides);
@@ -153,18 +161,18 @@ context('lib/live.js', function() {
 
   	});
 
-  	describe('Given a userId, a presentation with slides tree steps, a flow and an authentication level', function () {
+  	describe('Given a ownerId, a presentation with slides tree steps, a flow and an authentication level', function () {
 	  	it('returns a newly created session correctly, with the correct flow and authentication level', function() {
-	  		const userId = '123';
+	  		const ownerId = 'testPresenterId';
 	  		const presentation = {
-	  			'_id': '234',
+	  			'_id': 'testPresentationId',
 	  			slidesTree: {
 	  				steps: ['0'],
 	  			},
 	  		};
 	  		const flow = 'ghost';
 	  		const authLevel = 'authLevel';
-	  		const newSession = this.live.createNewLiveSession(userId, presentation, flow, authLevel);
+	  		const newSession = this.live.createNewLiveSession(ownerId, presentation, flow, authLevel);
 
 	  		expect(newSession.presenter).to.deep.equal(session.presenter);
 	  		expect(newSession.slides).to.deep.equal(session.slides);
@@ -181,9 +189,9 @@ context('lib/live.js', function() {
 
   context('createImplicitQuestion',function() {
   	describe('Given an owner identifier, and a session identifier', function () {
-	  	it('returns the correct implicit question with the correct userId and sessionId', function() {
-	  		const ownerId = '123';
-	  		const sessionId = '456';
+	  	it('returns the correct implicit question with the correct ownerId and sessionId', function() {
+	  		const ownerId = 'testOwnerId';
+	  		const sessionId = 'testSessionId';
 	  		const implicitQuestion = this.live.createImplicitQuestion(ownerId, sessionId);
 	  		expect(implicitQuestion.author).to.be.deep.equal(ownerId);
 	  	});
@@ -193,8 +201,8 @@ context('lib/live.js', function() {
 
   context('createViewerQuestionExercise',function() {
   	describe('Given an implicit question identifier', function () {
-	  	it('should return the correct implicit question with the correct userId and sessionId', function() {
-	  		const implicitQuestionId = '123';
+	  	it('should return the correct implicit question with the correct ownerId and sessionId', function() {
+	  		const implicitQuestionId = 'testQuestionId';
 	  		const viewerQuestionExercise = this.live.createViewerQuestionExercise(implicitQuestionId);
 	  		expect(viewerQuestionExercise.questions).to.be.deep.equal([implicitQuestionId]);
 	  	});
@@ -202,56 +210,61 @@ context('lib/live.js', function() {
   });
 
   context('createLivePresentationSession',function() {
-  	describe('Given the user is not defined', function () {
-	  	it('throws an error that no user was specified', function(done) {
-				this.live.createLivePresentationSession(undefined, {"_id": '123'})
+  	describe('Given the owner is not defined', function () {
+      before(function(){
+        this.UserModel.findById.returns(createExecObject(undefined));
+      });
+
+	  	it('throws an error that no owner was specified', function(done) {
+
+				this.live.createLivePresentationSession(undefined, 'testPresentationId')
 		      .then(function(res) {
 		        expect(res).to.be.equal(undefined);
 		        done();
 		      }.bind(this))
-		      .catch(function(err) {
+		      .catch((err) => {
+            this.UserModel.findById.calledWith(undefined).should.equal(true);
 		      	expect(err).to.not.be.null;
 		      	expect(err).to.not.be.undefined;
+            expect(err.message).to.be.equal('Could not find owner with id: undefined');
 						done()
 				});
 	  	});
   	});
 
-  	describe('Given the user is null', function () {
-	  	it('throws an error that no user was specified', function(done) {
-				this.live.createLivePresentationSession(null, {"_id": '123'})
+  	describe('Given the owner is null', function () {
+      before(function(){
+        this.UserModel.findById.returns(createExecObject(null));
+      });
+
+	  	it('throws an error that no owner was specified', function(done) {
+
+				this.live.createLivePresentationSession(null, 'testPresentationId')
 		      .then(function(res) {
 		        expect(res).to.be.equal(undefined);
 		        done();
 		      }.bind(this))
-		      .catch(function(err) {
+		      .catch((err) => {
+            this.UserModel.findById.calledWith(null).should.equal(true);
 		      	expect(err).to.not.be.null;
 		      	expect(err).to.not.be.undefined;
-		      	expect(err.message).to.be.equal('No user was given for creating a live presentation');
+		      	expect(err.message).to.be.equal('Could not find owner with id: null');
 						done()
 				});
 	  	});
   	});
 
-		describe('Given the user without identifier', function () {
-	  	it('throws an error that no user was specified', function(done) {
-				this.live.createLivePresentationSession({}, {"_id": '123'})
-		      .then(function(res) {
-		        expect(res).to.be.equal(undefined);
-		        done();
-		      }.bind(this))
-		      .catch(function(err) {
-		      	expect(err).to.not.be.null;
-		      	expect(err).to.not.be.undefined;
-		      	expect(err.message).to.be.equal('No user was given for creating a live presentation');
-						done()
-				});
-	  	});
-  	});
 
-		describe('Given a user and an invalid presentation', function () {
+		describe('Given a owner and an invalid presentation', function () {
+      before(function(){
+        const testOwner = {
+          _id: 'testOwnerId'
+        }
+        this.UserModel.findById.returns(createExecObject(testOwner));
+        this.SlideshowModel.findOne.returns(createExecObject(undefined));
+      });
 			it('throws an error that the presentation is not found', function(done) {
-				this.live.createLivePresentationSession({"_id": '456'}, {})
+				this.live.createLivePresentationSession('testOwnerId', {})
 					.then(function(res) {
 						expect(res).to.be.equal(undefined);
 						done();
@@ -265,25 +278,26 @@ context('lib/live.js', function() {
 			});
 		});
 
-		describe('Given a valid user and a valid presentation', function () {
+		describe('Given a valid owner and a valid presentation', function () {
 			before(function() {
-				const execObject = {
-					exec: function(){
-						return Promise.resolve({
-							"_id": "dummyId",
-							save: function () {
-								return Promise.resolve({});
-							},
-						});
-					},
-				};
-				this.SlideshowModel.findOne = sinon.stub().returns(execObject);
+        const testOwner = {
+          _id: 'testOwnerId'
+        }
+        this.UserModel.findById.returns(createExecObject(testOwner));
+
+        const testPresentation = {
+          _id: 'testId',
+          save: function () {
+            return Promise.resolve({});
+          }
+        }
+				this.SlideshowModel.findOne.returns(createExecObject(testPresentation));
 
 				this.lib.utils.presentation.generateWhitelist.public.returns(Promise.resolve(undefined));
 				this.lib.utils.presentation.generateWhitelist.public.reset();
 			});
 			it('does not throw an error', function(done) {
-				this.live.createLivePresentationSession({"_id": '456'}, {})
+				this.live.createLivePresentationSession({'_id': '456'}, {})
 					.then(function(res) {
 						expect(res).to.not.be.null;
 						expect(res).to.not.be.undefined;
@@ -296,7 +310,6 @@ context('lib/live.js', function() {
 				});
 			});
 		});
-
 
   });
 
