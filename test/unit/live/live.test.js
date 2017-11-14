@@ -52,7 +52,9 @@ context('lib/live.js', function() {
     };
 
     this.Session.prototype.markModified = function (property) { return 'mock return'; };
-    this.Session.prototype.save = save;
+    this.Session.prototype.save = function save() {
+      return Promise.resolve({'_id': 'sessionIdTest'});
+    };
 
     const Question = this.Question = function Question(data) { 
     	data.save = save;
@@ -279,36 +281,122 @@ context('lib/live.js', function() {
 		});
 
 		describe('Given a valid owner and a valid presentation', function () {
+      let testPresentation;
+      let testOwner;
 			before(function() {
-        const testOwner = {
+        testOwner = {
           _id: 'testOwnerId'
         }
         this.UserModel.findById.returns(createExecObject(testOwner));
 
-        const testPresentation = {
+        testPresentation = {
           _id: 'testId',
           save: function () {
             return Promise.resolve({});
-          }
+          },
+          lastSession: new Date(),
         }
 				this.SlideshowModel.findOne.returns(createExecObject(testPresentation));
 
 				this.lib.utils.presentation.generateWhitelist.public.returns(Promise.resolve(undefined));
 				this.lib.utils.presentation.generateWhitelist.public.reset();
+
+        sinon.spy(this.live, 'createNewLiveSession');
+        sinon.spy(this.live, 'createImplicitQuestion');
+        sinon.spy(this.live, 'createViewerQuestionExercise');
 			});
-			it('does not throw an error', function(done) {
-				this.live.createLivePresentationSession({'_id': '456'}, {})
-					.then(function(res) {
-						expect(res).to.not.be.null;
-						expect(res).to.not.be.undefined;
-						done();
-					}.bind(this))
-					.catch(function(err) {
-						expect(err).to.be.null;
-						expect(err).to.be.undefined;
-						done()
-				});
-			});
+
+      beforeEach(function(){
+        this.live.createNewLiveSession.reset();
+        this.live.createImplicitQuestion.reset();
+        this.live.createViewerQuestionExercise.reset();
+      })
+
+      after(function () {
+        this.live.createNewLiveSession.restore();
+        this.live.createImplicitQuestion.restore();
+        this.live.createViewerQuestionExercise.restore();
+      });
+
+      it('does call createNewLiveSession', function(done) {
+        this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
+          .then(function(res) {
+            expect(res).to.not.be.null;
+            expect(res).to.not.be.undefined;
+            this.live.createNewLiveSession.calledOnce.should.equal(true);
+            done();
+          }.bind(this))
+          .catch(function(err) {
+            expect(err).to.be.null;
+            expect(err).to.be.undefined;
+            done(err)
+        });
+      });
+
+      it('does call createImplicitQuestion', function(done) {
+        this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
+          .then(function(res) {
+            expect(res).to.not.be.null;
+            expect(res).to.not.be.undefined;
+            this.live.createNewLiveSession.calledOnce.should.equal(true);
+            this.live.createImplicitQuestion.calledOnce.should.equal(true);
+            done();
+          }.bind(this))
+          .catch(function(err) {
+            expect(err).to.be.null;
+            expect(err).to.be.undefined;
+            done(err)
+        });
+      });
+
+      it('does call createViewerQuestionExercise', function(done) {
+        this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
+          .then(function(res) {
+            expect(res).to.not.be.null;
+            expect(res).to.not.be.undefined;
+            this.live.createNewLiveSession.calledOnce.should.equal(true);
+            this.live.createImplicitQuestion.calledOnce.should.equal(true);
+            this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
+            done();
+          }.bind(this))
+          .catch(function(err) {
+            expect(err).to.be.null;
+            expect(err).to.be.undefined;
+            done(err)
+        });
+      });
+
+      it('does call generateWhitelist', function(done) {
+        this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
+          .then(function(res) {
+            expect(res).to.not.be.null;
+            expect(res).to.not.be.undefined;
+            this.live.createNewLiveSession.calledOnce.should.equal(true);
+            this.live.createImplicitQuestion.calledOnce.should.equal(true);
+            this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
+            this.lib.utils.presentation.generateWhitelist.public.calledWith('sessionIdTest', testOwner);
+            done();
+          }.bind(this))
+          .catch(function(err) {
+            expect(err).to.be.null;
+            expect(err).to.be.undefined;
+            done(err)
+        });
+      });
+
+      it('does not throw an error', function(done) {
+        this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
+          .then(function(res) {
+            expect(res).to.not.be.null;
+            expect(res).to.not.be.undefined;
+            done();
+          }.bind(this))
+          .catch(function(err) {
+            expect(err).to.be.null;
+            expect(err).to.be.undefined;
+            done()
+        });
+      });
 		});
 
   });
