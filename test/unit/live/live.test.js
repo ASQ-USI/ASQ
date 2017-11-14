@@ -53,7 +53,8 @@ context('lib/live.js', function() {
 
     this.Session.prototype.markModified = function (property) { return 'mock return'; };
     this.Session.prototype.save = function save() {
-      return Promise.resolve({'_id': 'sessionIdTest'});
+      this._id = 'sessionIdTest';
+      return Promise.resolve(this);
     };
 
     const Question = this.Question = function Question(data) { 
@@ -299,7 +300,6 @@ context('lib/live.js', function() {
 				this.SlideshowModel.findOne.returns(createExecObject(testPresentation));
 
 				this.lib.utils.presentation.generateWhitelist.public.returns(Promise.resolve(undefined));
-				this.lib.utils.presentation.generateWhitelist.public.reset();
 
         sinon.spy(this.live, 'createNewLiveSession');
         sinon.spy(this.live, 'createImplicitQuestion');
@@ -310,6 +310,7 @@ context('lib/live.js', function() {
         this.live.createNewLiveSession.reset();
         this.live.createImplicitQuestion.reset();
         this.live.createViewerQuestionExercise.reset();
+        this.lib.utils.presentation.generateWhitelist.public.reset();
       })
 
       after(function () {
@@ -374,10 +375,11 @@ context('lib/live.js', function() {
             this.live.createNewLiveSession.calledOnce.should.equal(true);
             this.live.createImplicitQuestion.calledOnce.should.equal(true);
             this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
-            this.lib.utils.presentation.generateWhitelist.public.calledWith('sessionIdTest', testOwner);
+            this.lib.utils.presentation.generateWhitelist.public.calledWith('sessionIdTest', testOwner).should.equal(true);
             done();
           }.bind(this))
           .catch(function(err) {
+            console.log(err)
             expect(err).to.be.null;
             expect(err).to.be.undefined;
             done(err)
