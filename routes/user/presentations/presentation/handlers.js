@@ -259,7 +259,7 @@ const createLivePresentationSession =  coroutine(function *createLivePresentatio
     const presFlow = req.body.flow;
     const authLevel = req.body.authLevel;
 
-    const newSession = yield live.createLivePresentationSession(owner, presentationId, presFlow, authLevel);
+    const newSession = yield live.createLivePresentationSession(ownerId, presentationId, presFlow, authLevel);
 
     logger.info(`Starting new ${ newSession.authLevel } session`);
     const locationUrl = `/${username}/presentations/${newSession.slides}/live/${newSession._id}/?role=presenter&view=ctrl`;
