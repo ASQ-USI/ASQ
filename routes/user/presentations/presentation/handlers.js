@@ -22,7 +22,7 @@ const settings  = lib.settings.presentationSettings;
 const presentationApi = require('../../../../lib/api/presentations.js');
 const archive = require('../../../../lib/download/archive.js');
 const filenamify = require('filenamify');
-
+const live     = require('../../../../lib/live').live;
 
 function editPresentation(req, res) {
   Slideshow.findById(req.params.presentationId, function(err, slideshow) {
@@ -102,22 +102,20 @@ function livePresentation(req, res) {
   const rootUrl = req.app.locals.rootUrl;
   const presentation = req.liveSession.slides;
   let presentationViewUrl = '';
-  const presenterLiveUrl = rootUrl + '/' + req.routeOwner.username + '/live/';
+  const presenterLiveUrl = `${rootUrl}/${req.routeOwner.username}/live/`;
 
-  //bail out early if we need to renderthe cockpit
+  //bail out early if we need to render the cockpit
   if (view === 'cockpit' && role !== 'viewer') {
-    return  res.redirect(301, ['/', req.user.username, '/presentations/',
-        req.params.presentationId, '/live/', req.params.liveId,
-        '/cockpit'].join(''));
+    const redirectUrl = `/${req.user.username}/presentations/${req.params.presentationId}/live/${req.params.liveId}/cockpit`;
+    return  res.redirect(301, redirectUrl);
   }
 
   //TMP until roles are defined more precisely
-  logger.debug('Select template for ' + role + ' ' + view);
+  logger.debug(`Select template for ${ role } ${ view }`);
 
   const renderOpts = (function getTemplate(role, view, presentation) {
-    presentationViewUrl = rootUrl + '/' + req.routeOwner.username + '/presentations/'
-                               + presentation._id + '/live/' + req.liveSession.id
-                               + '/?role=' + role + '&view=presentation';
+    presentationViewUrl = `${rootUrl}/${req.routeOwner.username}/presentation/${presentation._id}/live/
+                           ${req.liveSession.id}/?role=${role}&view=presentation`;
 
    if (role === 'presenter' || role === 'assistant') {
       return {
@@ -170,9 +168,8 @@ function livePresentationFiles(req, res) {
   const file = req.params[0];
 
   if (presentation && file === presentation.originalFile) {
-    res.redirect(301, ['/', req.user.username, '/presentations/',
-        req.params.presentationId, '/live/', req.params.liveId,
-        '/?view=presentation'].join(''));
+    const redirectUrl = `/${req.user.username}/presentations/${req.params.presentationId}/live/${req.params.liveId}/?view=presentation`;
+    res.redirect(301, redirectUrl);
   } else if(presentation) {
     res.sendFile( path.join(presentation.path, file));
   } else {
@@ -221,144 +218,13 @@ function liveCockpit(req, res) {
 }
 
 
-const startPresentation =  coroutine(function *startPresentationGen(req, res, next) {
-  try{
-    logger.debug('New session from ' + req.user.username);
-
-    const  slidesId = req.params.presentationId
-
-    const slideshow = yield Slideshow.findOne({
-      _id   : slidesId,
-      owner : req.user._id })
-    .exec();
-
-    if(!slideshow){
-      throw new Error('No slideshow with this id');
-    }  // FIXME: create proper error like in list presentations
-
-    slideshow.lastSession = new Date();
-
-    //Instantiate a new session
-    const newSession = new Session();
-    newSession.presenter = req.user._id;
-    newSession.slides = slideshow._id;
-    newSession.flow = ( Session.schema.path('flow').enumValues
-      .indexOf(req.body.flow) > -1 ) ? req.body.flow : 'ctrl';
-    newSession.authLevel = ( Session.schema.path('authLevel').enumValues
-      .indexOf(req.body.authLevel) > -1 ) ? req.body.authLevel : 'public';
-
-
-    if(slideshow.slidesTree
-      && slideshow.slidesTree.steps
-      && slideshow.slidesTree.steps[0]){
-
-      newSession.activeSlide = slideshow.slidesTree.steps[0];
-    }
-
-    /*
-      This is needed for the live app, since we need to store the active viewer question (the question that it's displayed to the users)
-    */
-    newSession.data = {
-      activeViewerQuestion: null,
-      questions: [],
-      studentQuestionsEnabled: false,
-    };
-    newSession.markModified('data');
-    const userPromise = User
-      .findById(req.user._id)
-      .exec()
-      .then( function onUser(user){
-        if(!user){
-          return Promise.reject(new Error('No user with this id'))
-        } //FIXME create proper error like in list presentations
-        // user.current = (newSession._id)
-        // user.liveSessions.addToSet(newSession._id)
-        return user.save()
-      });
-    const implicitQuestionData = {
-      type: 'asq-text-input-q',
-      author: req.user._id,
-      data: {
-        description: 'Implicit question placeholder for live app student questions',
-        type: 'implicit-student-question',
-        session: newSession._id,
-      },
-    };
-
-    const implicitQuestion = new Question(implicitQuestionData);
-    const viewerQuestionExerciseData = {
-      stem: 'viewerQuestionExercise',
-      questions: [implicitQuestion._id],
-    };
-    const viewerQuestionExercise = new Exercise(viewerQuestionExerciseData);
-    yield Promise.all([
-      slideshow.save(),
-      newSession.save(),
-      userPromise,
-      implicitQuestion.save(),
-      viewerQuestionExercise.save(),
-    ]);
-
-    const pFn = Promise.promisify(presUtils.generateWhitelist[newSession.authLevel]);
-    yield pFn(newSession._id, req.user);
-
-    logger.info('Starting new ' + newSession.authLevel + ' session');
-    res.location(['/', req.user.username, '/presentations/', newSession.slides,
-      '/live/', newSession._id, '/?role=presenter&view=ctrl'].join(''));
-    res.sendStatus(201);
-  }catch(err){
-    next(err)
-  }
-})
-
-
-const terminatePresentation = coroutine(function *terminatePresentationGen(req, res, next) {
-
-  try{
-    logger.debug({
-      owner_id: req.user._id,
-      slideshow: req.params.presentationId
-    }, 'Stopping session');
-
-
-    const userId = req.user._id;
-    const presentationId = req.params.presentationId;
-
-    const terminatedSessions = yield Session.terminateAllSessionsForPresentation(userId, presentationId)
-
-    // if sessions has zero length there was no live sessions
-    if (! terminatedSessions.length) {
-      const err404 = Error.http(404, 'No session found', {type:'invalid_request_error'});
-      throw err404;
-    }
-
-    res.sendStatus(204);
-
-    logger.log({
-      owner_id: req.user._id,
-      slideshow: req.params.presentationId,
-      sessions: terminatedSessions.map( s => s._id.toString()),
-    }, "stopped session");
-
-  }catch(err){
-    logger.error({
-      err: err,
-      owner_id: req.user._id,
-      sessions: terminatedSessions,
-    }, "error stopping session");
-
-    //let error middleware take care of it
-    next(err);
-  }
-});
-
 /* Stats */
 const getPresentationStats = coroutine(function *getPresentationStats(req, res, next) {
   let slideshow ;
   try{
     slideshow = yield Slideshow.findById(req.params.presentationId).exec();
   }catch(err){
-    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(`Presentation ${ req.params.presentationId } not found`);
     logger.error(err.message, { err: err.stack });
     res.status(404);
     return res.render('404', {'msg': 'Presentation not found'});
@@ -372,11 +238,82 @@ const getPresentationStats = coroutine(function *getPresentationStats(req, res, 
     statsObj.port = req.app.locals.urlPort;
     return res.render('presentationStats', statsObj);
   }catch(err){
-    logger.error("Presentation %s not found", req.params.presentationId);
+    logger.error(`Presentation ${ req.params.presentationId } not found`);
     logger.error(err.message, { err: err.stack });
     next(err)
   }
+  
+});
 
+const createLivePresentationSession =  coroutine(function *createLivePresentationSessionGen(req, res, next) {
+  const presentationId = req.params.presentationId
+  /* User data */
+  const owner = req.user;
+  const ownerId = owner._id;
+
+  try{
+    logger.debug(`New session from ${ req.user.username }`);
+    const username = owner.username;
+
+    /* Presentation data */
+    const presFlow = req.body.flow;
+    const authLevel = req.body.authLevel;
+
+    const newSession = yield live.createLivePresentationSession(ownerId, presentationId, presFlow, authLevel);
+
+    logger.info(`Starting new ${ newSession.authLevel } session`);
+    const locationUrl = `/${username}/presentations/${newSession.slides}/live/${newSession._id}/?role=presenter&view=ctrl`;
+    res.location(locationUrl);
+    res.sendStatus(201);
+  }catch(err){
+    logger.error({
+      err: err,
+      owner_id: ownerId,
+      presentation_id: presentationId,
+    }, "error starting presentation");
+
+    next(err)
+  }
+});
+
+const terminatePresentation = coroutine(function *terminatePresentationGen(req, res, next) {
+
+
+  const userId = req.user._id;
+  const presentationId = req.params.presentationId
+  try{
+    logger.debug({
+      owner_id: userId,
+      slideshow: req.params.presentationId
+    }, 'Stopping session');
+
+    
+    const terminatedSessions = yield Session.terminateAllSessionsForPresentation(userId, presentationId)
+
+    // if sessions has zero length there was no live sessions
+    if (! terminatedSessions.length) {
+      const err404 = Error.http(404, 'No session found', {type:'invalid_request_error'});
+      throw err404;
+    }
+
+    res.sendStatus(204);
+
+    logger.log({
+      owner_id: userId,
+      slideshow: presentationId,
+      sessions: terminatedSessions.map( s => s._id.toString()),
+    }, "stopped session");
+
+  }catch(err){
+    logger.error({
+      err: err,
+      owner_id: userId,
+      sessions: terminatedSessions,
+    }, "error stopping session");
+
+    //let error middleware take care of it
+    next(err);
+  }
 });
 
 const getPresentationSettings = coroutine(function* getPresentationSettingsGen(req, res) {
@@ -426,10 +363,10 @@ const getPresentationSettings = coroutine(function* getPresentationSettingsGen(r
 const downloadPresentation = coroutine(function* downloadPresentationGen(req, res, next){
   try{
     const presentation = yield presentationApi.read(req.params.presentationId);
-    const presentationPath = config.uploadDir + '/' + presentation.id;
+    const presentationPath = `${config.uploadDir}/${presentation.id}`;
 
     //set the archive name
-    const archiveName = filenamify(presentation.title) + '.zip';
+    const archiveName = `${filenamify(presentation.title)}.zip`;
     res.attachment(archiveName);
 
     const archiveStream = archive.createArchiveStream( presentationPath, presentation.asqFile, res)
@@ -437,7 +374,7 @@ const downloadPresentation = coroutine(function* downloadPresentationGen(req, re
     //on stream closed we can end the request
     archiveStream.on('end', function() {
       logger.log({
-      },'Archive wrote %d bytes', archiveStream.pointer());
+      },`Archive wrote ${archiveStream.pointer()} bytes`);
     });
 
     archiveStream.on('error', function(err) {
@@ -456,14 +393,15 @@ const downloadPresentation = coroutine(function* downloadPresentationGen(req, re
   }
 })
 
+
 module.exports = {
   editPresentation,
   downloadPresentation,
   liveCockpit,
   livePresentation,
   livePresentationFiles,
-  startPresentation,
-  terminatePresentation,
   getPresentationStats,
   getPresentationSettings,
+  createLivePresentationSession,
+  terminatePresentation
 }
