@@ -111,7 +111,7 @@ context('lib/live.js', function() {
 
   });
 
-  context('createNewLiveSession',function() {
+  context('createLiveSession',function() {
   	let session;
   	beforeEach(function(){
 	  		const data = {
@@ -128,7 +128,7 @@ context('lib/live.js', function() {
 
   	describe('Given a ownerId and a presentation', function () {
 	  	it('returns a newly created session correctly', function() {
-	  		const newSession = this.live.createNewLiveSession('testPresenterId', {'_id': 'testPresentationId'});
+	  		const newSession = this.live.createLiveSession('testPresenterId', {'_id': 'testPresentationId'});
 
 	  		expect(newSession.presenter).to.deep.equal(session.presenter);
 	  		expect(newSession.slides).to.deep.equal(session.slides);
@@ -150,7 +150,7 @@ context('lib/live.js', function() {
 	  				steps: ['0'],
 	  			},
 	  		};
-	  		const newSession = this.live.createNewLiveSession(ownerId, presentation);
+	  		const newSession = this.live.createLiveSession(ownerId, presentation);
 
 	  		expect(newSession.presenter).to.deep.equal(session.presenter);
 	  		expect(newSession.slides).to.deep.equal(session.slides);
@@ -175,7 +175,7 @@ context('lib/live.js', function() {
 	  		};
 	  		const flow = 'ghost';
 	  		const authLevel = 'authLevel';
-	  		const newSession = this.live.createNewLiveSession(ownerId, presentation, flow, authLevel);
+	  		const newSession = this.live.createLiveSession(ownerId, presentation, flow, authLevel);
 
 	  		expect(newSession.presenter).to.deep.equal(session.presenter);
 	  		expect(newSession.slides).to.deep.equal(session.slides);
@@ -190,12 +190,12 @@ context('lib/live.js', function() {
   });
 
 
-  context('createImplicitQuestion',function() {
+  context('createImplicitAudienceQuestion',function() {
   	describe('Given an owner identifier, and a session identifier', function () {
 	  	it('returns the correct implicit question with the correct ownerId and sessionId', function() {
 	  		const ownerId = 'testOwnerId';
 	  		const sessionId = 'testSessionId';
-	  		const implicitQuestion = this.live.createImplicitQuestion(ownerId, sessionId);
+	  		const implicitQuestion = this.live.createImplicitAudienceQuestion(ownerId, sessionId);
 	  		expect(implicitQuestion.author).to.be.deep.equal(ownerId);
 	  	});
   	});
@@ -301,30 +301,30 @@ context('lib/live.js', function() {
 
 				this.lib.utils.presentation.generateWhitelist.public.returns(Promise.resolve(undefined));
 
-        sinon.spy(this.live, 'createNewLiveSession');
-        sinon.spy(this.live, 'createImplicitQuestion');
+        sinon.spy(this.live, 'createLiveSession');
+        sinon.spy(this.live, 'createImplicitAudienceQuestion');
         sinon.spy(this.live, 'createViewerQuestionExercise');
 			});
 
       beforeEach(function(){
-        this.live.createNewLiveSession.reset();
-        this.live.createImplicitQuestion.reset();
+        this.live.createLiveSession.reset();
+        this.live.createImplicitAudienceQuestion.reset();
         this.live.createViewerQuestionExercise.reset();
         this.lib.utils.presentation.generateWhitelist.public.reset();
       })
 
       after(function () {
-        this.live.createNewLiveSession.restore();
-        this.live.createImplicitQuestion.restore();
+        this.live.createLiveSession.restore();
+        this.live.createImplicitAudienceQuestion.restore();
         this.live.createViewerQuestionExercise.restore();
       });
 
-      it('does call createNewLiveSession', function(done) {
+      it('does call createLiveSession', function(done) {
         this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
           .then(function(res) {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
-            this.live.createNewLiveSession.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledOnce.should.equal(true);
             done();
           }.bind(this))
           .catch(function(err) {
@@ -334,13 +334,13 @@ context('lib/live.js', function() {
         });
       });
 
-      it('does call createImplicitQuestion', function(done) {
+      it('does call createImplicitAudienceQuestion', function(done) {
         this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
           .then(function(res) {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
-            this.live.createNewLiveSession.calledOnce.should.equal(true);
-            this.live.createImplicitQuestion.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
             done();
           }.bind(this))
           .catch(function(err) {
@@ -355,8 +355,8 @@ context('lib/live.js', function() {
           .then(function(res) {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
-            this.live.createNewLiveSession.calledOnce.should.equal(true);
-            this.live.createImplicitQuestion.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
             this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
             done();
           }.bind(this))
@@ -372,8 +372,8 @@ context('lib/live.js', function() {
           .then(function(res) {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
-            this.live.createNewLiveSession.calledOnce.should.equal(true);
-            this.live.createImplicitQuestion.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
             this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
             this.lib.utils.presentation.generateWhitelist.public.calledWith('sessionIdTest', testOwner).should.equal(true);
             done();
