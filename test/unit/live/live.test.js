@@ -34,7 +34,9 @@ context('lib/live.js', function() {
       findById: sinon.stub()
     };
 
-    const Session = this.Session = function Session() {};
+    const Session = this.Session = function Session() {
+      this._id = 'testSessionId';
+    };
 
     this.Session.schema = {
     	path: function (name) {
@@ -53,16 +55,17 @@ context('lib/live.js', function() {
 
     this.Session.prototype.markModified = function (property) { return 'mock return'; };
     this.Session.prototype.save = function save() {
-      this._id = 'sessionIdTest';
       return Promise.resolve(this);
     };
 
-    const Question = this.Question = function Question(data) { 
+    const Question = this.Question = function Question(data) {
+      data._id = 'testQuestionId';
     	data.save = save;
     	return data;
     };
 
     const Exercise = this.Exercise = function Exercise(data) { 
+      data._id = 'testQuestionId';
     	data.save = save;
     	return data;
     };
@@ -119,24 +122,19 @@ context('lib/live.js', function() {
 			    questions: [],
 			    studentQuestionsEnabled: false,
 			  };
-	  		session = {
-	  			presenter: 'testPresenterId',
-	  			slides: 'testPresentationId',
-	  			data,
-	  		};
+	  		session = new this.Session(); 
+	  		session.presenter = 'testPresenterId';
+	  		session.slides = 'testPresentationId';
+	  		session.data = data;
+        session.authLevel = 'public';
+        session.flow = 'ctrl';
+
   	});
 
   	describe('Given a ownerId and a presentation', function () {
 	  	it('returns a newly created session correctly', function() {
 	  		const newSession = this.live.createLiveSession('testPresenterId', {'_id': 'testPresentationId'});
-
-	  		expect(newSession.presenter).to.deep.equal(session.presenter);
-	  		expect(newSession.slides).to.deep.equal(session.slides);
-
-	  		expect(newSession.flow).to.deep.equal('ctrl');
-	  		expect(newSession.authLevel).to.deep.equal('public');
-
-	  		expect(newSession.data).to.deep.equal(session.data);
+        expect(newSession).to.deep.equal(session);
 	  	});
 
   	});
@@ -151,15 +149,8 @@ context('lib/live.js', function() {
 	  			},
 	  		};
 	  		const newSession = this.live.createLiveSession(ownerId, presentation);
-
-	  		expect(newSession.presenter).to.deep.equal(session.presenter);
-	  		expect(newSession.slides).to.deep.equal(session.slides);
-
-	  		expect(newSession.flow).to.deep.equal('ctrl');
-	  		expect(newSession.authLevel).to.deep.equal('public');
-
-	  		expect(newSession.data).to.deep.equal(session.data);
-	  		expect(newSession.activeSlide).to.deep.equal(presentation.slidesTree.steps[0]);
+        session.activeSlide = presentation.slidesTree.steps[0];
+        expect(newSession).to.deep.equal(session);
 	  	});
 
   	});
@@ -175,16 +166,12 @@ context('lib/live.js', function() {
 	  		};
 	  		const flow = 'ghost';
 	  		const authLevel = 'authLevel';
+        session.flow = flow;
+        session.authLevel = authLevel;
+        session.activeSlide = presentation.slidesTree.steps[0];
+
 	  		const newSession = this.live.createLiveSession(ownerId, presentation, flow, authLevel);
-
-	  		expect(newSession.presenter).to.deep.equal(session.presenter);
-	  		expect(newSession.slides).to.deep.equal(session.slides);
-
-	  		expect(newSession.flow).to.deep.equal(flow);
-	  		expect(newSession.authLevel).to.deep.equal(authLevel);
-
-	  		expect(newSession.data).to.deep.equal(session.data);
-	  		expect(newSession.activeSlide).to.deep.equal(presentation.slidesTree.steps[0]);
+        expect(newSession).to.deep.equal(session);
 	  	});
   	});
   });
@@ -284,6 +271,7 @@ context('lib/live.js', function() {
 		describe('Given a valid owner and a valid presentation', function () {
       let testPresentation;
       let testOwner;
+      let testSession;
 			before(function() {
         testOwner = {
           _id: 'testOwnerId'
@@ -295,8 +283,20 @@ context('lib/live.js', function() {
           save: function () {
             return Promise.resolve({});
           },
-          lastSession: new Date(),
-        }
+        };
+
+        testSession = new this.Session();
+        testSession = new this.Session(); 
+        testSession.presenter = testOwner._id;
+        testSession.slides = testPresentation._id;
+        testSession.data = {
+          activeViewerQuestion: null,
+          questions: [],
+          studentQuestionsEnabled: false,
+        };
+        testSession.authLevel = 'public';
+        testSession.flow = 'ctrl';
+
 				this.SlideshowModel.findOne.returns(createExecObject(testPresentation));
 
 				this.lib.utils.presentation.generateWhitelist.public.returns(Promise.resolve(undefined));
@@ -325,6 +325,7 @@ context('lib/live.js', function() {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
             this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledWith(testOwner._id, testPresentation, undefined, undefined).should.equal(true);
             done();
           }.bind(this))
           .catch(function(err) {
@@ -340,7 +341,9 @@ context('lib/live.js', function() {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
             this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledWith(testOwner._id, testPresentation, undefined, undefined).should.equal(true);
             this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledWith(testOwner._id, 'testSessionId').should.equal(true);
             done();
           }.bind(this))
           .catch(function(err) {
@@ -356,8 +359,13 @@ context('lib/live.js', function() {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
             this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledWith(testOwner._id, testPresentation, undefined, undefined).should.equal(true);
+
             this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledWith(testOwner._id, 'testSessionId').should.equal(true);
+
             this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
+            this.live.createViewerQuestionExercise.calledWith('testQuestionId').should.equal(true);
             done();
           }.bind(this))
           .catch(function(err) {
@@ -373,13 +381,18 @@ context('lib/live.js', function() {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
             this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledWith(testOwner._id, testPresentation, undefined, undefined).should.equal(true);
+
             this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledWith(testOwner._id, 'testSessionId').should.equal(true);
+
             this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
-            this.lib.utils.presentation.generateWhitelist.public.calledWith('sessionIdTest', testOwner).should.equal(true);
+            this.live.createViewerQuestionExercise.calledWith('testQuestionId').should.equal(true);
+
+            this.lib.utils.presentation.generateWhitelist.public.calledWith('testSessionId', testOwner).should.equal(true);
             done();
           }.bind(this))
           .catch(function(err) {
-            console.log(err)
             expect(err).to.be.null;
             expect(err).to.be.undefined;
             done(err)
@@ -391,6 +404,41 @@ context('lib/live.js', function() {
           .then(function(res) {
             expect(res).to.not.be.null;
             expect(res).to.not.be.undefined;
+            this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledWith(testOwner._id, testPresentation, undefined, undefined).should.equal(true);
+
+            this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledWith(testOwner._id, 'testSessionId').should.equal(true);
+
+            this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
+            this.live.createViewerQuestionExercise.calledWith('testQuestionId').should.equal(true);
+
+            this.lib.utils.presentation.generateWhitelist.public.calledWith('testSessionId', testOwner).should.equal(true);
+            done();
+          }.bind(this))
+          .catch(function(err) {
+            expect(err).to.be.null;
+            expect(err).to.be.undefined;
+            done()
+        });
+      });
+
+      it('does not throw an error and returns the newly created session correctly', function(done) {
+        this.live.createLivePresentationSession(testOwner._id, testPresentation._id)
+          .then(function(res) {
+            expect(res).to.not.be.null;
+            expect(res).to.not.be.undefined;
+            this.live.createLiveSession.calledOnce.should.equal(true);
+            this.live.createLiveSession.calledWith(testOwner._id, testPresentation, undefined, undefined).should.equal(true);
+
+            this.live.createImplicitAudienceQuestion.calledOnce.should.equal(true);
+            this.live.createImplicitAudienceQuestion.calledWith(testOwner._id, 'testSessionId').should.equal(true);
+
+            this.live.createViewerQuestionExercise.calledOnce.should.equal(true);
+            this.live.createViewerQuestionExercise.calledWith('testQuestionId').should.equal(true);
+
+            this.lib.utils.presentation.generateWhitelist.public.calledWith('testSessionId', testOwner).should.equal(true);
+            expect(res).to.deep.equal(testSession);
             done();
           }.bind(this))
           .catch(function(err) {
