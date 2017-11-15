@@ -84,8 +84,8 @@ function editPresentation(req, res) {
 * a) it checks the query string for `role` and `view` variables. Defaults
 * are `viewer` and `presentation` respectively.
 * b) It then does a authorization
-* check to see if the user has the `role` they claim. 
-* Notice that for the cockpit view, we redirect in order to get rid of 
+* check to see if the user has the `role` they claim.
+* Notice that for the cockpit view, we redirect in order to get rid of
 * the query string which causes trouble in the clientside routing lib of
 * the cockpit.
 */
@@ -193,7 +193,7 @@ function liveCockpit(req, res) {
   if(presentation.thumbnailsUpdated && (presentation.lastEdit - presentation.thumbnailsUpdated < 0 )){
     shouldGenerateThumbs = 'false';
   }
-  
+
   return res.render('../public/cockpit/build/bundled/dust/asq.dust', {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
@@ -295,9 +295,9 @@ const terminatePresentation = coroutine(function *terminatePresentationGen(req, 
       const err404 = Error.http(404, 'No session found', {type:'invalid_request_error'});
       throw err404;
     }
-    
+
     res.sendStatus(204);
-    
+
     logger.log({
       owner_id: userId,
       slideshow: presentationId,
@@ -348,7 +348,7 @@ const getPresentationSettings = coroutine(function* getPresentationSettingsGen(r
       port                 : req.app.locals.urlPort,
       namespace            : '/',
       browserSesstionId    : req.sessionID,
-      
+
       title                : slideshow.title,
       username             : username,
       slideshowId          : slideshowId,
@@ -386,7 +386,7 @@ const downloadPresentation = coroutine(function* downloadPresentationGen(req, re
     });
 
    archiveStream.pipe(res);
-    
+
   }catch(err){
     console.log(err)
     next(err)
