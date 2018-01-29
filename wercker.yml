@@ -229,7 +229,7 @@ build:
             cwd: $WERCKER_SOURCE_DIR
             code: |
                   if [ "$CI" = true ]; then
-                    rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .gitignore nightwatch nightwatch.conf.js docker-compose.yml README.md TODO.md CHANGELOG.md Makefile
+                    rm -Rf .git slide2html/.git public/ui/.git public/cockpit/.git .wercker test slides benchmark doc wercker.env wercker.yml .gitignore nightwatch nightwatch.conf.js docker-compose.yml docker-compose-ssl.yml README.md TODO.md CHANGELOG.md Makefile
                   else
                     echo 'Skipping step, because not needed for local execution'
                   fi
