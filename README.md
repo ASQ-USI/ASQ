@@ -16,19 +16,19 @@ This software is work-in-progress at an early stage (alpha). It might be unstabl
 
 Installation
 -------------
-###Manual
+### Manual
 Please follow the [installation guide](doc/install/installation.md)
 
-###Docker with Docker Compose
+### Docker with Docker Compose
 You can find the ASQ docker image on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/). With [Docker Compose](https://docs.docker.com/compose/) you can simply deploy ASQ with the deployment descriptor we provide. The steps are:
 
 1. Get the `docker-compose.yml` or `docker-compose-ssl.yml` file from this repo, according to your requirements, and place it in a folder named `asq` on your machine.
 2. Configure your deployment, if needed:
-   - Replace the `${DOCKER_HUB_IMAGE_TAG}` variable with an actual tag, by manually changing it, or by [passing an environment variable](https://docs.docker.com/compose/compose-file/#variable-substitution) to [Docker Compose](https://docs.docker.com/compose/). You can find the list of available tags on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/tags/). One is `master`, that is the default one.
+   - Replace the `${DOCKER_HUB_IMAGE_TAG}` variable with an actual tag, by manually changing it, or by [passing an environment variable](https://docs.docker.com/compose/compose-file/#variable-substitution) to [Docker Compose](https://docs.docker.com/compose/). You can find the list of available tags on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/tags/). One is `master`, that is the default one, another one is `devel`. 
    - Change the `${HOST}` variable passed to the ASQ service to match your host name, the same way as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable. The default is `127.0.0.1`.
    - Change the `${SERVER_NAME}` variable passed to the ASQ service to match your requirements (e.g., if ASQ has to be exposed on a subdomain on your server), the same way as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable. The default is `_`.
    - If you need [LDAP](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol) support, change the `${ENABLE_LDAP}` variable and the four `LDAP_*` variables according to your settings, or configure them as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable. Alternatively remove the four `LDAP_*` variables if not needed for your deployment.
-   - If you use the `docker-compose-ssl.yml` file, also change or set the same way as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable, the following variables: `${HOST_SSL_CERTIFICATE_ABSOLUTE_PATH}` and `${HOST_SSL_KEY_ABSOLUTE_PATH}`. `${HOST_SSL_CERTIFICATE_ABSOLUTE_PATH}` must be the absolute path of the ssl certificate for the nginx server and `${HOST_SSL_KEY_ABSOLUTE_PATH}` must be the absolute path of the ssl key for the nginx server. the absolute paths refer to the server on which you are deploying ASQ. 
+   - If you use the `docker-compose-ssl.yml` file, also change or set the same way as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable, the following variables: `${HOST_SSL_CERTIFICATE_ABSOLUTE_PATH}` and `${HOST_SSL_KEY_ABSOLUTE_PATH}`. `${HOST_SSL_CERTIFICATE_ABSOLUTE_PATH}` must be the absolute path of the ssl certificate for the nginx server and `${HOST_SSL_KEY_ABSOLUTE_PATH}` must be the absolute path of the ssl key for the nginx server. the absolute paths refer to the server on which you are deploying ASQ. A good guide to generate free SSL certificates on Ubuntu is: https://certbot.eff.org/#ubuntuxenial-other
    
 The provided `docker-compose.yml`/`docker-compose-ssl.yml` file uses the [Docker Compose Version 2.1 format](https://docs.docker.com/compose/compose-file/#/versioning) thus it requires [**Docker Engine 1.12.0+**](https://docs.docker.com/engine/installation/) and [**Docker Compose 1.9.0+**](https://docs.docker.com/compose/install/).
 Moreover it relies on [local Docker volumes](https://docs.docker.com/engine/reference/commandline/volume_create/) and on the bridge network provided by Docker. Refer to the [Docker Compose file reference](https://docs.docker.com/compose/compose-file/) to customise the deployment for your settings.
