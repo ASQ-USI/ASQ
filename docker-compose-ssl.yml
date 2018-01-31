@@ -14,6 +14,7 @@ services:
       SERVER_NAME: ${SERVER_NAME:-_}
       REVERSE_PROXY_SECURE: 'true'
       USE_REVERSE_PROXY: 'true'
+      IS_RANCHER: 'false'
       NGINX_CLIENT_MAX_BODY_SIZE: '100m'
       ENABLE_LDAP: ${ENABLE_LDAP:-false}
       LDAP_URL: ${LDAP_URL}
