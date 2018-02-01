@@ -90,6 +90,7 @@ dev:
                   export REVERSE_PROXY_HOST='0.0.0.0'
                   export REVERSE_PROXY_SECURE='false'
                   export USE_REVERSE_PROXY='true'
+                  export IS_RANCHER='false'
         # - internal/shell
         # Resemble production settings of ASQ
         - internal/watch:
