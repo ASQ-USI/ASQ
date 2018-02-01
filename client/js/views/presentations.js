@@ -414,9 +414,15 @@ module.exports = {
 
       // Thumbs may contain polymer elements which take some time to render.
       // Layout operations should occur after polymer has initialized
-      window.addEventListener('WebComponentsReady', function onWebComponentsReady(e) {
+      if((window.WebComponentsReady && window.WebComponentsReady.ready)
+        || (window.CustomElements && window.CustomElements.ready)){
         this.initThumbs();
-      }.bind(this));
+      }else{
+        window.addEventListener('WebComponentsReady', function onWebComponentsReady(e) {
+          this.initThumbs();
+        }.bind(this));
+      }
+      
 
       this.setupThumbEventListeners();
 
