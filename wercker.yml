@@ -319,6 +319,8 @@ build:
               # Give xvfb time to start. 3 seconds is the default for all xvfb-run commands.
               sleep 3
               xdpyinfo -display :0 >/dev/null 2>&1 && echo "xvfb in use" || echo "xvfb free"
+              xvfb-run start-selenium > /dev/null &
+              sleep 5
         - script:
             name: e2e - setting up environment
             code: |
