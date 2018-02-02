@@ -319,8 +319,8 @@ build:
               # Give xvfb time to start. 3 seconds is the default for all xvfb-run commands.
               sleep 3
               xdpyinfo -display :0 >/dev/null 2>&1 && echo "xvfb in use" || echo "xvfb free"
-              xvfb-run start-selenium > /dev/null &
-              sleep 5
+              # Attempt to install again, just to be sure
+              apt-get update && apt-get install -y xvfb default-jre firefox google-chrome-stable && apt-get clean
         - script:
             name: e2e - setting up environment
             code: |
@@ -354,7 +354,7 @@ build:
         # - internal/shell
         - script:
             name: e2e - seed sample data and run nightwatch
-            code: DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
+            code: xvfb-run DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
 
 # It is a separate step from push-dev-release because we need the dev wercker box
 clean-up-for-release:
