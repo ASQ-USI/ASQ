@@ -354,7 +354,7 @@ build:
         # - internal/shell
         - script:
             name: e2e - seed sample data and run nightwatch
-            code: xvfb-run DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
+            code: xvfb-run -a DBUS_SESSION_BUS_ADDRESS=/dev/null npm run test:e2e
 
 # It is a separate step from push-dev-release because we need the dev wercker box
 clean-up-for-release:
