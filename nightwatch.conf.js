@@ -10,7 +10,7 @@ module.exports = {
   
   "selenium" : {
     "start_process" : true,
-    "server_path" : "node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-3.0.1.jar",
+    "server_path" : "xvfb-run start-selenium",
     "start_session" : true,
     "log_path" : "./test/acceptance-reports",
     "cli_args" : {
