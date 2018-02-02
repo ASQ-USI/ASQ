@@ -9,7 +9,7 @@ module.exports = {
   "page_objects_path" : "./test/acceptance/pages",
   
   "selenium" : {
-    "start_process" : true,
+    "start_process" : false,
     "server_path" : "xvfb-run start-selenium",
     "start_session" : true,
     "log_path" : "./test/acceptance-reports",
