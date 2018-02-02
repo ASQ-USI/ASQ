@@ -9,8 +9,8 @@ module.exports = {
   "page_objects_path" : "./test/acceptance/pages",
   
   "selenium" : {
-    "start_process" : false,
-    "server_path" : "xvfb-run start-selenium",
+    "start_process" : true,
+    "server_path" : "node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-3.8.1.jar",
     "start_session" : true,
     "log_path" : "./test/acceptance-reports",
     "cli_args" : {
