@@ -6,6 +6,7 @@
 
 var handlers = require('./handlers')
 var user = require('./user');
+var now = require('./now');
 var settingsRouter  = require('./user/settings');
 var pluginsRouter  = require('./plugins');
 var logger = require('logger-asq');
@@ -58,6 +59,9 @@ module.exports.setUp = function setUp(app, middleware) {
   // Check username availability
   app.get('/username_available/', handlers.usernameAvailable);
 
+  //now router
+  app.use('/now', now)
+
   //Set up routes starting with /:user/*
   user.setUp(app, middleware);
 
@@ -66,4 +70,6 @@ module.exports.setUp = function setUp(app, middleware) {
 
   //plugins router
   app.use('/plugins', pluginsRouter)
+  
+
 }
