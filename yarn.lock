@@ -216,6 +216,16 @@ asq-css-select-q@ASQ-USI-Elements/asq-css-select-q#master:
     cheerio "^0.18.0"
     lodash "^3.2.0"
 
+asq-diagram-q@ASQ-USI-Elements/asq-diagram-q#master:
+  version "0.1.0"
+  resolved "https://codeload.github.com/ASQ-USI-Elements/asq-diagram-q/tar.gz/4afefe514aba03aaa393ce267662850f8b7b6f66"
+  dependencies:
+    asq-plugin ASQ-USI/asq-plugin
+    bluebird "^2.8.2"
+    bson-objectid "^1.1.1"
+    cheerio "^0.18.0"
+    lodash "^3.7.0"
+
 asq-exercise@ASQ-USI-Elements/asq-exercise#master:
   version "0.1.0"
   resolved "https://codeload.github.com/ASQ-USI-Elements/asq-exercise/tar.gz/15a466c1cbd1df41cdc941584c4f1ca502866eb6"
@@ -2572,6 +2582,10 @@ jodid25519@^1.0.0:
 jquery@^2.1.0:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
+
+jquery@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
 js-base64@~2.1.7:
   version "2.1.9"
