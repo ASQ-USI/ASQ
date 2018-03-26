@@ -168,21 +168,25 @@ margin-right: auto;
 }
 
 
-/* CeBIT 2017 section*/
-#cebit2017 h2{
+/* CeBIT 2018 section*/
+#cebit2018 h2{
   color: #fff;
 }
 
-#cebit2017-logo-container{
+#cebit2018-logo-container{
   height : 300px;
   margin-right: 30px;
 }
 
-#asq-cebit2017{
+#asq-cebit2018{
 width: 110px;
 height: auto;
 margin-top: -3px;
 margin-right: auto;
+}
+
+#cebit-logo{
+  width: 260px;
 }
 
 .twitter-follow-button{
@@ -336,22 +340,24 @@ margin-right: auto;
  .carousel-inner{
  	box-shadow: inset 0px -3px 15px black;
  }
- .big{
+ 
+.big{
  	font-size: 28px;
- }
-  .carousel-inner .container{
-  	display: table;
-  }
-  #banner1{
-  	background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 61%); /* FF3.6+ */
+}
+.carousel-inner .container{
+	display: table;
+}
+
+#banner1{
+  background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 61%); /* FF3.6+ */
 	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,0.1)), color-stop(61%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
 	background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Chrome10+,Safari5.1+ */
 	background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* Opera 12+ */
 	background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* IE10+ */
 	background: radial-gradient(ellipse at center,  rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 61%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1affffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
 
-  }
  #banner1 img, #banner2 img{
  	display: block;
  	margin: 0 auto 0 auto;
