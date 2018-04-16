@@ -142,9 +142,9 @@ dev-start-asq:
               /etc/service/nginx/run > /dev/stdout &
               sleep 20
         # - internal/shell
-        - internal/watch:
+        - script:
+            name: start ASQ
             code: $NPM_RUN_COMMAND
-            reload: false
         # - internal/store-container
 
 # NOTE: the following pipeline assumes you already correctly executed the dev pipeline.
