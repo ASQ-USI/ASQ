@@ -60,7 +60,7 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/username_available/', handlers.usernameAvailable);
 
   //now router
-  app.use('/now', now)
+  app.use('/now', now);
 
   //Set up routes starting with /:user/*
   user.setUp(app, middleware);
