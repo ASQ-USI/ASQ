@@ -1,0 +1,249 @@
+ <!-- shared-styles.html -->
+<dom-module id="shared-styles" is="custom-style">
+  <template>
+    <style>
+
+    asq-option {
+      display: block;
+    }
+
+    .asq-selected {
+      background-color: #CFD8DC;
+    }
+
+
+    asq-multi-choice-q > asq-option {
+      --asq-option-viewer-unchecked-ink-color: #FF1744;
+      --asq-option-viewer-checked-ink-color: #2E7D32;
+      --asq-option-viewer-checked-color: red;
+      --asq-option-viewer-unchecked-background-color: #D7CCC8;
+    }
+
+    
+
+    asq-multi-choice-q[multi] > asq-option {
+      --asq-option-viewer-unchecked-ink-color: #FF1744;
+      --asq-option-viewer-checked-ink-color: #2E7D32;
+      --asq-option-viewer-checked-color: black;
+      --asq-option-viewer-unchecked-background-color: white;
+    }
+
+    asq-multi-choice-q[multi] > asq-option[name="n"] {
+      --asq-option-viewer-unchecked-ink-color: #FF1744;
+      --asq-option-viewer-checked-ink-color: blue;
+      --asq-option-viewer-checked-color: #6200EA;
+      --asq-option-viewer-unchecked-background-color: #FFB74D;
+    }
+
+    asq-option.blue {
+      --asq-option-presenter-progress-active-color: var(--paper-light-blue-500);
+    }
+
+    asq-option.red {
+      --asq-option-presenter-progress-active-color: var(--paper-red-500);
+    }
+
+
+    /* asq-buckets-q */
+    asq-buckets-q .container {
+      @apply(--layout-vertical);
+      @apply(--layout-around-justified);
+      @apply(--layout-wrap);
+    }
+
+    asq-buckets-q div[buckets] {
+      @apply(--layout-horizontal);
+      @apply(--layout-center-justified);
+      @apply(--layout-wrap);
+    }
+
+    asq-buckets-q div.bucket {
+      @apply(--layout-vertical);
+      min-width: 200px;
+      min-height: 200px;
+      
+      border: 1px solid grey;
+      margin: 1px;
+
+      text-align: center;
+      border-radius: 5px;
+    }
+
+    asq-buckets-q div.bucket.over {
+      border: 1px dashed #000;
+      @apply(--shadow-elevation-3dp);
+    }
+
+    asq-buckets-q div.bucket  b {
+      background-color: #75B7BE;
+      color: #E6E6E6;
+      border-color: #405356;
+      padding: 10px 5px;
+
+      border-radius: 4px;
+      display: block;
+      text-align: center;
+
+      @apply(--paper-font-title);
+
+    }
+
+
+
+    /*labels*/
+    asq-buckets-q div[labels] {
+      @apply(--layout-horizontal);
+      @apply(--layout-center-justified);
+      @apply(--layout-wrap);
+    }
+
+
+    asq-buckets-q div.label {
+      padding: 6px 12px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+          touch-action: manipulation;
+      cursor: pointer;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+
+      margin: 1px;
+    }
+
+    asq-buckets-q div.label.dragging {
+      opacity: 0.6;
+    }
+
+
+
+    asq-buckets-q div.label.label-primary {
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+    asq-buckets-q div.label.label-primary:focus,
+    asq-buckets-q div.label.label-primary.focus {
+      color: #fff;
+      background-color: #286090;
+      border-color: #122b40;
+
+    }
+    asq-buckets-q div.label.label-primary:hover {
+      color: #fff;
+      background-color: #286090;
+      border-color: #204d74;
+    }
+
+    asq-buckets-q div.label.label-success {
+      color: #fff;
+      background-color: #5cb85c;
+      border-color: #4cae4c; 
+    }
+
+    asq-buckets-q div.label.label-success:focus,
+    asq-buckets-q div.label.label-success.focus {
+      color: #fff;
+      background-color: #449d44;
+      border-color: #255625;
+    }
+    asq-buckets-q div.label.label-success:hover {
+      color: #fff;
+      background-color: #449d44;
+      border-color: #398439;
+    }
+
+    asq-buckets-q  h4 {
+      margin: 10px auto;
+    }
+
+    asq-buckets-q div.label.asq-disabled {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
+    asq-buckets-q div.label.asq-disabled:hover,
+    asq-buckets-q div.label.asq-disabled:focus  {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
+    /* asq-order-q */
+    asq-order-q > div[label] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 120px;
+      height: 40px;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      font-size: 20px;
+      font-weight: normal;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      touch-action: manipulation;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      margin: 10px;
+    }
+
+    asq-order-q > div[label].dragging {
+      opacity: 0.6;
+    }
+
+    asq-order-q > div[label].over {
+      border: 1px dashed #000;
+      opacity: 0.6;
+      @apply(--shadow-elevation-3dp);
+    }
+
+    asq-order-q >[label].static {
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+
+    asq-order-q >[label].static:hover {
+      color: #fff;
+      background-color: #286090;
+      border-color: #204d74;
+    }
+
+    asq-order-q > div[label].asq-disabled {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
+    asq-order-q > div[label].asq-disabled:hover,
+    asq-order-q > div[label].asq-disabled:focus  {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
+
+    </style> 
+  </template>
+</dom-module>

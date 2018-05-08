@@ -1,0 +1,19 @@
+{
+  "name": "TestPresentation",
+  "version": "0.0.0",
+  "authors": [
+    "Zhenfei Nie <youyis2fox@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "asq-elements": "ASQ-USI-Elements/asq-elements#master",
+    "webcomponentsjs": "*"
+  }
+}
