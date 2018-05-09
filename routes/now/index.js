@@ -28,7 +28,7 @@ router.post('/', async function(req, res) {
   try {
     let owner_id = req.user._id;
     let exercise = req.body.exercise;
-    const slideshowid = await now.createPresentationFromNowHtml(owner_id, 'nowquiz', exercise);
+    const slideshowid = await now.createPresentationFromSingleExerciseHtml(owner_id, 'nowquiz', exercise);
     const slideshow = Slideshow.findById(slideshowid).lean().exec();
 
     logger.log({
