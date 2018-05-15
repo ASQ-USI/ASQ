@@ -12,8 +12,6 @@ const modulePath = '../../../lib/now/now';
 describe('now.js', function() {
 	before(function(){
 		try {
-			const uploadDir = this.uploadDir = 'path/to/upload/dir';
-			const presentationHtml = this.presentationHtml = '<html></html>'
 			const getCurrentPresentation = function(){
 				return this.presentation;
 			}.bind(this);
@@ -41,7 +39,7 @@ describe('now.js', function() {
 	    		},
 
 	    		'../upload/liveApp' : this.liveApp = {
-	    			addLiveAppFiles: sinon.stub().returns(Promise.resolve(uploadDir))
+	    			addLiveAppFiles: sinon.stub().returns(Promise.resolve(this.presentation.path))
 
 	    		},
 
@@ -49,7 +47,10 @@ describe('now.js', function() {
 	    			findAndProcessMainFile: sinon.stub().returns(Promise.resolve(true))
 	    		},
 
-	    		'../presentation/presentationCreate' : this.presentationCreate = {},
+	    		'../presentation/presentationCreate' : this.presentationCreate = {
+	    			createBlankSlideshow: sinon.stub().returns(Promise.resolve(this.presentation))
+	    		},
+
 	    		'../utils/fs' : this.fsUtils = {},
 	    	},
 
@@ -68,8 +69,7 @@ describe('now.js', function() {
 		before(function(){
 			this.owner_id = 'owner-id-123';
 			this.name = 'Now quiz name';
-
-			//markup for a now quiz
+			// test markup for a now quiz
 			this.markup =
 			`<asq-exercise uid="0123456789abcdef12345678">
 			<style>
@@ -90,17 +90,14 @@ describe('now.js', function() {
 			`
 
 			const pid = this.presentationId = 'presentation-id-123' ;
-			this.presentationCreate.createBlankSlideshow = sinon.stub().returns(Promise.resolve(this.presentation));
 
-			//stubbing internal functions
+			// stubbing internal functions
 			sinon.stub(this.now, "addNowBoilerplateFiles", function(){
         return Promise.resolve(null);
       });
-
       sinon.stub(this.now, "injectExerciseMarkup", function(){
         return Promise.resolve(null);
       });
-
 		});
 
 		beforeEach(function(done){
