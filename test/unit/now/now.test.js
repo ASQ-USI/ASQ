@@ -12,18 +12,12 @@ const modulePath = '../../../lib/now/now';
 describe('now.js', function() {
   before(function(){
     try {
-      const getCurrentPresentation = function(){
-        return this.presentation;
-      }.bind(this);
+      this.skeletonDir = this.skeletonDir = 'path/to/skeleton';
       const presentation = this.presentation = {
         _id: 'testid',
-        path: '/test/path'
+        path: 'path/to/dest'
       };
-      this.SlideshowModel =  {}
       //mock db
-      this.db = {model: sinon.stub()};
-      this.db.model
-      .withArgs('Slideshow').returns(this.SlideshowModel)
       this.now = SandboxedModule.require(modulePath, {
         requires: {
 
@@ -50,13 +44,7 @@ describe('now.js', function() {
           '../presentation/presentationCreate' : this.presentationCreate = {
             createBlankSlideshow: sinon.stub().returns(Promise.resolve(this.presentation))
           },
-
-          '../utils/fs' : this.fsUtils = {},
         },
-
-        globals : {
-          db : this.db
-        }
       });
 
     } catch(err){
@@ -90,7 +78,6 @@ describe('now.js', function() {
       `
 
       const pid = this.presentationId = 'presentation-id-123' ;
-
       // stubbing internal functions
       sinon.stub(this.now, "addNowBoilerplateFiles", function(){
         return Promise.resolve(null);
@@ -108,11 +95,11 @@ describe('now.js', function() {
       this.upload.findAndProcessMainFile.reset();
 
       this.now.createPresentationFromSingleExerciseHtml(this.owner_id, this.name, this.markup)
-        .then(function(){
-          done()
-        }.bind(this)).catch(function(err){
-          done(err);
-        });
+      .then(function(){
+        done()
+      }.bind(this)).catch(function(err){
+        done(err);
+      });
     })
 
     after(function(){
@@ -122,17 +109,35 @@ describe('now.js', function() {
 
     it('should create a presentation owned by the owner_id', function() {
       this.presentationCreate.createBlankSlideshow
-        .calledWith(this.owner_id, this.name, 'reveal.js')
-        .should.equal(true);
+      .calledWith(this.owner_id, this.name, 'reveal.js')
+      .should.equal(true);
     });
+
+    it('should copy all the files', function() {
+      this.fs.copy.calledWith(this.skeletonDir, this.presentation.path);
+    });
+
+    it('should remove the not-wanted-file', function() {
+      this.fs.remove.calledWith(`${this.presentation.path}/skeleton_index.html`)
+    })
 
     it('should add now boilerplate files', function() {
       this.now.addNowBoilerplateFiles
-        .calledWith(this.presentation)
-        .should.equal(true);
+      .calledWith(this.presentation)
+      .should.equal(true);
     });
 
-    it('should inject now markup', function() {
+    it('should get presentation html', function() {
+      this.fs.readFile.calledWith(`${this.skeletonDir}/skeleton_index.html`);
+    });
+
+    it('should write the new html file', function() {
+      //this would be skeleton with exercise appended
+      const newHtml = `<html>${this.markup}</html>`
+      this.fs.writeFile.calledWith(`${this.presentation.path}/index.html`, newHtml);
+    });
+
+    it('inject markup should be called with right arguments', function() {
       this.now.injectExerciseMarkup
       .calledWith(this.markup, this.presentation.path)
       .should.equal(true);
