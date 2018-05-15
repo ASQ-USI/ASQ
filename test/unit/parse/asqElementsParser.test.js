@@ -18,7 +18,7 @@ describe("asqElementsParser.js", function(){
     this.questionsHtml = fs.readFileSync(require.resolve('./fixtures/questions.html'), 'utf-8');
     this.simpleUidHtmlImpress = fs.readFileSync(require.resolve('./fixtures/simple-uid-impress.html'), 'utf-8');
     this.simpleUidHtmlReveal = fs.readFileSync(require.resolve('./fixtures/simple-uid-reveal.html'), 'utf-8');
-    
+
     var then =  this.then = function(cb){
       return cb();
     };
@@ -36,7 +36,7 @@ describe("asqElementsParser.js", function(){
   });
 
    describe('constructor', function(){
-    
+
     it("correctly set elementNames", function(){
 
       this.parser =  new this.AsqElementsParser();
@@ -51,10 +51,10 @@ describe("asqElementsParser.js", function(){
         'asq-text-input-q-stats'
       ];
       expect(this.parser.elementNames).to.deep.equal(expected);
-      
+
     })
     it("correctly set questionElementNames", function(){
-       
+
        this.parser =  new this.AsqElementsParser();
        var expected = []
        expect(this.parser.questionElementNames).to.deep.equal(expected);
@@ -102,7 +102,7 @@ describe("asqElementsParser.js", function(){
     });
 
   });
-  
+
   describe("prototype.asqify()", function(){
     before(function(){
       sinon.stub(this.AsqElementsParser.prototype, "injectServerInfo");
@@ -193,7 +193,7 @@ describe("asqElementsParser.js", function(){
       this.AsqElementsParser.prototype.injectScriptsForReveal.calledOnce.should.equal(true);
     });
 
-    
+
     it("should throw an error if the framework is empty", function(){
       expect(this.parser.injectScripts.bind(this.parser, this.$))
         .to.throw(/missing or unknown framework/);
@@ -212,7 +212,7 @@ describe("asqElementsParser.js", function(){
       this.parser.injectScriptsForImpress(this.$);
     });
 
-    
+
     it("should remove impress.js", function(){
       var x = this.$('script[src$="impress.js"]');
       expect(x.length).to.equal(0);
@@ -264,7 +264,7 @@ describe("asqElementsParser.js", function(){
       expect(x.includes(this.liveApp)).to.be.true;
     });
 
-    
+
     it("should throw an error if the framework is empty", function(){
       expect(this.parser.injectLiveApp.bind(this.parser, this.$))
         .to.throw(/missing or unknown framework/);
@@ -512,5 +512,5 @@ describe("asqElementsParser.js", function(){
       ]);
     });
   });
-  
+
 });

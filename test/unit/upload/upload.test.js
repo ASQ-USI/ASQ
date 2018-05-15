@@ -40,9 +40,9 @@ describe('upload.js', function(){
       requires: {
         // careful here this is promisified in upload.js. This means
         // that parse.js will have a call on `readFileAsync` instead of `readFile`
-        // same writeFile  
-        'read-chunk': function(path, start, finish, cb){ cb(null, 'chunk')}, 
-        'file-type': this.fileType, 
+        // same writeFile
+        'read-chunk': function(path, start, finish, cb){ cb(null, 'chunk')},
+        'file-type': this.fileType,
         'fs': this.fs = {
           readFile : sinon.stub().callsArgWith(2, null, presentationHtml),
           writeFile : sinon.stub().callsArgWith(2, null, ''),
@@ -57,7 +57,7 @@ describe('upload.js', function(){
         './pdf' : this.pdf = {},
         './liveApp' : this.liveApp = {
           addLiveAppFiles: sinon.stub().returns(Promise.resolve(uploadDir))
-            
+
         },
         '../parse/parse' : this.parse = {},
         '../presentationAdapter/adapters': this.adapters = {},
@@ -221,7 +221,7 @@ describe('upload.js', function(){
 
     it('return the presentation id', function(done) {
       this.upload.createPresentationFromPdfFile(
-        this.owner_id, this.presentationFramework, this.name, this.presentationFramework, this.source)
+        this.owner_id, this.name, this.presentationFramework, this.source)
         .then(function(res){
           res.should.equal(this.presentation._id)
           done();
@@ -342,7 +342,7 @@ describe('upload.js', function(){
       this.fsUtils.getFirstHtmlFile = sinon.stub().returns(Promise.resolve(this.htmlPath));
       this.parse.parseAndPersist = sinon.stub().returns(Promise.resolve(true));
       this.parseAndPersist = sinon.stub();
-      
+
       this.upload.findAndProcessMainFile(this.presentation._id)
         .then(function(){
           done();
@@ -422,7 +422,7 @@ describe('upload.js', function(){
       this.archive.extractZipArchive = sinon.stub().callsArg(2);
       this.presentationDelete.removeDbAssets = sinon.stub().returns(Promise.resolve(true));
       this.presentationDelete.removeFileAssets = sinon.stub().returns(Promise.resolve(true));
-      
+
       this.upload.updatePresentationFromZipArchive(
         presentation._id, this.name, this.presentationFramework, this.source, {})
         .then(function(){
