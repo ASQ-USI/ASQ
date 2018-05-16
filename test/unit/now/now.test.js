@@ -8,7 +8,6 @@ const SandboxedModule = require('sandboxed-module');
 const Promise = require('bluebird');
 const modulePath = '../../../lib/now/now';
 
-
 describe('now.js', function() {
   before(function(){
     try {
@@ -51,7 +50,6 @@ describe('now.js', function() {
       console.log(err.stack)
     }
   });
-
 
   describe('createPresentationFromSingleExerciseHtml', function() {
     before(function(){
@@ -145,7 +143,7 @@ describe('now.js', function() {
       this.fs.copy.calledWith(this.skeletonDir, this.presentation.path);
     });
 
-    it('should remove the not-wanted-file', function() {
+    it('should remove skeleton file', function() {
       this.fs.remove.calledWith(`${this.presentation.path}/skeleton_index.html`)
     });
 
@@ -190,7 +188,7 @@ describe('now.js', function() {
     });
 
     it('should write the new html file', function() {
-      //this would be skeleton with exercise appended
+      //this will be skeleton with the exercise appended
       const newHtml = `<html>${this.markup}</html>`
       this.fs.writeFile.calledWith(`${this.presentation.path}/index.html`, newHtml);
     });
