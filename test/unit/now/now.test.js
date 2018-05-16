@@ -82,15 +82,15 @@ describe('now.js', function() {
       sinon.stub(this.now, "addNowBoilerplateFiles", function(){
         return Promise.resolve(null);
       });
+
       sinon.stub(this.now, "injectExerciseMarkup", function(){
         return Promise.resolve(null);
       });
+
     });
 
     beforeEach(function(done){
       this.presentationCreate.createBlankSlideshow.reset();
-      this.now.addNowBoilerplateFiles.reset();
-      this.now.injectExerciseMarkup.reset();
       this.liveApp.addLiveAppFiles.reset();
       this.upload.findAndProcessMainFile.reset();
 
@@ -100,46 +100,11 @@ describe('now.js', function() {
       }.bind(this)).catch(function(err){
         done(err);
       });
-    })
-
-    after(function(){
-      this.now.addNowBoilerplateFiles.restore();
-      this.now.injectExerciseMarkup.restore();
-    })
+    });
 
     it('should create a presentation owned by the owner_id', function() {
       this.presentationCreate.createBlankSlideshow
       .calledWith(this.owner_id, this.name, 'reveal.js')
-      .should.equal(true);
-    });
-
-    it('should copy all the files', function() {
-      this.fs.copy.calledWith(this.skeletonDir, this.presentation.path);
-    });
-
-    it('should remove the not-wanted-file', function() {
-      this.fs.remove.calledWith(`${this.presentation.path}/skeleton_index.html`)
-    })
-
-    it('should add now boilerplate files', function() {
-      this.now.addNowBoilerplateFiles
-      .calledWith(this.presentation)
-      .should.equal(true);
-    });
-
-    it('should get presentation html', function() {
-      this.fs.readFile.calledWith(`${this.skeletonDir}/skeleton_index.html`);
-    });
-
-    it('should write the new html file', function() {
-      //this would be skeleton with exercise appended
-      const newHtml = `<html>${this.markup}</html>`
-      this.fs.writeFile.calledWith(`${this.presentation.path}/index.html`, newHtml);
-    });
-
-    it('inject markup should be called with right arguments', function() {
-      this.now.injectExerciseMarkup
-      .calledWith(this.markup, this.presentation.path)
       .should.equal(true);
     });
 
@@ -162,4 +127,73 @@ describe('now.js', function() {
       });
     });
   });
+
+  describe('addNowBoilerplateFiles', function() {
+
+    beforeEach(function(done) {
+
+      this.now.addNowBoilerplateFiles(this.presentation)
+      .then(function(){
+        done()
+      }.bind(this)).catch(function(err){
+        done(err);
+      });
+
+    });
+
+    it('should copy all the files', function() {
+      this.fs.copy.calledWith(this.skeletonDir, this.presentation.path);
+    });
+
+    it('should remove the not-wanted-file', function() {
+      this.fs.remove.calledWith(`${this.presentation.path}/skeleton_index.html`)
+    });
+
+  });
+
+  describe('injectExerciseMarkup', function() {
+    before(function(){
+      // test markup for a now quiz
+      this.markup =
+      `<asq-exercise uid="0123456789abcdef12345678">
+      <style>
+      .multiChoiceOption{
+        display: block;
+        padding: 5px;
+        margin: 5px 0;
+      }
+      </style>
+      <asq-multi-choice-q uid="0123456789abcdef12345678" id='multiQuestion'
+      value='[{"uid":"","name":"just a test 1","value":true},{"uid":"","name":"just a test 2","value":false}]'>
+      <asq-stem><p>test</p></asq-stem>
+      <asq-option name="just a test 1" class="multiChoiceOption">just a test 1</asq-option>
+      <asq-option name="just a test 2" class="multiChoiceOption">just a test 2</asq-option>
+      <asq-solution hidden>[{"uid":"","name":"just a test 1","value":true},{"uid":"","name":"just a test 2","value":false}]</asq-solution>
+      </asq-multi-choice-q>
+      </asq-exercise>
+      `
+    });
+
+    beforeEach(function(done) {
+
+      this.now.injectExerciseMarkup(this.markup, this.presentation.path)
+      .then(function(){
+        done()
+      }.bind(this)).catch(function(err){
+        done(err);
+      });
+
+    });
+
+    it('should get presentation html', function() {
+      this.fs.readFile.calledWith(`${this.skeletonDir}/skeleton_index.html`);
+    });
+
+    it('should write the new html file', function() {
+      //this would be skeleton with exercise appended
+      const newHtml = `<html>${this.markup}</html>`
+      this.fs.writeFile.calledWith(`${this.presentation.path}/index.html`, newHtml);
+    });
+  });
+
 });
