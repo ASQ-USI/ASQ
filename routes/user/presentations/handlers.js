@@ -17,6 +17,7 @@ const Slideshow = db.model('Slideshow');
 const Session = db.model('Session');
 const getPresentationsByCourse = require('../../../lib/courses/listPresentations').getPresentationsByCourse;
 const upload = require('../../../lib/upload/upload');
+const now = require('../../../lib/now/now');
 const cons = require('consolidate');
 
 Promise.promisifyAll(fs);
@@ -120,7 +121,7 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
     var zipPath = req.files.upload.path;
 
     let slideshow = yield Slideshow.findById(req.params.presentationId).exec();
-    
+
     if(! slideshow){
       //treat it as new upload
       return next();
@@ -134,7 +135,7 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
     var options = {
       preserveSession: req.query.preserveSession
     }
-  
+
     const slideshowid = yield upload.updatePresentationFromZipArchive(
       slideshow._id, name, presentationFramework, zipPath, options);
     slideshow = yield Slideshow.findById(slideshowid).lean().exec();
@@ -171,15 +172,28 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
   }
 });
 
-var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, next){
+var createPresentation = function (req, res, next){
+
+  //if req.files.upload, user is uploading a presentation
+  //if req.body.now, user is publishing a now quiz
+  if(req.files.upload) {
+    uploadPresentation(req, res, next);
+  } else if(req.body.now) {
+    createNowPresentation(req, res, next);
+  } else {
+    console.log("error");
+  }
+};
+
+var uploadPresentation = async function (req, res, next){
   try{
     let owner_id = req.user._id;
     let presentationFramework = req.body.presentationFramework;
     var name = req.body.title || req.files.upload.name;
     var uploadFilePath = req.files.upload.path;
 
-    const slideshowid = yield upload.createPresentationFromFile( owner_id, name, presentationFramework, uploadFilePath);
-    const slideshow = yield Slideshow.findById(slideshowid).lean().exec();
+    const slideshowid = await upload.createPresentationFromFile( owner_id, name, presentationFramework, uploadFilePath);
+    const slideshow = await Slideshow.findById(slideshowid).lean().exec();
 
     logger.log({
       owner_id: req.user._id,
@@ -202,7 +216,39 @@ var uploadPresentation = coroutine(function *uploadPresentationGen (req, res, ne
       file_name: name
     }, "error uploading presentation");
   }
-});
+}
+
+var createNowPresentation = async function(req, res) {
+
+  // exercise coming from qea-editor: req.body.exercise
+
+  console.log("im here");
+
+  try {
+    let owner_id = req.user._id;
+    let exercise = req.body.exercise;
+    const slideshowid = await now.createPresentationFromSingleExerciseHtml(owner_id, 'nowquiz', exercise);
+    const slideshow = Slideshow.findById(slideshowid).lean().exec();
+
+    logger.log({
+      owner_id: req.user._id,
+      slideshow: slideshow._id,
+      exercise: exercise
+    }, "uploaded new now quiz");
+
+    res.redirect(303, ['/', req.user.username, '/presentations/?alert=',
+      slideshow.title, ' uploaded successfully!&type=success']
+      .join(''));
+
+  } catch(err){
+    console.log(err.stack);
+    logger.error({
+      err: err,
+      owner_id: req.user._id,
+      exercise: exercise
+    }, "error uploading now quiz");
+  }
+}
 
 function validatePutParams(req, res, next){
   var ps = req.query.preserveSession
@@ -213,7 +259,7 @@ function validatePutParams(req, res, next){
     ps = ps.trim()
     if (! validator.matches(ps, /^(true|false)$/ )){
       next(new Error('Invalid urlparam error. Parameter `preserveSession` should be either `true` or `false`'))
-    } 
+    }
   }
   //force Boolean
   req.query.preserveSession = !!ps;
@@ -226,6 +272,8 @@ module.exports = {
   getPresentationFiles : getPresentationFiles,
   listPresentations    : listPresentations,
   putPresentation      : putPresentation,
+  createPresentation   : createPresentation,
+  createNowPresentation   : createNowPresentation,
   uploadPresentation   : uploadPresentation,
   validatePutParams    : validatePutParams
 }

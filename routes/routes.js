@@ -1,4 +1,4 @@
-/** 
+/**
   * @module routes/routes
   * @description routes logic entry point
 */
@@ -38,6 +38,9 @@ module.exports.setUp = function setUp(app, middleware) {
   //Login
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
 
+  //Get logged user
+  app.get('/loggedUser', handlers.getUser);
+
   // Ldap login
   if(config.enableLdap == true && "undefined" !== config.ldapOptions){
     //Get the campus login page
@@ -70,6 +73,6 @@ module.exports.setUp = function setUp(app, middleware) {
 
   //plugins router
   app.use('/plugins', pluginsRouter)
-  
+
 
 }

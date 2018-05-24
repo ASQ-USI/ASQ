@@ -194,7 +194,7 @@ function postLogin(req, res) {
   if(req.body.rememberMe){
     req.session.cookie.maxAge = 2592000000 //30 days
   }
-  
+
   res.redirect(utils.getPreviousURLOrHome(req));
 }
 
@@ -340,6 +340,26 @@ function usernameAvailable(req, res) {
   });
 }
 
+function getUser(req, res) {
+  let user;
+
+  //check if user is authenticated
+
+  if (req.isAuthenticated()) {
+
+    //if authenticated, get username
+    user = req.user.username;
+
+  } else {
+
+    //if not authenticated, set user to null
+    user = null;
+
+  }
+
+  res.send(user);
+}
+
 module.exports = {
   getHomePage       : getHomePage,
   getCompleteRegistration  : getCompleteRegistration,
@@ -353,5 +373,6 @@ module.exports = {
   logout            : logout,
   getUploadForm     : getUploadForm,
   emailAvailable    : emailAvailable,
-  usernameAvailable : usernameAvailable
+  usernameAvailable : usernameAvailable,
+  getUser: getUser
 }

@@ -8,12 +8,12 @@ module.exports.setUp = function setUp(app, middleware) {
   // List all the user's presentations.
   app.get('/:user/presentations/', middleware.isRouteOwner,
     handlers.listPresentations);
-  
+
   // Upload a new presentation.
   app.post('/:user/presentations', middleware.isRouteOwner,
-    handlers.uploadPresentation);
+    handlers.createPresentation);
 
-  // Update the presentation matching presentationId. 
+  // Update the presentation matching presentationId.
   // If it doesn't exist we create a new one using the upload handler
   app.put('/:user/presentations/:presentationId', middleware.isRouteOwner,
     handlers.validatePutParams, handlers.putPresentation, handlers.uploadPresentation);
