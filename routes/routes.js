@@ -39,7 +39,7 @@ module.exports.setUp = function setUp(app, middleware) {
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
 
   //Get logged user
-  app.get('/loggedUser', handlers.getUser);
+  app.get('/loggedUser', handlers.getLoggedUser);
 
   // Ldap login
   if(config.enableLdap == true && "undefined" !== config.ldapOptions){

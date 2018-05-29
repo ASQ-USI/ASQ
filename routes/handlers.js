@@ -340,24 +340,17 @@ function usernameAvailable(req, res) {
   });
 }
 
-function getUser(req, res) {
-  let user;
+function getLoggedUser(req, res) {
+  let user = {};
 
   //check if user is authenticated
 
   if (req.isAuthenticated()) {
-
     //if authenticated, get username
-    user = req.user.username;
-
-  } else {
-
-    //if not authenticated, set user to null
-    user = null;
-
+    user = _.pick(req.user, ['username','firstname','lastname'])
   }
 
-  res.send(user);
+  res.json(user);
 }
 
 module.exports = {
@@ -374,5 +367,5 @@ module.exports = {
   getUploadForm     : getUploadForm,
   emailAvailable    : emailAvailable,
   usernameAvailable : usernameAvailable,
-  getUser: getUser
+  getLoggedUser: getLoggedUser
 }

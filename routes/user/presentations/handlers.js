@@ -173,7 +173,6 @@ var putPresentation = coroutine(function *putPresentationGen(req, res, next) {
 });
 
 var createPresentation = function (req, res, next){
-
   //if req.files.upload, user is uploading a presentation
   //if req.body.now, user is publishing a now quiz
   if(req.files.upload) {
@@ -181,7 +180,7 @@ var createPresentation = function (req, res, next){
   } else if(req.body.now) {
     createNowPresentation(req, res, next);
   } else {
-    console.log("error");
+    console.log("ERROR: Presentation is neither being created by a now quiz or an upload.")
   }
 };
 
@@ -222,8 +221,6 @@ var createNowPresentation = async function(req, res) {
 
   // exercise coming from qea-editor: req.body.exercise
 
-  console.log("im here");
-
   try {
     let owner_id = req.user._id;
     let exercise = req.body.exercise;
@@ -236,9 +233,7 @@ var createNowPresentation = async function(req, res) {
       exercise: exercise
     }, "uploaded new now quiz");
 
-    res.redirect(303, ['/', req.user.username, '/presentations/?alert=',
-      slideshow.title, ' uploaded successfully!&type=success']
-      .join(''));
+    res.json({ status: 'success', redirect: `/${req.user.username}/presentations/` });
 
   } catch(err){
     console.log(err.stack);
