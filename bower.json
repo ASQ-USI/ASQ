@@ -15,6 +15,8 @@
   ],
   "dependencies": {
     "asq-elements": "ASQ-USI-Elements/asq-elements#master",
+    "asq-live-app": "https://github.com/ASQ-USI/live-app-asq.git#feat-student-question-events",
+    "paper-slider": "PolymerElements/paper-slider#^1.0.15",
     "polymer": "polymer/polymer#^1.4.0"
   }
 }
