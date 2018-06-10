@@ -63,6 +63,7 @@ function userSettingsFormBinder(){
               // Set username from email
               if (!!reply.username && !$('#inputUsername').val()) {
                 var userInput = $('#inputUsername');
+                //username should be up to 64 chars from the email validation
                 userInput.val(reply.username);
                 userInput.siblings('div.sidetip').children().removeClass('active');
                 userInput.siblings('div.sidetip').children('p.isaok').addClass('active');
