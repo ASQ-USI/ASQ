@@ -22,19 +22,23 @@
 		<link rel="import" href="shared-styles.html">
 		<style is="custom-style" include="shared-styles"></style>
 	</head>
-	<body class="impress-not-supported" data-asq-role="viewer">
+	<body>
+		
 	<asq-settings max-num-submissions="2" slideflow="ctrl" assessment="none"></asq-settings>
+
 	<div class="reveal">
 		<!-- Any section element inside of this container is displayed as a slide -->
 		<div class="slides">
-			<section id="welcome-slide">
-				<asq-welcome></asq-welcome>
-			</section>
 			<section id="exercise">
 			</section>
 		</div>
-</div>
+	</div>
+
+	<asq-welcome></asq-welcome>
 <script src="reveal.js/lib/js/head.min.js"></script>
 <script src="reveal.js/js/reveal.js"></script>
+<script>
+	Reveal.initialize();
+</script>
 </body>
 </html>

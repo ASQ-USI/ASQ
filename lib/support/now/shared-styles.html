@@ -3,44 +3,37 @@
   <template>
     <style>
 
+    #exercise{
+      text-align: left;
+    }
+
+    asq-welcome{
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1;
+      font-size: 24px;
+      line-height: 24px;
+
+      --asq-welcome-qr-container: {
+        display: none;
+      };
+
+      --asq-welcome-viewer-icons:{
+        display:none;
+      };
+
+      --asq-welcome-join-url:{
+        font-weight: bold;
+      }
+    }
+
     asq-option {
       display: block;
     }
 
     .asq-selected {
       background-color: #CFD8DC;
-    }
-
-
-    asq-multi-choice-q > asq-option {
-      --asq-option-viewer-unchecked-ink-color: #FF1744;
-      --asq-option-viewer-checked-ink-color: #2E7D32;
-      --asq-option-viewer-checked-color: red;
-      --asq-option-viewer-unchecked-background-color: #D7CCC8;
-    }
-
-    
-
-    asq-multi-choice-q[multi] > asq-option {
-      --asq-option-viewer-unchecked-ink-color: #FF1744;
-      --asq-option-viewer-checked-ink-color: #2E7D32;
-      --asq-option-viewer-checked-color: black;
-      --asq-option-viewer-unchecked-background-color: white;
-    }
-
-    asq-multi-choice-q[multi] > asq-option[name="n"] {
-      --asq-option-viewer-unchecked-ink-color: #FF1744;
-      --asq-option-viewer-checked-ink-color: blue;
-      --asq-option-viewer-checked-color: #6200EA;
-      --asq-option-viewer-unchecked-background-color: #FFB74D;
-    }
-
-    asq-option.blue {
-      --asq-option-presenter-progress-active-color: var(--paper-light-blue-500);
-    }
-
-    asq-option.red {
-      --asq-option-presenter-progress-active-color: var(--paper-red-500);
     }
 
 
