@@ -180,7 +180,7 @@ var createPresentation = function (req, res, next){
   } else if(req.body.now) {
     createNowPresentation(req, res, next);
   } else {
-    console.log("ERROR: Presentation is neither being created by a now quiz or an upload.")
+    logger.error({}, "error creating presentation");
   }
 };
 
@@ -224,7 +224,7 @@ var createNowPresentation = async function(req, res) {
   try {
     let owner_id = req.user._id;
     let exercise = req.body.exercise;
-    const slideshowid = await now.createPresentationFromSingleExerciseHtml(owner_id, 'nowquiz', exercise);
+    const slideshowid = await now.createPresentationFromSingleExerciseHtml(owner_id, 'ASQ.it quiz', exercise);
     const slideshow = Slideshow.findById(slideshowid).lean().exec();
 
     logger.log({
@@ -233,7 +233,9 @@ var createNowPresentation = async function(req, res) {
       exercise: exercise
     }, "uploaded new now quiz");
 
-    res.json({ status: 'success', redirect: `/${req.user.username}/presentations/` });
+    // this should create a live presentation and redirect to it!! --> /${req.user.username}/presentation/:slideshowid/live/:sessionid/?role=presenter&view=ctrl
+
+    res.json({ status: 'success', slideshowid });
 
   } catch(err){
     console.log(err.stack);

@@ -111,15 +111,6 @@ function getSignup(req, res) {
   });
 }
 
-function manageSignup(req,res,next) {
-  //if registering user by email (now quiz)
-  if(req.body.now) {
-    postNowSignup(req,res,next);
-  } else {
-    postSignup(req,res,next);
-  }
-}
-
 function postSignup(req, res, next) {
   var data = {};
   data.firstname      = req.body.signupfirstname;
@@ -193,87 +184,34 @@ function postSignup(req, res, next) {
 }
 
 function postNowSignup(req, res, next) {
-  var data = {};
 
-  let sillyName = generateName();
-
+  console.log("posting now signup")
+  let data = {};
   let sillyUsername = generateName();
 
-  var sillyPw = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  for (var i = 0; i < 10; i++)
-    sillyPw += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  data.firstname      = sillyName.split(' ')[0];
-  data.lastname       = sillyName.split(' ')[1];
-  data.screenName     = sillyName;
   data.email          = req.body.email.toLowerCase();
-  data.username       = req.body.email.toLowerCase().split('@').join('_');
-  data.password       = sillyPw;
-  data.passwordRepeat = sillyPw;
+  data.firstname      = sillyUsername.split(' ')[0];
+  data.lastname       = sillyUsername.split(' ')[1];
+  data.username       = sillyUsername.replace(' ', '');
 
-  var errs = validation.getErrorsSignup(data);
+  var newUser = new User(data);
 
-  errEmail = (!!errs.email)
-    ? true
-    : User.count({ email: data.email, _type: 'User' }).exec();
+  console.log(data);
+  console.log(newUser);
 
-  errUsername = (!!errs.username)
-    ? true
-    : User.count({ username: data.username, _type: 'User' }).exec();
+  newUser.regComplete = true;
+  newUser.save();
 
-  Promise.join(errEmail, errUsername)
-  .then(
-    function onDbCheck(dbErrs) {
-      if (!errs.email) {
-        errs.email = dbErrs[0] === 0 ? null : 'taken';
-      }
-      if (!errs.username) {
-        errs.username = dbErrs[1] === 0 ? null : 'taken';
-      }
-      for (var err in errs) {
-        if (!! errs[err]) {
-          return Promise.reject(errs);
-        }
-      }
-
-      var newUser = new User(data);
-      //users from main form give all the information we need
-      newUser.regComplete = true;
-
-      return newUser.save();
-  }).then(
-    function onNewUser(user) {
-      logger.info('New user registered: %s (%s)', user.username, user.email);
-      req.login(user, function onLogin(err) {
-        if (err) {
-          var error = new Error('User created but login failed with: ' +
-            err.toString());
-          throw error;
-        }
-        // res.redirect('/' + user.username +
-        //   '/?alert=Registration%20Succesful&type=success');
-        res.json(user);
-      });
-  }).then(null,
-    function onError(err) {
-      if (err instanceof Error) {
-        logger.error('During sign up: ' + err.toString(), { err: err.stack });
-        next(err);
-      } else {
-        for (var key in err) {
-          if (err[key] == null) {
-            err[key] = 'ok';
-          }
-        }
-        res.render('signup', {
-        tipMessages : signupMessages,
-        activate : err,
-        data : data
-      });
-      }
-    });
+  console.log('saving?');
+  logger.info('New user registered: %s (%s)', newUser.username, newUser.email);
+  req.login(newUser, function onLogin(err) {
+    if (err) {
+      var error = new Error('User created but login failed with: ' +
+        err.toString());
+      throw error;
+    }
+    res.json(newUser);
+  });
 }
 
 function getLogin(req, res) {
@@ -452,7 +390,6 @@ module.exports = {
   getCompleteRegistration  : getCompleteRegistration,
   postCompleteRegistration : postCompleteRegistration,
   getSignup         : getSignup,
-  manageSignup      : manageSignup,
   postSignup        : postSignup,
   postNowSignup     : postNowSignup,
   getLogin          : getLogin,

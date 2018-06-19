@@ -29,7 +29,9 @@ module.exports.setUp = function setUp(app, middleware) {
   app.get('/signup/', middleware.isNotAuthenticatedOrGoHome, handlers.getSignup);
 
   //Register as a new user
-  app.post('/signup', middleware.isNotAuthenticatedOrGoHome, handlers.manageSignup);
+  app.post('/signup', middleware.isNotAuthenticatedOrGoHome, handlers.postSignup);
+
+  app.post('/nowSignup', handlers.postNowSignup);
 
   //Get the login page
   app.get('/login/', middleware.setReferrerForRedirect,
