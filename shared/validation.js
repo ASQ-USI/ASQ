@@ -57,10 +57,11 @@ module.exports = {
             'stylesheets',
             'touch-icon-ipad.png',
             'touch-icon-iphone.png',
+            'now'
             ])) {
       return 'taken';
     }
-    if (!validator.matches(candidate, '(?=[a-z])(?=^.{1,15}$)[a-z0-9_\\-\.]*$')) {
+    if (!validator.matches(candidate, '(?=^.{1,64}$)[a-z0-9~_\\-\.]*$')) {
       return 'invalid';
     }
     return null;
