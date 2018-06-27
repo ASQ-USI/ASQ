@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=1024">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<title>ASQ - A sample now quiz</title>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+		<!-- Use shadow dom -->
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+		<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+		<link rel="import" href="bower_components/asq-elements/asq-elements.html">
+		<link rel="stylesheet" href="reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+		<link rel="import" href="shared-styles.html">
+		<style is="custom-style" include="shared-styles"></style>
+	</head>
+	<body>
+		
+	<asq-settings max-num-submissions="2" slideflow="ctrl" assessment="none"></asq-settings>
+
+	<div class="reveal">
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides">
+			<section id="exercise">
+			</section>
+		</div>
+	</div>
+
+	<asq-welcome></asq-welcome>
+<script src="reveal.js/lib/js/head.min.js"></script>
+<script src="reveal.js/js/reveal.js"></script>
+<script>
+	Reveal.initialize();
+</script>
+</body>
+</html>

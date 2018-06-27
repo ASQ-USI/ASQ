@@ -3,7 +3,6 @@
 // Download bower components that will be included with the pdf presentations
 'use strict';
 
-const fs = require('fs-extra');
 const spawnSync = require('child_process').spawnSync;
 const PdfSupportDir = 'lib/support/pdf';
 const timeout = 120000; // 2 mins

@@ -1,4 +1,4 @@
-/** 
+/**
   * @module routes/routes
   * @description routes logic entry point
 */
@@ -6,6 +6,7 @@
 
 var handlers = require('./handlers')
 var user = require('./user');
+var now = require('./now');
 var settingsRouter  = require('./user/settings');
 var pluginsRouter  = require('./plugins');
 var logger = require('logger-asq');
@@ -30,12 +31,17 @@ module.exports.setUp = function setUp(app, middleware) {
   //Register as a new user
   app.post('/signup', middleware.isNotAuthenticatedOrGoHome, handlers.postSignup);
 
+  app.post('/nowSignup', handlers.postNowSignup);
+
   //Get the login page
   app.get('/login/', middleware.setReferrerForRedirect,
      middleware.isNotAuthenticatedOrGoHome, handlers.getLogin);
 
   //Login
   app.post('/login', middleware.localAuthenticate, handlers.postLogin);
+
+  //Get logged user
+  app.get('/loggedUser', handlers.getLoggedUser);
 
   // Ldap login
   if(config.enableLdap == true && "undefined" !== config.ldapOptions){
@@ -58,6 +64,9 @@ module.exports.setUp = function setUp(app, middleware) {
   // Check username availability
   app.get('/username_available/', handlers.usernameAvailable);
 
+  //now router
+  app.use('/now', now);
+
   //Set up routes starting with /:user/*
   user.setUp(app, middleware);
 
@@ -66,4 +75,6 @@ module.exports.setUp = function setUp(app, middleware) {
 
   //plugins router
   app.use('/plugins', pluginsRouter)
+
+
 }

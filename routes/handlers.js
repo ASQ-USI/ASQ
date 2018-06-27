@@ -6,6 +6,7 @@ const completeRegistrationMessages = require('../lib/forms/completeRegistration/
 const validation = require('../shared/validation');
 const User       = db.model('User');
 const utils      = require('../lib/utils/routes');
+const generateName = require('sillyname');
 
 function getHomePage(req, res) {
   if (req.isAuthenticated()) {
@@ -182,6 +183,37 @@ function postSignup(req, res, next) {
     });
 }
 
+function postNowSignup(req, res, next) {
+
+  console.log("posting now signup")
+  let data = {};
+  let sillyUsername = generateName();
+
+  data.email          = req.body.email.toLowerCase();
+  data.firstname      = sillyUsername.split(' ')[0];
+  data.lastname       = sillyUsername.split(' ')[1];
+  data.username       = sillyUsername.replace(' ', '');
+
+  var newUser = new User(data);
+
+  console.log(data);
+  console.log(newUser);
+
+  newUser.regComplete = true;
+  newUser.save();
+
+  console.log('saving?');
+  logger.info('New user registered: %s (%s)', newUser.username, newUser.email);
+  req.login(newUser, function onLogin(err) {
+    if (err) {
+      var error = new Error('User created but login failed with: ' +
+        err.toString());
+      throw error;
+    }
+    res.json(newUser);
+  });
+}
+
 function getLogin(req, res) {
 
   res.render('login', {
@@ -194,7 +226,7 @@ function postLogin(req, res) {
   if(req.body.rememberMe){
     req.session.cookie.maxAge = 2592000000 //30 days
   }
-  
+
   res.redirect(utils.getPreviousURLOrHome(req));
 }
 
@@ -340,12 +372,26 @@ function usernameAvailable(req, res) {
   });
 }
 
+function getLoggedUser(req, res) {
+  let user = {};
+
+  //check if user is authenticated
+
+  if (req.isAuthenticated()) {
+    //if authenticated, get username
+    user = _.pick(req.user, ['username','firstname','lastname'])
+  }
+
+  res.json(user);
+}
+
 module.exports = {
   getHomePage       : getHomePage,
   getCompleteRegistration  : getCompleteRegistration,
   postCompleteRegistration : postCompleteRegistration,
   getSignup         : getSignup,
   postSignup        : postSignup,
+  postNowSignup     : postNowSignup,
   getLogin          : getLogin,
   postLogin         : postLogin,
   getLoginCampus  : getLoginCampus,
@@ -353,5 +399,6 @@ module.exports = {
   logout            : logout,
   getUploadForm     : getUploadForm,
   emailAvailable    : emailAvailable,
-  usernameAvailable : usernameAvailable
+  usernameAvailable : usernameAvailable,
+  getLoggedUser: getLoggedUser
 }
