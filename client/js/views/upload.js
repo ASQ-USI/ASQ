@@ -5,23 +5,25 @@
 var debug = require('bows')("js/views/upload");
 var menuDOMBinder = require('./menu');
 var Dropzone = require('dropzone');
-// 
+
+Dropzone.autoDiscover = false;
+
 module.exports = {
   activateDropzone: function(){
-      Dropzone.options.leDropzone = {
+      $("#le-dropzone").dropzone ({
       paramName: "upload",
       uploadMultiple: false,
       maxFiles: 1,
       parallelUploads: 1, 
       autoProcessQueue: false,
-      clickable: ".dz-message",
-      acceptedFiles:  "application/zip, application/pdf",
-      previewsContainer: "#previews",
+      clickable: '.dz-message',
+      acceptedFiles:  'application/zip, application/pdf',
+      previewsContainer: '#previews',
       init: function() {
 
         var fadeOutTimeout;
 
-        this.on("dragover", function(){
+        this.on('dragover', function(){
           clearTimeout(fadeOutTimeout)
           $('#dropzone-dragover-overlay').fadeIn();
           fadeOutTimeout = setTimeout(function(){
@@ -29,22 +31,22 @@ module.exports = {
           }, 300)
         });
 
-        this.on("drop", function(event){
+        this.on('drop', function(event){
           clearTimeout(fadeOutTimeout)
           $('#dropzone-dragover-overlay').fadeOut(10);
         });
 
-        this.on("maxfilesexceeded", function(file) { 
+        this.on('maxfilesexceeded', function(file) { 
           this.removeFile(file); 
         });
 
-        this.on("addedfile", function(file){
+        this.on('addedfile', function(file){
 
           // Create the remove button
           var btnHTML = '<a href="#remove" class="remove data-dz-remove" data-toggle="tooltip" data-placement="left" title="Remove zip file" data-original-title="Remove zip file">×</a>';
           var removeButton = Dropzone.createElement(btnHTML);
 
-          removeButton.addEventListener("click", function(e) {
+          removeButton.addEventListener('click', function(e) {
           // Make sure the button click doesn't submit the form:
             e.preventDefault();
             e.stopPropagation();
@@ -55,10 +57,10 @@ module.exports = {
           file.previewElement.appendChild(removeButton);
 
           //set default title
-          var pTitle = document.getElementById("title-input");
+          var pTitle = document.getElementById('title-input');
 
-          if(pTitle.value.trim() === ""){
-            pTitle.value = file.name.replace(/\.zip$/, "");
+          if(pTitle.value.trim() === ''){
+            pTitle.value = file.name.replace(/\.zip$/, '');
           }
 
           //hide drop message and show the rest of the form
@@ -76,19 +78,19 @@ module.exports = {
             $('#upload-btn').hide(0)
           }
 
-          var pTitle = document.getElementById("title-input");
-          pTitle.value = "";          
+          var pTitle = document.getElementById('title-input');
+          pTitle.value = '';          
         });
 
-        this.on("sending", function(file, xhr, formData){
-         formData.append("fullPath", file.fullPath)
+        this.on('sending', function(file, xhr, formData){
+         formData.append('fullPath', file.fullPath)
         });
 
-        this.on("sendingmultiple", function(){
+        this.on('sendingmultiple', function(){
           console.log(arguments);
         })
 
-        this.on("success", function(){
+        this.on('success', function(){
           setTimeout(function(){
             window.location = this.element.action;
           }.bind(this), 300);
@@ -100,13 +102,13 @@ module.exports = {
           this.processQueue();
         }.bind(this))
       }
-    };
+    });
   },
   init: function(){
     //init main menu
     menuDOMBinder();
 
-    this.activateDropzone()
+    this.activateDropzone();
 
     //disable no-touch classes
     if ('ontouchstart' in document) {
