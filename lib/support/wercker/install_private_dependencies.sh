@@ -10,7 +10,7 @@ export slide2htmlCommit=7e572868ebbd1b96b04f53a40c0bfebe9e34a16e
 
 export uiDir=public/ui
 export uiBranch=master
-export uiCommit=07f7c55f7f82f5777a5351ff848fb22abc62fb1e
+export uiCommit=b9a8eb6fc3dd5b25d522682ee46cc3b21299c5f9
 
 export cockpitDir=public/cockpit
 export cockpitBranch=master
