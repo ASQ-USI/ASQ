@@ -14,7 +14,7 @@ export uiCommit=b9a8eb6fc3dd5b25d522682ee46cc3b21299c5f9
 
 export cockpitDir=public/cockpit
 export cockpitBranch=master
-export cockpitCommit=e5b342d0c1a06c5c7ad7e541117f971d324c77ad
+export cockpitCommit=432fc971a3c22aa16dd8ab77a07940dc5d514a57
 
 # Execute the pipeline
 current_folder=$(pwd)
