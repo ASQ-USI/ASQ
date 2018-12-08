@@ -16,15 +16,13 @@ This software is work-in-progress at an early stage (alpha). It might be unstabl
 
 Installation
 -------------
-### Manual
-Please follow the [installation guide](doc/install/installation.md)
 
 ### Docker with Docker Compose
 You can find the ASQ docker image on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/). With [Docker Compose](https://docs.docker.com/compose/) you can simply deploy ASQ with the deployment descriptor we provide. The steps are:
 
 1. Get the `docker-compose.yml` or `docker-compose-ssl.yml` file from this repo, according to your requirements, and place it in a folder named `asq` on your machine.
 2. Configure your deployment, if needed:
-   - Replace the `${DOCKER_HUB_IMAGE_TAG}` variable with an actual tag, by manually changing it, or by [passing an environment variable](https://docs.docker.com/compose/compose-file/#variable-substitution) to [Docker Compose](https://docs.docker.com/compose/). You can find the list of available tags on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/tags/). One is `master`, that is the default one, another one is `devel`. 
+   - Replace the `${DOCKER_HUB_IMAGE_TAG}` variable with an actual tag, by manually changing it, or by [passing an environment variable](https://docs.docker.com/compose/compose-file/#variable-substitution) to [Docker Compose](https://docs.docker.com/compose/). You can find the list of available tags on the [Docker Hub](https://hub.docker.com/r/asqhub/asq/tags/). One is `devel`, that is the default one. 
    - Change the `${HOST}` variable passed to the ASQ service to match your host name, the same way as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable. The default is `127.0.0.1`.
    - Change the `${SERVER_NAME}` variable passed to the ASQ service to match your requirements (e.g., if ASQ has to be exposed on a subdomain on your server), the same way as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable. The default is `_`.
    - If you need [LDAP](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol) support, change the `${ENABLE_LDAP}` variable and the four `LDAP_*` variables according to your settings, or configure them as you did for the `${DOCKER_HUB_IMAGE_TAG}` variable. Alternatively remove the four `LDAP_*` variables if not needed for your deployment.
