@@ -3,7 +3,7 @@
 version: '2.1'
 services:
   asq:
-    image: ${DOCKER_HUB_REPO:-asqhub/asq}:${DOCKER_HUB_IMAGE_TAG:-master}
+    image: ${DOCKER_HUB_REPO:-asqhub/asq}:${DOCKER_HUB_IMAGE_TAG:-devel}
     container_name: asq
     environment:
       HOST: ${HOST:-127.0.0.1}
