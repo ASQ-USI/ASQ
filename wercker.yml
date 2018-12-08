@@ -316,6 +316,64 @@ push-dev-release:
         env: "ASQDIR=/ASQ"
         cmd: /sbin/my_init
 
+# TODO: refine the solution to reuse previously dev built image
+
+# Must depend on: build-pro (currently build)
+# NOTE: we configured Wercker so that it pushes images for the following branches:
+#       devel
+push-public-release:
+    # NOTE: we can start from a fresh box, because Wercker copies the output/source of the steps
+    #       and all the changes we apply in the steps, happen in the source folder
+    box:
+      id: asqslide/wercker-box-asq:0.10.0-prod
+      username: $DOCKER_HUB_BOX_USERNAME
+      password: $DOCKER_HUB_BOX_PASSWORD
+    steps:
+    # Remove build dependencies
+    # NOTE: We need apt-get update -q, otherwise the apt-get it is not able to find the packages
+    # TODO (Decide): we can avoid the following step, if we have two different base boxes (dev and release)
+    - script:
+            name: remove ASQ build dependencies needed up to here in the workflow
+            code: |
+                  apt-get update -q
+                  apt-get remove -y --purge build-essential
+                  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
+                  apt-get clean autoclean -y
+                  apt-get autoremove -y
+                  rm -rf /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+    - script:
+            name: move ASQ to the /ASQ folder
+            code: |
+                  export ASQDIR=/ASQ
+                  [ -d "$ASQDIR" ] || mkdir -p "$ASQDIR"
+                  mv -f ${WERCKER_SOURCE_DIR}/* ${ASQDIR}
+    - script:
+            name: configure folders and file ASQ expects
+            code: |
+                  export ASQDIR=/ASQ
+                  mkdir -p $ASQDIR/log/
+                  touch $ASQDIR/log/app.log
+    - script:
+            name: remove Wercker assets
+            cwd: /
+            # TODO: evaluate /mnt/*, it gives an error because it is a read only file system
+            code: |
+                  rm -Rf /report /pipeline
+    # push container as-is
+    - internal/docker-push:
+        author: Vincenzo FERME <info@vincenzoferme.it>
+        disable-sync: false
+        repository: asqhub/asq
+        email: $DOCKER_HUB_EMAIL
+        username: $DOCKER_HUB_USERNAME
+        password: $DOCKER_HUB_PASSWORD
+        tag: $WERCKER_GIT_BRANCH
+        ports: "80, 443, 3000"
+        volumes: "/mnt, /var/cache/nginx, /etc/nginx/ssl, /ASQ/slides"
+        working-dir: /ASQ
+        env: "ASQDIR=/ASQ"
+        cmd: /sbin/my_init
+
 # TODO: define the deploy section, refer to http://devcenter.wercker.com/docs/steps/internal-steps
 # TODO: define the push for the community edition
 # TODO: define the push for the pro edition
