@@ -139,8 +139,6 @@ function livePresentation(req, res) {
 
   })(role, view, presentation);
 
-  renderOpts.commonScript = '/js/asq-common.js';
-
   res.render(renderOpts.template, {
     username              : req.user? req.user.username :'',
     title                 : presentation.title,
@@ -149,7 +147,6 @@ function livePresentation(req, res) {
     host                  : req.app.locals.urlHost,
     port                  : req.app.locals.urlPort,
     namespace             : renderOpts.namespace,
-    commonScript          : renderOpts.commonScript,
     roleScript            : renderOpts.roleScript,
     role                  : role,
     presentation          : presentation._id,
