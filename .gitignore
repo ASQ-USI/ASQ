@@ -36,7 +36,6 @@ slides/
 /plugins/
 public/
 slide2html/
-!client/presenterControl/public
 config/config.*
 !config/config.defaults.js.example
 !config/config.docker.js

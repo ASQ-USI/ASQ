@@ -9,7 +9,6 @@
   var debug = require('bows')("sessionStats")
   , io      = require('socket.io-client')
   , $       = require('jquery')
-  , request = require('superagent')
   , dust = require('dustjs-linkedin')
   , templates = require('./templates')
   , moment = require('moment')

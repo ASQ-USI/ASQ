@@ -1,32 +1,54 @@
 'use strict';
 
-var env = process.env.NODE_ENV || "development"
-var devtool ="cheap-module-eval-source-map";
-
-var webpack = require('webpack');
-
-var commonsPlugin =
-  new webpack.optimize.CommonsChunkPlugin('asq-common.js');
+const path = require('path');
 
 module.exports = {  
     entry: {
-      presenter: "./client/js/presenter.js",
-      viewer: "./client/js/viewer.js",
-      ghost: "./client/js/ghost.js",
-      client: "./client/js/dom.js"
+      presenter: './client/js/presenter.js',
+      viewer: './client/js/viewer.js',
+      ghost: './client/js/ghost.js',
+      client: './client/js/dom.js'
     },
     output: {
-      path: "./public/js/",
-      publicPath: "/js/",
-      filename: "asq-[name].js"
+      path: path.resolve(__dirname, 'public/js/'),
+      publicPath: '/js/',
+      filename: 'asq-[name].js'
     },
-    devtool: devtool,
+    devtool: 'cheap-module-source-map',
     module:{
-      loaders: [
-        { test: /\.less$/, loader: "style!css!less" },
-        { test: /\.dust$/, loader: "imports?dust=dustjs-linkedin!dust-loader" },
-        { test: /[\/]impress\-asq\.js$/, loader: "exports?impress" },
+      rules: [
+        {
+          test: /\.less$/,
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'less-loader',
+              options: {
+                javascriptEnabled: true
+              }
+            }
+          ] 
+        },
+        {
+          test: /\.dust$/,
+          use: [
+            {
+              loader:'imports-loader',
+              options: {
+                dust: 'dustjs-linkedin'
+              }
+            },
+            'dust-loader'
+          ]
+        },
+        {
+          test: /[\/]impress\-asq\.js$/,
+          loader: 'exports-loader',
+          options: {
+            impress: 'impress'
+          }
+        },
       ]
-    },
-    plugins: [commonsPlugin]
+    }
   }

@@ -8,7 +8,7 @@ var debug = require('bows')('js/views/pluginSettings');
 var request = require('superagent');
 var Dialog = require('../../views/dialog/dialog');
 var dust = require('dustjs-linkedin');
-var templates = require('imports?dust=dustjs-linkedin!../templates');
+var templates = require('imports-loader?dust=dustjs-linkedin!../templates');
 var menuDOMBinder = require('./menu');
 var utils = require('../utils');
 

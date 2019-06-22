@@ -7,7 +7,7 @@ var debug = require('bows')("js/views/presentations");
 var request = require('superagent');
 var Dialog = require('../../views/dialog/dialog');
 var dust = require('dustjs-linkedin');
-var templates = require('imports?dust=dustjs-linkedin!../templates.js');
+var templates = require('imports-loader?dust=dustjs-linkedin!../templates.js');
 var menuDOMBinder = require('./menu');
 var utils = require('../utils');
 var thumbGenerator = require('impress-asq-fork-asq-adapter').impressThumbGenerator();
