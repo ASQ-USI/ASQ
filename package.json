@@ -151,7 +151,7 @@
     "sillyname": "0.0.3",
     "simple-errors": "0.0.4",
     "sinon": "^1.17.4",
-    "socket.io": "^1.7.1",
+    "socket.io": "^2.4.0",
     "socket.io-browserify": "~0.9.6",
     "socket.io-client": "^1.7.1",
     "socket.io-redis": "^2.0.0",
