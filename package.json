@@ -91,7 +91,7 @@
     "asq-text-input-q": "ASQ-USI-Elements/asq-text-input-q#master",
     "asq-live-app": "https://github.com/ASQ-USI/live-app-asq.git#feat-student-question-events",
     "asq-visualization": "0.0.1",
-    "async": "~0.2.9",
+    "async": "~3.2.2",
     "bcrypt": "^0.8.2",
     "bluebird": "^3.5.0",
     "body-parser": "^1.12.2",
