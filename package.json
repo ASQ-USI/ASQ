@@ -106,7 +106,7 @@
     "dotenv": "~2.0.0",
     "dropzone": "^4.3.0",
     "dustjs-helpers": "^1.7.1",
-    "dustjs-linkedin": "^2.7.1",
+    "dustjs-linkedin": "^3.0.0",
     "eventemitter2": "^0.4.14",
     "express": "^4.13.3",
     "express-session": "^1.10.4",
