@@ -1529,9 +1529,9 @@ dustjs-helpers@^1.7.1:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/dustjs-helpers/-/dustjs-helpers-1.7.3.tgz#0251349a773230e0dd67dc2ce85f528a0fb95dad"
 
-dustjs-linkedin@^2.7.1:
-  version "2.7.5"
-  resolved "https://registry.yarnpkg.com/dustjs-linkedin/-/dustjs-linkedin-2.7.5.tgz#618f063f72c19b78c8055ac2301c75b7b6bbdccc"
+dustjs-linkedin@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/dustjs-linkedin/-/dustjs-linkedin-3.0.0.tgz#49a215002dfba32aaddc13d376d21735467ce83b"
   dependencies:
     chokidar "~1.5.1"
     cli "^1.0.1"
