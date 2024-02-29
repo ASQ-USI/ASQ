@@ -37,7 +37,7 @@
     "less": "^2.1.2",
     "less-loader": "^2.0.0",
     "null-loader": "^0.1.0",
-    "react": "^0.12.1",
+    "react": "^0.14.10",
     "react-hot-loader": "^1.0.0",
     "react-proxy-loader": "^0.3.1",
     "react-router": "^0.12.0",
