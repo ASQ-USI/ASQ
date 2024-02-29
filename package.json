@@ -108,7 +108,7 @@
     "dustjs-helpers": "^1.7.1",
     "dustjs-linkedin": "^2.7.1",
     "eventemitter2": "^0.4.14",
-    "express": "^4.13.3",
+    "express": "^4.18.2",
     "express-session": "^1.10.4",
     "file-type": "^3.3.0",
     "filenamify": "^1.2.1",
