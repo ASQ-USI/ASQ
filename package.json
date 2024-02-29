@@ -71,7 +71,7 @@
     "docker-delete-registry-image": "DOCKER_HUB_DEV_REPO=$npm_package_config_docker_devrepo node lib/support/docker/hub/delete-tags.js"
   },
   "dependencies": {
-    "archiver": "^1.1.0",
+    "archiver": "^7.0.0",
     "asq-buckets-q": "ASQ-USI-Elements/asq-buckets-q#master",
     "asq-canvas": "ASQ-USI-Elements/asq-canvas#feat-new-canvas",
     "asq-code-q": "ASQ-USI-Elements/asq-code-q#master",
