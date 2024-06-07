@@ -121,7 +121,7 @@
     "impress-asq-fork-asq-adapter": "ASQ-USI/impress-asq-fork-asq-adapter#feat-new-canvas-api",
     "jquery": "^3.3.1",
     "jws": "^3.0.0",
-    "ldapauth-fork": "^2.2.12",
+    "ldapauth-fork": "^6.0.0",
     "livereload": "^0.3.7",
     "lodash": "^4.15.0",
     "logger-asq": "ASQ-USI/logger-asq#master",
