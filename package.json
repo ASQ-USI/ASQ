@@ -98,7 +98,7 @@
     "boom": "^4.1.0",
     "bows": "^1.1.2",
     "cheerio": "^0.20.0",
-    "connect": "2.8.x",
+    "connect": "3.0.0",
     "connect-flash": "~0.1.1",
     "connect-redis": "^2.2.0",
     "consolidate": "~0.10.0",
