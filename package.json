@@ -132,7 +132,7 @@
     "mongoose": "^4.7.0",
     "mongoose-schema-extend": "^0.1.7",
     "morgan": "^1.5.2",
-    "multer": "^0.1.8",
+    "multer": "^2.0.1",
     "node-libs-browser": "^0.5.2",
     "node-redis": "^0.1.7",
     "nodemon": "^1.9.2",
