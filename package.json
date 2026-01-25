@@ -123,7 +123,7 @@
     "jws": "^3.0.0",
     "ldapauth-fork": "^2.2.12",
     "livereload": "^0.3.7",
-    "lodash": "^4.15.0",
+    "lodash": "^4.17.23",
     "logger-asq": "ASQ-USI/logger-asq#master",
     "mocha": "^3.2.0",
     "moment": "^2.8.3",
